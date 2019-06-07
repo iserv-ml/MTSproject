@@ -1,0 +1,15 @@
+{% extends '::base.html.twig' %}
+
+{% block ariane -%}<a href="{{ path('homepage') }}">Accueil</a> > <a href="{{ path('client_index') }}">Client</a> > Créer{% endblock %}
+{% block pagetitle -%}CREER UN CLIENT{% endblock %}
+{% block menu_client_actif %}active{% endblock %}
+
+{% block body -%}
+    {{ form(form) }}
+{% endblock %}
+
+{% block retour %} 
+    <a href="{{ path('client_index') }}">
+        Retour à la liste
+    </a>
+{% endblock %}

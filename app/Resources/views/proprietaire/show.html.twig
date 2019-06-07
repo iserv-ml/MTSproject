@@ -1,0 +1,76 @@
+{% extends '::base.html.twig' %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('proprietaire_index') }}">Propriétaires</a></li>
+          <li class="breadcrumb-item">Détail</li>
+    </ol>
+{% endblock %}
+{% block pagetitle -%}VOIR UN PROPRIETAIRE DE VEHICULE{% endblock %}
+{% block actions %}
+    <label class="btn btn-outline-secondary"><a href="{{ path('proprietaire_index') }}">Liste des propriétaires</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('proprietaire_edit', { 'id': proprietaire.id }) }}">Modifier</a></label>
+    <label class="btn btn-outline-secondary">
+        {{ form_start(delete_form) }}
+            <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
+        {{ form_end(delete_form) }}
+    </label>
+{% endblock %}
+{% block body %}
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th>N° pièce</th>
+                <td>{{ proprietaire.numpiece }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ proprietaire.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prénom</th>
+                <td>{{ proprietaire.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Téléphone</th>
+                <td>{{ proprietaire.telephone }}</td>
+            </tr>
+            <tr>
+                <th>Autre téléphone</th>
+                <td>{{ proprietaire.autreTelephone }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ proprietaire.adresse }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ proprietaire.email }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{% if proprietaire.personneMorale %}Entreprise{% else %}Particulier{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Créé par</th>
+                <td>{{ proprietaire.creePar }}</td>
+            </tr>
+            <tr>
+                <th>Modifié par</th>
+                <td>{{ proprietaire.modifierPar }}</td>
+            </tr>
+            <tr>
+                <th>Date de création</th>
+                <td>{% if proprietaire.dateCreation %}{{ proprietaire.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Date de dernière modification</th>
+                <td>{% if proprietaire.dateModification %}{{ proprietaire.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Pièce</th>
+                <td>{{ proprietaire.path }}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

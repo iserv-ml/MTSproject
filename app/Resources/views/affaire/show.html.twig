@@ -1,0 +1,68 @@
+{% extends '::base.html.twig' %}
+
+{% block ariane -%}<a href="{{ path('homepage') }}">Accueil</a> > <a href="{{ path('affaire_index') }}">Affaire</a> > Détail{% endblock %}
+{% block pagetitle -%}DETAIL DE L'AFFAIRE{% endblock %}
+{% block menu_affaire_actif %}active{% endblock %}
+
+{% block body -%}
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+        <tbody>           
+            <tr>
+                <th>Client</th>
+                <td><a href='{{ path('client_show', {'id': affaire.client.id}) }}'>{{ affaire.client.nom }} {{ affaire.client.prenom }}</a></td>
+            </tr>
+            <tr>
+                <th>Bien</th>
+                <td><a href='{{ path('bien_show', {'id': affaire.bien.id}) }}'>{{ affaire.bien.libelle }}</a></td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ affaire.type }}</td>
+            </tr>
+            <tr>
+                <th>Durée de location</th>
+                <td>{{ affaire.typeLocation }}</td>
+            </tr>
+            <tr>
+                <th>Montant</th>
+                <td>{{ affaire.montant |number_format(0, ',', ' ') }}</td>
+            </tr>
+            <tr>
+                <th>Loyer</th>
+                <td>{{ affaire.loyer|number_format(0, ',', ' ') }}</td>
+            </tr>
+            <tr>
+                <th>Caution</th>
+                <td>{{ affaire.caution|number_format(0, ',', ' ') }}</td>
+            </tr>
+            <tr>
+                <th>Propriétaire</th>
+                <td>{{ affaire.bien.proprietaire.nom }} {{ affaire.bien.proprietaire.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Date de début</th>
+                <td>{{ affaire.dateDebut|date('Y-m-d') }}</td>
+            </tr>
+            <tr>
+                <th>Date de fin</th>
+                <td>{{ affaire.dateFin|date('Y-m-d') }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ affaire.statut }}</td>
+            </tr>
+            <tr>
+                <th>Date de création</th>
+                <td>{% if affaire.dateCreation %}{{ affaire.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th><a href="{{ path('affaire_edit', {'id': affaire.id}) }}">MODIFIER</a></th>
+                <th><a href="{{ path('affaire_index') }}">Retour à la liste</a></th>
+            </tr>
+            <tr>
+                <th colspan='2' align='center'>{{ form(delete_form) }}</th>
+            </tr>
+        </tbody>
+    </table>
+
+{% endblock %}

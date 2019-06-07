@@ -1,0 +1,47 @@
+{% extends '::base.html.twig' %}
+
+{% block ariane -%}<a href="{{ path('homepage') }}">Accueil</a> > <a href="{{ path('client_index') }}">Clients</a> > Détail{% endblock %}
+{% block pagetitle -%}DETAIL DU CLIENT{% endblock %}
+{% block menu_client_actif %}active{% endblock %}
+
+{% block body -%}
+    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
+        <tbody>
+            <tr>
+                <th>CODE</th>
+                <td>{{ client.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ client.nom }}</td>
+            </tr>
+            <tr>
+                <th>Prénom</th>
+                <td>{{ client.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Téléphone</th>
+                <td>{{ client.telephone }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ client.email }}</td>
+            </tr>
+            <tr>
+                <th>Pièce d'identité</th>
+                <td>{% if client.path %}<a target='_blank' href='{{ app.request.getSchemeAndHttpHost() }}/gestionImmobilier/web/uploads/pieces/{{ client.path }}'>Voire la pièce</a>{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Date de création</th>
+                <td>{% if client.dateCreation %}{{ client.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th><a href="{{ path('client_edit', {'id': client.id}) }}">MODIFIER</a></th>
+                <th><a href="{{ path('client_index') }}">Retour à la liste</a></th>
+            </tr>
+            <tr>
+                <th colspan='2' align='center'>{{ form(delete_form) }}</th>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

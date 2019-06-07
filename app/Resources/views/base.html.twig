@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="SSInnovation">
+    <meta name="keyword" content="SSInnovation">
+    <title>{% block title %}AUTOSCAN{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ asset('css/coreui-icons.min.css') }}" rel="stylesheet">
+    <!--external css-->
+    <link href="{{ asset('css/flag-icon.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/font-awesome.min.css') }}" rel="stylesheet" > 
+    <link href="{{ asset('css/simple-line-icons.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/pace.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/datatables.min.css') }}" rel="stylesheet" />
+    
+     <!-- Datatable core CSS -->
+    
+    
+    
+    
+    {% block stylesheets %}{% endblock %}
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/favicon.ico') }}" />
+   
+  </head>
+    <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+    <header class="app-header navbar">
+      <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <a class="navbar-brand" href="#">
+        <img class="navbar-brand-full" src="{{ asset('images/mts.jpg') }}" width="89" height="25" alt="AUTOSCAN">
+        <img class="navbar-brand-minimized" src="{{ asset('images/sygnet.svg') }}" width="30" height="30" alt="AUTOSCAN">
+      </a>
+      <button class="navbar-toggler sidebar-toggler d-md-down-none" type="button" data-toggle="sidebar-lg-show">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <ul class="nav navbar-nav d-md-down-none">
+        <li class="nav-item px-3">
+          <a class="nav-link" href="{{ path('homepage') }}">ACCUEIL</a>
+        </li>
+        <li class="nav-item px-3">
+          <a class="nav-link" href="#">VEHICULES</a>
+        </li>
+        <li class="nav-item px-3">
+          <a class="nav-link" href="#">PARAMETRES</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav ml-auto">
+
+        <li class="nav-item dropdown">
+          <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <img class="img-avatar" src="{{ asset('images/6.jpg') }}" alt="email user">
+          </a>
+          <div class="dropdown-menu dropdown-menu-right">
+            <div class="dropdown-header text-center">
+              <strong>Account</strong>
+            </div>
+            <a class="dropdown-item" href="#">
+              <i class="fa fa-bell-o"></i> Updates
+              <span class="badge badge-info">42</span>
+            </a>
+            <a class="dropdown-item" href="#">
+              <i class="fa fa-envelope-o"></i> Messages
+              <span class="badge badge-success">42</span>
+            </a>
+            <a class="dropdown-item" href="#">
+              <i class="fa fa-tasks"></i> Tasks
+              <span class="badge badge-danger">42</span>
+            </a>
+            <a class="dropdown-item" href="#">
+              <i class="fa fa-comments"></i> Comments
+              <span class="badge badge-warning">42</span>
+            </a>
+            <div class="dropdown-header text-center">
+              <strong>Settings</strong>
+            </div>
+            <a class="dropdown-item" href="#">
+              <i class="fa fa-user"></i> Profile</a>
+            <a class="dropdown-item" href="#">
+              <i class="fa fa-wrench"></i> Settings</a>
+            <a class="dropdown-item" href="#">
+              <i class="fa fa-usd"></i> Payments
+              <span class="badge badge-secondary">42</span>
+            </a>
+            <a class="dropdown-item" href="#">
+              <i class="fa fa-file"></i> Projects
+              <span class="badge badge-primary">42</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">
+              <i class="fa fa-shield"></i> Lock Account</a>
+            <a class="dropdown-item" href="#">
+              <i class="fa fa-lock"></i> Logout</a>
+          </div>
+        </li>
+      </ul>
+      
+      <button class="navbar-toggler aside-menu-toggler d-lg-none" type="button" data-toggle="aside-menu-show">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </header>
+    <div class="app-body">
+      <div class="sidebar">
+        <nav class="sidebar-nav">
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="nav-icon icon-calculator"></i> CAISSES</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">
+                <i class="nav-icon icon-check"></i> CONTROLES</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('proprietaire_index') }}">
+                <i class="nav-icon icon-user"></i> PROPRIETAIRES</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ path('vehicule_index') }}">
+                <i class="nav-icon fa fa-car"></i> VEHICULES</a>
+            </li>
+            <li class="nav-item nav-dropdown">
+              <a class="nav-link nav-dropdown-toggle" href="#">
+                <i class="nav-icon icon-settings"></i> Paramètres</a>
+              <ul class="nav-dropdown-items">
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_marque_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Marque</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_modele_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Modèles</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_genre_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Genres</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_carrosserie_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Carrosserie</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_usage_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Usage</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_immatriculation_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Immatriculation</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_typeimmatriculation_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Type Immatriculation</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_droitvisite_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Droit de visite</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_typepiece_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Type de pièce</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_penalite_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Pénalité</a>
+                </li>
+              </ul>
+            </li>          
+          </ul>
+        </nav>
+        <button class="sidebar-minimizer brand-minimizer" type="button"></button>
+      </div>
+      <main class="main">
+        <!-- Breadcrumb-->
+        {% block ariane %}{% endblock %}
+        <div class="container-fluid">
+          <div class="animated fadeIn">
+            <div class="row">
+                {% block notification %}
+                    {% for flashMessage in app.session.flashbag.get('notice') %}
+                        <div class="flash-notice">
+                            {{ flashMessage }}
+                        </div>
+                    {% endfor %}
+                {% endblock %}                           
+            </div>
+            <!-- /.row-->
+            <div class="card">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-5">
+                    <h4 class="card-title mb-0">{% block pagetitle %}TITRE{% endblock %}</h4>
+                  </div>
+                  <!-- /.col-->
+                  <div class="col-sm-7 d-none d-md-block">
+                    <div class="btn-group btn-group-toggle float-right mr-3" >
+                      {% block actions %}{% endblock %}
+                    </div>
+                  </div>
+                  <!-- /.col-->
+                </div>
+                <!-- /.row-->
+                
+              </div>
+              <div class="card-body">
+                    {% block body %}{% endblock %}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </main>
+      
+    </div>
+    <footer class="app-footer">
+      <div>
+        <a href="#">MTS</a>
+        <span>&copy; 2019.</span>
+      </div>
+    </footer>
+
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="{{ asset('js/jquery.min.js') }}"></script>
+    <!-- jQuery UI 1.10.3 -->
+    <script type="text/javascript" src="{{ asset('js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/datatables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/pace.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/perfect-scrollbar.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/coreui.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/custom-tooltips.min.js') }}" type="text/javascript"></script>
+    <script type="text/javascript" src="{{ asset('js/Chart.min.js') }}" type="text/javascript"></script>
+    {% block javascripts %}{% endblock %}
+  </body>
+</html>
+

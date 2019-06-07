@@ -1,0 +1,85 @@
+{% block form_row %}
+{% spaceless %}      
+            <div class ="row">
+                <div class="col-sm-12">
+                    <div class="form-group">
+                        {{ form_label(form) }}
+                        {{ form_widget(form) }}
+                        {{ form_errors(form) }}
+                    </div>
+                </div>
+            </div>   
+{% endspaceless %}
+{% endblock form_row %}
+
+{% block form_widget_simple %}
+{% set attr = attr|merge({'class': (attr.class|default('') ~ ' form-control ')|trim}) %}
+{% spaceless %}
+    {% set type = type|default('text') %}
+    {% if type != 'file' %}
+        {% if type == 'hidden' %}
+            <input   type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+        {% else %}
+                <input   type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+        {% endif %}
+    {% else %}
+            <div class="file-input-wrapper">
+                <span class="btn btn-default btn-file">
+                    Parcourir...<input  type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}"  {% endif %}/>
+                </span>
+             </div>
+    {% endif %}
+    
+{% endspaceless %}
+{% endblock form_widget_simple %}
+    
+{% block form_label %}
+{% spaceless %}
+    {% if not compound %}
+        {% set label_attr = label_attr|merge({'for': id}) %}
+    {% endif %}
+    {% if label is empty %}
+        {% set label = name|humanize %}
+    {% endif %}
+    {% if required %}
+        {% set label = label ~ " *" %}
+    {% endif %}
+
+   <label  {% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans({}, translation_domain) }}{% if attr.note is defined %} <span style="font: 11px normal; font-family: arial;">({{ attr.note }})</span>{% endif %}</label>
+{% endspaceless %}
+{% endblock form_label %}
+    
+
+    
+{% block button_widget -%}
+    {% if label is empty -%}
+        {% set label = name|humanize %}
+    {%- endif -%}
+ <button class="btn btn-default" type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ label|trans({}, translation_domain) }}</button>
+{%- endblock button_widget %}
+    
+{% block textarea_widget -%}
+        <textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
+{%- endblock textarea_widget %}
+    
+{% block choice_widget_collapsed -%}
+    {% if required and placeholder is none and not placeholder_in_choices and not multiple -%}
+        {% set required = false %}
+    {%- endif -%}
+   
+        <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+            {% if placeholder is not none -%}
+                <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder|trans({}, translation_domain) }}</option>
+            {%- endif %}
+            {%- if preferred_choices|length > 0 -%}
+                {% set options = preferred_choices %}
+                {{- block('choice_widget_options') -}}
+                {% if choices|length > 0 and separator is not none -%}
+                    <option disabled="disabled">{{ separator }}</option>
+                {%- endif %}
+            {%- endif -%}
+            {% set options = choices -%}
+            {{- block('choice_widget_options') -}}
+        </select>
+    
+{%- endblock choice_widget_collapsed %}

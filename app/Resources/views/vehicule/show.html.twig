@@ -1,0 +1,76 @@
+{% extends '::base.html.twig' %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('vehicule_index') }}">Véhicules</a></li>
+          <li class="breadcrumb-item">Détail</li>
+    </ol>
+{% endblock %}
+{% block pagetitle -%}VOIR UN VEHICULE{% endblock %}
+{% block actions %}
+    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_index') }}">Liste des véhicules</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_edit', { 'id': vehicule.id }) }}">Modifier</a></label>
+    <label class="btn btn-outline-secondary">
+        {{ form_start(delete_form) }}
+            <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
+        {{ form_end(delete_form) }}
+    </label>
+{% endblock %}
+{% block body %}
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th>Chassis</th>
+                <td>{{ vehicule.chassis }}</td>
+            </tr>
+            <tr>
+                <th>Carte grise</th>
+                <td>{{ vehicule.carteGrise }}</td>
+            </tr>
+            <tr>
+                <th>Date carte grise</th>
+                <td>{% if vehicule.dateCarteGrise %}{{ vehicule.dateCarteGrise|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Date mise en circulation</th>
+                <td>{% if vehicule.dateMiseCirculation %}{{ vehicule.dateMiseCirculation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Ptac</th>
+                <td>{{ vehicule.ptac }}</td>
+            </tr>
+            <tr>
+                <th>Place</th>
+                <td>{{ vehicule.place }}</td>
+            </tr>
+            <tr>
+                <th>Puissance</th>
+                <td>{{ vehicule.puissance }}</td>
+            </tr>
+            <tr>
+                <th>Kilometrage</th>
+                <td>{{ vehicule.kilometrage }}</td>
+            </tr>
+            <tr>
+                <th>Couleur</th>
+                <td>{{ vehicule.couleur }}</td>
+            </tr>
+            <tr>
+                <th>Créé par</th>
+                <td>{{ vehicule.creePar }}</td>
+            </tr>
+            <tr>
+                <th>Modifié par</th>
+                <td>{{ vehicule.modifierPar }}</td>
+            </tr>
+            <tr>
+                <th>Date de création</th>
+                <td>{% if vehicule.dateCreation %}{{ vehicule.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Date de dernière modification</th>
+                <td>{% if vehicule.dateModification %}{{ vehicule.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

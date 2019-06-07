@@ -1,0 +1,60 @@
+{% extends '::base.html.twig' %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('admin_parametres_droitvisite_index') }}">Droits de visite</a></li>
+          <li class="breadcrumb-item">Détail</li>
+    </ol>
+{% endblock %}
+{% block pagetitle -%}VOIR UN DROIT DE VISITE{% endblock %}
+{% block actions %}
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_droitvisite_index') }}">Liste des droits de visite</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_droitvisite_edit', { 'id': droitVisite.id }) }}">Modifier</a></label>
+    <label class="btn btn-outline-secondary">
+        {{ form_start(delete_form) }}
+            <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
+        {{ form_end(delete_form) }}
+    </label>
+{% endblock %}
+{% block body %}
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th>Ptac min</th>
+                <td>{{ droitVisite.ptacMin }}</td>
+            </tr>
+            <tr>
+                <th>Ptac max</th>
+                <td>{{ droitVisite.ptacMax }}</td>
+            </tr>
+            <tr>
+                <th>Montant</th>
+                <td>{{ droitVisite.montant }}</td>
+            </tr>
+            <tr>
+                <th>Timbre</th>
+                <td>{{ droitVisite.timbre }}</td>
+            </tr>
+            <tr>
+                <th>Frais ANASSER</th>
+                <td>{{ droitVisite.anasser }}</td>
+            </tr>
+            <tr>
+                <th>Créé par</th>
+                <td>{{ droitVisite.creePar }}</td>
+            </tr>
+            <tr>
+                <th>Modifié par</th>
+                <td>{{ droitVisite.modifierPar }}</td>
+            </tr>
+            <tr>
+                <th>Date de création</th>
+                <td>{% if droitVisite.dateCreation %}{{ droitVisite.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Date de dernière modification</th>
+                <td>{% if droitVisite.dateModification %}{{ droitVisite.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

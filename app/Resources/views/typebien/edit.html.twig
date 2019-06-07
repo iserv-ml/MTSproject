@@ -1,0 +1,18 @@
+{% extends '::base.html.twig' %}
+
+{% block ariane -%}<a href="{{ path('homepage') }}">Accueil</a> > Parametres > <a href="{{ path('typebien_index') }}">Type de bien</a> > Modifier{% endblock %}
+{% block pagetitle -%}MODIFIER UN TYPE DE BIEN{% endblock %}
+{% block menu_parametres_actif %}active{% endblock %}
+{% block menu_typeBien_actif %}active{% endblock %}
+
+{% block body -%}
+
+    {{ form(edit_form) }}
+
+{% endblock %}
+
+{% block retour %} 
+    <a href="{{ path('typebien_index') }}">
+        Retour à la liste
+    </a>
+{% endblock %}
