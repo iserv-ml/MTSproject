@@ -189,7 +189,7 @@ class VehiculeController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['modele'],$aRow['carteGrise'], $aRow['immatriculation'], $action);
+            $output['aaData'][] = array($aRow['marque'].' '.$aRow['modele'],$aRow['carteGrise'], $aRow['chassis'], $aRow['immatriculation'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }

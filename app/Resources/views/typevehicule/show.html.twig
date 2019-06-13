@@ -1,0 +1,56 @@
+{% extends '::base.html.twig' %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('admin_parametres_typevehicule_index') }}">Types de véhicule</a></li>
+          <li class="breadcrumb-item">Détail</li>
+    </ol>
+{% endblock %}
+{% block pagetitle -%}VOIR UN TYPE DE VEHICULE{% endblock %}
+{% block actions %}
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_typevehicule_index') }}">Liste des types de véhicule</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_typevehicule_edit', { 'id': typeVehicule.id }) }}">Modifier</a></label>
+    <label class="btn btn-outline-secondary">
+        {{ form_start(delete_form) }}
+            <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
+        {{ form_end(delete_form) }}
+    </label>
+{% endblock %}
+{% block body %}
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th>Libelle</th>
+                <td>{{ typeVehicule.libelle }}</td>
+            </tr>
+            <tr>
+                <th>Montant revisite</th>
+                <td>{{ typeVehicule.montantRevisite }}</td>
+            </tr>
+            <tr>
+                <th>Montant visite</th>
+                <td>{{ typeVehicule.montantVisite }}</td>
+            </tr>
+            <tr>
+                <th>Delai</th>
+                <td>{{ typeVehicule.delai }}</td>
+            </tr>
+            <tr>
+                <th>Créé par</th>
+                <td>{{ typeVehicule.creePar }}</td>
+            </tr>
+            <tr>
+                <th>Modifié par</th>
+                <td>{{ typeVehicule.modifierPar }}</td>
+            </tr>
+            <tr>
+                <th>Date de création</th>
+                <td>{% if typeVehicule.dateCreation %}{{ typeVehicule.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Date de dernière modification</th>
+                <td>{% if typeVehicule.dateModification %}{{ typeVehicule.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

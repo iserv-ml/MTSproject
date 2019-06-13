@@ -51,6 +51,14 @@ class Vehicule
     private $carteGrise;
     
     /**
+     * @var string $immatriculation
+     *
+     * @ORM\Column(name="immatriculation", type="string", length=255, nullable=false)
+     * @Assert\NotBlank
+     */
+    private $immatriculation;
+    
+    /**
      * @var datetime $dateCarteGrise
      *
      * @ORM\Column(name="dateCarteGrise", type="datetime", length=255, nullable=false)
@@ -69,7 +77,7 @@ class Vehicule
     /**
      * @var integer $ptac
      *
-     * @ORM\Column(name="ptac", type="integer", nullable=false)
+     * @ORM\Column(name="ptac", type="float", nullable=false)
      * @Assert\NotBlank
      */
     private $ptac;
@@ -121,32 +129,18 @@ class Vehicule
     protected $proprietaire;
     
     /**
-    * @ORM\ManyToOne(targetEntity="Genre", inversedBy="vehicules", cascade={"persist","refresh"})
-    * @ORM\JoinColumn(name="genre_id", referencedColumnName="id")
+    * @ORM\ManyToOne(targetEntity="TypeVehicule", inversedBy="vehicules", cascade={"persist","refresh"})
+    * @ORM\JoinColumn(name="type_vehicule_id", referencedColumnName="id")
     * @Assert\NotBlank
     */
-    protected $genre;
+    protected $typeVehicule;
     
     /**
-    * @ORM\ManyToOne(targetEntity="Carrosserie", inversedBy="vehicules", cascade={"persist","refresh"})
-    * @ORM\JoinColumn(name="carrosserie_id", referencedColumnName="id")
+    * @ORM\ManyToOne(targetEntity="TypeImmatriculation", inversedBy="vehicules", cascade={"persist","refresh"})
+    * @ORM\JoinColumn(name="type_immatriculation_id", referencedColumnName="id")
     * @Assert\NotBlank
     */
-    protected $carrosserie;
-    
-    /**
-    * @ORM\ManyToOne(targetEntity="Usage", inversedBy="vehicules", cascade={"persist","refresh"})
-    * @ORM\JoinColumn(name="usage_id", referencedColumnName="id")
-    * @Assert\NotBlank
-    */
-    protected $usage;
-    
-    /**
-    * @ORM\ManyToOne(targetEntity="Immatriculation", inversedBy="vehicules", cascade={"persist","refresh"})
-    * @ORM\JoinColumn(name="immatriculation_id", referencedColumnName="id")
-    * @Assert\NotBlank
-    */
-    protected $immatriculation;
+   protected $typeImmatriculation;
 
     /**
      * Get id
@@ -253,37 +247,28 @@ class Vehicule
     function setProprietaire($proprietaire) {
         $this->proprietaire = $proprietaire;
     }
-    
-    function getGenre() {
-        return $this->genre;
-    }
-
-    function getCarrosserie() {
-        return $this->carrosserie;
-    }
-
-    function getUsage() {
-        return $this->usage;
-    }
-
+  
     function getImmatriculation() {
         return $this->immatriculation;
     }
 
-    function setGenre($genre) {
-        $this->genre = $genre;
-    }
-
-    function setCarrosserie($carrosserie) {
-        $this->carrosserie = $carrosserie;
-    }
-
-    function setUsage($usage) {
-        $this->usage = $usage;
-    }
-
     function setImmatriculation($immatriculation) {
         $this->immatriculation = $immatriculation;
+    }
+    function getTypeVehicule() {
+        return $this->typeVehicule;
+    }
+
+    function getTypeImmatriculation() {
+        return $this->typeImmatriculation;
+    }
+
+    function setTypeVehicule($typeVehicule) {
+        $this->typeVehicule = $typeVehicule;
+    }
+
+    function setTypeImmatriculation($typeImmatriculation) {
+        $this->typeImmatriculation = $typeImmatriculation;
     }
     
     //BEHAVIOR

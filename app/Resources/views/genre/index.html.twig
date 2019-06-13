@@ -21,8 +21,8 @@
             <tr>
                 <th>Libelle</th>
                 <th>Code</th>
-                <th>Montant Revisite</th>
-                <th>Délai</th>
+                <th>Ptac Min</th>
+                <th>Ptac Max</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -33,8 +33,8 @@
             <tr>
                 <th>Libelle</th>
                 <th>Code</th>
-                <th>Montant Revisite</th>
-                <th>Délai</th>
+                <th>Ptac Min</th>
+                <th>Ptac Max</th>
                 <th>Actions</th>
             </tr>
         </tfoot>
@@ -50,8 +50,8 @@
             "columnDefs": [
             { "name": "libelle",   "targets": 0 },
             { "name": "code",   "targets": 1 },
-            { "name": "montantRevisite",   "targets": 2 },
-            { "name": "delai",   "targets": 3 },
+            { "name": "ptacMin",   "targets": 2 },
+            { "name": "ptacMax",   "targets": 3 },
             { "orderable": false, "targets": 4 }
         ],
         "processing": true,
@@ -64,7 +64,7 @@
         "searching": true,
         "responsive": true,
         "pageLength": 50,
-        "order": [[1, 'asc']],
+        "order": [[2, 'desc']],
        language: {
         processing:     "Traitement en cours...",
         search:         "Rechercher&nbsp;:",

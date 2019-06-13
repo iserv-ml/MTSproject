@@ -16,8 +16,8 @@ class VehiculeRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.chassis, r.carteGrise, m.libelle as modele, i.code as immatriculation FROM AppBundle:Vehicule r LEFT JOIN r.modele m LEFT JOIN r.immatriculation i '
-                    . ' WHERE r.chassis like :search or r.carteGrise like :search or i.code like :search'
+                'SELECT r.id, r.chassis, r.carteGrise, m.libelle as modele, ma.libelle as marque, r.immatriculation FROM AppBundle:Vehicule r LEFT JOIN r.modele m LEFT JOIN m.marque ma '
+                    . ' WHERE r.chassis like :search or r.carteGrise like :search or r.immatriculation like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setFirstResult($start)

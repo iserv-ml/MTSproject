@@ -177,7 +177,7 @@ class CarrosserieController extends Controller
         $col = $request->get('order')[0]['column'];
         $dir = $request->get('order')[0]['dir'];
         $em = $this->getDoctrine()->getManager();
-	$aColumns = array( 'r.libelle', 'r.code', 'm.libelle');
+	$aColumns = array( 'r.libelle', 'r.code');
         $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
         $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
         $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;

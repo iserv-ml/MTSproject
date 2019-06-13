@@ -16,8 +16,8 @@ class GenreType extends AbstractType
         $builder
                 ->add('libelle')
                 ->add('code')
-                ->add('montantRevisite')
-                ->add('delai');
+                ->add('ptacMin')
+                ->add('ptacMax');
         
     }
     

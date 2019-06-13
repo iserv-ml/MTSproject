@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * Marque
+ * Carrosserie
  *
  * @ORM\Table(name="carrosserie")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\CarrosserieRepository")
@@ -49,42 +49,42 @@ class Carrosserie
      */
     private $code;
     
-    //Debut relation Carrosserie a plusieurs droitVisite
+    //Debut relation carrosserie a plusieurs typeVehicule
     /**
-    * @ORM\OneToMany(targetEntity="DroitVisite", mappedBy="carrosserie", cascade={"persist"})
+    * @ORM\OneToMany(targetEntity="TypeVehicule", mappedBy="carrosserie", cascade={"persist"})
     */
-    protected $droitVisites;
+    protected $typeVehicules;
     
     /**
-    * Add droitVisite
+    * Add typeVehicule
     *
-    * @param AppBundle\Entity\DroitVisite $droitVisite
+    * @param AppBundle\Entity\TypeVehicule $typeVehicule
     */
-    public function addDroitVisite(\AppBundle\Entity\DroitVisite $droitVisite)
+    public function addTypeVehicule(\AppBundle\Entity\TypeVehicule $typeVehicule)
     {
-        $this->droitVisites[] = $droitVisite;
+        $this->typeVehicules[] = $typeVehicule;
     }
 
     /**
-     * Get droitVisites
+     * Get typeVehicules
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getDroitVisites()
+    public function getTypeVehicules()
     {
-        return $this->droitVisites;
+        return $this->typeVehicules;
     }
 
     /**
-     * Set droitVisites
+     * Set typeVehicules
      *
-     * @param \Doctrine\Common\Collections\Collection $droitVisites
+     * @param \Doctrine\Common\Collections\Collection $typeVehicules
      */
-    public function setDroitVisites(\Doctrine\Common\Collections\Collection $droitVisites)
+    public function setTypeVehicules(\Doctrine\Common\Collections\Collection $typeVehicules)
     {
-        $this->droitVisites = $droitVisites;
+        $this->typeVehicules = $typeVehicules;
     }
-    //Fin relation Carrosserie a plusieurs droitVisites
+    //Fin relation carrosserie a plusieurs typeVehicule
 
     /**
      * Get id
@@ -205,7 +205,7 @@ class Carrosserie
     }
 
     public function estSupprimable(){
-        return $this->droitVisites == null || count($this->droitVisites) == 0 ;
+        return $this->typeVehicules == null || count($this->typeVehicules) == 0 ;
     }
     
     public function __toString(){
@@ -214,7 +214,7 @@ class Carrosserie
     
     public function __construct()
     {
-        $this->droitVisites = new ArrayCollection();
+        $this->typeVehicules = new ArrayCollection();
     }
     //fin behavior
 

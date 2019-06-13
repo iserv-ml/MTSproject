@@ -110,12 +110,12 @@ class GenreController extends Controller
     {
         if (!$genre) {
             $this->get('session')->getFlashBag()->add('error', "Oops! Une erreur s'est produite");
-        }elseif ($modele->estSupprimable()) {
+        }elseif ($genre->estSupprimable()) {
             $form = $this->createDeleteForm($genre);
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $em->remove($modele);
+                $em->remove($genre);
                 $em->flush();
                 $this->get('session')->getFlashBag()->add('notice', 'Suppression effectuée.');
             }
@@ -177,7 +177,7 @@ class GenreController extends Controller
         $col = $request->get('order')[0]['column'];
         $dir = $request->get('order')[0]['dir'];
         $em = $this->getDoctrine()->getManager();
-	$aColumns = array( 'r.libelle', 'r.code', 'r.montantRevisite', 'r.delai');
+	$aColumns = array( 'r.libelle', 'r.code', 'r.ptacMin', 'r.ptacMax');
         $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
         $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
         $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
@@ -189,7 +189,7 @@ class GenreController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['libelle'],$aRow['code'],$aRow['montantRevisite'],$aRow['delai'], $action);
+            $output['aaData'][] = array($aRow['libelle'],$aRow['code'],$aRow['ptacMin'],$aRow['ptacMax'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
@@ -236,6 +236,8 @@ class GenreController extends Controller
         $objWorksheet = $phpExcelObject->getActiveSheet();
         $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("LIBELLE");$col++;
         $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("CODE");
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("PTAC MIN");
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("PTAC MAX");
         $ligne =2;
         foreach($entities as $entity){
             $col=0;

@@ -19,6 +19,10 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Utilisateur extends BaseUser
 {
+    const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
+    const ROLE_ADMIN = 'ROLE_SUPERVISEUR';
+    const ROLE_USER = 'ROLE_USER';
+    
     /**
      * @var integer
      *
@@ -52,6 +56,14 @@ class Utilisateur extends BaseUser
     private $prenom;
     
     /**
+     * @var string $telephone
+     *
+     * @ORM\Column(name="telephone", type="string", length=255, nullable=true)
+     * 
+     */
+    private $telephone;
+    
+    /**
      * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Group")
      * @ORM\JoinTable(name="user_role",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
@@ -64,8 +76,7 @@ class Utilisateur extends BaseUser
     public function __construct()
     {
         parent::__construct();
-        $this->nom = "Admin";
-        $this->prenom = "Admin";
+        $this->groups = new ArrayCollection();
         // your own logic
     }
     
@@ -124,6 +135,43 @@ class Utilisateur extends BaseUser
     public function __toString(){
         return $this->nom." ".$this->prenom;
     }
+    function getTelephone() {
+        return $this->telephone;
+    }
+
+    function setTelephone($telephone) {
+        $this->telephone = $telephone;
+    }
     
+    /**
+     * @param $group
+     * @return $this
+     */
+    public function addGoup($group)
+    {
+        $this->groups[] = $group;
+        $group->setUser($this);
+
+        return $this;
+    }
+
+    /**
+     * @param $groups
+     */
+    public function setGroups($groups)
+    {
+        $this->groups->clear();
+        foreach ($groups as $group) {
+            $this->addGroup($group);
+        }
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
 
 }

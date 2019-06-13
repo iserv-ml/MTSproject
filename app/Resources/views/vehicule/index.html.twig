@@ -21,6 +21,7 @@
             <tr>
                 <th>Modèle</th>
                 <th>Carte grise</th>
+                <th>Chassis</th>
                 <th>Immatriculation</th>
                 <th>Actions</th>
             </tr>
@@ -32,6 +33,7 @@
             <tr>
                 <th>Modèle</th>
                 <th>Carte grise</th>
+                <th>Chassis</th>
                 <th>Immatriculation</th>
                 <th>Actions</th>
              </tr>
@@ -45,9 +47,8 @@
 
         $('#liste_clients').DataTable({
             "columnDefs": [
-            { "name": "libelle",   "targets": 0 },
-            { "name": "code",   "targets": 1 },
-            { "orderable": false, "targets": 2 }
+           
+            { "orderable": false, "targets": 4 }
         ],
         "processing": true,
         "serverSide": true,

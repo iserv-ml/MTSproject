@@ -27,11 +27,18 @@ class Group extends BaseGroup
      */
     private $version;
     
+    /**
+     * @var
+     *
+     * @ORM\ManyToMany(targetEntity="Utilisateur", mappedBy="groups")
+     */
+    protected $users;
+    
     
     public function __construct()
     {
-        parent::__construct();
-        // your own logic
+        parent::__construct($name, $roles);
+        $this->users = new ArrayCollection();
     }
     
     public function getId() {
@@ -49,5 +56,36 @@ class Group extends BaseGroup
     public function __toString()
     {
         return (string) $this->getName();
+    }
+    
+    /**
+     * @param $user
+     * @return $this
+     */
+    public function addUser($user)
+    {
+        $this->users[] = $user;
+        $user->setGroup($this);
+
+        return $this;
+    }
+
+    /**
+     * @param $users
+     */
+    public function setUsers($users)
+    {
+        $this->users->clear();
+        foreach ($users as $user) {
+            $this->addUser($user);
+        }
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUsers()
+    {
+        return $this->users;
     }
 }

@@ -16,7 +16,7 @@ class GenreRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.libelle, r.code, r.montantRevisite, r.delai FROM AppBundle:Genre r '
+                'SELECT r.id, r.libelle, r.code, r.ptacMin, r.ptacMax FROM AppBundle:Genre r '
                     . ' WHERE r.libelle like :search or r.code like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')

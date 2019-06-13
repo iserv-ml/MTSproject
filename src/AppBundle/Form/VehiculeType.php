@@ -18,6 +18,8 @@ class VehiculeType extends AbstractType
                 ->add('carteGrise')
                 ->add('dateCarteGrise')
                 ->add('dateMiseCirculation')
+                ->add('immatriculation')
+                ->add('typeImmatriculation')
                 ->add('ptac')
                 ->add('place')
                 ->add('puissance')
@@ -25,10 +27,7 @@ class VehiculeType extends AbstractType
                 ->add('couleur')
                 ->add('modele')
                 ->add('proprietaire')
-                ->add('genre')
-                ->add('carrosserie')
-                ->add('usage')
-                ->add('immatriculation');
+                ->add('typeVehicule');
     }
     
     /**

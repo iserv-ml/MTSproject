@@ -45,7 +45,7 @@ class Piste
      * @var boolean $actif
      *
      * @ORM\Column(name="actif", type="boolean", nullable=false)
-     * @Assert\NotBlank
+     * 
      */
     private $actif;
    
@@ -208,7 +208,7 @@ class Piste
     }
     
     public function __toString(){
-        return $this->numero;
+        return strval($this->numero);
     }
     
     public function __construct()

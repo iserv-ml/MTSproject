@@ -42,18 +42,10 @@ class Caisse
     private $numero;
     
     /**
-     * @var integer $maxChaine
-     *
-     * @ORM\Column(name="maxchaine", type="integer", nullable=false)
-     * @Assert\NotBlank
-     */
-    private $maxChaine;
-    
-    /**
      * @var boolean $actif
      *
      * @ORM\Column(name="actif", type="boolean", nullable=false)
-     * @Assert\NotBlank
+     * 
      */
     private $actif;
    
@@ -126,14 +118,6 @@ class Caisse
 
     function setActif($actif) {
         $this->actif = $actif;
-    }
-        
-    function getMaxChaine() {
-        return $this->maxChaine;
-    }
-
-    function setMaxChaine($maxChaine) {
-        $this->maxChaine = $maxChaine;
     }
 
     //BEHAVIOR
@@ -224,7 +208,7 @@ class Caisse
     }
     
     public function __toString(){
-        return $this->numero;
+        return strval($this->numero);
     }
     
     public function __construct()

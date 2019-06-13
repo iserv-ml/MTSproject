@@ -49,42 +49,42 @@ class TypeImmatriculation
      */
     private $code;
 
-    //Debut relation TypeImmatriculation a plusieurs immatriculations
+    //Debut relation TypeImmatriculation a plusieurs vehicules
     /**
-    * @ORM\OneToMany(targetEntity="Immatriculation", mappedBy="typeImmatriculation", cascade={"persist"})
+    * @ORM\OneToMany(targetEntity="Vehicule", mappedBy="typeImmatriculation", cascade={"persist"})
     */
-    protected $immatriculations;
+    protected $vehicules;
     
     /**
-    * Add immatriculation
+    * Add vehicule
     *
-    * @param AppBundle\Entity\Immatriculation $immatriculation
+    * @param AppBundle\Entity\Vehicule $vehicule
     */
-    public function addVehicule(\AppBundle\Entity\Immatriculation $immatriculation)
+    public function addVehicule(\AppBundle\Entity\Vehicule $vehicule)
     {
-        $this->immatriculations[] = $immatriculation;
+        $this->vehicules[] = $vehicule;
     }
 
     /**
-     * Get immatriculations
+     * Get vehicules
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getImmatriculations()
+    public function getVehicules()
     {
-        return $this->immatriculations;
+        return $this->vehicules;
     }
 
     /**
-     * Set immatriculations
+     * Set vehicules
      *
-     * @param \Doctrine\Common\Collections\Collection $immatriculations
+     * @param \Doctrine\Common\Collections\Collection $vehicules
      */
-    public function setImmatriculation(\Doctrine\Common\Collections\Collection $immatriculations)
+    public function setVehicules(\Doctrine\Common\Collections\Collection $vehicules)
     {
-        $this->immatriculations = $immatriculations;
+        $this->vehicules = $vehicules;
     }
-    //Fin relation typeImmatriculation a plusieurs immatriculations
+    //Fin relation typeImmatriculation a plusieurs vehicules
     
     /**
      * Get id

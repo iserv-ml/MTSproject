@@ -65,58 +65,42 @@ class Genre
      */
     private $ptacMax; 
     
+    //Debut relation Genre a plusieurs typeVehicule
     /**
-     * @var float $montantRevisite
-     *
-     * @ORM\Column(name="montantrevisite", type="float", nullable=false)
-     * @Assert\NotBlank
-     */
-    private $montantRevisite;
-    
-    /**
-     * @var integer $delai
-     *
-     * @ORM\Column(name="delai", type="integer", nullable=false)
-     * @Assert\NotBlank
-     */
-    private $delai;
-    
-    //Debut relation Genre a plusieurs droitVisite
-    /**
-    * @ORM\OneToMany(targetEntity="DroitVisite", mappedBy="genre", cascade={"persist"})
+    * @ORM\OneToMany(targetEntity="TypeVehicule", mappedBy="genre", cascade={"persist"})
     */
-    protected $droitVisites;
+    protected $typeVehicules;
     
     /**
-    * Add droitVisite
+    * Add typeVehicule
     *
-    * @param AppBundle\Entity\DroitVisite $droitVisite
+    * @param AppBundle\Entity\TypeVehicule $typeVehicule
     */
-    public function addDroitVisite(\AppBundle\Entity\DroitVisite $droitVisite)
+    public function addTypeVehicule(\AppBundle\Entity\TypeVehicule $typeVehicule)
     {
-        $this->droitVisites[] = $droitVisite;
+        $this->typeVehicules[] = $typeVehicule;
     }
 
     /**
-     * Get droitVisites
+     * Get typeVehicules
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getDroitVisites()
+    public function getTypeVehicules()
     {
-        return $this->droitVisites;
+        return $this->typeVehicules;
     }
 
     /**
-     * Set droitVisites
+     * Set typeVehicules
      *
-     * @param \Doctrine\Common\Collections\Collection $droitVisites
+     * @param \Doctrine\Common\Collections\Collection $typeVehicules
      */
-    public function setDroitVisites(\Doctrine\Common\Collections\Collection $droitVisites)
+    public function setTypeVehicules(\Doctrine\Common\Collections\Collection $typeVehicules)
     {
-        $this->droitVisites = $droitVisites;
+        $this->typeVehicules = $typeVehicules;
     }
-    //Fin relation genre a plusieurs droitVisites
+    //Fin relation genre a plusieurs typeVehicule
     
     //Debut relation Genre a plusieurs chaines
     /**
@@ -188,23 +172,8 @@ class Genre
     function setCode($code) {
         $this->code = $code;
     }
-    function getMontantRevisite() {
-        return $this->montantRevisite;
-    }
-
-    function setMontantRevisite($montantRevisite) {
-        $this->montantRevisite = $montantRevisite;
-    }
     
-    function getDelai() {
-        return $this->delai;
-    }
-
-    function setDelai($delai) {
-        $this->delai = $delai;
-    }
-    
-        function getPtacMin() {
+    function getPtacMin() {
         return $this->ptacMin;
     }
 
@@ -304,7 +273,7 @@ class Genre
     }
 
     public function estSupprimable(){
-        return $this->droitVisites == null || count($this->droitVisites) == 0 || $this->chaines == null || count($this->chaines) == 0 ;
+        return $this->typeVehicules == null || count($this->typeVehicules) == 0 || $this->chaines == null || count($this->chaines) == 0 ;
     }
     
     public function __toString(){
@@ -313,9 +282,9 @@ class Genre
     
     public function __construct()
     {
-        $this->droitVisites = new ArrayCollection();
+        $this->typeVehicules = new ArrayCollection();
+        $this->chaines = new ArrayCollection();
     }
     //fin behavior
-
 
 }

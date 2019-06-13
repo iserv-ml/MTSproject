@@ -25,7 +25,7 @@
     
     
     {% block stylesheets %}{% endblock %}
-    <link rel="icon" type="image/x-icon" href="{{ asset('images/favicon.ico') }}" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('images/favicon-32x32.png') }}" />
    
   </head>
     <body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
@@ -150,16 +150,12 @@
                     <i class="nav-icon icon-puzzle"></i> Usage</a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_immatriculation_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Immatriculation</a>
+                  <a class="nav-link" href="{{ path('admin_parametres_typevehicule_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Type Véhicule</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{{ path('admin_parametres_typeimmatriculation_index') }}">
                     <i class="nav-icon icon-puzzle"></i> Type Immatriculation</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_droitvisite_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Droit de visite</a>
                 </li>
                 <li class="nav-item">
                   <a class="nav-link" href="{{ path('admin_parametres_typepiece_index') }}">
@@ -168,6 +164,30 @@
                 <li class="nav-item">
                   <a class="nav-link" href="{{ path('admin_parametres_penalite_index') }}">
                     <i class="nav-icon icon-puzzle"></i> Pénalité</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_categoriecontrole_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Catégorie de contrôle</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_controle_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Contrôle</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_caisse_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Caisse</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_piste_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Piste</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_parametres_chaine_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Chaine</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{{ path('admin_gestion_utilisateur_index') }}">
+                    <i class="nav-icon icon-puzzle"></i> Utilisateur</a>
                 </li>
               </ul>
             </li>          

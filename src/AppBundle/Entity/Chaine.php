@@ -35,7 +35,7 @@ class Chaine
      * @var boolean $actif
      *
      * @ORM\Column(name="actif", type="boolean", nullable=false)
-     * @Assert\NotBlank
+     * 
      */
     private $actif;
     
@@ -43,7 +43,7 @@ class Chaine
      * @var boolean $surRendezVous
      *
      * @ORM\Column(name="surrendezvous", type="boolean", nullable=false)
-     * @Assert\NotBlank
+     * 
      */
     private $surRendezVous;
     
@@ -60,13 +60,6 @@ class Chaine
     * @Assert\NotBlank
     */
     protected $caisse;
-    
-    /**
-    * @ORM\ManyToOne(targetEntity="Genre", inversedBy="chaines", cascade={"persist","refresh"})
-    * @ORM\JoinColumn(name="genre_id", referencedColumnName="id")
-    * @Assert\NotBlank
-    */
-    protected $genre;
 
     /**
      * Get id
@@ -102,10 +95,6 @@ class Chaine
         return $this->caisse;
     }
 
-    function getGenre() {
-        return $this->genre;
-    }
-
     function setActif($actif) {
         $this->actif = $actif;
     }
@@ -120,10 +109,6 @@ class Chaine
 
     function setCaisse($caisse) {
         $this->caisse = $caisse;
-    }
-
-    function setGenre($genre) {
-        $this->genre = $genre;
     }
     
     //BEHAVIOR
@@ -206,15 +191,15 @@ class Chaine
     }
     
     public function getNomComplet(){
-        return $this->libelle;
+        return $this->caisse->getNumero()."_".$this->piste->getNumero();
     }
 
     public function estSupprimable(){
-        return $this->vehicules == null || count($this->vehicules)==0;
+        return true;
     }
     
     public function __toString(){
-        return $this->libelle;
+        return $this->getNomComplet();
     }
     
     public function __construct()
