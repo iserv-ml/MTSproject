@@ -18,4 +18,12 @@ class DefaultController extends Controller
             'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
         ));
     }
+    
+    /**
+     * @Route("/admin/parametres/", name="parametre_index")
+     */
+    public function parametresAction(Request $request)
+    {
+        return $this->render('parametres/index.html.twig');
+    }
 }

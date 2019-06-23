@@ -1,0 +1,22 @@
+{% if is_granted('ROLE_CAISSIER') %} 
+<li class="nav-item">
+    <a class="nav-link {% block menu_quittance_actif %}{% endblock %}" href="{{ path('visite_quittance') }}">
+        <i class="nav-icon fa fa-money"></i> QUITTANCE
+    </a>
+</li>
+{% endif %}
+{% if is_granted('ROLE_CONTROLLEUR') %} 
+<li class="nav-item">
+    <a class="nav-link {% block menu_controle_actif %}{% endblock %}" href="{{ path('visite_controle') }}">
+        <i class="nav-icon fa fa-tasks"></i> CONTROLES
+    </a>
+</li>
+{% endif %}
+{% if is_granted('ROLE_DELIVRANCE') %} 
+<li class="nav-item">
+    <a class="nav-link {% block menu_delivrance_actif %}{% endblock %}" href="#">
+        <i class="nav-icon fa fa-list"></i> DELIVRANCE
+    </a>
+</li>
+{% endif %}
+

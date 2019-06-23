@@ -35,12 +35,22 @@ class VehiculeController extends Controller
      */
     public function newAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         $vehicule = new Vehicule();
         $form = $this->createForm('AppBundle\Form\VehiculeType', $vehicule);
         $form->handleRequest($request);
+        $field = $request->get("AppBundle_vehicule");
+        $proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($field['proprietaireId']);
+        $typeVehicule = $em->getRepository('AppBundle:TypeVehicule')->trouver($genre, $field['usageId'], $field['carrosserieId']);
+        if (!$proprietaire || !$typeVehicule) {
+            $this->get('session')->getFlashBag()->add('error', "Merci de remplir correctement le formulaire!.");
+        }else{
+           $vehicule->setProprietaire($proprietaire); 
+           $vehicule->setTypeVehicule($typeVehicule);
+        }
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
+            
             $em->persist($vehicule);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
@@ -177,7 +187,7 @@ class VehiculeController extends Controller
         $col = $request->get('order')[0]['column'];
         $dir = $request->get('order')[0]['dir'];
         $em = $this->getDoctrine()->getManager();
-	$aColumns = array( 'm.libelle', 'r.carteGrise', 'i.code');
+	$aColumns = array( 'r.immatriculation', 'r.chassis', 'ma.libelle', 'p.nom');
         $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
         $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
         $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
@@ -189,16 +199,17 @@ class VehiculeController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['marque'].' '.$aRow['modele'],$aRow['carteGrise'], $aRow['chassis'], $aRow['immatriculation'], $action);
+            $output['aaData'][] = array($aRow['immatriculation'], $aRow['chassis'], $aRow['marque'].'<br/>'.$aRow['modele'],$aRow['nom'].'<br/>'.$aRow['prenom'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
     
     private function genererAction($id){
-        $action = "<a class='btn btn-success' href='".$this->generateUrl('vehicule_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
+        $action = "<a title='Détail' class='btn btn-success' href='".$this->generateUrl('vehicule_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
-                $action .= " <a class='btn btn-info' href='".$this->generateUrl('vehicule_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
-                $action .= " <a class='btn btn-danger' href='".$this->generateUrl('vehicule_delete_a', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
+                $action .= " <a title='Modifier' class='btn btn-info' href='".$this->generateUrl('vehicule_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
+                $action .= " <a title='Supprimer' class='btn btn-danger' href='".$this->generateUrl('vehicule_delete_a', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
+                $action .= " <a title='Aiguiller' class='btn btn-warning' href='".$this->generateUrl('aiguiller', array('id'=> $id ))."'><i class='fa fa-compass'> </i></a>";
         }
         return $action;
     }
@@ -245,5 +256,52 @@ class VehiculeController extends Controller
             $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->Immatriculation()->getCode());$col++;
             $ligne++;
         }
+    }
+    
+    /**
+     * @Route("/admin/parametres/modelesautocomplete", name="modeles_autocomplete")
+     */
+    public function modelesAjaxAction(Request $request){   
+        $search = $request->get('search', '');
+        $maxRows = $request->get('maxRows', 15);
+        $em = $this->getDoctrine()->getManager();
+        $modeles = $em->getRepository('AppBundle:Modele')->findAjax($search, $maxRows);
+        return new Response(json_encode($modeles));
+    }
+    
+    /**
+     * @Route("/admin/parametres/proprietairesautocomplete", name="proprietaires_autocomplete")
+     */
+    public function proprietairesAjaxAction(Request $request){   
+        $search = $request->get('search', '');
+        $maxRows = $request->get('maxRows', 15);
+        $em = $this->getDoctrine()->getManager();
+        $modeles = $em->getRepository('AppBundle:Proprietaire')->findAjax($search, $maxRows);
+        return new Response(json_encode($modeles));
+    }
+    
+    /**
+     * @Route("/admin/parametres/usagesautocomplete", name="usages_autocomplete")
+     */
+    public function usagesAjaxAction(Request $request){   
+        $search = $request->get('search', '');
+        $maxRows = $request->get('maxRows', 15);
+        $genre = $request->get('genre', '');
+        $em = $this->getDoctrine()->getManager();
+        $modeles = $em->getRepository('AppBundle:TypeVehicule')->findUsageAjax($search, $maxRows, $genre);
+        return new Response(json_encode($modeles));
+    }
+    
+    /**
+     * @Route("/admin/parametres/carrosseriesautocomplete", name="carrosseries_autocomplete")
+     */
+    public function carrosseriesAjaxAction(Request $request){   
+        $search = $request->get('search', '');
+        $maxRows = $request->get('maxRows', 15);
+        $genre = $request->get('genre', '');
+        $usage = $request->get('usage', 0);
+        $em = $this->getDoctrine()->getManager();
+        $modeles = $em->getRepository('AppBundle:TypeVehicule')->findCarrosserieAjax($search, $maxRows, $genre, $usage);
+        return new Response(json_encode($modeles));
     }
 }

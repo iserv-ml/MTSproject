@@ -55,11 +55,48 @@ class Chaine
     protected $piste;
     
     /**
-    * @ORM\ManyToOne(targetEntity="Caisse", inversedBy="caisse", cascade={"persist","refresh"})
+    * @ORM\ManyToOne(targetEntity="Caisse", inversedBy="chaines", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="caisse_id", referencedColumnName="id")
     * @Assert\NotBlank
     */
     protected $caisse;
+    
+    //Debut relation Chaine a plusieurs visites
+    /**
+    * @ORM\OneToMany(targetEntity="Visite", mappedBy="chaine", cascade={"persist"})
+    */
+    protected $visites;
+    
+    /**
+    * Add visite
+    *
+    * @param AppBundle\Entity\Visite $visite
+    */
+    public function addVisite(\AppBundle\Entity\Visite $visite)
+    {
+        $this->visites[] = $visite;
+    }
+
+    /**
+     * Get visites
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getVisites()
+    {
+        return $this->visites;
+    }
+
+    /**
+     * Set visites
+     *
+     * @param \Doctrine\Common\Collections\Collection $visites
+     */
+    public function setVisites(\Doctrine\Common\Collections\Collection $visites)
+    {
+        $this->visites = $visites;
+    }
+    //Fin relation chaine a plusieurs visites
 
     /**
      * Get id
@@ -205,6 +242,17 @@ class Chaine
     public function __construct()
     {
         $this->users = new ArrayCollection();
+    }
+    
+    public function getVisitesEncours(){
+        $nb = 0;
+        if(count($this->visites)>0){
+            foreach($this->visites as $visite){
+                if($visite->getStatut()!="TERMINEE")
+                    $nb++;
+            }
+        }
+        return $nb;
     }
 
 }

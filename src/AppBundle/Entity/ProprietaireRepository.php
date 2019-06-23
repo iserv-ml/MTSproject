@@ -35,7 +35,7 @@ class ProprietaireRepository extends EntityRepository
         return  $qb->getQuery()->getSingleScalarResult();
      }
      
-     public function findAjax($search, $maxRows) {
+    /* public function findAjax($search, $maxRows) {
         
         $maxRows = (intval($maxRows) > 0) ? intval($maxRows) : 10; 
         $qb = $this->createQueryBuilder('c');
@@ -49,7 +49,19 @@ class ProprietaireRepository extends EntityRepository
 	->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
         //print_r($arrayAss);exit;
         return $arrayAss;
-    }
+    }*/
     
+    public function findAjax($search, $maxRows) {
+        $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.id, r.nom, r.prenom, r.telephone FROM AppBundle:Proprietaire r WHERE r.nom LIKE :libelle OR r.prenom like :libelle OR r.telephone like :libelle order by r.nom'
+            )->setParameter("libelle","%".$search."%")
+                 ->setMaxResults($maxRows)
+            ->getResult();
+        if(count($result) == 0) {
+            $result[] = ["id" => 0, "nom" => "Aucun résultat", "prenom" => "", "telephone" => ""];
+        }
+        return $result; 
+    } 
     
 }

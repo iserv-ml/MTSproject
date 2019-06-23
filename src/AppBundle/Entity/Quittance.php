@@ -1,0 +1,281 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\Common\Collections\ArrayCollection;
+
+/**
+ * Quittance
+ *
+ * @ORM\Table(name="quittance")
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\QuittanceRepository")
+ * @UniqueEntity("numero")
+ * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ */
+class Quittance
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+    
+    /** 
+     * @ORM\Version 
+     * @ORM\Column(type="integer") 
+     */
+    private $version;
+    
+    /**
+     * @var string $numero
+     *
+     * @ORM\Column(name="numero", type="string", length=255, nullable=false)
+     * 
+     */
+    private $numero;
+    
+    /**
+     * @var float $penalite
+     *
+     * @ORM\Column(name="penalite", type="float", nullable=false)
+     * 
+     */
+    private $penalite;
+    
+    /**
+     * @var integer $retard
+     *
+     * @ORM\Column(name="retard", type="integer", nullable=false)
+     * 
+     */
+    private $retard;
+    
+    /**
+     * @var float $montantVisite
+     *
+     * @ORM\Column(name="montantvisite", type="float", nullable=false)
+     * 
+     */
+    private $montantVisite;
+    
+    /**
+     * @var boolean $paye
+     *
+     * @ORM\Column(name="paye", type="boolean", nullable=false)
+     * 
+     */
+    private $paye;
+    
+    /**
+    * @ORM\OneToOne(targetEntity="Visite", inversedBy="quittance", cascade={"persist","refresh"})
+    * @ORM\JoinColumn(name="visite_id", referencedColumnName="id")
+    * 
+    */
+   protected $visite;
+    
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+    
+    public function getVersion() {
+        return $this->version;
+    }
+
+    public function setVersion($version) {
+        $this->version = $version;
+    }
+    
+    function getNumero() {
+        return $this->numero;
+    }
+
+    function getPenalite() {
+        return $this->penalite;
+    }
+
+    function getMontantVisite() {
+        return $this->montantVisite ? $this->montantVisite : 0;;
+    }
+
+    function setNumero($numero) {
+        $this->numero = $numero;
+    }
+
+    function setPenalite($penalite) {
+        $this->penalite = $penalite;
+    }
+
+    function setMontantVisite($montantVisite) {
+        $this->montantVisite = $montantVisite;
+    }
+    function getVisite() {
+        return $this->visite;
+    }
+
+    function setVisite($visite) {
+        $this->visite = $visite;
+    }
+    
+    function getRetard() {
+        return $this->retard;
+    }
+
+    function setRetard($retard) {
+        $this->retard = $retard;
+    }
+    
+    function getPaye() {
+        return $this->paye;
+    }
+
+    function setPaye($paye) {
+        $this->paye = $paye;
+    }
+
+    //BEHAVIOR
+    /**
+     * @var string $creePar
+     *
+     * @Gedmo\Blameable(on="create")
+     * @ORM\Column(type="string")
+     */
+    private $creePar;
+
+    /**
+     * @var string $modifierPar
+     *
+     * @Gedmo\Blameable(on="update")
+     * @ORM\Column(type="string")
+     */
+    private $modifierPar;
+    
+    /**
+     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     */
+    private $deletedAt;
+    
+    /**
+     * @var \DateTime $dateCreation
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    private $dateCreation;
+
+    /**
+     * @var \DateTime $dateModification
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    private $dateModification;
+    
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+    public function getCreePar() {
+        return $this->creePar;
+    }
+
+    public function getModifierPar() {
+        return $this->modifierPar;
+    }
+
+    public function getDateCreation() {
+        return $this->dateCreation;
+    }
+
+    public function getDateModification() {
+        return $this->dateModification;
+    }
+
+    public function setCreePar($creePar) {
+        $this->creePar = $creePar;
+    }
+
+    public function setModifierPar($modifierPar) {
+        $this->modifierPar = $modifierPar;
+    }
+
+    public function setDateCreation(\DateTime $dateCreation) {
+        $this->dateCreation = $dateCreation;
+    }
+
+    public function setDateModification(\DateTime $dateModification) {
+        $this->dateModification = $dateModification;
+    }
+    
+    public function getNomComplet(){
+        return $this->libelle;
+    }
+
+    public function estSupprimable(){
+        return true;
+    }
+    
+    public function __toString(){
+        return $this->libelle;
+    }
+    
+    public function __construct()
+    {
+        $this->montantVisite = 0;
+        $this->paye = 0;
+        //$this->users = new ArrayCollection();
+    }
+    
+    public function calculerMontant(){
+        if($this->visite){
+            switch($this->visite->getRevisite()){
+                case 0 : return $this->visite->getVehicule()->getTypeVehicule()->getMontantVisite();
+                case 1 : return $this->visite->getVehicule()->getTypeVehicule()->getMontantRevisite();
+            }
+        }
+    }
+    
+    public function calculerRetard($derniereVisite){
+        if($derniereVisite == null){
+            $date = \DateTime::createFromFormat('Y-m-d',$this->visite->getVehicule()->getDateMiseCirculation());
+            $retard = $this->joursDeRetard($date);
+        }else{
+            $retard = $this->joursDeRetard($derniereVisite->getDateValidite());
+        }
+        return $retard;
+    }
+    
+    public function joursDeRetard($dateLimite){
+        $date = new \DateTime();
+        $ecart = \date_diff($date,$dateLimite, false);
+        
+        return ($ecart && $ecart->days > 0) ? $ecart->days : 0;
+    }
+    
+    public function generer($montant, $penalite, $retard){
+        $this->setMontantVisite($montant);
+        if($penalite){
+            $this->setPenalite($montant*$penalite->getPourcentage()/100);
+        }
+        $this->retard = $retard;
+        $this->setNumero('BKO'.\time());
+    }
+}

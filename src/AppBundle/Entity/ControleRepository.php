@@ -48,4 +48,11 @@ class ControleRepository extends EntityRepository
         
         return $result; 
     }    
+    
+    public function trouverActif() {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Controle r WHERE r.actif = 1');
+        return $qb->getResult();
+    }
 }

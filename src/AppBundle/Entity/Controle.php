@@ -72,6 +72,43 @@ class Controle
     */
     protected $categorie;
     
+    //Debut relation Controle a plusieurs CodeMahaResultat
+    /**
+    * @ORM\OneToMany(targetEntity="CodeMahaResultat", mappedBy="controle", cascade={"persist"})
+    */
+    protected $codeMahaResultats;
+    
+    /**
+    * Add codeMahaResultat
+    *
+    * @param AppBundle\Entity\CodeMahaResultat $codeMahaResultat
+    */
+    public function addCodeMahaResultat(\AppBundle\Entity\CodeMahaResultat $codeMahaResultat)
+    {
+        $this->codeMahaResultats[] = $codeMahaResultat;
+    }
+
+    /**
+     * Get codeMahaResultat
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCodeMahaResultats()
+    {
+        return $this->codeMahaResultats;
+    }
+
+    /**
+     * Set codeMahaResultat
+     *
+     * @param \Doctrine\Common\Collections\Collection $codeMahaResultats
+     */
+    public function setCodeMahaResultats(\Doctrine\Common\Collections\Collection $codeMahaResultats)
+    {
+        $this->codeMahaResultats = $codeMahaResultats;
+    }
+    //Fin relation Controle a plusieurs CodeMahaResultat
+    
     //Debut relation Controle a plusieurs résultat
     /**
     * @ORM\OneToMany(targetEntity="Resultat", mappedBy="controle", cascade={"persist"})

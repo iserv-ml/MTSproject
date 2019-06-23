@@ -32,20 +32,35 @@ class PenaliteRepository extends EntityRepository
         return  $qb->getQuery()->getSingleScalarResult();
      }
     
-     public function trouverParLibelle($libelle) {
-       try{ 
-         $result = $this->getEntityManager()
+    public function trouverParLibelle($libelle) {
+        try{ 
+            $result = $this->getEntityManager()
             ->createQuery(
                 'SELECT r FROM AppBundle:Carrosserie r WHERE r.libelle = :libelle'
             )->setParameter("libelle",$libelle)
             ->getSingleResult();
-       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
             $result = null;
         }
         catch (\Doctrine\ORM\NoResultException $ex){
             $result = null;
         }
-        
         return $result; 
-    }    
+    }  
+    
+    public function trouverParNbJours($retard) {
+        try{ 
+            $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Penalite r WHERE r.dureeMin <= :retard AND r.dureeMax >= :retard '
+            )->setParameter("retard",$retard)
+            ->getSingleResult();
+        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        return $result; 
+    }
 }

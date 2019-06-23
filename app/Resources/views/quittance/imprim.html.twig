@@ -1,0 +1,36 @@
+<table>
+     <tbody>
+            <tr>
+                <th>N° {{ quittance.numero }}</th>
+                <th>QUITTANCE</th>
+                <th>NIF 86100089D</th>
+            </tr>
+            <tr>
+                <th>CVT</th>
+                <td>Type/Marque : {{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}</td>
+            </tr>
+            <tr>
+                <th>Date : {% if quittance.dateCreation %}{{ quittance.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</th>
+                <td>Immatriculation : {{ quittance.visite.vehicule.immatriculation }}</td>
+            </tr>
+            <tr>
+                <th>Quantité</th>
+                <th>Prix Unitaire</th>
+                <th>Prix total</th>
+                <th>TVA 18%</th>
+                <th>Droit de timbre</th>
+                <th>Total TTC</th>
+                <th>Caissier</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>{{ quittance.montantVisite|number_format(0, ',', ' ') }}</td>
+                <td>{{ quittance.montantVisite|number_format(0, ',', ' ') }}</td>
+                <td></td>
+                <td></td>
+                <td>{{ quittance.montantVisite|number_format(0, ',', ' ') }}</td>
+                <td>{{ quittance.creePar }}</td>
+            </tr>
+     </tbody>
+</table>
+            

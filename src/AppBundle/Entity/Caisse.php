@@ -48,6 +48,14 @@ class Caisse
      * 
      */
     private $actif;
+    
+    /**
+     * @var float $solde
+     *
+     * @ORM\Column(name="solde", type="float", nullable=false)
+     * 
+     */
+    private $solde;
    
    //Debut relation Caisse a plusieurs chaines
     /**
@@ -118,6 +126,14 @@ class Caisse
 
     function setActif($actif) {
         $this->actif = $actif;
+    }
+    
+    function getSolde() {
+        return $this->solde? $this->solde : 0;
+    }
+
+    function setSolde($solde) {
+        $this->solde = $solde;
     }
 
     //BEHAVIOR
@@ -217,5 +233,8 @@ class Caisse
     }
     //fin behavior
 
+    public function encaisser($montant){
+        $this->solde = $this->getSolde()+$montant;
+    }
 
 }

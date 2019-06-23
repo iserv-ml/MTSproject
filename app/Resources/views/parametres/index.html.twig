@@ -1,0 +1,61 @@
+{% extends '::base.html.twig' %}
+{% block menu -%}
+{% include '::parametres/menu.html.twig' %}
+{% endblock %}
+{% block menu_parametres_actif %}active{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+        <li class="breadcrumb-item">Paramètres</li>
+    </ol>
+{% endblock %}
+{% block pagetitle -%}PARAMETRES{% endblock %}
+
+{% block body -%}
+<div class="row">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body pb-0">
+                <div>UTILISATEURS</div>
+            </div>
+            <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
+                <canvas class="chart" id="card-chart1" height="70"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-->
+    <div class="col-sm-6 col-lg-3">
+        <div class="card text-white bg-info">
+            <div class="card-body pb-0">
+                <div>VEHICULE</div>
+            </div>
+            <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
+                <canvas class="chart" id="card-chart2" height="70"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-->
+    <div class="col-sm-6 col-lg-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body pb-0">
+                <div>CHAINES</div>
+            </div>
+            <div class="chart-wrapper mt-3" style="height:70px;">
+                <canvas class="chart" id="card-chart3" height="70"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-->
+    <div class="col-sm-6 col-lg-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body pb-0">
+                <div>AFFECTATIONS</div>
+            </div>
+            <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
+                <canvas class="chart" id="card-chart4" height="70"></canvas>
+            </div>
+        </div>
+    </div>
+    <!-- /.col-->
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+{% block menu -%}
+{% include '::parametres/menu.html.twig' %}
+{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('admin_gestion_affectationpiste_index') }}">Affectations aux pistes</a></li>
+          <li class="breadcrumb-item">Détail</li>
+    </ol>
+{% endblock %}
+{% block pagetitle -%}VOIR UNE AFFECTATION A UNE PISTE{% endblock %}
+{% block actions %}
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_affectationpiste_index') }}">Liste des affectations aux pistes</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_affectationpiste_edit', { 'id': affectationPiste.id }) }}">Modifier</a></label>
+    <label class="btn btn-outline-secondary">
+        {{ form_start(delete_form) }}
+            <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
+        {{ form_end(delete_form) }}
+    </label>
+{% endblock %}
+{% block body %}
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th>Agent</th>
+                <td>{{ affectationPiste.agent }}</td>
+            </tr>
+            <tr>
+                <th>Piste</th>
+                <td>{{ affectationPiste.piste.numero }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{% if affectationPiste.actif %}Active{% else %}Inactive{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{% if affectationPiste.date %}{{ affectationPiste.date|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Créé par</th>
+                <td>{{ affectationPiste.creePar }}</td>
+            </tr>
+            <tr>
+                <th>Modifié par</th>
+                <td>{{ affectationPiste.modifierPar }}</td>
+            </tr>
+            <tr>
+                <th>Date de création</th>
+                <td>{% if affectationPiste.dateCreation %}{{ affectationPiste.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Date de dernière modification</th>
+                <td>{% if affectationPiste.dateModification %}{{ affectationPiste.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

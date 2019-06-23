@@ -14,20 +14,26 @@ class VehiculeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+                ->add('proprietaireAjax', 'text', array('label'  => 'Propriétaire', 'required'  => true, "mapped" => false))
+                ->add('proprietaireId', 'hidden', array('required'  => true, "mapped" => false))
+                ->add('immatriculation')
                 ->add('chassis')
                 ->add('carteGrise')
-                ->add('dateCarteGrise')
-                ->add('dateMiseCirculation')
-                ->add('immatriculation')
-                ->add('typeImmatriculation')
+                ->add('dateCarteGrise', 'text')
+                ->add('dateMiseCirculation', 'text')
                 ->add('ptac')
                 ->add('place')
                 ->add('puissance')
                 ->add('kilometrage')
                 ->add('couleur')
-                ->add('modele')
-                ->add('proprietaire')
-                ->add('typeVehicule');
+                ->add('modeleAjax', 'text', array('label'  => 'Modèle', 'required'  => true, "mapped" => false))
+                ->add('modeleId', 'hidden', array('required'  => true, "mapped" => false))
+                ->add('genre', 'text', array('label'  => 'Genre', 'required'  => false, "mapped" => false))
+                ->add('usageAjax', 'text', array('label'  => 'Usage', 'required'  => true, "mapped" => false))
+                ->add('usageId', 'hidden', array('required'  => true, "mapped" => false))
+                ->add('carrosserieAjax', 'text', array('label'  => 'Carrosserie', 'required'  => true, "mapped" => false))
+                ->add('carrosserieId', 'hidden', array('required'  => true, "mapped" => false))
+                ;
     }
     
     /**

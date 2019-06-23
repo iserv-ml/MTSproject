@@ -1,28 +1,29 @@
 {% extends '::base.html.twig' %}
+{% block menu -%}
+{% include '::vehicule/menu.html.twig' %}
+{% endblock %}
+{% block menu_enregistrement_actif %}active{% endblock %}
 {% block ariane -%}
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
         <li class="breadcrumb-item">Véhicules</li>
     </ol>
 {% endblock %}
-{% block pagetitle -%}LISTE DES VEHICULES{% endblock %}
-{% block menu_vehicules_actif %}active{% endblock %}
+{% block pagetitle -%}AIGUILLAGE DES VEHICULES{% endblock %}
 
 {% block actions %}
-    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_export') }}">EXPORTER</a></label>
-    {% if is_granted('ROLE_SUPERVISEUR') %} 
-        <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_new') }}">CREER</a></label>
-    {% endif %}
+    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_new') }}">ENREGISTRER UN NOUVEAU VEHICULE</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_export') }}">EXPORTER LA LISTE DES VEHICULES</a></label>
 {% endblock %}
 {% block body -%}
 <div class="table-responsive">
     <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
         <thead>
             <tr>
-                <th>Modèle</th>
-                <th>Carte grise</th>
-                <th>Chassis</th>
                 <th>Immatriculation</th>
+                <th>Chassis</th>
+                <th>Modèle</th>
+                <th>Propriétaire</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -31,12 +32,12 @@
         </tbody>
         <tfoot>
             <tr>
-                <th>Modèle</th>
-                <th>Carte grise</th>
-                <th>Chassis</th>
                 <th>Immatriculation</th>
+                <th>Chassis</th>
+                <th>Modèle</th>
+                <th>Propriétaire</th>
                 <th>Actions</th>
-             </tr>
+            </tr>
         </tfoot>
         </thead>
     </table>
@@ -90,5 +91,4 @@
 		        
                    } );    
         </script>
-    {% endblock %}
-
+{% endblock %}

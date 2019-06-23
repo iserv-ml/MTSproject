@@ -5,9 +5,10 @@ namespace AppBundle\Entity;
 
 use FOS\UserBundle\Entity\Group as BaseGroup;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\GroupRepository")
  * @ORM\Table(name="role")
  */
 class Group extends BaseGroup
@@ -35,7 +36,7 @@ class Group extends BaseGroup
     protected $users;
     
     
-    public function __construct()
+    public function __construct($name = "", $roles = array())
     {
         parent::__construct($name, $roles);
         $this->users = new ArrayCollection();

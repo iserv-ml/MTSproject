@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Visites list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Version</th>
+                <th>Observations</th>
+                <th>Statut</th>
+                <th>Numerocertificat</th>
+                <th>Date</th>
+                <th>Datevalidite</th>
+                <th>Revisite</th>
+                <th>Creepar</th>
+                <th>Modifierpar</th>
+                <th>Deletedat</th>
+                <th>Datecreation</th>
+                <th>Datemodification</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for visite in visites %}
+            <tr>
+                <td><a href="{{ path('visite_show', { 'id': visite.id }) }}">{{ visite.id }}</a></td>
+                <td>{{ visite.version }}</td>
+                <td>{{ visite.observations }}</td>
+                <td>{{ visite.statut }}</td>
+                <td>{{ visite.numeroCertificat }}</td>
+                <td>{% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if visite.dateValidite %}{{ visite.dateValidite|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if visite.revisite %}Yes{% else %}No{% endif %}</td>
+                <td>{{ visite.creePar }}</td>
+                <td>{{ visite.modifierPar }}</td>
+                <td>{% if visite.deletedAt %}{{ visite.deletedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if visite.dateCreation %}{{ visite.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if visite.dateModification %}{{ visite.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('visite_show', { 'id': visite.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('visite_edit', { 'id': visite.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('visite_new') }}">Create a new visite</a>
+        </li>
+    </ul>
+{% endblock %}

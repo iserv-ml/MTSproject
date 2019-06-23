@@ -30,11 +30,11 @@ class ChaineRepository extends EntityRepository
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
         return  $qb->getQuery()->getSingleScalarResult();
-     }
+    }
     
-     public function trouverParLibelle($libelle) {
-       try{ 
-         $result = $this->getEntityManager()
+    public function trouverParLibelle($libelle) {
+        try{ 
+            $result = $this->getEntityManager()
             ->createQuery(
                 'SELECT r FROM AppBundle:Carrosserie r WHERE r.libelle = :libelle'
             )->setParameter("libelle",$libelle)
@@ -47,5 +47,28 @@ class ChaineRepository extends EntityRepository
         }
         
         return $result; 
-    }    
+    } 
+    
+    public function chaineOptimale() {
+        try{ 
+            $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT count(v.id), r FROM AppBundle:Carrosserie r WHERE r.libelle = :libelle'
+            )->setParameter("libelle",$libelle)
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
+        return $result; 
+    }
+    
+    public function chainesActives() {
+        $qb = $this->getEntityManager()
+            ->createQuery('SELECT r FROM AppBundle:Chaine r WHERE r.actif = 1 ');
+        return $qb->getResult();
+    }
 }

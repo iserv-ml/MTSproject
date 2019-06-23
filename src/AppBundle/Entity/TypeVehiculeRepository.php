@@ -48,4 +48,41 @@ class TypeVehiculeRepository extends EntityRepository
         
         return $result; 
     }    
+    
+    public function findUsageAjax($search, $maxRows, $genre) {
+        if(strlen($genre) == 0) {
+            $result[] = ["id" => 0, "libelle" => "Choisir D'abord PTAC", "code" => ""];
+        }else{
+            $result = $this->getEntityManager()
+                ->createQuery(
+                    'SELECT u.id, u.libelle, u.code FROM AppBundle:TypeVehicule r LEFT JOIN r.usage u LEFT JOIN r.genre g WHERE g.code = :genre AND (u.libelle LIKE :libelle OR u.code like :libelle) order by u.libelle'
+                )->setParameter("libelle","%".$search."%")
+                ->setParameter("genre",$genre)
+                ->setMaxResults($maxRows)
+                ->getResult();
+        }
+        if(count($result) == 0) {
+            $result[] = ["id" => 0, "libelle" => "Aucun résultat", "code" => ""];
+        }
+        return $result; 
+    }
+    
+    public function findCarrosserieAjax($search, $maxRows, $genre, $usage) {
+        if(strlen($genre) == 0) {
+            $result[] = ["id" => 0, "libelle" => "Choisir D'abord PTAC", "code" => ""];
+        }else{
+            $result = $this->getEntityManager()
+                ->createQuery(
+                    'SELECT c.id, c.libelle, c.code FROM AppBundle:TypeVehicule r LEFT JOIN r.usage u LEFT JOIN r.genre g LEFT JOIN r.carrosserie c WHERE g.code = :genre AND u.id = :usage AND (c.libelle LIKE :libelle OR c.code like :libelle) order by c.libelle'
+                )->setParameter("libelle","%".$search."%")
+                ->setParameter("genre",$genre)
+                ->setParameter("usage",$usage)
+                ->setMaxResults($maxRows)
+                ->getResult();
+        }
+        if(count($result) == 0) {
+            $result[] = ["id" => 0, "libelle" => "Aucun résultat", "code" => ""];
+        }
+        return $result; 
+    }
 }

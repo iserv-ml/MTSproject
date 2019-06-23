@@ -188,8 +188,9 @@ class CaisseController extends Controller
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
+            $actif = ($aRow['actif'] == 1) ? "Active" : "Inactive";
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['numero'],$aRow['actif'], $action);
+            $output['aaData'][] = array($aRow['numero'], $actif, "", $action);
 	}
 	return new Response(json_encode( $output ));    
     }

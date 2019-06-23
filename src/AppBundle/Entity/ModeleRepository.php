@@ -47,5 +47,17 @@ class ModeleRepository extends EntityRepository
         }
         
         return $result; 
-    }    
+    }  
+    
+    public function findAjax($search, $maxRows) {
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.id, r.libelle as modele, m.libelle as marque FROM AppBundle:Modele r LEFT JOIN r.marque m WHERE r.libelle LIKE :libelle OR m.libelle like :libelle order by m.libelle'
+            )->setParameter("libelle","%".$search."%")
+                 ->setMaxResults($maxRows)
+            ->getResult();
+         if(count($result)==0)
+             $result[] = ["id"=>0, "marque"=>"Aucun résultat", "modele"=>""];
+        return $result; 
+    }  
 }

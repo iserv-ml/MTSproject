@@ -18,6 +18,12 @@
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/pace.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('css/datatables.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('css/jquery-ui.min.css') }}" rel="stylesheet" />
+      <style>
+  .ui-autocomplete-loading {
+    background: white url("{{ asset('images/ui-anim_basic_16x16.gif') }}") right center no-repeat;
+  }
+  </style>
     
      <!-- Datatable core CSS -->
     
@@ -33,7 +39,7 @@
       <button class="navbar-toggler sidebar-toggler d-lg-none mr-auto" type="button" data-toggle="sidebar-show">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <a class="navbar-brand" href="#">
+      <a class="navbar-brand" href="{{ path('homepage') }}">
         <img class="navbar-brand-full" src="{{ asset('images/mts.jpg') }}" width="89" height="25" alt="AUTOSCAN">
         <img class="navbar-brand-minimized" src="{{ asset('images/sygnet.svg') }}" width="30" height="30" alt="AUTOSCAN">
       </a>
@@ -41,15 +47,30 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <ul class="nav navbar-nav d-md-down-none">
+        {% if is_granted('ROLE_ENREGISTREMENT') %}
+            <li class="nav-item px-3">
+              <a class="nav-link {% block menu_enregistrement_actif %}{% endblock %}" href="{{ path('vehicule_index') }}">ENREGISTREMENTS</a>
+            </li>
+        {% endif %}
+        {% if is_granted('ROLE_CAISSIER') %}
+            <li class="nav-item px-3">
+              <a class="nav-link {% block menu_caisse_actif %}{% endblock %}" href="{{ path('visite_quittance') }}">VISITES</a>
+            </li>
+        {% elseif is_granted('ROLE_CONTROLLEUR') %}
+            <li class="nav-item px-3">
+                <a class="nav-link {% block menu_controle_actif %}{% endblock %}" href="{{ path('visite_controle') }}">VISITES</a>
+            </li>
+        {% endif %}
+        {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
         <li class="nav-item px-3">
-          <a class="nav-link" href="{{ path('homepage') }}">ACCUEIL</a>
+          <a class="nav-link {% block menu_gestion_actif %}{% endblock %}" href="#">GESTION</a>
         </li>
+        {% endif %}
+        {% if is_granted('ROLE_SUPERVISEUR') %}
         <li class="nav-item px-3">
-          <a class="nav-link" href="#">VEHICULES</a>
+          <a class="nav-link" href="{{ path('parametre_index') }}">PARAMETRES</a>
         </li>
-        <li class="nav-item px-3">
-          <a class="nav-link" href="#">PARAMETRES</a>
-        </li>
+        {% endif %}
       </ul>
       <ul class="nav navbar-nav ml-auto">
 
@@ -59,44 +80,14 @@
           </a>
           <div class="dropdown-menu dropdown-menu-right">
             <div class="dropdown-header text-center">
-              <strong>Account</strong>
+              <strong>Mon profil</strong>
             </div>
             <a class="dropdown-item" href="#">
-              <i class="fa fa-bell-o"></i> Updates
-              <span class="badge badge-info">42</span>
+              <i class="fa fa-refresh"></i> Mettre à jour
             </a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-envelope-o"></i> Messages
-              <span class="badge badge-success">42</span>
+            <a class="dropdown-item" href="{{ path('fos_user_security_logout') }}">
+              <i class="fa fa-eject"></i> Déconnexion
             </a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-tasks"></i> Tasks
-              <span class="badge badge-danger">42</span>
-            </a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-comments"></i> Comments
-              <span class="badge badge-warning">42</span>
-            </a>
-            <div class="dropdown-header text-center">
-              <strong>Settings</strong>
-            </div>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-user"></i> Profile</a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-wrench"></i> Settings</a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-usd"></i> Payments
-              <span class="badge badge-secondary">42</span>
-            </a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-file"></i> Projects
-              <span class="badge badge-primary">42</span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-shield"></i> Lock Account</a>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-lock"></i> Logout</a>
           </div>
         </li>
       </ul>
@@ -109,88 +100,7 @@
       <div class="sidebar">
         <nav class="sidebar-nav">
           <ul class="nav">
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                <i class="nav-icon icon-calculator"></i> CAISSES</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">
-                <i class="nav-icon icon-check"></i> CONTROLES</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ path('proprietaire_index') }}">
-                <i class="nav-icon icon-user"></i> PROPRIETAIRES</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ path('vehicule_index') }}">
-                <i class="nav-icon fa fa-car"></i> VEHICULES</a>
-            </li>
-            <li class="nav-item nav-dropdown">
-              <a class="nav-link nav-dropdown-toggle" href="#">
-                <i class="nav-icon icon-settings"></i> Paramètres</a>
-              <ul class="nav-dropdown-items">
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_marque_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Marque</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_modele_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Modèles</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_genre_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Genres</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_carrosserie_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Carrosserie</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_usage_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Usage</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_typevehicule_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Type Véhicule</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_typeimmatriculation_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Type Immatriculation</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_typepiece_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Type de pièce</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_penalite_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Pénalité</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_categoriecontrole_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Catégorie de contrôle</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_controle_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Contrôle</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_caisse_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Caisse</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_piste_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Piste</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_chaine_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Chaine</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_gestion_utilisateur_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Utilisateur</a>
-                </li>
-              </ul>
-            </li>          
+              {% block menu %}{% endblock %}        
           </ul>
         </nav>
         <button class="sidebar-minimizer brand-minimizer" type="button"></button>
@@ -254,6 +164,7 @@
     <script type="text/javascript" src="{{ asset('js/coreui.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/custom-tooltips.min.js') }}" type="text/javascript"></script>
     <script type="text/javascript" src="{{ asset('js/Chart.min.js') }}" type="text/javascript"></script>
+    <script type="text/javascript" src="{{ asset('js/jquery-ui.min.js') }}" type="text/javascript"></script>
     {% block javascripts %}{% endblock %}
   </body>
 </html>

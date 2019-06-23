@@ -167,11 +167,11 @@ class ControleController extends Controller
     /**
      * Lists all Controle entities.
      *
-     * @Route("/admin/parametres/controleajax/liste", name="controleajax")
+     * @Route("/admin/parametres/controlesajax/liste", name="controlesajax")
      * 
      * 
      */
-    public function controleAjaxAction(Request $request)
+    public function controlesAjaxAction(Request $request)
     {
         $search = $request->get('search')['value'];
         $col = $request->get('order')[0]['column'];

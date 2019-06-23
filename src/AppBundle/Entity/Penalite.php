@@ -54,6 +54,43 @@ class Penalite
      * @Assert\NotBlank
      */
     private $pourcentage;
+    
+    //Debut relation Penalite a plusieurs visites
+    /**
+    * @ORM\OneToMany(targetEntity="Visite", mappedBy="penalite", cascade={"persist"})
+    */
+    protected $visites;
+    
+    /**
+    * Add visite
+    *
+    * @param AppBundle\Entity\Visite $visite
+    */
+    public function addVisite(\AppBundle\Entity\Visite $visite)
+    {
+        $this->visites[] = $visite;
+    }
+
+    /**
+     * Get visites
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getVisites()
+    {
+        return $this->visites;
+    }
+
+    /**
+     * Set visites
+     *
+     * @param \Doctrine\Common\Collections\Collection $visites
+     */
+    public function setVisites(\Doctrine\Common\Collections\Collection $visites)
+    {
+        $this->visites = $visites;
+    }
+    //Fin relation penalite a plusieurs visites
 
     /**
      * Get id

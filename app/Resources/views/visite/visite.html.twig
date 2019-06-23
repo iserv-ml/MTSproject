@@ -1,0 +1,46 @@
+{% extends '::base.html.twig' %}
+{% block menu -%}
+{% include '::vehicule/menu.html.twig' %}
+{% endblock %}
+{% block menu_enregistrement_actif %}active{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('vehicule_index') }}">Véhicules</a></li>
+          <li class="breadcrumb-item">Détail</li>
+    </ol>
+{% endblock %}
+{% block pagetitle -%}VOIR L'AIGUILLAGE D'UN VEHICULE{% endblock %}
+{% block actions %}
+    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_index') }}">Liste des véhicules</a></label>
+{% endblock %}
+{% block body %}
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th>Immatriculation</th>
+                <td>{{ visite.vehicule.immatriculation }} </td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>                    
+                    {% if visite.statut == 0 %}
+                        PAYER QUITTANCE - CAISSE {{visite.chaine.caisse.numero}} PUIS SE PRESENTER A LA PISTE {{ visite.chaine.piste.numero }}
+                    {% elseif visite.statut == 1 %}
+                        SE PRESENTER A LA PISTE {{ visite.chaine.piste.numero }} 
+                    {% else %}
+                        Merci de contacter l'administrateur.
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>TYPE</th>
+                <td>{% if visite.revisite %}REVISITE{% else %}NORMALE{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

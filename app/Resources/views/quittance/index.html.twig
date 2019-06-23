@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Quittances list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Version</th>
+                <th>Numero</th>
+                <th>Penalite</th>
+                <th>Montantvisite</th>
+                <th>Creepar</th>
+                <th>Modifierpar</th>
+                <th>Deletedat</th>
+                <th>Datecreation</th>
+                <th>Datemodification</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for quittance in quittances %}
+            <tr>
+                <td><a href="{{ path('caisse_quittance_show', { 'id': quittance.id }) }}">{{ quittance.id }}</a></td>
+                <td>{{ quittance.version }}</td>
+                <td>{{ quittance.numero }}</td>
+                <td>{{ quittance.penalite }}</td>
+                <td>{{ quittance.montantVisite }}</td>
+                <td>{{ quittance.creePar }}</td>
+                <td>{{ quittance.modifierPar }}</td>
+                <td>{% if quittance.deletedAt %}{{ quittance.deletedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if quittance.dateCreation %}{{ quittance.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if quittance.dateModification %}{{ quittance.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('caisse_quittance_show', { 'id': quittance.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('caisse_quittance_edit', { 'id': quittance.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('caisse_quittance_new') }}">Create a new quittance</a>
+        </li>
+    </ul>
+{% endblock %}

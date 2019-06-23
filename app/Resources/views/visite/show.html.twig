@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Visite</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ visite.id }}</td>
+            </tr>
+            <tr>
+                <th>Version</th>
+                <td>{{ visite.version }}</td>
+            </tr>
+            <tr>
+                <th>Observations</th>
+                <td>{{ visite.observations }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ visite.statut }}</td>
+            </tr>
+            <tr>
+                <th>Numerocertificat</th>
+                <td>{{ visite.numeroCertificat }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Datevalidite</th>
+                <td>{% if visite.dateValidite %}{{ visite.dateValidite|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Revisite</th>
+                <td>{% if visite.revisite %}Revisite{% else %}Normale{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Creepar</th>
+                <td>{{ visite.creePar }}</td>
+            </tr>
+            <tr>
+                <th>Modifierpar</th>
+                <td>{{ visite.modifierPar }}</td>
+            </tr>
+            <tr>
+                <th>Deletedat</th>
+                <td>{% if visite.deletedAt %}{{ visite.deletedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Datecreation</th>
+                <td>{% if visite.dateCreation %}{{ visite.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Datemodification</th>
+                <td>{% if visite.dateModification %}{{ visite.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('visite_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('visite_edit', { 'id': visite.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

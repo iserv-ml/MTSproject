@@ -61,16 +61,18 @@ class Vehicule
     /**
      * @var datetime $dateCarteGrise
      *
-     * @ORM\Column(name="dateCarteGrise", type="datetime", length=255, nullable=false)
+     * @ORM\Column(name="dateCarteGrise", type="string", nullable=false)
      * @Assert\NotBlank
+     * @Assert\Date
      */
     private $dateCarteGrise;
     
     /**
      * @var datetime $dateMiseCirculation
      *
-     * @ORM\Column(name="dateMiseCirculation", type="datetime", length=255, nullable=false)
+     * @ORM\Column(name="dateMiseCirculation", type="string", nullable=false)
      * @Assert\NotBlank
+     * @Assert\Date
      */
     private $dateMiseCirculation;
     
@@ -117,9 +119,61 @@ class Vehicule
     /**
     * @ORM\ManyToOne(targetEntity="Modele", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="modele_id", referencedColumnName="id")
-    * @Assert\NotBlank
+    * 
     */
     protected $modele;
+    
+    //Debut relation Vehicule a plusieurs visites
+    /**
+    * @ORM\OneToMany(targetEntity="Visite", mappedBy="vehicule", cascade={"persist"})
+    */
+    protected $visites;
+    
+    /**
+    * Add visite
+    *
+    * @param AppBundle\Entity\Visite $visite
+    */
+    public function addVisite(\AppBundle\Entity\Visite $visite)
+    {
+        $this->visites[] = $visite;
+    }
+
+    /**
+     * Get visites
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getVisites()
+    {
+        return $this->visites;
+    }
+
+    /**
+     * Set visites
+     *
+     * @param \Doctrine\Common\Collections\Collection $visites
+     */
+    public function setVisites(\Doctrine\Common\Collections\Collection $visites)
+    {
+        $this->visites = $visites;
+    }
+    //Fin relation vehicule a plusieurs visites
+    
+    protected $modeleAjax;
+    protected $modeleId;
+    
+    protected $carrosserieAjax;
+    protected $carrosserieId;
+    
+    protected $genreAjax;
+    protected $genreId;
+
+    protected $usageAjax;
+    protected $usageId;  
+    
+    protected $proprietaireAjax;
+    protected $proprietaireId;
     
     /**
     * @ORM\ManyToOne(targetEntity="Proprietaire", inversedBy="vehicules", cascade={"persist","refresh"})
@@ -269,6 +323,22 @@ class Vehicule
 
     function setTypeImmatriculation($typeImmatriculation) {
         $this->typeImmatriculation = $typeImmatriculation;
+    }
+    
+    function getModeleAjax() {
+        return $this->modeleAjax;
+    }
+
+    function getModeleId() {
+        return $this->modeleId;
+    }
+
+    function setModeleAjax($modeleAjax) {
+        $this->modeleAjax = $modeleAjax;
+    }
+
+    function setModeleId($modeleId) {
+        $this->modeleId = $modeleId;
     }
     
     //BEHAVIOR
