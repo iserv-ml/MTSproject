@@ -1,28 +1,36 @@
-{% extends 'base.html.twig' %}
-
+{% extends '::base.html.twig' %}
+{% block menu -%}
+{% include '::visite/menu.html.twig' %}
+{% endblock %}
+{% block menu_controle_actif %}active{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('visite_controle') }}">CONTROLES</a></li>
+          <li class="breadcrumb-item">Rapport</li>
+    </ol>
+{% endblock %}
+{% block pagetitle -%}RAPPORT DE VISITE{% endblock %}
+{% block actions %}
+    <label class="btn btn-outline-secondary"><a href="{{ path('visite_controle') }}">Liste des controles</a></label>
+{% endblock %}
 {% block body %}
-    <h1>Visite</h1>
-
-    <table>
+    <table class="table table-hover">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ visite.id }}</td>
-            </tr>
-            <tr>
-                <th>Version</th>
-                <td>{{ visite.version }}</td>
-            </tr>
-            <tr>
-                <th>Observations</th>
-                <td>{{ visite.observations }}</td>
-            </tr>
-            <tr>
                 <th>Statut</th>
-                <td>{{ visite.statut }}</td>
+                <td>
+                    {%if visite.statut == 0 %}EN ATTENTE DU PAIEMENT
+                    {%elseif visite.statut == 1%}EN ATTENTE DU CONTROLE
+                    {%elseif visite.statut == 2%}SUCCES - EN ATTENTE DU CERTIFICAT
+                    {%elseif visite.statut == 3%}ECHEC - REVISITE AVANT LE {% if dateRevisite %}{{ dateRevisite|date('Y-m-d') }}{% endif %}
+                    {%elseif visite.statut == 4%}CERTIFICAT DELIVRE
+                    {%elseif visite.statut == 5%}ANNULEE
+                    {% endif %}
+                </td>
             </tr>
             <tr>
-                <th>Numerocertificat</th>
+                <th>Numero certificat</th>
                 <td>{{ visite.numeroCertificat }}</td>
             </tr>
             <tr>
@@ -30,47 +38,44 @@
                 <td>{% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</td>
             </tr>
             <tr>
-                <th>Datevalidite</th>
+                <th>Date validite</th>
                 <td>{% if visite.dateValidite %}{{ visite.dateValidite|date('Y-m-d H:i:s') }}{% endif %}</td>
             </tr>
             <tr>
-                <th>Revisite</th>
+                <th>Type de visite</th>
                 <td>{% if visite.revisite %}Revisite{% else %}Normale{% endif %}</td>
             </tr>
             <tr>
-                <th>Creepar</th>
+                <th>Créé par</th>
                 <td>{{ visite.creePar }}</td>
             </tr>
             <tr>
-                <th>Modifierpar</th>
+                <th>Modifié par</th>
                 <td>{{ visite.modifierPar }}</td>
             </tr>
             <tr>
-                <th>Deletedat</th>
-                <td>{% if visite.deletedAt %}{{ visite.deletedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Datecreation</th>
+                <th>Date de création</th>
                 <td>{% if visite.dateCreation %}{{ visite.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
             </tr>
             <tr>
-                <th>Datemodification</th>
+                <th>Date de dernière modification</th>
                 <td>{% if visite.dateModification %}{{ visite.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
             </tr>
         </tbody>
     </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('visite_index') }}">Back to the list</a>
-        </li>
-        <li>
-            <a href="{{ path('visite_edit', { 'id': visite.id }) }}">Edit</a>
-        </li>
-        <li>
-            {{ form_start(delete_form) }}
-                <input type="submit" value="Delete">
-            {{ form_end(delete_form) }}
-        </li>
-    </ul>
+    {% if visite.resultats %}
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th colspan = "2" align="center">RESULTATS</th>
+            </tr>
+            {% for resultat in visite.resultats %}
+                <tr>
+                    <th>{{ resultat.controle.libelle }}</th>
+                    <td>{{ resultat.commentaire }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+        {% endif %}
 {% endblock %}

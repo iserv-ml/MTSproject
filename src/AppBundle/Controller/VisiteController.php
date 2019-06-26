@@ -151,10 +151,16 @@ class VisiteController extends Controller
     public function showAction(Visite $visite)
     {
         $deleteForm = $this->createDeleteForm($visite);
-
+        if($visite->getStatut()==3){
+            $date1 = $visite->getDate()->format('Y-m-d');
+            $date = new \DateTime($date1);
+            $date->add(new \DateInterval('P'.$visite->getVehicule()->getTypeVehicule()->getDelai().'D')); // P1D means a period of 1 day
+            $date2 = $date->format('Y-m-d');
+        }
         return $this->render('visite/show.html.twig', array(
             'visite' => $visite,
             'delete_form' => $deleteForm->createView(),
+            'dateRevisite' => $date2,
         ));
     }
 
@@ -361,7 +367,7 @@ class VisiteController extends Controller
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
-            $action = $this->genererPisteAction($aRow['id']);
+            $action = $this->genererPisteAction($aRow['id'], $aRow['statut']);
             $revisite = $aRow['revisite'] == 1 ? "REVISITE" : "NORMALE";
             if($aRow['statut'] == 1){
                 $etat = "A CONTROLER";
@@ -375,10 +381,14 @@ class VisiteController extends Controller
 	return new Response(json_encode( $output ));    
     }
     
-    private function genererPisteAction($id){
+    private function genererPisteAction($id, $statut){
         $action = "";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CONTROLLEUR')){
-            $action .= " <a title='Controller' class='btn btn-success' href='".$this->generateUrl('visite_controleur', array('id'=> $id ))."'><i class='fa fa-config' ></i> Controler</a>";
+            if($statut == 1){
+                $action .= " <a title='Controller' class='btn btn-success' href='".$this->generateUrl('visite_controleur', array('id'=> $id ))."'><i class='fa fa-config' ></i> Controler</a>";
+            }elseif($statut > 1){
+                $action .= " <a title='Détail' class='btn btn-success' href='".$this->generateUrl('visite_show', array('id'=> $id ))."'><i class='fa fa-plus' ></i> Voir le rapport</a>";
+            }
         }
         return $action;
     }
@@ -391,14 +401,58 @@ class VisiteController extends Controller
      */
     public function controleurAction(Request $request)
     {
+        //$id = $request->get('id');echo $id;exit;
         $em = $this->getDoctrine()->getManager();
         $visite = $em->getRepository('AppBundle:Visite')->find($request->get('id'));
-        if(!$visite || $visite->getStatut() != 1){
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $affectation = $em->getRepository('AppBundle:AffectationPiste')->derniereAffectation($user->getId());
+        $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
+        if(!$visite || $visite->getStatut() == 0 || (!$admin && $visite->getChaine()->getPiste()->getId()!= $affectation->getPiste()->getId())){
             throw $this->createAccessDeniedException("Cette opération n'est pas autorisée");
         }
         $controles = $em->getRepository('AppBundle:Controle')->trouverActif();
         if($request->get('controleur')){
-            
+            if($visite->getStatut() != 1 ){
+                throw $this->createAccessDeniedException("Cette opération n'est pas autorisée");
+            }
+            $succes = true;
+            $date = new \DateTime();
+            foreach($controles as $controle){
+                if($request->get($controle->getCode())!=null){
+                    $resultatMaha = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleResultat($controle->getCode(), $request->get($controle->getCode()));
+                    if($resultatMaha == null){
+                        throw $this->createAccessDeniedException("Cette opération n'est pas autorisée null");
+                    }else{
+                        $resultat = new \AppBundle\Entity\Resultat();
+                        $resultat->generer($visite, $resultatMaha);
+                        $em->persist($resultat);
+                        $em->flush();
+                        if(!$resultatMaha->getReussite()){
+                            $succes = false;
+                        }
+                    }
+                }else{
+                    throw $this->createAccessDeniedException("Cette opération n'est pas autorisée");
+                }
+            }
+            if($succes){
+                $visite->setStatut(2);
+            }else{
+                $visite->setStatut(3);
+            }
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Controle terminé. Merci de consulter le résultat');
+            if($visite->getStatut()==3){
+                $date1 = $visite->getDate()->format('Y-m-d');
+                $date = new \DateTime($date1);
+                $date->add(new \DateInterval('P'.$visite->getVehicule()->getTypeVehicule()->getDelai().'D')); // P1D means a period of 1 day
+                $date2 = $date->format('Y-m-d');
+            }
+            return $this->render('visite/show.html.twig', array(
+                'controles' => $controles,
+                'visite' => $visite,
+                'dateRevisite' => $date2,
+            ));
         }
         return $this->render('visite/controle.html.twig', array(
             'controles' => $controles,

@@ -1,20 +1,27 @@
-<table>
+<div style="margin:10px">
+    <span style="font-weight: bolder">N&deg; {{ quittance.numero }}</span>
+    <span style="margin-left:400px; font-weight:bolder;font-size:30px">QUITTANCE</span>
+    <span style="margin-left:50px; font-weight: bolder">NIF 86100089D</span>
+</div>
+<div>
+    
+</div>
+<table border="1" style="width:1150px;" cellpadding="0" cellspacing="0">
      <tbody>
+         <tr>
+             <td colspan="7" style="border:none; padding:5px">
+                 <span style="font-weight: bold">CVT :</span>
+                <span style="margin-left:500px; font-weight:bold;">Type/Marque : {{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}</span>
+             </td>
+         </tr>
             <tr>
-                <th>N° {{ quittance.numero }}</th>
-                <th>QUITTANCE</th>
-                <th>NIF 86100089D</th>
+                <td colspan="7" style="border:none; padding:5px">
+                    <span style="font-weight: bold">Date : {% if quittance.dateCreation %}{{ quittance.dateCreation|date('Y-m-d') }}{% endif %}</span>
+                    <span style="margin-left:500px; font-weight:bold;">Immatriculation : {{ quittance.visite.vehicule.immatriculation }}</span>
+                </td>
             </tr>
             <tr>
-                <th>CVT</th>
-                <td>Type/Marque : {{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}</td>
-            </tr>
-            <tr>
-                <th>Date : {% if quittance.dateCreation %}{{ quittance.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</th>
-                <td>Immatriculation : {{ quittance.visite.vehicule.immatriculation }}</td>
-            </tr>
-            <tr>
-                <th>Quantité</th>
+                <th>Quantit&eacute;</th>
                 <th>Prix Unitaire</th>
                 <th>Prix total</th>
                 <th>TVA 18%</th>
@@ -22,13 +29,13 @@
                 <th>Total TTC</th>
                 <th>Caissier</th>
             </tr>
-            <tr>
+            <tr style="text-align: center">
                 <td>1</td>
                 <td>{{ quittance.montantVisite|number_format(0, ',', ' ') }}</td>
                 <td>{{ quittance.montantVisite|number_format(0, ',', ' ') }}</td>
-                <td></td>
-                <td></td>
-                <td>{{ quittance.montantVisite|number_format(0, ',', ' ') }}</td>
+                <td>{{ quittance.tva|number_format(0, ',', ' ') }}</td>
+                <td>{{ quittance.timbre|number_format(0, ',', ' ')}}</td>
+                <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil')  }}</td>
                 <td>{{ quittance.creePar }}</td>
             </tr>
      </tbody>

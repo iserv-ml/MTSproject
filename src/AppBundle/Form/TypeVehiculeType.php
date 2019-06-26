@@ -19,6 +19,7 @@ class TypeVehiculeType extends AbstractType
                 ->add('usage')
                 ->add('montantRevisite')
                 ->add('montantVisite')
+                ->add('timbre')
                 ->add('delai');
     }
     

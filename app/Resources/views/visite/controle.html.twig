@@ -15,7 +15,7 @@
     <label class="btn btn-outline-secondary"><a href="{{ path('visite_controle') }}">Liste des controles</a></label>
 {% endblock %}
 {% block body %}
-     <form method='POST' action='{{ path('visite_controleur') }}'>
+     <form method='POST' action='{{ path('visite_controleur') }}?id={{ visite.id }}'>
         <table class="table table-hover">
             <tbody>
                 <tr>
@@ -30,8 +30,8 @@
                     <tr>
                         <th>{{ controle.libelle }}</th>
                         <td>
-                            <select id='{{ controle.code }}' name='{{ controle.code }}' >
-                                <option>Choisir</option>
+                            <select id='{{ controle.code }}' name='{{ controle.code }}' required >
+                                <option value="">Choisir</option>
                                 {% for code in controle.codeMahaResultats %}<option value='{{ code.code }}'>{{ code.libelle }}</option>{% endfor %}
                             </select>
                         </td>

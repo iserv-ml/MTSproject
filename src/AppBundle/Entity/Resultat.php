@@ -47,22 +47,19 @@ class Resultat
      */
     private $succes;
     
-    
-    /**
-     * @var datetime $date
-     *
-     * @ORM\Column(name="date", type="datetime", nullable=false)
-     * @Assert\NotBlank
-     */
-    private $date;
-
-    
     /**
     * @ORM\ManyToOne(targetEntity="Controle", inversedBy="resultats", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="controle_id", referencedColumnName="id")
     * @Assert\NotBlank
     */
     protected $controle;
+    
+    /**
+    * @ORM\ManyToOne(targetEntity="Visite", inversedBy="resultats", cascade={"persist","refresh"})
+    * @ORM\JoinColumn(name="visite_id", referencedColumnName="id")
+    * @Assert\NotBlank
+    */
+    protected $visite;
 
     /**
      * Get id
@@ -89,10 +86,6 @@ class Resultat
         return $this->succes;
     }
 
-    function getDate() {
-        return $this->date;
-    }
-
     function getControle() {
         return $this->controle;
     }
@@ -105,12 +98,16 @@ class Resultat
         $this->succes = $succes;
     }
 
-    function setDate(datetime $date) {
-        $this->date = $date;
-    }
-
     function setControle($controle) {
         $this->controle = $controle;
+    }
+    
+    function getVisite() {
+        return $this->visite;
+    }
+
+    function setVisite($visite) {
+        $this->visite = $visite;
     }
     
     //BEHAVIOR
@@ -209,4 +206,10 @@ class Resultat
         //$this->users = new ArrayCollection();
     }
 
+    public function generer($visite, $resultatMaha){
+        $this->visite = $visite;
+        $this->controle = $resultatMaha->getControle();
+        $this->commentaire = $resultatMaha->getLibelle();
+        $this->succes = $resultatMaha->getReussite();
+    }
 }

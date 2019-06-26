@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
             new AppBundle\AppBundle(),
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
+            new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
             
         );
 

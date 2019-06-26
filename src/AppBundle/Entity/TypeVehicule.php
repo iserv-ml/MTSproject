@@ -58,6 +58,14 @@ class TypeVehicule
     private $montantVisite;
     
     /**
+     * @var float $timbre
+     *
+     * @ORM\Column(name="timbre", type="float", nullable=false)
+     * @Assert\NotBlank
+     */
+    private $timbre;
+    
+    /**
      * @var integer $delai
      *
      * @ORM\Column(name="delai", type="integer", nullable=false)
@@ -197,6 +205,14 @@ class TypeVehicule
     
     function editerLibelle(){
         $this->libelle = $this->genre->getCode()."_".$this->carrosserie->getLibelle()."_".$this->usage->getLibelle();
+    }
+    
+    function getTimbre() {
+        return $this->timbre;
+    }
+
+    function setTimbre($timbre) {
+        $this->timbre = $timbre;
     }
 
     //BEHAVIOR

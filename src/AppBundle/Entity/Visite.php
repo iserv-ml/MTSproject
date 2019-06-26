@@ -155,6 +155,43 @@ class Visite
         $this->revisites = $revisites;
     }
     //Fin relation Visite Parent a plusieurs revisites    
+    
+    //Debut relation Visite a plusieurs résultat
+    /**
+    * @ORM\OneToMany(targetEntity="Resultat", mappedBy="visite", cascade={"persist"})
+    */
+    protected $resultats;
+    
+    /**
+    * Add resultat
+    *
+    * @param AppBundle\Entity\Resultat $resultat
+    */
+    public function addResultat(\AppBundle\Entity\Resultat $resultat)
+    {
+        $this->resultats[] = $resultat;
+    }
+
+    /**
+     * Get resultats
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getResultats()
+    {
+        return $this->resultats;
+    }
+
+    /**
+     * Set resultats
+     *
+     * @param \Doctrine\Common\Collections\Collection $resultats
+     */
+    public function setResultats(\Doctrine\Common\Collections\Collection $resultats)
+    {
+        $this->resultats = $resultats;
+    }
+    //Fin relation controle a plusieurs resultats
 
     /**
      * Get id

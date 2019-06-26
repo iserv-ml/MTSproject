@@ -8,6 +8,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 /**
  * Quittance controller.
@@ -201,8 +203,28 @@ class QuittanceController extends Controller
      */
     public function imprimAction(Quittance $quittance)
     {
-        return $this->render('quittance/imprim.html.twig', array(
-            'quittance' => $quittance
-        ));
+        if(!$quittance){
+            throw $this->createNotFoundException("La quittance demandée n'est pas disponible.");
+        }
+        $numero = $quittance->getNumero();
+        $chemin = __DIR__.'/../../../web/quittances/quittance_'.$numero.'.pdf';
+        if (file_exists($chemin)) {
+            unlink($chemin);
+        }
+        
+
+        $this->get('knp_snappy.pdf')->generateFromHtml(
+            $this->renderView(
+                'quittance/imprim.html.twig',
+                array(
+                    'quittance'  => $quittance
+                )
+            ),
+            $chemin
+        );
+        
+        $response = new BinaryFileResponse($chemin);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        return $response;
     }
 }

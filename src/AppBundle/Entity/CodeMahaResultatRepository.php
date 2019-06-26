@@ -32,7 +32,7 @@ class CodeMahaResultatRepository extends EntityRepository
         return  $qb->getQuery()->getSingleScalarResult();
      }
     
-     public function trouverParLibelle($libelle) {
+    public function trouverParLibelle($libelle) {
        try{ 
          $result = $this->getEntityManager()
             ->createQuery(
@@ -55,4 +55,29 @@ class CodeMahaResultatRepository extends EntityRepository
                 'SELECT r FROM AppBundle:Controle r WHERE r.actif = 1');
         return $qb->getResult();
     }
+    
+    public function trouverParControle($code) {
+        $qb = $this->getEntityManager()
+            ->createQuery('SELECT r FROM AppBundle:CodeMahaResultat r LEFT JOIN r.controle c WHERE c.code = :code')
+            ->setParameter('code', $code);
+        return $qb->getResult();
+    }
+    
+    public function trouverParControleResultat($controle, $resultat) {
+       try{ 
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:CodeMahaResultat r LEFT JOIN r.controle c WHERE r.code = :resultat AND c.code = :controle'
+            )->setParameter("resultat",$resultat)
+            ->setParameter("controle",$controle)
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        return $result; 
+    }
+    
 }

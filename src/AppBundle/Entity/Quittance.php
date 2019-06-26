@@ -66,6 +66,22 @@ class Quittance
     private $montantVisite;
     
     /**
+     * @var float $tva
+     *
+     * @ORM\Column(name="tva", type="float", nullable=false)
+     * 
+     */
+    private $tva;
+    
+    /**
+     * @var float $timbre
+     *
+     * @ORM\Column(name="timbre", type="float", nullable=false)
+     * 
+     */
+    private $timbre;
+    
+    /**
      * @var boolean $paye
      *
      * @ORM\Column(name="paye", type="boolean", nullable=false)
@@ -272,10 +288,29 @@ class Quittance
     
     public function generer($montant, $penalite, $retard){
         $this->setMontantVisite($montant);
+        $this->setTva($montant*18/100);
+        $this->setTimbre($this->getVisite()->getVehicule()->getTypeVehicule()->getTimbre());
         if($penalite){
             $this->setPenalite($montant*$penalite->getPourcentage()/100);
         }
         $this->retard = $retard;
         $this->setNumero('BKO'.\time());
     }
+    
+    function getTva() {
+        return $this->tva;
+    }
+
+    function getTimbre() {
+        return $this->timbre;
+    }
+
+    function setTva($tva) {
+        $this->tva = $tva;
+    }
+
+    function setTimbre($timbre) {
+        $this->timbre = $timbre;
+    }
+
 }
