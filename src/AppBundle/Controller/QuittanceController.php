@@ -157,6 +157,31 @@ class QuittanceController extends Controller
             'quittance' => $quittance,
         ));
     }
+    
+    /**
+     * Displays a form to edit an existing quittance entity.
+     *
+     * @Route("/{id}/confirmer", name="quittance_confirmer")
+     * @Method({"GET", "POST"})
+     */
+    public function quittanceconfirmertAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $visite = $em->getRepository('AppBundle:Visite')->find($request->get('id'));
+        $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($request->get('id'));
+        if(!$quittance){
+            $quittance = new Quittance();
+            $quittance->setVisite($visite);
+            $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($visite->getVehicule()->getId(), $visite->getId());
+            $montant = $quittance->calculerMontant();
+            $retard = $quittance->calculerRetard($derniereVisite);
+            $penalite = $em->getRepository('AppBundle:Penalite')->trouverParNbJours($retard);
+            $quittance->generer($montant, $penalite, $retard);
+        }
+        return $this->render('quittance/confirmer.html.twig', array(
+            'quittance' => $quittance,
+        ));
+    }
 
 
     /**

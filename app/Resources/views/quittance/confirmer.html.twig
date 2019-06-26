@@ -1,0 +1,60 @@
+{% block body %}
+    <div class="row">
+        <div class="col-3" style="width:200px;background: #E8E8E8;padding-top:10px">
+                <table>
+                    <tr><th>Immatriculation</th></tr>
+                    <tr><td>{{ quittance.visite.vehicule.immatriculation }}</td></tr>
+                    <tr><th>Chassis</th></tr>
+                    <tr><td>{{ quittance.visite.vehicule.chassis }}</td></tr>
+                    <tr><th>Genre</th></tr>
+                    <tr><td>{{ quittance.visite.vehicule.typeVehicule.genre.libelle }}</td></tr>
+                    <tr><th>Marque</th></tr>
+                    <tr><td>{{ quittance.visite.vehicule.modele.marque.libelle }}</td></tr>
+                    <tr><th>Carrosserie</th></tr>
+                    <tr><td>{{ quittance.visite.vehicule.typeVehicule.carrosserie.libelle }}</td></tr>
+                    <tr><th>Usage</th></tr>
+                    <tr><td>{{ quittance.visite.vehicule.typeVehicule.usage.libelle }}</td></tr>
+                    <tr><th>Propriétaire</th></tr>
+                    <tr><td>{{ quittance.visite.vehicule.proprietaire.nomComplet }}</td></tr>
+                </table>
+            </div>
+            <div class="col-3" style="width:400px">
+                <table style="width:300px">
+                    <tr>
+                        <th colspan="2">Informations sur la visite</th>
+                    </tr>
+                    <tr>
+                        <th>Type de visite</th>
+                        <td>{% if quittance.visite.revisite %}Revisite{%else%}Normale{%endif%}</td>
+                    </tr>
+                    <tr>
+                        <th>Chaine</th>
+                        <td>{{ quittance.visite.chaine.caisse.numero }}</td>
+                    </tr>
+                    <tr>
+                        <th>Piste</th>
+                        <td>{{ quittance.visite.chaine.piste.numero }}</td>
+                    </tr>
+                    <tr>
+                        <th>Quittance</th>
+                    </tr>
+                    <tr>
+                        <th>Retard</th>
+                        <td>{{ quittance.retard|number_format(0, ',', ' ') }} Jours</td>
+                    </tr>
+                    <tr>
+                        <th>Pénalité</th>
+                        <td>{{ quittance.penalite|number_format(0, ',', ' ') }}</td>
+                    </tr>
+                    <tr>
+                        <th>Droit de visite</th>
+                        <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil')  }}</td>
+                    </tr>
+                    <tr>
+                        <th>Total TTC</th>
+                        <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre+quittance.penalite)|round(0, 'ceil')  }}</td>
+                    </tr>
+                </table>
+            </div>
+    </div>
+    {% endblock %}

@@ -260,17 +260,22 @@ class VisiteController extends Controller
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
-            $action = $this->genererAction($aRow['id']);
+            $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($aRow['id']);
+            $action = $this->genererAction($aRow['id'], $quittance);
             $revisite = $aRow['revisite'] == 1 ? "REVISITE" : "NORMALE";
             $output['aaData'][] = array($aRow['immatriculation'],$aRow['nom'].' '.$aRow['prenom'],$revisite, $action);
 	}
 	return new Response(json_encode( $output ));    
     }
     
-    private function genererAction($id){
+    private function genererAction($id, $quittance){
         $action = "";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CAISSIER')){
-            $action .= " <a title='Quittance' class='btn btn-success' href='".$this->generateUrl('caisse_quittance_creer', array('id'=> $id ))."'><i class='fa fa-credit-card' ></i></a>";
+            if($quittance != null){
+                $action .= "<a title='Quittance' class='btn btn-success' href='".$this->generateUrl('caisse_quittance_show', array('id'=> $quittance->getId() ))."'><i class='fa fa-credit-card' ></i> Voir</a>";
+            }else{
+                $action .= "<a onclick='loadDynamicContentModal(".$id.")' title='Quittance' class='btn btn-success' href='#'><i class='fa fa-credit-card' ></i> Générer</a>";
+            }
         }
         return $action;
     }

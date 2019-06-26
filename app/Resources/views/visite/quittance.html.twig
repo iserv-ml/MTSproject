@@ -34,9 +34,28 @@
             </tr>
         </tfoot>
     </table>
+<div id="demo-modal" title="VISITE NORMALE"></div>
 {% endblock %}
 {% block javascripts -%}
 <script type="text/javascript">
+    function loadDynamicContentModal(id){
+	var options = {
+			modal: true,
+			height:400,
+			width:700,
+                              buttons: {
+        "Valider": function() {
+         $(location).attr('href', 'http://localhost/autoscan/web/app_dev.php/caisse/quittance/'+id+'/creer')
+        },
+        Annuler: function() {
+          $( this ).dialog( "close" );
+        }
+      }
+		};
+
+	$('#demo-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+	$('#demo-modal').load('http://localhost/autoscan/web/app_dev.php/caisse/quittance/'+id+'/confirmer').dialog(options).dialog('open');
+}
     $(document).ready(function() {
 
         $('#liste_clients').DataTable({
@@ -77,7 +96,11 @@
             sortDescending: ": activer pour trier la colonne par ordre décroissant"
         }
     }
-    });	        
+    });	
+   
+ 
+    
         });    
     </script>
+    
 {% endblock %}
