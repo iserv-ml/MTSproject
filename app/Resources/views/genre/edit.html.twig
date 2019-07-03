@@ -1,17 +1,26 @@
 {% extends '::base.html.twig' %}
+{% block menu -%}
+{% embed  '::parametres/menu.html.twig' %}
+{% block menu_vehicules_open %}open{% endblock %}
+{% block menu_genres_open %}open{% endblock %}
+{% block menu_genres_actif %}active{% endblock %}
+{% endembed %}
+{% endblock %}
 {% block ariane -%}
     <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('parametre_index') }}">Paramètres</a></li>
           <li class="breadcrumb-item"><a href="{{ path('admin_parametres_genre_index') }}">Genres</a></li>
           <li class="breadcrumb-item">Modifier</li>
     </ol>
 {% endblock %}
 {% block pagetitle -%}MODIFIER UN GENRE DE VEHICULE{% endblock %}
 {% block actions %} 
-    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_genre_index') }}">Retour à la liste</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_genre_index') }}">RETOUR A LA LISTE</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_genre_new') }}">CREER</a></label>
     <label class="btn btn-outline-secondary">
         {{ form_start(delete_form) }}
-            <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
+            <input type="submit" value="SUPPRIMER" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
         {{ form_end(delete_form) }}
     </label>
 {% endblock %}
@@ -19,6 +28,6 @@
 
     {{ form_start(edit_form) }}
         {{ form_widget(edit_form) }}
-        <input type="submit" value="Modifier" />
+        <input type="submit" value="MODIFIER" />
     {{ form_end(edit_form) }}
 {% endblock %}

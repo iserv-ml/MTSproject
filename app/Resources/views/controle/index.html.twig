@@ -1,15 +1,19 @@
 {% extends '::base.html.twig' %}
 {% block menu -%}
-{% include '::parametres/menu.html.twig' %}
+{% embed  '::parametres/menu.html.twig' %}
+{% block menu_maha_open %}open{% endblock %}
+{% block menu_controle_open %}open{% endblock %}
+{% block menu_controle_actif %}active{% endblock %}
+{% endembed %}
 {% endblock %}
 {% block ariane -%}
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
-        <li class="breadcrumb-item">Contrôles</li>
+        <li class="breadcrumb-item"><a href="{{ path('parametre_index') }}">Paramètres</a></li>
+        <li class="breadcrumb-item">Points de contrôle</li>
     </ol>
 {% endblock %}
-{% block pagetitle -%}LISTE DES CONTROLES{% endblock %}
-{% block menu_controles_actif %}active{% endblock %}
+{% block pagetitle -%}LISTE DES POINTS DE CONTROLE{% endblock %}
 
 {% block actions %}
     <label class="btn btn-outline-secondary"><a href="{{ path('controle_export') }}">EXPORTER</a></label>
@@ -22,10 +26,10 @@
         <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
             <thead>
                 <tr>
-                    <th>Libelle</th>
+                    <th>Libellé</th>
                     <th>Code</th>
-                    <th>Detail</th>
-                    <th>Actif</th>
+                    <th>Type</th>
+                    <th>ETAT</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -34,10 +38,10 @@
             </tbody>
             <thead>
                 <tr>
-                    <th>Libelle</th>
+                    <th>Libellé</th>
                     <th>Code</th>
-                    <th>Detail</th>
-                    <th>Actif</th>
+                    <th>Type</th>
+                    <th>ETAT</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -51,8 +55,6 @@
 
         $('#liste_clients').DataTable({
             "columnDefs": [
-            { "name": "libelle",   "targets": 0 },
-            { "name": "code",   "targets": 1 },
             { "orderable": false, "targets": 4 }
         ],
         "processing": true,
@@ -65,7 +67,7 @@
         "searching": true,
         "responsive": true,
         "pageLength": 50,
-        "order": [[1, 'asc']],
+        "order": [[0, 'asc']],
        language: {
         processing:     "Traitement en cours...",
         search:         "Rechercher&nbsp;:",

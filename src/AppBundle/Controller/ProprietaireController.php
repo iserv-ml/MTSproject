@@ -176,7 +176,7 @@ class ProprietaireController extends Controller
         $col = $request->get('order')[0]['column'];
         $dir = $request->get('order')[0]['dir'];
         $em = $this->getDoctrine()->getManager();
-	$aColumns = array( 'r.numpiece', 'r.nom', 'r.prenom', 'r.telephone', 'r.adresse', 'r.email');
+	$aColumns = array( 'r.numpiece', 'r.nom', 'r.telephone', 'r.adresse');
         $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
         $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
         $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
@@ -188,16 +188,17 @@ class ProprietaireController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['numpiece'],$aRow['nom'],$aRow['prenom'],$aRow['telephone'],$aRow['adresse'],$aRow['email'], $action);
+            $output['aaData'][] = array($aRow['numpiece'],$aRow['nom']." ".$aRow['prenom'],$aRow['telephone'],$aRow['adresse'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
     
     private function genererAction($id){
-        $action = "<a class='btn btn-success' href='".$this->generateUrl('proprietaire_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
-                $action .= " <a class='btn btn-info' href='".$this->generateUrl('proprietaire_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
-                $action .= " <a class='btn btn-danger' href='".$this->generateUrl('proprietaire_delete_a', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
+        $action = "<a title='Détail' class='btn btn-success' href='".$this->generateUrl('proprietaire_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ENREGISTREMENT')){
+                $action .= " <a title='Modifier' class='btn btn-info' href='".$this->generateUrl('proprietaire_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
+                $action .= " <a title='Supprimer' class='btn btn-danger' href='".$this->generateUrl('proprietaire_delete_a', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
+                //$action .= " <a title='Enregistrer un véhicule' class='btn btn-succes' href='".$this->generateUrl('vehicule_new')."' ><i class='fa fa-car'> </i></a>";
         }
         return $action;
     }

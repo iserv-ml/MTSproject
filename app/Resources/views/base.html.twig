@@ -49,7 +49,7 @@
       <ul class="nav navbar-nav d-md-down-none">
         {% if is_granted('ROLE_ENREGISTREMENT') %}
             <li class="nav-item px-3">
-              <a class="nav-link {% block menu_enregistrement_actif %}{% endblock %}" href="{{ path('vehicule_index') }}">ENREGISTREMENTS</a>
+              <a class="nav-link {% block menu_enregistrement_actif %}{% endblock %}" href="{{ path('vehicule_index') }}">AIGUILLAGE</a>
             </li>
         {% endif %}
         {% if is_granted('ROLE_CAISSIER') %}
@@ -76,14 +76,14 @@
 
         <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <img class="img-avatar" src="{{ asset('images/6.jpg') }}" alt="email user">
+            {{app.user.username}} <img class="img-avatar" src="{{ asset('images/6.jpg') }}" alt="email user">
           </a>
           <div class="dropdown-menu dropdown-menu-right">
             <div class="dropdown-header text-center">
               <strong>Mon profil</strong>
             </div>
-            <a class="dropdown-item" href="#">
-              <i class="fa fa-refresh"></i> Mettre à jour
+            <a class="dropdown-item" href="{{ path('utilisateur_profil')}}">
+              <i class="fa fa-refresh"></i> Voir le profil
             </a>
             <a class="dropdown-item" href="{{ path('fos_user_security_logout') }}">
               <i class="fa fa-eject"></i> Déconnexion

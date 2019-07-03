@@ -22,7 +22,6 @@ class ProprietaireType extends AbstractType
                 ->add('adresse')
                 ->add('email')
                 ->add('personneMorale')
-                ->add('path')
                 ->add('typePiece');
     }
     

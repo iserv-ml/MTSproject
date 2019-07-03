@@ -23,10 +23,8 @@
             <tr>
                 <th>N° pièce</th>
                 <th>Nom</th>
-                <th>Prénom</th>
                 <th>Téléphone</th>
                 <th>Adresse</th>
-                <th>Email</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -37,10 +35,8 @@
             <tr>
                 <th>N° pièce</th>
                 <th>Nom</th>
-                <th>Prénom</th>
                 <th>Téléphone</th>
                 <th>Adresse</th>
-                <th>Email</th>
                 <th>Actions</th>
             </tr>
         </tfoot>
@@ -55,7 +51,7 @@
         $('#liste_clients').DataTable({
             "columnDefs": [
 
-            { "orderable": false, "targets": 6 }
+            { "orderable": false, "targets": 4 }
         ],
         "processing": true,
         "serverSide": true,

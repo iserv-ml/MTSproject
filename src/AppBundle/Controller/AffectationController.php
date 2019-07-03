@@ -42,13 +42,13 @@ class AffectationController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $derniere = $em->getRepository('AppBundle:Affectation')->derniereAffectation($affectation->getAgent()->getId());
-            if($derniere == -1){
+            if(is_int($derniere)){
                 throw $this->createNotFoundException("Oops... Une erreur s'est produite.");
             }else if($derniere){
                $derniere->setActif(0);
             }
             $derniereCaisse = $em->getRepository('AppBundle:Affectation')->derniereAffectationCaisse($affectation->getCaisse()->getId());
-            if($derniereCaisse == -1){
+            if(is_int($derniereCaisse)){
                 throw $this->createNotFoundException("Oops... Une erreur s'est produite.");
             }else if($derniereCaisse){
                $derniereCaisse->setActif(0);

@@ -39,22 +39,29 @@ class VehiculeController extends Controller
         $vehicule = new Vehicule();
         $form = $this->createForm('AppBundle\Form\VehiculeType', $vehicule);
         $form->handleRequest($request);
-        $field = $request->get("AppBundle_vehicule");
-        $proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($field['proprietaireId']);
-        $typeVehicule = $em->getRepository('AppBundle:TypeVehicule')->trouver($genre, $field['usageId'], $field['carrosserieId']);
-        if (!$proprietaire || !$typeVehicule) {
-            $this->get('session')->getFlashBag()->add('error', "Merci de remplir correctement le formulaire!.");
-        }else{
-           $vehicule->setProprietaire($proprietaire); 
-           $vehicule->setTypeVehicule($typeVehicule);
-        }
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $field = $request->get("appbundle_vehicule");
+            $proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($field['proprietaireId']);
+            $modele = $em->getRepository('AppBundle:Modele')->find($field['modeleId']);
+            $genre = $field['ptac'] < 3500 ? "VL" : "PL";
+            $typeVehicule = $em->getRepository('AppBundle:TypeVehicule')->trouver($genre, $field['usageId'], $field['carrosserieId']);
+            if (!$proprietaire || !$typeVehicule || !$modele) {
+                $this->get('session')->getFlashBag()->add('error', "Merci de remplir correctement le formulaire!.");
+                return $this->render('vehicule/new.html.twig', array(
+            'vehicule' => $vehicule,
+            'form' => $form->createView(),
+        ));
+            }else{
+                $vehicule->setProprietaire($proprietaire); 
+                $vehicule->setTypeVehicule($typeVehicule);
+                $vehicule->setModele($modele);
+                $em->persist($vehicule);
+                $em->flush();
+                $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
+                return $this->redirectToRoute('vehicule_show', array('id' => $vehicule->getId()));
+            }
             
-            $em->persist($vehicule);
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
-            return $this->redirectToRoute('vehicule_show', array('id' => $vehicule->getId()));
         }
 
         return $this->render('vehicule/new.html.twig', array(
@@ -206,7 +213,7 @@ class VehiculeController extends Controller
     
     private function genererAction($id){
         $action = "<a title='Détail' class='btn btn-success' href='".$this->generateUrl('vehicule_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_ENREGISTREMENT')){
                 $action .= " <a title='Modifier' class='btn btn-info' href='".$this->generateUrl('vehicule_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
                 $action .= " <a title='Supprimer' class='btn btn-danger' href='".$this->generateUrl('vehicule_delete_a', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
                 $action .= " <a title='Aiguiller' class='btn btn-warning' href='".$this->generateUrl('aiguiller', array('id'=> $id ))."'><i class='fa fa-compass'> </i></a>";

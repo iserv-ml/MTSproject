@@ -16,7 +16,7 @@ class TypeVehiculeRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.montantRevisite, r.montantVisite, r.delai, r.libelle, g.libelle as genre, u.libelle as usage, c.libelle as carrosserie FROM AppBundle:TypeVehicule r LEFT JOIN r.genre g LEFT JOIN r.usage u LEFT JOIN r.carrosserie c '
+                'SELECT r.id, r.montantRevisite, r.montantVisite, r.delai, r.validite, r.libelle, g.libelle as genre, u.libelle as usage, c.libelle as carrosserie FROM AppBundle:TypeVehicule r LEFT JOIN r.genre g LEFT JOIN r.usage u LEFT JOIN r.carrosserie c '
                     . ' WHERE r.libelle like :search or g.libelle like :search or u.libelle like :search OR c.libelle like :search '
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
@@ -83,6 +83,25 @@ class TypeVehiculeRepository extends EntityRepository
         if(count($result) == 0) {
             $result[] = ["id" => 0, "libelle" => "Aucun résultat", "code" => ""];
         }
+        return $result; 
+    }
+    
+    public function trouver($genre, $usage, $carrosserie) {
+       try{ 
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:TypeVehicule r LEFT JOIN r.genre g LEFT JOIN r.usage u LEFT JOIN r.carrosserie c WHERE g.code = :genre AND u.id = :usage AND c.id = :carrosserie '
+            )->setParameter("genre",$genre)
+            ->setParameter("usage",$usage)
+            ->setParameter("carrosserie",$carrosserie)
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
         return $result; 
     }
 }

@@ -66,6 +66,14 @@ class Controle
     private $actif;
     
     /**
+     * @var string $type
+     *
+     * @ORM\Column(name="type", type="string", length=255, nullable=false)
+     * @Assert\NotBlank
+     */
+    private $type;
+    
+    /**
     * @ORM\ManyToOne(targetEntity="CategorieControle", inversedBy="controles", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="categorie_id", referencedColumnName="id")
     * @Assert\NotBlank
@@ -202,6 +210,13 @@ class Controle
 
     function setCategorie($categorie) {
         $this->categorie = $categorie;
+    }
+    function getType() {
+        return $this->type;
+    }
+
+    function setType($type) {
+        $this->type = $type;
     }
     
     //BEHAVIOR

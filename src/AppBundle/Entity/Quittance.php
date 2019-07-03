@@ -271,7 +271,7 @@ class Quittance
     
     public function calculerRetard($derniereVisite){
         if($derniereVisite == null){
-            $date = \DateTime::createFromFormat('Y-m-d',$this->visite->getVehicule()->getDateMiseCirculation());
+            $date = \DateTime::createFromFormat('m/d/Y',$this->visite->getVehicule()->getDateMiseCirculation());
             $retard = $this->joursDeRetard($date);
         }else{
             $retard = $this->joursDeRetard($derniereVisite->getDateValidite());

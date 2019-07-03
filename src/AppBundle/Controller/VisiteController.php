@@ -25,7 +25,15 @@ class VisiteController extends Controller
      */
     public function quittanceAction()
     {
-         return $this->render('visite/quittance.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $affectation = $em->getRepository('AppBundle:Affectation')->derniereAffectation($user->getId());
+        $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
+        if(!$affectation && !$admin){
+            throw $this->createNotFoundException("Vous n'êtes affecté à aucune caisse. Contacter l'administrateur.");
+        }
+        $caisse = $admin ? "ADMIN" : "CAISSE N° ".$affectation->getCaisse()->getNumero();
+        return $this->render('visite/quittance.html.twig', array('caisse'=>$caisse));
     }
     
     /**
@@ -53,7 +61,15 @@ class VisiteController extends Controller
      */
     public function visitecontroleAction()
     {
-        return $this->render('visite/controles.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $affectation = $em->getRepository('AppBundle:AffectationPiste')->derniereAffectation($user->getId());
+        $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
+        if(!$affectation && !$admin){
+            throw $this->createNotFoundException("Vous n'êtes affecté à aucune piste. Contacter l'administrateur.");
+        }
+        $piste = $admin ? "ADMIN" : "PISTE N° ".$affectation->getPiste()->getNumero();
+        return $this->render('visite/controles.html.twig', array('piste'=>$piste));
     }
 
     /**
@@ -254,7 +270,7 @@ class VisiteController extends Controller
             $rResult = $em->getRepository('AppBundle:Visite')->findQuittancesAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, 0);
             $iTotal = $em->getRepository('AppBundle:Visite')->countQuittanceRows($affectation->getCaisse()->getId());    
         }else{
-            $rResult = $em->getRepository('AppBundle:Visite')->findQuittancesAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, 0);
+            $rResult = $em->getRepository('AppBundle:Visite')->findQuittancesAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, $affectation->getCaisse()->getId());
             $iTotal = $em->getRepository('AppBundle:Visite')->countQuittanceRows($affectation->getCaisse()->getId());    
         }
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
@@ -263,7 +279,7 @@ class VisiteController extends Controller
             $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($aRow['id']);
             $action = $this->genererAction($aRow['id'], $quittance);
             $revisite = $aRow['revisite'] == 1 ? "REVISITE" : "NORMALE";
-            $output['aaData'][] = array($aRow['immatriculation'],$aRow['nom'].' '.$aRow['prenom'],$revisite, $action);
+            $output['aaData'][] = array($aRow['immatriculation'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$aRow['caisse'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
@@ -381,7 +397,7 @@ class VisiteController extends Controller
             }else if($aRow['statut'] == 3){
                 $etat = "ECHEC";
             }
-            $output['aaData'][] = array($aRow['immatriculation'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat, $action);
+            $output['aaData'][] = array($aRow['immatriculation'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['piste'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }

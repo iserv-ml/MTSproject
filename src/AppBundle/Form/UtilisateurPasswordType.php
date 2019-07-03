@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ControleType extends AbstractType
+class UtilisateurPasswordType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -14,12 +14,11 @@ class ControleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('libelle')
-                ->add('code')
-                ->add('type', 'choice',['choices' => ['' => 'Choisir un type', 'MESURE' => 'MESURE', 'VISUEL' => 'VISUEL' ]])
-                ->add('detail')
-                ->add('actif')
-                ->add('categorie');
+                ->add('password', 'repeated', array(
+                    'first_name' => 'Mot_de_passe',
+                    'second_name' => 'Confirmer_le_mot_de_passe',
+                    'type' => 'password'
+                ), array('required'=> true));
     }
     
     /**
@@ -28,7 +27,7 @@ class ControleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Controle'
+            'data_class' => 'AppBundle\Entity\Utilisateur'
         ));
     }
 
@@ -37,7 +36,7 @@ class ControleType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'appbundle_controle';
+        return 'appbundle_utilisateur';
     }
 
 

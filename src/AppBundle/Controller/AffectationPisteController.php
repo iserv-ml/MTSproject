@@ -42,13 +42,13 @@ class AffectationPisteController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $derniere = $em->getRepository('AppBundle:AffectationPiste')->derniereAffectation($affectationPiste->getAgent()->getId());
-            if($derniere == -1){
+            if(is_int($derniere)){
                 throw $this->createNotFoundException("Oops... Une erreur s'est produite.");
             }else if($derniere){
                $derniere->setActif(0);
             }
             $dernierePiste = $em->getRepository('AppBundle:AffectationPiste')->derniereAffectationPiste($affectationPiste->getPiste()->getId());
-            if($dernierePiste == -1){
+            if(is_int($dernierePiste)){
                 throw $this->createNotFoundException("Oops... Une erreur s'est produite.");
             }else if($dernierePiste){
                $dernierePiste->setActif(0);

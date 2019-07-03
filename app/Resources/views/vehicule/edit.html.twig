@@ -25,3 +25,167 @@
         <input type="submit" value="Modifier" />
     {{ form_end(edit_form) }}
 {% endblock %}
+
+{% block javascripts -%}
+    <script>
+        $( function() {
+            $("#appbundle_vehicule_genre" ).val("{{- vehicule.typeVehicule.genre.code -}}");
+            $("#appbundle_vehicule_proprietaireId" ).val("{{- vehicule.proprietaire.id -}}");
+            $("#appbundle_vehicule_proprietaireAjax" ).val("{{- vehicule.proprietaire.nom -}} {{- vehicule.proprietaire.prenom -}} {{- vehicule.proprietaire.telephone -}}");
+            $("#appbundle_vehicule_genre" ).prop("disabled", true);
+            $("#appbundle_vehicule_dateCarteGrise" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y" });
+            $("#appbundle_vehicule_dateMiseCirculation" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y" });
+            $("#appbundle_vehicule_modeleId" ).val("{{- vehicule.modele.id -}}");
+            $("#appbundle_vehicule_modeleAjax" ).val("{{- vehicule.modele.libelle -}}");
+            $("#appbundle_vehicule_usageId" ).val("{{- vehicule.typeVehicule.usage.id -}}");
+            $("#appbundle_vehicule_usageAjax" ).val("{{- vehicule.typeVehicule.usage.libelle -}}");
+            $("#appbundle_vehicule_carrosserieId" ).val("{{- vehicule.typeVehicule.carrosserie.id -}}");
+            $("#appbundle_vehicule_carrosserieAjax" ).val("{{- vehicule.typeVehicule.carrosserie.libelle -}}");
+    
+    $( "#appbundle_vehicule_ptac" ).change(function() {
+        var ptac = $( "#appbundle_vehicule_ptac" ).val();
+        if(ptac <= 3500){
+            $( "#appbundle_vehicule_genre" ).val('VL');
+        }else{
+            $( "#appbundle_vehicule_genre" ).val('PL');
+        }
+      });    
+    function log( message ) {
+      $( "<div>" ).text( message ).prependTo( "#log" );
+      $( "#log" ).scrollTop( 0 );
+    }
+    $( "#appbundle_vehicule_modeleAjax" ).autocomplete({
+        source: function( request, response ) {
+            $.ajax( {
+                url: "{{ path("modeles_autocomplete") }}",
+                dataType: "json",
+                data : {
+                    search : request.term,
+                    maxRows : 15
+                },
+                success : function(donnee){                  
+                    response($.map(donnee, function(objet){
+                        return {
+                            marque :objet.marque,
+                            modele : objet.modele,
+                            id : objet.id
+                        };
+                    }));
+                },
+            } );
+        },
+        select: function (event, ui) {
+            $( "#appbundle_vehicule_modeleAjax" ).val( ui.item.marque + ' ' + ui.item.modele);
+            $( "#appbundle_vehicule_modeleId" ).val( ui.item.id);
+            return false;
+        }
+    }).data('ui-autocomplete')._renderItem = function (ul, item) {
+                            return $("<li />")
+                                .data("item.autocomplete", item)
+                                .append("<a>" + item.marque + ' '+ item.modele + "</a>")
+                                .appendTo(ul);
+               };
+    
+    $( "#appbundle_vehicule_proprietaireAjax" ).autocomplete({
+        source: function( request, response ) {
+            $.ajax( {
+                url: "{{ path("proprietaires_autocomplete") }}",
+                dataType: "json",
+                data : {
+                    search : request.term,
+                    maxRows : 15
+                },
+                success : function(donnee){                  
+                    response($.map(donnee, function(objet){
+                        return {
+                            nom :objet.nom,
+                            prenom : objet.prenom,
+                            telephone : objet.telephone,
+                            id : objet.id
+                        };
+                    }));
+                },
+            } );
+        },
+        select: function (event, ui) {
+            $( "#appbundle_vehicule_proprietaireAjax" ).val( ui.item.nom + ' ' + ui.item.prenom + ' ' + ui.item.telephone);
+            $( "#appbundle_vehicule_proprietaireId" ).val( ui.item.id);
+            return false;
+        }
+    }).data('ui-autocomplete')._renderItem = function (ul, item) {
+        return $("<li />")
+            .data("item.autocomplete", item)
+            .append("<a>" + item.nom + ' '+ item.prenom + ' ' + item.telephone + "</a>")
+            .appendTo(ul);
+    };
+    
+    $( "#appbundle_vehicule_usageAjax" ).autocomplete({
+        source: function( request, response ) {
+            $.ajax( {
+                url: "{{ path("usages_autocomplete") }}",
+                dataType: "json",
+                data : {
+                    search : request.term,
+                    maxRows : 15,
+                    genre : $( "#appbundle_vehicule_genre" ).val()
+                },
+                success : function(donnee){                  
+                    response($.map(donnee, function(objet){
+                        return {
+                            libelle :objet.libelle,
+                            code : objet.code,
+                            id : objet.id
+                        };
+                    }));
+                },
+            } );
+        },
+        select: function (event, ui) {
+            $( "#appbundle_vehicule_usageAjax" ).val( ui.item.libelle + ' - ' + ui.item.code);
+            $( "#appbundle_vehicule_usageId" ).val( ui.item.id);
+            return false;
+        }
+    }).data('ui-autocomplete')._renderItem = function (ul, item) {
+        return $("<li />")
+            .data("item.autocomplete", item)
+            .append("<a>" + item.libelle + ' - '+ item.code + "</a>")
+            .appendTo(ul);
+    };
+    
+    $( "#appbundle_vehicule_carrosserieAjax" ).autocomplete({
+        source: function( request, response ) {
+            $.ajax( {
+                url: "{{ path("carrosseries_autocomplete") }}",
+                dataType: "json",
+                data : {
+                    search : request.term,
+                    maxRows : 15,
+                    genre : $( "#appbundle_vehicule_genre" ).val(),
+                    usage : $( "#appbundle_vehicule_usageId" ).val()
+                },
+                success : function(donnee){                  
+                    response($.map(donnee, function(objet){
+                        return {
+                            libelle :objet.libelle,
+                            code : objet.code,
+                            id : objet.id
+                        };
+                    }));
+                },
+            } );
+        },
+        select: function (event, ui) {
+            $( "#appbundle_vehicule_carrosserieAjax" ).val( ui.item.libelle + ' - ' + ui.item.code);
+            $( "#appbundle_vehicule_carrosserieId" ).val( ui.item.id);
+            return false;
+        }
+    }).data('ui-autocomplete')._renderItem = function (ul, item) {
+        return $("<li />")
+            .data("item.autocomplete", item)
+            .append("<a>" + item.libelle + ' - '+ item.code + "</a>")
+            .appendTo(ul);
+    };
+    
+  } );
+  </script>
+{% endblock %}

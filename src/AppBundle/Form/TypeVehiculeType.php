@@ -20,7 +20,8 @@ class TypeVehiculeType extends AbstractType
                 ->add('montantRevisite')
                 ->add('montantVisite')
                 ->add('timbre')
-                ->add('delai');
+                ->add('delai', 'integer', array('label'=>'Délai pour revisite (en jours)', 'required'=>true))
+                ->add('validite', 'integer', array('label'=> 'Durée de validitée des visites (en mois)', 'required'=>true));
     }
     
     /**

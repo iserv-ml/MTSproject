@@ -11,13 +11,17 @@
 {% endblock %}
 {% block pagetitle -%}VOIR UN UTILISATEUR{% endblock %}
 {% block actions %}
-    <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_utilisateur_index') }}">Liste des utilisateurs</a></label>
-    <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_utilisateur_edit', { 'id': utilisateur.id }) }}">Modifier</a></label>
-    <label class="btn btn-outline-secondary">
-        {{ form_start(delete_form) }}
-            <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
-        {{ form_end(delete_form) }}
-    </label>
+    {% if is_granted('ROLE_SUPERVISEUR') and delete_form is defined %}
+        <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_utilisateur_index') }}">Liste des utilisateurs</a></label>
+        <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_utilisateur_edit', { 'id': utilisateur.id }) }}">Modifier</a></label>
+        <label class="btn btn-outline-secondary">
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
+            {{ form_end(delete_form) }}
+        </label>
+    {% else %}
+        <label class="btn btn-outline-secondary"><a href="{{ path('fos_user_change_password', { 'id': utilisateur.id }) }}">Changer le mot de passe</a></label>
+    {% endif %}
 {% endblock %}
 {% block body %}
     <table class="table table-hover">

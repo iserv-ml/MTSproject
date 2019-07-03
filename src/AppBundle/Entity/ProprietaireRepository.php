@@ -64,4 +64,21 @@ class ProprietaireRepository extends EntityRepository
         return $result; 
     } 
     
+    public function trouverParId($id) {
+       try{ 
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Proprietaire r WHERE r.id = :id'
+            )->setParameter("id",$id)
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
+        return $result; 
+    }
+    
 }

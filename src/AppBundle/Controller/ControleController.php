@@ -188,8 +188,9 @@ class ControleController extends Controller
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
+            $actif = $aRow['actif'] == 1 ? "Actif" : "Inactif";
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['libelle'],$aRow['code'],$aRow['detail'],$aRow['actif'], $action);
+            $output['aaData'][] = array($aRow['libelle'],$aRow['code'],$aRow['type'],$actif, $action);
 	}
 	return new Response(json_encode( $output ));    
     }

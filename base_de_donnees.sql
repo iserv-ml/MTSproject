@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Client :  127.0.0.1
--- Généré le :  Mer 26 Juin 2019 à 02:51
+-- Généré le :  Mer 26 Juin 2019 à 18:53
 -- Version du serveur :  5.7.14
 -- Version de PHP :  7.0.10
 
@@ -100,7 +100,7 @@ CREATE TABLE `caisse` (
 --
 
 INSERT INTO `caisse` (`id`, `version`, `numero`, `actif`, `cree_par`, `modifier_par`, `deletedAt`, `date_creation`, `date_modification`, `solde`) VALUES
-(1, 6, 1, 1, 'adminuser', 'adminuser', NULL, '2019-06-09 15:05:20', '2019-06-26 02:45:10', 24135),
+(1, 7, 1, 1, 'adminuser', 'adminuser', NULL, '2019-06-09 15:05:20', '2019-06-26 18:23:36', 28270),
 (2, 3, 2, 1, 'adminuser', 'adminuser', NULL, '2019-06-09 15:05:44', '2019-06-23 10:54:11', 10000);
 
 -- --------------------------------------------------------
@@ -511,6 +511,13 @@ CREATE TABLE `quittance` (
   `timbre` double NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+--
+-- Contenu de la table `quittance`
+--
+
+INSERT INTO `quittance` (`id`, `visite_id`, `version`, `numero`, `penalite`, `montantvisite`, `cree_par`, `modifier_par`, `deletedAt`, `date_creation`, `date_modification`, `retard`, `paye`, `tva`, `timbre`) VALUES
+(16, 21, 2, 'BKO1561573346', 3101.25, 4135, 'adminuser', 'adminuser', NULL, '2019-06-26 18:22:26', '2019-06-26 18:23:36', 2002, 1, 744.3, 120);
+
 -- --------------------------------------------------------
 
 --
@@ -530,6 +537,15 @@ CREATE TABLE `resultat` (
   `date_modification` datetime NOT NULL,
   `visite_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Contenu de la table `resultat`
+--
+
+INSERT INTO `resultat` (`id`, `controle_id`, `version`, `commentaire`, `succes`, `cree_par`, `modifier_par`, `deletedAt`, `date_creation`, `date_modification`, `visite_id`) VALUES
+(25, 1, 1, 'OK', 1, 'adminuser', 'adminuser', NULL, '2019-06-26 18:24:09', '2019-06-26 18:24:09', 21),
+(26, 2, 1, 'Trop bas', 0, 'adminuser', 'adminuser', NULL, '2019-06-26 18:24:09', '2019-06-26 18:24:09', 21),
+(27, 3, 1, 'Correct', 1, 'adminuser', 'adminuser', NULL, '2019-06-26 18:24:09', '2019-06-26 18:24:09', 21);
 
 -- --------------------------------------------------------
 
@@ -743,7 +759,7 @@ CREATE TABLE `utilisateur` (
 --
 
 INSERT INTO `utilisateur` (`id`, `username`, `username_canonical`, `email`, `email_canonical`, `enabled`, `salt`, `password`, `last_login`, `locked`, `expired`, `expires_at`, `confirmation_token`, `password_requested_at`, `roles`, `credentials_expired`, `credentials_expire_at`, `version`, `nom`, `prenom`, `telephone`) VALUES
-(1, 'adminuser', 'adminuser', 'djibrilland@yahoo.fr', 'djibrilland@yahoo.fr', 1, 't7ctuj0z2zkk8gsg8cs448kg4okw8ck', 'vprgGpn9BBZRSSfPYnr1AlScwYigRnyremzNvSVCnyzezoyhX3u3C+UuQMNWrVVfNKGD48Y5aBdNRbv87rh+rQ==', '2019-06-25 21:42:00', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL, 23, 'Admin', 'Admin', NULL),
+(1, 'adminuser', 'adminuser', 'djibrilland@yahoo.fr', 'djibrilland@yahoo.fr', 1, 't7ctuj0z2zkk8gsg8cs448kg4okw8ck', 'vprgGpn9BBZRSSfPYnr1AlScwYigRnyremzNvSVCnyzezoyhX3u3C+UuQMNWrVVfNKGD48Y5aBdNRbv87rh+rQ==', '2019-06-26 11:23:02', 0, 0, NULL, NULL, NULL, 'a:1:{i:0;s:16:"ROLE_SUPER_ADMIN";}', 0, NULL, 24, 'Admin', 'Admin', NULL),
 (2, 'toto', 'toto', 'toto@toto.test', 'toto@toto.test', 1, '1l7hv37agm68wwww0cgkgk08cwkc8gc', 'K/dfj/FqzX/SlwqHx0vm70xFYVBarn87q+mPnFkiQHo/nH1R4Tk4QG3nnEs/MYIl+eXQIq/Ncfusc9MNgpzWcw==', '2019-06-23 17:23:59', 0, 0, NULL, NULL, NULL, 'a:0:{}', 0, NULL, 9, 'Doe', 'Toto', NULL),
 (3, 'controlleur 1', 'controlleur 1', 'controlleur@autoscan.ml', 'controlleur@autoscan.ml', 1, 'i9gg7h1ymjkg4gskk8oso8044scg884', '9LvvnYYgl2+f8UYeGE27mFtLO9ukyBh5CCoCgIMXeYQ02SpHQgMI7ClVL51L6F6cSeGaaLZDbwJlWjh54zHGEQ==', NULL, 0, 0, NULL, NULL, NULL, 'a:0:{}', 0, NULL, 1, 'Controlleur', '1', NULL),
 (4, 'controlleur2', 'controlleur2', 'controlleur2@autoscan.ml', 'controlleur2@autoscan.ml', 1, 'hfdqjlaix14wwsk8osc8kogg0s48os0', 'bUZvC+3yMnku603IgayYKe8B1oHWwUagSnfFaG6Ak5QdgFP4cZj7vzwGJ+wD4c8cKDfOXt/uVjMDXOrZTxgTvQ==', '2019-06-23 11:49:49', 0, 0, NULL, NULL, NULL, 'a:0:{}', 0, NULL, 5, 'Controlleu', '2', NULL);
@@ -813,6 +829,13 @@ CREATE TABLE `visite` (
   `date_creation` datetime NOT NULL,
   `date_modification` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Contenu de la table `visite`
+--
+
+INSERT INTO `visite` (`id`, `visite_id`, `vehicule_id`, `penalite_id`, `chaine_id`, `quittance_id`, `version`, `observations`, `statut`, `numeroCertificat`, `date`, `dateValidite`, `revisite`, `cree_par`, `modifier_par`, `deletedAt`, `date_creation`, `date_modification`) VALUES
+(21, NULL, 1, NULL, 1, NULL, 3, NULL, 3, NULL, '2019-06-26 11:45:17', NULL, 0, 'adminuser', 'adminuser', NULL, '2019-06-26 11:45:17', '2019-06-26 18:24:09');
 
 --
 -- Index pour les tables exportées
@@ -1103,12 +1126,12 @@ ALTER TABLE `piste`
 -- AUTO_INCREMENT pour la table `quittance`
 --
 ALTER TABLE `quittance`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 --
 -- AUTO_INCREMENT pour la table `resultat`
 --
 ALTER TABLE `resultat`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 --
 -- AUTO_INCREMENT pour la table `role`
 --
@@ -1153,7 +1176,7 @@ ALTER TABLE `vehicule`
 -- AUTO_INCREMENT pour la table `visite`
 --
 ALTER TABLE `visite`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 --
 -- Contraintes pour les tables exportées
 --

@@ -23,8 +23,18 @@
 {% block javascripts -%}
   <script>
   $( function() {
+      $( "#appbundle_vehicule_genre" ).prop("disabled", true);
     $( "#appbundle_vehicule_dateCarteGrise" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y" });
     $( "#appbundle_vehicule_dateMiseCirculation" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y" });
+    
+    $( "#appbundle_vehicule_ptac" ).change(function() {
+        var ptac = $( "#appbundle_vehicule_ptac" ).val();
+        if(ptac <= 3500){
+            $( "#appbundle_vehicule_genre" ).val('VL');
+        }else{
+            $( "#appbundle_vehicule_genre" ).val('PL');
+        }
+      });    
     function log( message ) {
       $( "<div>" ).text( message ).prependTo( "#log" );
       $( "#log" ).scrollTop( 0 );

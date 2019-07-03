@@ -33,6 +33,9 @@ class VehiculeType extends AbstractType
                 ->add('usageId', 'hidden', array('required'  => true, "mapped" => false))
                 ->add('carrosserieAjax', 'text', array('label'  => 'Carrosserie', 'required'  => true, "mapped" => false))
                 ->add('carrosserieId', 'hidden', array('required'  => true, "mapped" => false))
+                ->add('typeImmatriculation')
+                ->add('commentaire')
+                ->add('file', 'file', array('label'=>'Image 1 (limite 10M)', 'required'=>false))
                 ;
     }
     

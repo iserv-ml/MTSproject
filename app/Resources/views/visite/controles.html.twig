@@ -9,7 +9,7 @@
         <li class="breadcrumb-item">CONTROLES</li>
     </ol>
 {% endblock %}
-{% block pagetitle -%}VEHICULES A CONTROLLER{% endblock %}
+{% block pagetitle -%}VEHICULES A CONTROLLER : {{ piste }}{% endblock %}
 
 {% block body -%}
 <div class="table-responsive">
@@ -20,6 +20,7 @@
                 <th>Proprietaire</th>
                 <th>TYPE</th>
                 <th>ETAT</th>
+                <th>PISTE</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -32,6 +33,7 @@
                 <th>Proprietaire</th>
                 <th>TYPE</th>
                 <th>ETAT</th>
+                <th>PISTE</th>
                 <th>Actions</th>
             </tr>
         </tfoot>

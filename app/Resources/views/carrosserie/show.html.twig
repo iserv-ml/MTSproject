@@ -1,18 +1,27 @@
 {% extends '::base.html.twig' %}
+{% block menu -%}
+{% embed  '::parametres/menu.html.twig' %}
+{% block menu_vehicules_open %}open{% endblock %}
+{% block menu_carrosseries_open %}open{% endblock %}
+{% block menu_carrosseries_actif %}active{% endblock %}
+{% endembed %}
+{% endblock %}
 {% block ariane -%}
     <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('parametre_index') }}">Paramètres</a></li>
           <li class="breadcrumb-item"><a href="{{ path('admin_parametres_carrosserie_index') }}">Carrosserie</a></li>
           <li class="breadcrumb-item">Détail</li>
     </ol>
 {% endblock %}
 {% block pagetitle -%}VOIR UNE CARROSSERIE DE VEHICULE{% endblock %}
 {% block actions %}
-    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_carrosserie_index') }}">Liste des carrosseries</a></label>
-    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_carrosserie_edit', { 'id': carrosserie.id }) }}">Modifier</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_carrosserie_index') }}">LISTER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_carrosserie_edit', { 'id': carrosserie.id }) }}">MODIFIER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_carrosserie_new') }}">CREER</a></label>
     <label class="btn btn-outline-secondary">
         {{ form_start(delete_form) }}
-            <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
+            <input type="submit" value="SUPPRIMER" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
         {{ form_end(delete_form) }}
     </label>
 {% endblock %}

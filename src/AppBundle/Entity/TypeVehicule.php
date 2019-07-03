@@ -74,6 +74,14 @@ class TypeVehicule
     private $delai;
     
     /**
+     * @var integer $validite
+     *
+     * @ORM\Column(name="validite", type="integer", nullable=false)
+     * @Assert\NotBlank
+     */
+    private $validite;
+    
+    /**
     * @ORM\ManyToOne(targetEntity="Genre", inversedBy="typeVehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="genre_id", referencedColumnName="id")
     * @Assert\NotBlank
@@ -213,6 +221,14 @@ class TypeVehicule
 
     function setTimbre($timbre) {
         $this->timbre = $timbre;
+    }
+    
+    function getValidite() {
+        return $this->validite;
+    }
+
+    function setValidite($validite) {
+        $this->validite = $validite;
     }
 
     //BEHAVIOR

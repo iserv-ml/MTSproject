@@ -9,7 +9,7 @@
         <li class="breadcrumb-item">Caisses</li>
     </ol>
 {% endblock %}
-{% block pagetitle -%}CREER DES QUITTANCES{% endblock %}
+{% block pagetitle -%}LISTE DES QUITTANCES : {{ caisse }}{% endblock %}
 
 {% block body -%}
 <div class="table-responsive">
@@ -19,6 +19,7 @@
                 <th>Immatriculation</th>
                 <th>Proprietaire</th>
                 <th>TYPE</th>
+                <th>CAISSE</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -30,6 +31,7 @@
                 <th>Immatriculation</th>
                 <th>Proprietaire</th>
                 <th>TYPE</th>
+                <th>CAISSE</th>
                 <th>Actions</th>
             </tr>
         </tfoot>

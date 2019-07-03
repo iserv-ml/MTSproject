@@ -111,6 +111,36 @@ class UtilisateurController extends Controller
             'delete_form' => $deleteForm->createView(),
         ));
     }
+    
+    /**
+     * Displays a form to edit an existing utilisateur entity.
+     *
+     * @Route("/{id}/password", name="admin_gestion_utilisateur_password")
+     * @Method({"GET", "POST"})
+     */
+    public function passwordAction(Request $request, $id)
+    {
+        $userManager = $this->get('fos_user.user_manager');
+        $utilisateur = $userManager->findUserBy(array('id' => $id));
+        if (!$utilisateur) {
+            throw $this->createNotFoundException("Opération interdite.");
+        }
+        $editForm = $this->createForm('AppBundle\Form\UtilisateurPasswordType', $utilisateur);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $utilisateur->setPlainPassword($utilisateur->getPassword());
+            $utilisateur->setEnabled(true);
+            $userManager->updateUser($utilisateur, true);
+            $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
+            return $this->redirectToRoute('admin_gestion_utilisateur_show', array('id' => $utilisateur->getId()));
+        }
+
+        return $this->render('utilisateur/password.html.twig', array(
+            'utilisateur' => $utilisateur,
+            'edit_form' => $editForm->createView()
+        ));
+    }
 
     /**
      * Deletes a utilisateur entity.
@@ -210,10 +240,11 @@ class UtilisateurController extends Controller
     }
     
     private function genererAction($id){
-        $action = "<a class='btn btn-success' href='".$this->generateUrl('admin_gestion_utilisateur_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
+        $action = "<a title='Voir' class='btn btn-success' href='".$this->generateUrl('admin_gestion_utilisateur_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
-                $action .= " <a class='btn btn-info' href='".$this->generateUrl('admin_gestion_utilisateur_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
-                $action .= " <a class='btn btn-danger' href='".$this->generateUrl('admin_gestion_utilisateur_delete', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
+                $action .= " <a title='Modifier' class='btn btn-info' href='".$this->generateUrl('admin_gestion_utilisateur_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
+                $action .= " <a title='Supprimer' class='btn btn-danger' href='".$this->generateUrl('admin_gestion_utilisateur_delete', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
+                $action .= " <a title='Changer le mot de passe' class='btn btn-info' href='".$this->generateUrl('admin_gestion_utilisateur_password', array('id'=> $id ))."'><i class='fa fa-vcard' ></i></a>";
         }
         return $action;
     }

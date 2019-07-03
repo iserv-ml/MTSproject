@@ -191,7 +191,7 @@ class TypeVehiculeController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['libelle'],$aRow['montantRevisite'],$aRow['montantVisite'],$aRow['delai'], $action);
+            $output['aaData'][] = array($aRow['libelle'],$aRow['montantRevisite'],$aRow['montantVisite'],$aRow['delai'].' jours',$aRow['validite'].' mois', $action);
 	}
 	return new Response(json_encode( $output ));    
     }

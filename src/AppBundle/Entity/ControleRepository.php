@@ -16,7 +16,7 @@ class ControleRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.libelle, r.code, r.detail, r.actif FROM AppBundle:Controle r '
+                'SELECT r.id, r.libelle, r.code, r.detail, r.actif, r.type FROM AppBundle:Controle r '
                     . ' WHERE r.libelle like :search or r.code like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')

@@ -1,77 +1,108 @@
-<li class="nav-item">
-    <a class="nav-link" href="{{ path('admin_parametres_marque_index') }}">
-        <i class="nav-icon icon-puzzle"></i> Marque</a>
+<li class="nav-item nav-dropdown {% block menu_vehicules_open %}{% endblock %}">
+    <a class="nav-link nav-dropdown-toggle" href="#">
+        <i class="nav-icon fa fa-car"></i> Véhicules</a>
+    <ul class="nav-dropdown-items">
+        <li class="nav-item {% block menu_marques_open %}{% endblock %}">
+            <a class="nav-link {% block menu_marques_actif %}{% endblock %}" href="{{ path('admin_parametres_marque_index') }}">
+                <i class="nav-icon icon-list"></i> Marques</a>
+        </li>
+        <li class="nav-item {% block menu_modeles_open %}{% endblock %}">
+            <a class="nav-link {% block menu_modeles_actif %}{% endblock %}" href="{{ path('admin_parametres_modele_index') }}">
+                <i class="nav-icon icon-list"></i> Modèles</a>
+        </li>
+        <li class="nav-item {% block menu_genres_open %}{% endblock %}">
+            <a class="nav-link {% block menu_genres_actif %}{% endblock %}" href="{{ path('admin_parametres_genre_index') }}">
+                <i class="nav-icon icon-list"></i> Genres</a>
+        </li>
+        <li class="nav-item {% block menu_carrosseries_open %}{% endblock %}">
+            <a class="nav-link {% block menu_carrosseries_actif %}{% endblock %}" href="{{ path('admin_parametres_carrosserie_index') }}">
+            <i class="nav-icon icon-list"></i> Carrosserie</a>
+        </li>
+        <li class="nav-item {% block menu_usages_open %}{% endblock %}">
+            <a class="nav-link {% block menu_usages_actif %}{% endblock %}" href="{{ path('admin_parametres_usage_index') }}">
+            <i class="nav-icon icon-list"></i> Usage</a>
+        </li>
+        <li class="nav-item {% block menu_typeimmatriculations_open %}{% endblock %}">
+            <a class="nav-link {% block menu_typeimmatriculations_actif %}{% endblock %}" href="{{ path('admin_parametres_typeimmatriculation_index') }}">
+                <i class="nav-icon icon-list"></i> Type Immatriculation</a>
+        </li>
+    </ul>
 </li>
-<li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_modele_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Modèles</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_genre_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Genres</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_carrosserie_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Carrosserie</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_usage_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Usage</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_typevehicule_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Type Véhicule</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_typeimmatriculation_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Type Immatriculation</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_typepiece_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Type de pièce</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_penalite_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Pénalité</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_categoriecontrole_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Catégorie de contrôle</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_controle_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Point de contrôle</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_codemaharesultat_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Codes des Résultats MAHA</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_caisse_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Caisse</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_piste_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Piste</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_parametres_chaine_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Chaine</a>
-                </li>
-    <li class="nav-item">
-        <a class="nav-link" href="{{ path('admin_gestion_utilisateur_index') }}">
-            <i class="nav-icon icon-puzzle"></i> Utilisateur
-        </a>
-    </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_gestion_group_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Groupe</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_gestion_affectation_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Affectation aux caisses</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{{ path('admin_gestion_affectationpiste_index') }}">
-                    <i class="nav-icon icon-puzzle"></i> Affectation aux pistes</a>
-                </li>
+<li class="nav-item nav-dropdown {% block menu_tarifs_open %}{% endblock %}">
+    <a class="nav-link nav-dropdown-toggle" href="#">
+        <i class="nav-icon fa fa-money"></i> Tarifs</a>
+    <ul class="nav-dropdown-items">
+        <li class="nav-item {% block menu_typevehicule_open %}{% endblock %}">
+            <a class="nav-link {% block menu_typevehicule_actif %}{% endblock %}" href="{{ path('admin_parametres_typevehicule_index') }}">
+                <i class="nav-icon icon-list"></i> Type Véhicule</a>
+        </li>
+        <li class="nav-item {% block menu_penalites_open %}{% endblock %}">
+            <a class="nav-link {% block menu_penalites_actif %}{% endblock %}" href="{{ path('admin_parametres_penalite_index') }}">
+                <i class="nav-icon icon-list"></i> Pénalités</a>
+        </li>
+    </ul>
+</li> 
+<li class="nav-item nav-dropdown {% block menu_maha_open %}{% endblock %}">
+    <a class="nav-link nav-dropdown-toggle" href="#">
+        <i class="nav-icon fa fa-exclamation"></i> Controles</a>
+    <ul class="nav-dropdown-items">
+        <li class="nav-item {% block menu_categoriecontroles_open %}{% endblock %}">
+            <a class="nav-link {% block menu_categoriecontroles_actif %}{% endblock %}" href="{{ path('admin_parametres_categoriecontrole_index') }}">
+                <i class="nav-icon icon-list"></i> Catégorie de contrôle</a>
+        </li>
+        <li class="nav-item {% block menu_controle_open %}{% endblock %}">
+            <a class="nav-link {% block menu_controle_actif %}{% endblock %}" href="{{ path('admin_parametres_controle_index') }}">
+            <i class="nav-icon icon-list"></i> Points de contrôle</a>
+        </li>
+        <li class="nav-item {% block menu_codemaharesultat_open %}{% endblock %}">
+            <a class="nav-link {% block menu_codemaharesultat_actif %}{% endblock %}" href="{{ path('admin_parametres_codemaharesultat_index') }}">
+            <i class="nav-icon icon-list"></i> Codes des Résultats MAHA</a>
+        </li>
+        <li class="nav-item {% block menu_vehicule_open %}{% endblock %}">
+            <a class="nav-link {% block menu_vehicule_actif %}{% endblock %}" href="{{ path('admin_parametres_codemaharesultat_index') }}">
+            <i class="nav-icon icon-list"></i> Codes Véhicules MAHA</a>
+        </li>
+    </ul>
+</li>
+<li class="nav-item nav-dropdown {% block menu_centre_open %}{% endblock %}">
+    <a class="nav-link nav-dropdown-toggle" href="#">
+        <i class="nav-icon fa fa-home"></i> Centre</a>
+    <ul class="nav-dropdown-items">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_parametres_caisse_index') }}">
+                <i class="nav-icon icon-puzzle"></i> Caisse</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_parametres_piste_index') }}">
+                <i class="nav-icon icon-puzzle"></i> Piste</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_parametres_chaine_index') }}">
+            <i class="nav-icon icon-puzzle"></i> Chaine</a>
+        </li>
+    </ul>
+</li>
+<li class="nav-item nav-dropdown {% block menu_user_open %}{% endblock %}">
+    <a class="nav-link nav-dropdown-toggle" href="#">
+        <i class="nav-icon fa fa-male"></i> Utilisateurs</a>
+    <ul class="nav-dropdown-items">        
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_gestion_utilisateur_index') }}">
+                <i class="nav-icon icon-puzzle"></i> Agents
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_gestion_group_index') }}">
+               <i class="nav-icon icon-puzzle"></i> Groupes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_gestion_affectation_index') }}">
+                <i class="nav-icon icon-bank"></i> Affectation aux caisses</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('admin_gestion_affectationpiste_index') }}">
+                <i class="nav-icon icon-direction"></i> Affectation aux pistes</a>
+        </li>
+    </ul>
+</li>
+        

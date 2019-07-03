@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\Utilisateur;
 
 class DefaultController extends Controller
 {
@@ -25,5 +26,14 @@ class DefaultController extends Controller
     public function parametresAction(Request $request)
     {
         return $this->render('parametres/index.html.twig');
+    }
+    
+    /**
+     * @Route("/utilisateur/profil", name="utilisateur_profil")
+     */
+    public function profilAction(Request $request)
+    {
+        $utilisateur = $this->container->get('security.context')->getToken()->getUser(); 
+        return $this->render('utilisateur/show.html.twig', array('utilisateur' => $utilisateur));
     }
 }

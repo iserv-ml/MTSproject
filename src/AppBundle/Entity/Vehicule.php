@@ -37,8 +37,8 @@ class Vehicule
     /**
      * @var string $chassis
      *
-     * @ORM\Column(name="chassis", type="string", length=255, nullable=false)
-     * @Assert\NotBlank
+     * @ORM\Column(name="chassis", type="string", length=255, nullable=true)
+     * 
      */
     private $chassis;
     
@@ -49,6 +49,14 @@ class Vehicule
      * @Assert\NotBlank
      */
     private $carteGrise;
+    
+    /**
+     * @var string $commentaire
+     *
+     * @ORM\Column(name="commentaire", type="string", length=500, nullable=false)
+     * @Assert\NotBlank
+     */
+    private $commentaire;
     
     /**
      * @var string $immatriculation
@@ -63,7 +71,7 @@ class Vehicule
      *
      * @ORM\Column(name="dateCarteGrise", type="string", nullable=false)
      * @Assert\NotBlank
-     * @Assert\Date
+     * 
      */
     private $dateCarteGrise;
     
@@ -72,7 +80,7 @@ class Vehicule
      *
      * @ORM\Column(name="dateMiseCirculation", type="string", nullable=false)
      * @Assert\NotBlank
-     * @Assert\Date
+     * 
      */
     private $dateMiseCirculation;
     
@@ -103,8 +111,8 @@ class Vehicule
     /**
      * @var integer $kilometrage
      *
-     * @ORM\Column(name="kilometrage", type="integer", nullable=false)
-     * @Assert\NotBlank
+     * @ORM\Column(name="kilometrage", type="integer", nullable=true)
+     * 
      */
     private $kilometrage;
     
@@ -178,14 +186,14 @@ class Vehicule
     /**
     * @ORM\ManyToOne(targetEntity="Proprietaire", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="proprietaire_id", referencedColumnName="id")
-    * @Assert\NotBlank
+    * 
     */
     protected $proprietaire;
     
     /**
     * @ORM\ManyToOne(targetEntity="TypeVehicule", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="type_vehicule_id", referencedColumnName="id")
-    * @Assert\NotBlank
+    * 
     */
     protected $typeVehicule;
     
@@ -340,7 +348,15 @@ class Vehicule
     function setModeleId($modeleId) {
         $this->modeleId = $modeleId;
     }
-    
+    function getCommentaire() {
+        return $this->commentaire;
+    }
+
+    function setCommentaire($commentaire) {
+        $this->commentaire = $commentaire;
+    }
+
+        
     //BEHAVIOR
     /**
      * @var string $creePar
@@ -435,6 +451,117 @@ class Vehicule
     public function __construct()
     {
         //$this->users = new ArrayCollection();
+    }
+    
+    //TRAITEMENT PIECE D'IDENTITE
+    
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $path;
+    
+    /**
+     * @Assert\File(maxSize="10485760")
+     */
+    private $file;
+    
+    /**
+     * Get file.
+     *
+     * @return UploadedFile
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    public function getAbsolutePath()
+    {
+        return null === $this->path ? null : $this->getUploadRootDir().'/'.$this->path;
+    }
+
+    public function getWebPath()
+    {
+        return null === $this->path ? null : $this->getUploadDir().'/'.$this->path;
+    }
+
+    protected function getUploadRootDir()
+    {
+        // le chemin absolu du répertoire où les documents uploadés doivent être sauvegardés
+        return __DIR__.'/../../../web/'.$this->getUploadDir();
+    }
+
+    protected function getUploadDir()
+    {
+        // on se débarrasse de « __DIR__ » afin de ne pas avoir de problème lorsqu'on affiche
+        // le document/image dans la vue.
+        return 'uploads/vehicules';
+    }
+    
+    private $temp;
+
+    /**
+     * Set file.
+     *
+     * @param UploadedFile $file
+     */
+    public function setFile(UploadedFile $file = null)
+    {
+        $this->file = $file;
+        // check if we have an old image path
+        if (isset($this->path)) {
+            // store the old name to delete after the update
+            $this->temp = $this->path;
+            $this->path = null;
+        } else {
+            $this->path = 'initial';
+        }
+    }
+
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function preUpload()
+    {
+        if (null !== $this->getFile()) {
+            // do whatever you want to generate a unique name
+            $filename = sha1(uniqid(mt_rand(), true));
+            $this->path = $filename.'.'.$this->getFile()->guessExtension();
+        }
+    }
+
+    /**
+     * @ORM\PostPersist()
+     * @ORM\PostUpdate()
+     */
+    public function upload()
+    {
+        if (null === $this->getFile()) {
+            return;
+        }
+
+        // if there is an error when moving the file, an exception will
+        // be automatically thrown by move(). This will properly prevent
+        // the entity from being persisted to the database on error
+        $this->getFile()->move($this->getUploadRootDir(), $this->path);
+
+        // check if we have an old image
+        if (isset($this->temp)) {
+            // delete the old image
+            unlink($this->getUploadRootDir().'/'.$this->temp);
+            // clear the temp image path
+            $this->temp = null;
+        }
+        $this->file = null;
+    }
+
+    public function getPath() {
+        return $this->path;
+    }
+
+    public function setPath($path) {
+        $this->path = $path;
     }
 
 }

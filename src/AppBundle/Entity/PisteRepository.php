@@ -32,7 +32,7 @@ class PisteRepository extends EntityRepository
         return  $qb->getQuery()->getSingleScalarResult();
      }
     
-     public function trouverParLibelle($libelle) {
+    public function trouverParLibelle($libelle) {
        try{ 
          $result = $this->getEntityManager()
             ->createQuery(
