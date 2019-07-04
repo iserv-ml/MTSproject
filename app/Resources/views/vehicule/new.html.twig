@@ -23,9 +23,11 @@
 {% block javascripts -%}
   <script>
   $( function() {
-      $( "#appbundle_vehicule_genre" ).prop("disabled", true);
-    $( "#appbundle_vehicule_dateCarteGrise" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y" });
-    $( "#appbundle_vehicule_dateMiseCirculation" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y" });
+        $( "#appbundle_vehicule_genre" ).prop("disabled", true);
+        $( "#appbundle_vehicule_dateCarteGrise" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y" });
+        $( "#appbundle_vehicule_dateMiseCirculation" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y" });
+        $( "#appbundle_vehicule_dateValidite" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y" });
+        $( "#appbundle_vehicule_dateImmatriculationPrecedent" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y" });
     
     $( "#appbundle_vehicule_ptac" ).change(function() {
         var ptac = $( "#appbundle_vehicule_ptac" ).val();

@@ -52,6 +52,10 @@
                 <td>{{ proprietaire.email }}</td>
             </tr>
             <tr>
+                <th>Fonction</th>
+                <td>{{ proprietaire.fonction }}</td>
+            </tr>
+            <tr>
                 <th>Type</th>
                 <td>{% if proprietaire.personneMorale %}Entreprise{% else %}Particulier{% endif %}</td>
             </tr>

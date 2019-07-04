@@ -16,8 +16,8 @@ class VisiteRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.actif, r.surRendezVous, c.numero as caisse, p.numero as piste FROM AppBundle:Chaine r LEFT JOIN r.caisse c LEFT JOIN r.piste p '
-                    . ' WHERE c.numero like :search or p.numero like :search'
+                'SELECT r.id, v.immatriculation, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste, ca.numero as caisse FROM AppBundle:Visite r LEFT JOIN r.vehicule v LEFT JOIN v.proprietaire p LEFT JOIN r.chaine c LEFT JOIN c.piste pi LEFT JOIN c.caisse ca'
+                    . ' WHERE v.immatriculation like :search '
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setFirstResult($start)

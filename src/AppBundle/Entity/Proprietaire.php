@@ -90,6 +90,14 @@ class Proprietaire
     private $email;
     
     /**
+     * @var string $fonction
+     *
+     * @ORM\Column(name="fonction", type="string", length=255, nullable=true)
+     * 
+     */
+    private $fonction;
+    
+    /**
      * @var boolean $personneMorale
      *
      * @ORM\Column(name="personneMorale", type="boolean", nullable=false)

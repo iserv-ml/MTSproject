@@ -71,6 +71,17 @@ class VisiteController extends Controller
         $piste = $admin ? "ADMIN" : "PISTE N° ".$affectation->getPiste()->getNumero();
         return $this->render('visite/controles.html.twig', array('piste'=>$piste));
     }
+    
+    /**
+     * Lists all visite entities.
+     *
+     * @Route("/delivrance", name="visite_delivrance")
+     * @Method("GET")
+     */
+    public function delivranceAction()
+    {
+        return $this->render('visite/delivrance.html.twig');
+    }
 
     /**
      * Creates a new visite entity.
@@ -408,6 +419,57 @@ class VisiteController extends Controller
             if($statut == 1){
                 $action .= " <a title='Controller' class='btn btn-success' href='".$this->generateUrl('visite_controleur', array('id'=> $id ))."'><i class='fa fa-config' ></i> Controler</a>";
             }elseif($statut > 1){
+                $action .= " <a title='Détail' class='btn btn-success' href='".$this->generateUrl('visite_show', array('id'=> $id ))."'><i class='fa fa-plus' ></i> Voir le rapport</a>";
+            }
+        }
+        return $action;
+    }
+    
+    /**
+     * Liste toutes les visites 
+     *
+     * @Route("/visite/delivranceajax/liste", name="delivranceajax")
+     * 
+     * 
+     */
+    public function delivranceajaxAction(Request $request)
+    {
+        $search = $request->get('search')['value'];
+        $col = $request->get('order')[0]['column'];
+        $dir = $request->get('order')[0]['dir'];
+        $em = $this->getDoctrine()->getManager();
+	$aColumns = array( 'v.immatriculation', 'p.nom', 'p.prenom', 'r.revisite', 'r.statut');
+        $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
+        $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
+        $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
+        $sdir = ($dir =='asc') ? 'asc' : 'desc';
+        $searchTerm = ($search != '') ? $search : NULL;
+        $rResult = $em->getRepository('AppBundle:Visite')->findAllAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
+        $iTotal = $em->getRepository('AppBundle:Visite')->countRows();
+        
+	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
+	foreach ( $rResult as  $aRow )
+	{
+            $action = $this->genererDelivranceAction($aRow['id'], $aRow['statut']);
+            $revisite = $aRow['revisite'] == 1 ? "REVISITE" : "NORMALE";
+            switch($aRow['statut']){
+                case 0 : $etat = "QUITTANCE A PAYER";break;
+                case 1 : $etat = "A CONTROLER";break;
+                case 2 : $etat = "SUCCES";break;
+                case 3 : $etat = "ECHEC";break;
+                case 3 : $etat = "CERTIFICAT DELIVRE";break;
+                case 3 : $etat = "ANNULEE";break;
+            }
+            
+            $output['aaData'][] = array($aRow['immatriculation'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['caisse'].'/'.$aRow['piste'], $action);
+	}
+	return new Response(json_encode( $output ));    
+    }
+    
+    private function genererDelivranceAction($id, $statut){
+        $action = "";
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_DELIVRANCE')){
+            if($statut > 1){
                 $action .= " <a title='Détail' class='btn btn-success' href='".$this->generateUrl('visite_show', array('id'=> $id ))."'><i class='fa fa-plus' ></i> Voir le rapport</a>";
             }
         }

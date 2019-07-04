@@ -21,6 +21,7 @@ class ProprietaireType extends AbstractType
                 ->add('autreTelephone')
                 ->add('adresse')
                 ->add('email')
+                ->add('fonction')
                 ->add('personneMorale')
                 ->add('typePiece');
     }

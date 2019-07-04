@@ -41,6 +41,8 @@
             $("#appbundle_vehicule_usageAjax" ).val("{{- vehicule.typeVehicule.usage.libelle -}}");
             $("#appbundle_vehicule_carrosserieId" ).val("{{- vehicule.typeVehicule.carrosserie.id -}}");
             $("#appbundle_vehicule_carrosserieAjax" ).val("{{- vehicule.typeVehicule.carrosserie.libelle -}}");
+            $( "#appbundle_vehicule_dateValidite" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y" });
+        $( "#appbundle_vehicule_dateImmatriculationPrecedent" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y" });
     
     $( "#appbundle_vehicule_ptac" ).change(function() {
         var ptac = $( "#appbundle_vehicule_ptac" ).val();

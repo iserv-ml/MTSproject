@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Vehicule
@@ -53,8 +54,8 @@ class Vehicule
     /**
      * @var string $commentaire
      *
-     * @ORM\Column(name="commentaire", type="string", length=500, nullable=false)
-     * @Assert\NotBlank
+     * @ORM\Column(name="commentaire", type="string", length=500, nullable=true)
+     * 
      */
     private $commentaire;
     
@@ -67,13 +68,109 @@ class Vehicule
     private $immatriculation;
     
     /**
-     * @var datetime $dateCarteGrise
+     * @var date $dateCarteGrise
      *
      * @ORM\Column(name="dateCarteGrise", type="string", nullable=false)
      * @Assert\NotBlank
      * 
      */
     private $dateCarteGrise;
+    
+    /**
+     * @var string $dateValidite
+     *
+     * @ORM\Column(name="dateValidite", type="string", nullable=false)
+     * @Assert\NotBlank
+     * 
+     */
+    private $dateValidite;
+    
+    /**
+     * @var string $energie
+     *
+     * @ORM\Column(name="energie", type="string", nullable=false)
+     * @Assert\NotBlank
+     * 
+     */
+    private $energie;
+    
+    /**
+     * @var integer $pv
+     *
+     * @ORM\Column(name="pv", type="integer", nullable=false)
+     * @Assert\NotBlank
+     * 
+     */
+    private $pv;
+    
+    /**
+     * @var integer $cu
+     *
+     * @ORM\Column(name="cu", type="integer", nullable=false)
+     * @Assert\NotBlank
+     * 
+     */
+    private $cu;
+    
+    /**
+     * @var integer $puissanceReelle
+     *
+     * @ORM\Column(name="puissanceReelle", type="integer", nullable=true)
+     * 
+     */
+    private $puissanceReelle;
+    
+    /**
+     * @var integer $capacite
+     *
+     * @ORM\Column(name="capacite", type="integer", nullable=true)
+     * 
+     */
+    private $capacite;
+    
+    /**
+     * @var string $moteur
+     *
+     * @ORM\Column(name="moteur", type="string", nullable=true)
+     *
+     * 
+     */
+    private $moteur;
+    
+    /**
+     * @var string $typeChassis
+     *
+     * @ORM\Column(name="typeChassis", type="string", nullable=false)
+     * @Assert\NotBlank
+     * 
+     */
+    private $typeChassis;
+    
+    /**
+     * @var string $immatriculationPrecedent
+     *
+     * @ORM\Column(name="immatriculationPrecedent", type="string", nullable=true)
+     * 
+     * 
+     */
+    private $immatriculationPrecedent;
+    
+    /**
+     * @var string $dateImmatriculationPrecedent
+     *
+     * @ORM\Column(name="dateImmatriculationPrecedent", type="string", nullable=true)
+     * 
+     */
+    private $dateImmatriculationPrecedent;
+    
+    /**
+     * @var string $typeCarte
+     *
+     * @ORM\Column(name="typeCarte", type="string", nullable=false)
+     * @Assert\NotBlank
+     * 
+     */
+    private $typeCarte;    
     
     /**
      * @var datetime $dateMiseCirculation
@@ -355,8 +452,95 @@ class Vehicule
     function setCommentaire($commentaire) {
         $this->commentaire = $commentaire;
     }
+    function getDateValidite() {
+        return $this->dateValidite;
+    }
 
-        
+    function getEnergie() {
+        return $this->energie;
+    }
+
+    function getPv() {
+        return $this->pv;
+    }
+
+    function getCu() {
+        return $this->cu;
+    }
+
+    function getPuissanceReelle() {
+        return $this->puissanceReelle;
+    }
+
+    function getCapacite() {
+        return $this->capacite;
+    }
+
+    function getMoteur() {
+        return $this->moteur;
+    }
+
+    function getTypeChassis() {
+        return $this->typeChassis;
+    }
+
+    function getImmatriculationPrecedent() {
+        return $this->immatriculationPrecedent;
+    }
+
+    function getDateImmatriculationPrecedent() {
+        return $this->dateImmatriculationPrecedent;
+    }
+
+    function getTypeCarte() {
+        return $this->typeCarte;
+    }
+
+    function setDateValidite($dateValidite) {
+        $this->dateValidite = $dateValidite;
+    }
+
+    function setEnergie($energie) {
+        $this->energie = $energie;
+    }
+
+    function setPv($pv) {
+        $this->pv = $pv;
+    }
+
+    function setCu($cu) {
+        $this->cu = $cu;
+    }
+
+    function setPuissanceReelle($puissanceReelle) {
+        $this->puissanceReelle = $puissanceReelle;
+    }
+
+    function setCapacite($capacite) {
+        $this->capacite = $capacite;
+    }
+
+    function setMoteur($moteur) {
+        $this->moteur = $moteur;
+    }
+
+    function setTypeChassis($typeChassis) {
+        $this->typeChassis = $typeChassis;
+    }
+
+    function setImmatriculationPrecedent($immatriculationPrecedent) {
+        $this->immatriculationPrecedent = $immatriculationPrecedent;
+    }
+
+    function setDateImmatriculationPrecedent($dateImmatriculationPrecedent) {
+        $this->dateImmatriculationPrecedent = $dateImmatriculationPrecedent;
+    }
+
+    function setTypeCarte($typeCarte) {
+        $this->typeCarte = $typeCarte;
+    }
+
+            
     //BEHAVIOR
     /**
      * @var string $creePar

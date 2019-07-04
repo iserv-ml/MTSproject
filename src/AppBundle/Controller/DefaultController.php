@@ -5,7 +5,10 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Entity\Utilisateur;
+use AppBundle\Entity\Visite;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 
 class DefaultController extends Controller
 {
@@ -15,9 +18,7 @@ class DefaultController extends Controller
     public function indexAction(Request $request)
     {
         // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', array(
-            'base_dir' => realpath($this->container->getParameter('kernel.root_dir').'/..').DIRECTORY_SEPARATOR,
-        ));
+        return $this->render('default/index.html.twig');
     }
     
     /**
@@ -35,5 +36,39 @@ class DefaultController extends Controller
     {
         $utilisateur = $this->container->get('security.context')->getToken()->getUser(); 
         return $this->render('utilisateur/show.html.twig', array('utilisateur' => $utilisateur));
+    }
+    
+    /**
+     * Imprimer un rapport de visite.
+     *
+     * @Route("/{id}/rapport/imprimer", name="rapport_imprimer")
+     * @Method("GET")
+     */
+    public function rapportAction(Visite $visite)
+    {
+        if(!$visite){
+            throw $this->createNotFoundException("La visite demandée n'est pas disponible.");
+        }
+        $em = $this->getDoctrine()->getManager();
+        $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($visite->getId());
+        $numero = $visite->getNumeroCertificat();
+        $chemin = __DIR__.'/../../../web/visites/rapports/rapport_'.$numero.'.pdf';
+        if (file_exists($chemin)) {
+            unlink($chemin);
+        }      
+        
+        $this->get('knp_snappy.pdf')->generateFromHtml(
+            $this->renderView(
+                'default/rapport.html.twig',
+                array(
+                    'visite'  => $visite, 'quittance' => $quittance,
+                )
+            ),
+            $chemin
+        );
+        
+        $response = new BinaryFileResponse($chemin);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        return $response;
     }
 }

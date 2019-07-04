@@ -12,7 +12,16 @@
 {% endblock %}
 {% block pagetitle -%}RAPPORT DE VISITE{% endblock %}
 {% block actions %}
-    <label class="btn btn-outline-secondary"><a href="{{ path('visite_controle') }}">Liste des controles</a></label>
+    {% if is_granted('ROLE_CONTROLLEUR') %} 
+        <label class="btn btn-outline-secondary"><a href="{{ path('visite_controle') }}">Liste des controles</a></label>
+    {% endif %}
+    {% if is_granted('ROLE_DELIVRANCE') %}
+        <label class="btn btn-outline-secondary"><a href="{{ path('visite_delivrance') }}">Liste des visites</a></label>
+        <label class="btn btn-outline-secondary"><a href="{{ path('rapport_imprimer', { 'id': visite.id }) }}">Imprimer le rapport</a></label>
+        {% if visite.statut == 2 or visite.statut == 4 %}
+            <label class="btn btn-outline-secondary"><a href="#">Imprimer le certificat</a></label>
+        {% endif %}
+    {% endif %}
 {% endblock %}
 {% block body %}
     <table class="table table-hover">
