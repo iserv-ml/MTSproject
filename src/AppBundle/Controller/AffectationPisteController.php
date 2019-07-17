@@ -177,7 +177,7 @@ class AffectationPisteController extends Controller
     }
     
     private function genererAction($id){
-        $action = "<a class='btn btn-success' href='".$this->generateUrl('admin_gestion_affectationpiste_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
+        $action = "<a title='Détail' class='btn btn-success' href='".$this->generateUrl('admin_gestion_affectationpiste_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
         return $action;
     }
     

@@ -14,22 +14,21 @@
     <span style="font-weight: bolder">N&deg; de chassis : {{ visite.vehicule.chassis }}</span>
 </div>
 <table border="1" style="width:1150px;" cellpadding="0" cellspacing="0">
-     <tbody>
-         <tr>
-             <td>Bilan de la visite technique</td>
-             <td>D&eacute;tails</td>
-             <td>R&eacute;sultats</td>
-         </tr>
-         <tr>
-             <td>Plaque de ripage</td>
-             <td></td>
-             <td></td>
-         </tr>
-         <tr>
-             <td>Essieu avant</td>
-             <td><= 7m/km OK.</td>
-             <td></td>
-         </tr>
+    <tbody>
+        <tr>
+            <td>Bilan de la visite technique</td>
+            <td>D&eacute;tails</td>
+            <td>R&eacute;sultats</td>
+        </tr>
+        {% if visite.resultats %}
+            {% for resultat in visite.resultats %}
+                <tr>
+                    <td>{{ resultat.controle.libelle }}</td>
+                    <td>{{ resultat.controle.detail }}</td>
+                    <td>{{ resultat.commentaire }}</td>
+                </tr>
+            {% endfor %}
+        {% endif %}
      </tbody>
 </table>
 <div style='margin-top:15px'>

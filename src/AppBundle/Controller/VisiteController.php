@@ -28,12 +28,14 @@ class VisiteController extends Controller
         $em = $this->getDoctrine()->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
         $affectation = $em->getRepository('AppBundle:Affectation')->derniereAffectation($user->getId());
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
-        if(!$affectation && !$admin){
+        if(!$centre || (!$affectation && !$admin)){
             throw $this->createNotFoundException("Vous n'êtes affecté à aucune caisse. Contacter l'administrateur.");
         }
-        $caisse = $admin ? "ADMIN" : "CAISSE N° ".$affectation->getCaisse()->getNumero();
-        return $this->render('visite/quittance.html.twig', array('caisse'=>$caisse));
+        $caisse = $affectation->getCaisse();
+        $profil = $admin ? "ADMIN" : "CAISSE N° ".$caisse->getNumero();
+        return $this->render('visite/quittance.html.twig', array('profil'=>$profil, 'caisse'=>$caisse, 'centre'=>$centre,));
     }
     
     /**
@@ -122,6 +124,10 @@ class VisiteController extends Controller
         if(!$vehicule){
             throw $this->createNotFoundException("Ooops... Une erreur s'est produite.");
         }
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre){
+            throw $this->createNotFoundException("Le centre n'est pas encore ouvert!");
+        }
         $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($vehicule->getId());
         //$visiteParent = $em->getRepository('AppBundle:Visite')->visiteParent($vehicule->getId());
         /*if($visiteParent == -1){
@@ -160,7 +166,7 @@ class VisiteController extends Controller
             throw $this->createNotFoundException("CHAINE OPTIMALE");
         }
         $visite = new Visite();
-        $visite->aiguiller($vehicule, 0, $chaineOptimale, $visiteParent);
+        $visite->aiguiller($vehicule, 0, $chaineOptimale, $visiteParent, $centre);
         $em->persist($visite);
         $em->flush();
         $this->get('session')->getFlashBag()->add('notice', 'Aiguillage effectué.');
@@ -183,8 +189,34 @@ class VisiteController extends Controller
             $date = new \DateTime($date1);
             $date->add(new \DateInterval('P'.$visite->getVehicule()->getTypeVehicule()->getDelai().'D')); // P1D means a period of 1 day
             $date2 = $date->format('Y-m-d');
+        }else{
+            $date2 = null;
         }
         return $this->render('visite/show.html.twig', array(
+            'visite' => $visite,
+            'delete_form' => $deleteForm->createView(),
+            'dateRevisite' => $date2,
+        ));
+    }
+    
+    /**
+     * Finds and displays a visite entity.
+     *
+     * @Route("/{id}/delivrance", name="visite_show_delivrance")
+     * @Method("GET")
+     */
+    public function showdelivranceAction(Visite $visite)
+    {
+        $deleteForm = $this->createDeleteForm($visite);
+        if($visite->getStatut()==3){
+            $date1 = $visite->getDate()->format('Y-m-d');
+            $date = new \DateTime($date1);
+            $date->add(new \DateInterval('P'.$visite->getVehicule()->getTypeVehicule()->getDelai().'D')); // P1D means a period of 1 day
+            $date2 = $date->format('Y-m-d');
+        }else{
+            $date2 = null;
+        }
+        return $this->render('visite/show.delivrance.html.twig', array(
             'visite' => $visite,
             'delete_form' => $deleteForm->createView(),
             'dateRevisite' => $date2,
@@ -457,8 +489,8 @@ class VisiteController extends Controller
                 case 1 : $etat = "A CONTROLER";break;
                 case 2 : $etat = "SUCCES";break;
                 case 3 : $etat = "ECHEC";break;
-                case 3 : $etat = "CERTIFICAT DELIVRE";break;
-                case 3 : $etat = "ANNULEE";break;
+                case 4 : $etat = "CERTIFICAT DELIVRE";break;
+                case 5 : $etat = "ANNULEE";break;
             }
             
             $output['aaData'][] = array($aRow['immatriculation'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['caisse'].'/'.$aRow['piste'], $action);
@@ -470,7 +502,7 @@ class VisiteController extends Controller
         $action = "";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_DELIVRANCE')){
             if($statut > 1){
-                $action .= " <a title='Détail' class='btn btn-success' href='".$this->generateUrl('visite_show', array('id'=> $id ))."'><i class='fa fa-plus' ></i> Voir le rapport</a>";
+                $action .= " <a title='Détail' class='btn btn-success' href='".$this->generateUrl('visite_show_delivrance', array('id'=> $id ))."'><i class='fa fa-plus' ></i> Voir le rapport</a>";
             }
         }
         return $action;
@@ -520,6 +552,11 @@ class VisiteController extends Controller
             }
             if($succes){
                 $visite->setStatut(2);
+                $date1 = $visite->getDate()->format('Y-m-d');
+                $date = new \DateTime($date1);
+                $date->add(new \DateInterval('P'.$visite->getVehicule()->getTypeVehicule()->getValidite().'M')); // P1D means a period of 1 day
+                $visite->setDateValidite($date);
+                $visite->setNumeroCertificat('BKO'.\time());
             }else{
                 $visite->setStatut(3);
             }
@@ -530,6 +567,8 @@ class VisiteController extends Controller
                 $date = new \DateTime($date1);
                 $date->add(new \DateInterval('P'.$visite->getVehicule()->getTypeVehicule()->getDelai().'D')); // P1D means a period of 1 day
                 $date2 = $date->format('Y-m-d');
+            }else{
+                $date2 = null;
             }
             return $this->render('visite/show.html.twig', array(
                 'controles' => $controles,

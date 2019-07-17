@@ -99,6 +99,32 @@ class CaisseController extends Controller
             'delete_form' => $deleteForm->createView(),
         ));
     }
+    
+    /**
+     * Displays a form to edit an existing caisse entity.
+     *
+     * @Route("/{id}/solde", name="admin_parametres_caisse_solde")
+     * @Method({"GET", "POST"})
+     */
+    public function soldeAction(Request $request, Caisse $caisse)
+    {
+        if (!$caisse) {
+            throw $this->createNotFoundException("La caisse demandée n'est pas disponible.");
+        }
+        $editForm = $this->createForm('AppBundle\Form\CaisseSoldeType', $caisse);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
+            return $this->redirectToRoute('admin_gestion_centre_ouverture');
+        }
+
+        return $this->render('caisse/solde.html.twig', array(
+            'caisse' => $caisse,
+            'edit_form' => $editForm->createView(),
+        ));
+    }
 
     /**
      * Deletes a caisse entity.
@@ -189,17 +215,18 @@ class CaisseController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $actif = ($aRow['actif'] == 1) ? "Active" : "Inactive";
+            $ouvert = ($aRow['ouvert'] == 1) ? "Ouverte" : "Fermée";
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['numero'], $actif, "", $action);
+            $output['aaData'][] = array($aRow['numero'], $actif, $ouvert, $action);
 	}
 	return new Response(json_encode( $output ));    
     }
     
     private function genererAction($id){
-        $action = "<a class='btn btn-success' href='".$this->generateUrl('admin_parametres_caisse_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
+        $action = "<a title='Détail' class='btn btn-success' href='".$this->generateUrl('admin_parametres_caisse_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
-                $action .= " <a class='btn btn-info' href='".$this->generateUrl('admin_parametres_caisse_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
-                $action .= " <a class='btn btn-danger' href='".$this->generateUrl('admin_parametres_caisse_delete_a', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
+                $action .= " <a title='Modifier' class='btn btn-info' href='".$this->generateUrl('admin_parametres_caisse_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
+                $action .= " <a title='Supprimer' class='btn btn-danger' href='".$this->generateUrl('admin_parametres_caisse_delete_a', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
         }
         return $action;
     }
@@ -244,5 +271,85 @@ class CaisseController extends Controller
             $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getActif());$col++;
             $ligne++;
         }
+    }
+    
+    /**
+     * Confirmation de l'ouverture d'une caisse.
+     *
+     * @Route("/ouverture/confirmer/{id}", name="caisse_ouverture_confirmer")
+     * @Method("GET")
+     */
+    public function ouvertureconfirmerAction(Caisse $caisse)
+    {
+        if(!$caisse){
+            throw $this->createNotFoundException("Cette opération est interdite!");
+        }
+        return $this->render('caisse/ouverture.confirmer.html.twig', array(
+            'solde' => $caisse->getSoldeInitial(),'numero' => $caisse->getNumero(),
+        ));
+    }
+    
+    /**
+     * Confirmation de la fermeture de la caisse.
+     *
+     * @Route("/fermeture/confirmer/{id}", name="caisse_fermeture_confirmer")
+     * @Method("GET")
+     */
+    public function fermetureconfirmerAction(Caisse $caisse)
+    {
+        if(!$caisse){
+            throw $this->createNotFoundException("Cette opération est interdite!");
+        }
+        return $this->render('caisse/fermeture.confirmer.html.twig', array(
+            'caisse' => $caisse,
+        ));
+    }
+    
+    /**
+     * Ouvre la caisse.
+     *
+     * @Route("/ouvrir/{id}", name="admin_parametres_caisse_ouvrir")
+     * @Method({"GET", "POST"})
+     */
+    public function ouvrirAction(Caisse $caisse)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre || !$centre->getEtat()){
+            throw $this->createNotFoundException("Cette opération est interdite!");
+        }
+        if(!$caisse->getOuvert()){
+            $caisse->setOuvert(true);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'La caisse est maintenant ouverte.');
+        }else{
+            $this->get('session')->getFlashBag()->add('notice', 'La caisse est déjà ouverte.');
+        }
+        
+        return $this->render('visite/quittance.html.twig', array('profil'=>'CAISSE N° '.$caisse->getNumero(), 'caisse'=>$caisse, 'centre'=>$centre,));
+    }
+    
+    /**
+     * Ferme la caisse.
+     *
+     * @Route("/fermer/{id}", name="admin_parametres_caisse_fermer")
+     * @Method({"GET", "POST"})
+     */
+    public function fermerAction(Caisse $caisse)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre || !$centre->getEtat() || !$caisse){
+            throw $this->createNotFoundException("Cette opération est interdite!");
+        }
+        if($caisse->getOuvert()){
+            $centre->encaisser($caisse->getSolde());
+            $caisse->fermer();
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'La caisse est maintenant fermée.');
+        }else{
+            $this->get('session')->getFlashBag()->add('notice', 'La caisse est déjà fermée.');
+        }
+        return $this->render('visite/quittance.html.twig', array('profil'=>'CAISSE N° '.$caisse->getNumero(), 'caisse'=>$caisse, 'centre'=>$centre,));
     }
 }

@@ -12281,7 +12281,7 @@ canvas {
 .navbar-nav .nav-link.active,
 .navbar-nav .nav-link.active:hover,
 .navbar-nav .nav-link.active:focus {
-  color: #2f353a;
+  color: #f86c6b ;
 }
 
 .navbar-divider {
@@ -15216,4 +15216,13 @@ a.selected {
  background-color:#1F75CC;
  color:white;
  z-index:100;
+}
+
+.flash-notice{
+    color : #4dbd74;
+    font-weight : bold;
+}
+.flash-error{
+    color : #f86c6b;
+    font-weight : bold;
 }

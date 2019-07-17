@@ -271,10 +271,14 @@ class Quittance
     
     public function calculerRetard($derniereVisite){
         if($derniereVisite == null){
-            $date = \DateTime::createFromFormat('m/d/Y',$this->visite->getVehicule()->getDateMiseCirculation());
+            $date = \DateTime::createFromFormat('Y-m-d',$this->visite->getVehicule()->getDateMiseCirculation());
             $retard = $this->joursDeRetard($date);
         }else{
-            $retard = $this->joursDeRetard($derniereVisite->getDateValidite());
+            if($derniereVisite->getStatut() == 3){
+                $retard = 0;
+            }else{
+                $retard = $this->joursDeRetard($derniereVisite->getDateValidite());
+            }
         }
         return $retard;
     }
@@ -282,7 +286,6 @@ class Quittance
     public function joursDeRetard($dateLimite){
         $date = new \DateTime();
         $ecart = \date_diff($date,$dateLimite, false);
-        
         return ($ecart && $ecart->days > 0) ? $ecart->days : 0;
     }
     
@@ -292,6 +295,8 @@ class Quittance
         $this->setTimbre($this->getVisite()->getVehicule()->getTypeVehicule()->getTimbre());
         if($penalite){
             $this->setPenalite($montant*$penalite->getPourcentage()/100);
+        }else{
+            $this->setPenalite(0);
         }
         $this->retard = $retard;
         $this->setNumero('BKO'.\time());

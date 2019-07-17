@@ -71,4 +71,74 @@ class DefaultController extends Controller
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         return $response;
     }
+    
+    /**
+     * Imprimer un certificat de visite.
+     *
+     * @Route("/{id}/certificat/volet1", name="certificat_imprimer_1")
+     * @Method("GET")
+     */
+    public function certificatAction(Visite $visite)
+    {
+        if(!$visite){
+            throw $this->createNotFoundException("La visite demandée n'est pas disponible.");
+        }
+        $chemin = __DIR__.'/../../../web/visites/certificats/certificat_'.$visite->getNumeroCertificat().'.pdf';
+        if (file_exists($chemin)) {
+            unlink($chemin);
+        }else{
+            $em = $this->getDoctrine()->getManager();
+            $visite->setStatut(4);
+            $em->flush();
+        }     
+        
+        $this->get('knp_snappy.pdf')->generateFromHtml(
+            $this->renderView(
+                'default/certificat.html.twig',
+                array(
+                    'visite'  => $visite,
+                )
+            ),
+            $chemin
+        );
+        
+        $response = new BinaryFileResponse($chemin);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        return $response;
+    }
+    
+    /**
+     * Imprimer un certificat de visite.
+     *
+     * @Route("/{id}/certificat/volet2", name="certificat_imprimer_2")
+     * @Method("GET")
+     */
+    public function certificatvoletAction(Visite $visite)
+    {
+        if(!$visite){
+            throw $this->createNotFoundException("La visite demandée n'est pas disponible.");
+        }
+        $chemin = __DIR__.'/../../../web/visites/certificats/volet2_'.$visite->getNumeroCertificat().'.pdf';
+        if (file_exists($chemin)) {
+            unlink($chemin);
+        }else{
+            $em = $this->getDoctrine()->getManager();
+            $visite->setStatut(4);
+            $em->flush();
+        }     
+        
+        $this->get('knp_snappy.pdf')->generateFromHtml(
+            $this->renderView(
+                'default/volet2.html.twig',
+                array(
+                    'visite'  => $visite,
+                )
+            ),
+            $chemin
+        );
+        
+        $response = new BinaryFileResponse($chemin);
+        $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
+        return $response;
+    }
 }

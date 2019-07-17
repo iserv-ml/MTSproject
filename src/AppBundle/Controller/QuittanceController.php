@@ -117,7 +117,7 @@ class QuittanceController extends Controller
             $quittance->setPaye(1);
             $quittance->getVisite()->setStatut(1);
             $caisse = $quittance->getVisite()->getChaine()->getCaisse();
-            $caisse->encaisser($quittance->getMontantVisite());
+            $caisse->encaisser($quittance->getMontantVisite(), $quittance->getVisite()->getRevisite());
             $this->get('session')->getFlashBag()->add('notice', 'Quittance encaissée.');
             $em->flush();
         }

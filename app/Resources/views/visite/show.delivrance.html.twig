@@ -1,0 +1,93 @@
+{% extends '::base.html.twig' %}
+{% block menu -%}
+{% embed  '::visite/menu.html.twig' %}
+{% block menu_delivrance_actif %}active{% endblock %}
+{% endembed %}
+{% endblock %}
+{% block menu_controle_actif %}active{% endblock %}
+{% block menu_caisse_actif %}active{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('visite_delivrance') }}">Délivrance</a></li>
+          <li class="breadcrumb-item">Rapport</li>
+    </ol>
+{% endblock %}
+{% block pagetitle -%}RAPPORT DE VISITE{% endblock %}
+{% block actions %}
+    {% if is_granted('ROLE_DELIVRANCE') %}
+        <label class="btn btn-outline-secondary"><a href="{{ path('visite_delivrance') }}">LISTE DELIVRANCE</a></label>
+        <label class="btn btn-outline-secondary"><a href="{{ path('rapport_imprimer', { 'id': visite.id }) }}">IMPRIMER LE RAPPORT</a></label>
+        {% if visite.statut == 2 or visite.statut == 4 %}
+            <label class="btn btn-outline-secondary"><a href="{{ path('certificat_imprimer_1', { 'id': visite.id }) }}">VOLET 1</a></label>
+        {% endif %}
+        {% if visite.statut == 2 or visite.statut == 4 %}
+            <label class="btn btn-outline-secondary"><a href="{{ path('certificat_imprimer_2', { 'id': visite.id }) }}">VOLET 2</a></label>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+{% block body %}
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th>Statut</th>
+                <td>
+                    {%if visite.statut == 0 %}EN ATTENTE DU PAIEMENT
+                    {%elseif visite.statut == 1%}EN ATTENTE DU CONTROLE
+                    {%elseif visite.statut == 2%}SUCCES - EN ATTENTE DU CERTIFICAT
+                    {%elseif visite.statut == 3%}ECHEC - REVISITE AVANT LE {% if dateRevisite %}{{ dateRevisite|date('Y-m-d') }}{% endif %}
+                    {%elseif visite.statut == 4%}CERTIFICAT DELIVRE
+                    {%elseif visite.statut == 5%}ANNULEE
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Numero certificat</th>
+                <td>{{ visite.numeroCertificat }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Date validite</th>
+                <td>{% if visite.dateValidite %}{{ visite.dateValidite|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Type de visite</th>
+                <td>{% if visite.revisite %}Revisite{% else %}Normale{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Créé par</th>
+                <td>{{ visite.creePar }}</td>
+            </tr>
+            <tr>
+                <th>Modifié par</th>
+                <td>{{ visite.modifierPar }}</td>
+            </tr>
+            <tr>
+                <th>Date de création</th>
+                <td>{% if visite.dateCreation %}{{ visite.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Date de dernière modification</th>
+                <td>{% if visite.dateModification %}{{ visite.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% if visite.resultats %}
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th colspan = "2" align="center">RESULTATS</th>
+            </tr>
+            {% for resultat in visite.resultats %}
+                <tr>
+                    <th>{{ resultat.controle.libelle }}</th>
+                    <td>{{ resultat.commentaire }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+        {% endif %}
+{% endblock %}

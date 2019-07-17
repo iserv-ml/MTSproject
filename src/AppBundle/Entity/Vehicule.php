@@ -64,6 +64,12 @@ class Vehicule
      *
      * @ORM\Column(name="immatriculation", type="string", length=255, nullable=false)
      * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = 10,
+     *      max = 10,
+     *      minMessage = "Veuillez saisir une immatriculation valide de 8 charactères",
+     *      maxMessage = "Veuillez saisir une immatriculation valide de 8 charactères"
+     * )
      */
     private $immatriculation;
     
@@ -89,7 +95,6 @@ class Vehicule
      * @var string $energie
      *
      * @ORM\Column(name="energie", type="string", nullable=false)
-     * @Assert\NotBlank
      * 
      */
     private $energie;
@@ -98,7 +103,6 @@ class Vehicule
      * @var integer $pv
      *
      * @ORM\Column(name="pv", type="integer", nullable=false)
-     * @Assert\NotBlank
      * 
      */
     private $pv;
@@ -107,7 +111,6 @@ class Vehicule
      * @var integer $cu
      *
      * @ORM\Column(name="cu", type="integer", nullable=false)
-     * @Assert\NotBlank
      * 
      */
     private $cu;
@@ -167,7 +170,6 @@ class Vehicule
      * @var string $typeCarte
      *
      * @ORM\Column(name="typeCarte", type="string", nullable=false)
-     * @Assert\NotBlank
      * 
      */
     private $typeCarte;    

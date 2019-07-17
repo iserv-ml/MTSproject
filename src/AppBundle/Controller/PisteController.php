@@ -189,16 +189,17 @@ class PisteController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['numero'],$aRow['actif'], $action);
+            $actif = $aRow['actif'] ? 'Active' : 'Inactive';
+            $output['aaData'][] = array($aRow['numero'],$actif, $action);
 	}
 	return new Response(json_encode( $output ));    
     }
     
     private function genererAction($id){
-        $action = "<a class='btn btn-success' href='".$this->generateUrl('admin_parametres_piste_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
+        $action = "<a title='Détail' class='btn btn-success' href='".$this->generateUrl('admin_parametres_piste_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
-                $action .= " <a class='btn btn-info' href='".$this->generateUrl('admin_parametres_piste_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
-                $action .= " <a class='btn btn-danger' href='".$this->generateUrl('admin_parametres_piste_delete_a', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
+                $action .= " <a title='Modifier' class='btn btn-info' href='".$this->generateUrl('admin_parametres_piste_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
+                $action .= " <a title='Supprimer' class='btn btn-danger' href='".$this->generateUrl('admin_parametres_piste_delete_a', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
         }
         return $action;
     }

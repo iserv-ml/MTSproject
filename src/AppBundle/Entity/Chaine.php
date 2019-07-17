@@ -45,7 +45,7 @@ class Chaine
      * @ORM\Column(name="surrendezvous", type="boolean", nullable=false)
      * 
      */
-    private $surRendezVous;
+    private $surRendezVous;    
     
     /**
     * @ORM\ManyToOne(targetEntity="Piste", inversedBy="chaines", cascade={"persist","refresh"})

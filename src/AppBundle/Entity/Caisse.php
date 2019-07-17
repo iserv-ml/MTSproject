@@ -50,12 +50,59 @@ class Caisse
     private $actif;
     
     /**
+     * @var boolean $ouvert
+     *
+     * @ORM\Column(name="ouvert", type="boolean", nullable=true)
+     * 
+     */
+    private $ouvert;
+    
+    /**
      * @var float $solde
      *
      * @ORM\Column(name="solde", type="float", nullable=false)
      * 
      */
     private $solde;
+    
+    /**
+     * @var float $soldeInitial
+     *
+     * @ORM\Column(name="solde_initial", type="float", nullable=true)
+     * 
+     */
+    private $soldeInitial;
+    
+    /**
+     * @var integer $nbvisite
+     *
+     * @ORM\Column(name="nbvisite", type="integer", nullable=false)
+     * 
+     */
+    private $nbvisite;
+    
+    /**
+     * @var integer $nbrevisite
+     *
+     * @ORM\Column(name="nbrevisite", type="integer", nullable=false)
+     */
+    private $nbrevisite;
+    
+    /**
+     * @var float $montantvisite
+     *
+     * @ORM\Column(name="montantvisite", type="float", nullable=false)
+     * 
+     */
+    private $montantvisite;
+    
+    /**
+     * @var float $montantrevisite
+     *
+     * @ORM\Column(name="montantrevisite", type="float", nullable=false)
+     * 
+     */
+    private $montantrevisite;
    
    //Debut relation Caisse a plusieurs chaines
     /**
@@ -93,6 +140,60 @@ class Caisse
         $this->chaines = $chaines;
     }
     //Fin relation caisse a plusieurs chaines
+    
+    //Debut relation Caisse a plusieurs affectations
+    /**
+    * @ORM\OneToMany(targetEntity="Affectation", mappedBy="caisse", cascade={"persist"})
+    */
+    protected $affectations;
+    
+    /**
+    * Add affectation
+    *
+    * @param AppBundle\Entity\Affectation $affectation
+    */
+    public function addAffectation(\AppBundle\Entity\Affectation $affectation)
+    {
+        $this->affectations[] = $affectation;
+    }
+
+    /**
+     * Get affectations
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAffectations()
+    {
+        return $this->affectations;
+    }
+    
+    /**
+     * Get affectation active
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAffectationActive()
+    {
+        $active = null;
+        foreach($this->affectations as $affectation){
+            if($affectation->getActif()){
+                $active = $affectation;
+                break;
+            }
+        }
+        return $active;
+    }
+
+    /**
+     * Set affectations
+     *
+     * @param \Doctrine\Common\Collections\Collection $affectations
+     */
+    public function setAffectations(\Doctrine\Common\Collections\Collection $affectations)
+    {
+        $this->affectations = $affectations;
+    }
+    //Fin relation caisse a plusieurs affectations
 
     /**
      * Get id
@@ -134,6 +235,72 @@ class Caisse
 
     function setSolde($solde) {
         $this->solde = $solde;
+    }
+    function getSoldeInitial() {
+        return $this->soldeInitial;
+    }
+
+    function setSoldeInitial($soldeInitial) {
+        $this->soldeInitial = $soldeInitial;
+    }
+    
+    function getOuvert() {
+        return $this->ouvert;
+    }
+
+    function setOuvert($ouvert) {
+        $this->ouvert = $ouvert;
+    }
+    
+    function getNbvisite() {
+        return $this->nbvisite;
+    }
+
+    function getNbrevisite() {
+        return $this->nbrevisite;
+    }
+
+    function getMontantvisite() {
+        return $this->montantvisite;
+    }
+
+    function getMontantrevisite() {
+        return $this->montantrevisite;
+    }
+
+    function setNbvisite($nbvisite) {
+        $this->nbvisite = $nbvisite;
+    }
+
+    function setNbrevisite($nbrevisite) {
+        $this->nbrevisite = $nbrevisite;
+    }
+
+    function setMontantvisite($montantvisite) {
+        $this->montantvisite = $montantvisite;
+    }
+
+    function setMontantrevisite($montantrevisite) {
+        $this->montantrevisite = $montantrevisite;
+    }
+    
+    function fermer(){
+        $this->solde = 0;
+        $this->ouvert = false;
+        $this->nbvisite = 0;
+        $this->nbrevisite = 0;
+        $this->montantvisite = 0;
+        $this->montantrevisite = 0;
+    }
+    
+    function ajouterVisite($montant){
+        $this->nbvisite += 1;
+        $this->montantvisite += $montant;
+    }
+    
+    function ajouterRevisite($montant){
+        $this->nbrevisite += 1;
+        $this->montantrevisite += $montant;
     }
 
     //BEHAVIOR
@@ -230,11 +397,25 @@ class Caisse
     public function __construct()
     {
         $this->chaines = new ArrayCollection();
+        $this->solde = 0;
+        $this->soldeInitial = 0;
+        $this->ouvert = false;
+        $this->actif = false;
+        $this->nbrevisite = 0;
+        $this->nbvisite = 0;
+        $this->montantrevisite = 0;
+        $this->montantvisite = 0;
+        
     }
     //fin behavior
 
-    public function encaisser($montant){
+    public function encaisser($montant, $revisite){
         $this->solde = $this->getSolde()+$montant;
+        if($revisite){
+            $this->ajouterRevisite($montant);
+        }else{
+            $this->ajouterVisite($montant);
+        }
     }
 
 }

@@ -223,7 +223,14 @@ class Proprietaire
     function setTypePiece($typePiece) {
         $this->typePiece = $typePiece;
     }
+    
+    function getFonction() {
+        return $this->fonction;
+    }
 
+    function setFonction($fonction) {
+        $this->fonction = $fonction;
+    }
         
     //BEHAVIOR
     /**

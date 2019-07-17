@@ -58,8 +58,8 @@
             <a class="nav-link {% block menu_codemaharesultat_actif %}{% endblock %}" href="{{ path('admin_parametres_codemaharesultat_index') }}">
             <i class="nav-icon icon-list"></i> Codes des Résultats MAHA</a>
         </li>
-        <li class="nav-item {% block menu_vehicule_open %}{% endblock %}">
-            <a class="nav-link {% block menu_vehicule_actif %}{% endblock %}" href="{{ path('admin_parametres_codemaharesultat_index') }}">
+        <li class="nav-item {% block menu_vehiculemaha_open %}{% endblock %}">
+            <a class="nav-link {% block menu_vehiculemaha_actif %}{% endblock %}" href="#">
             <i class="nav-icon icon-list"></i> Codes Véhicules MAHA</a>
         </li>
     </ul>
@@ -68,17 +68,17 @@
     <a class="nav-link nav-dropdown-toggle" href="#">
         <i class="nav-icon fa fa-home"></i> Centre</a>
     <ul class="nav-dropdown-items">
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_parametres_caisse_index') }}">
-                <i class="nav-icon icon-puzzle"></i> Caisse</a>
+        <li class="nav-item {% block menu_caisse_open %}{% endblock %}">
+            <a class="nav-link {% block menu_caisse_actif %}{% endblock %}" href="{{ path('admin_parametres_caisse_index') }}">
+                <i class="nav-icon icon-list"></i> Caisse</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_parametres_piste_index') }}">
-                <i class="nav-icon icon-puzzle"></i> Piste</a>
+        <li class="nav-item {% block menu_piste_open %}{% endblock %}">
+            <a class="nav-link {% block menu_piste_actif %}{% endblock %}" href="{{ path('admin_parametres_piste_index') }}">
+                <i class="nav-icon icon-list"></i> Piste</a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_parametres_chaine_index') }}">
-            <i class="nav-icon icon-puzzle"></i> Chaine</a>
+        <li class="nav-item {% block menu_chaine_open %}{% endblock %}">
+            <a class="nav-link {% block menu_chaine_actif %}{% endblock %}" href="{{ path('admin_parametres_chaine_index') }}">
+            <i class="nav-icon icon-list"></i> Chaine</a>
         </li>
     </ul>
 </li>
@@ -86,22 +86,14 @@
     <a class="nav-link nav-dropdown-toggle" href="#">
         <i class="nav-icon fa fa-male"></i> Utilisateurs</a>
     <ul class="nav-dropdown-items">        
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_gestion_utilisateur_index') }}">
-                <i class="nav-icon icon-puzzle"></i> Agents
+        <li class="nav-item {% block menu_agent_open %}{% endblock %}">
+            <a class="nav-link {% block menu_agent_actif %}{% endblock %}" href="{{ path('admin_gestion_utilisateur_index') }}">
+                <i class="nav-icon icon-list"></i> Agents
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_gestion_group_index') }}">
-               <i class="nav-icon icon-puzzle"></i> Groupes</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_gestion_affectation_index') }}">
-                <i class="nav-icon icon-bank"></i> Affectation aux caisses</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{{ path('admin_gestion_affectationpiste_index') }}">
-                <i class="nav-icon icon-direction"></i> Affectation aux pistes</a>
+        <li class="nav-item {% block menu_groupe_open %}{% endblock %}">
+            <a class="nav-link {% block menu_groupe_actif %}{% endblock %}" href="{{ path('admin_gestion_group_index') }}">
+               <i class="nav-icon icon-list"></i> Groupes</a>
         </li>
     </ul>
 </li>

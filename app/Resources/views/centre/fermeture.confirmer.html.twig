@@ -1,0 +1,26 @@
+    <div class="table-responsive">
+        Vous allez fermer le centre. Cela suppose que tous les caissiers ont terminé. Merci de confirmer. 
+        <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+            <thead>
+            <tr>
+                <th>CAISSE</th>
+                <th>ETAT</th>
+                <th>CAISSIER</th>
+                <th>PISTE</th>
+                <th>CONTROLLEUR</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for chaine in chaines %}
+                <tr>
+                    <td>{{ chaine.caisse.numero }}</td>
+                    <td>{% if chaine.caisse.ouvert %}OUVERTE{% else %}FERMEE{% endif %}</td>
+                    <td>{{ chaine.caisse.getAffectationActive.agent.username }}</td>
+                    <td>{{ chaine.piste.numero }}</td>
+                    <td>{{ chaine.piste.getAffectationActive.agent.username }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+

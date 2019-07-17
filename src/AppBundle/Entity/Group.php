@@ -31,7 +31,7 @@ class Group extends BaseGroup
     /**
      * @var
      *
-     * @ORM\ManyToMany(targetEntity="Utilisateur", mappedBy="groups")
+     * @ORM\OneToMany(targetEntity="Utilisateur", mappedBy="groupe", cascade={"persist"})
      */
     protected $users;
     

@@ -1,0 +1,28 @@
+<table width="600px">
+    <tr>
+    <td>CERTIFICAT DE VISITE TECHNIQUE</td>
+    <td>N&deg; {{ visite.numeroCertificat }}</td>
+    </tr>
+    <tr>
+        <td colspan="2">Logo MTS</td>
+    </tr>
+    <tr>
+        <td>Nom : {{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</td>
+        <td>Date de validit&eacute; : {{ visite.date|date('Y-m-d') }}</td>
+    </tr>
+    <tr>
+        <td>Adresse : {{ visite.vehicule.proprietaire.adresse }}</td>
+        <td>Date de la visite : {{ visite.dateValidite|date('Y-m-d') }}</td>
+    </tr>
+    <tr>
+        <td>Immatriculation : {{ visite.vehicule.immatriculation }}</td>
+        <td>1ere mise en circulation : {{ visite.vehicule.dateMiseCirculation|date('Y-m-d') }}</td>
+    </tr>
+    <tr>
+        <td>N&deg; S&eacute;rie : {{ visite.vehicule.typeChassis }}</td>
+        <td>Marque/Type : {{ visite.vehicule.modele.marque.libelle }}/{{ visite.vehicule.modele.libelle }}</td>
+    </tr>
+    <tr>
+        <td colspan="2">Cachet MTS : </td>
+    </tr>
+</table>

@@ -63,12 +63,12 @@
         {% endif %}
         {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
         <li class="nav-item px-3">
-          <a class="nav-link {% block menu_gestion_actif %}{% endblock %}" href="#">GESTION</a>
+          <a class="nav-link {% block menu_gestion_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_index') }}">GESTION</a>
         </li>
         {% endif %}
         {% if is_granted('ROLE_SUPERVISEUR') %}
         <li class="nav-item px-3">
-          <a class="nav-link" href="{{ path('parametre_index') }}">PARAMETRES</a>
+          <a class="nav-link {% block menu_parametres_actif %}{% endblock %}" href="{{ path('parametre_index') }}">PARAMETRES</a>
         </li>
         {% endif %}
       </ul>
@@ -114,6 +114,11 @@
                 {% block notification %}
                     {% for flashMessage in app.session.flashbag.get('notice') %}
                         <div class="flash-notice">
+                            {{ flashMessage }}
+                        </div>
+                    {% endfor %}
+                    {% for flashMessage in app.session.flashbag.get('error') %}
+                        <div class="flash-error">
                             {{ flashMessage }}
                         </div>
                     {% endfor %}

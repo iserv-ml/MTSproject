@@ -12,17 +12,21 @@
 {% endblock %}
 {% block pagetitle -%}VOIR UN VEHICULE{% endblock %}
 {% block actions %}
-    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_index') }}">Liste des véhicules</a></label>
-    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_edit', { 'id': vehicule.id }) }}">Modifier</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_index') }}">LISTER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_edit', { 'id': vehicule.id }) }}">MODIFIER</a></label>
     <label class="btn btn-outline-secondary">
         {{ form_start(delete_form) }}
-            <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
+            <input type="submit" value="SUPPRIMER" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
         {{ form_end(delete_form) }}
     </label>
 {% endblock %}
 {% block body %}
     <table class="table table-hover">
         <tbody>
+            <tr>
+                <th>Immatriculation</th>
+                <td>{{ vehicule.immatriculation }}</td>
+            </tr>
             <tr>
                 <th>Chassis</th>
                 <td>{{ vehicule.chassis }}</td>

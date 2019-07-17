@@ -1,0 +1,129 @@
+{% extends '::base.html.twig' %}
+{% block menu -%}
+{% embed  '::centre/menu.html.twig' %}
+{% block menu_ouvertures_actif %}active{% endblock %}
+{% endembed %}
+{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+        <li class="breadcrumb-item">Ouverture/Fermeture du centre</li>
+    </ol>
+{% endblock %}
+{% block menu_gestion_actif %}active{% endblock %}
+{% block pagetitle -%}OUVERTURE/FERMETURE DU CENTRE{% endblock %}
+{% block actions %}
+    {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
+        {% if centre.etat %}
+            <label class="btn btn-success">LE CENTRE EST OUVERT</label>
+            <label onclick='fermer()' title='Cliquer pour fermer le centre' class="btn btn-danger" style='cursor: pointer'>FERMER</label>
+        {% else %}
+            <label class="btn btn-warning pointer-event">LE CENTRE EST FERME</label>
+            <label onclick='ouvrir()' title='cliquer pour ouvrir le centre' class="btn btn-success" style='cursor: pointer'>OUVRIR</label>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+{% block body -%}
+    <div class="table-responsive">
+        <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+            <thead>
+            <tr>
+                <th>CAISSE</th>
+                <th>SOLDE INITIAL</th>
+                <th>CAISSIER</th>
+                <th>PISTE</th>
+                <th>CONTROLLEUR</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for chaine in chaines %}
+            <tr>
+                <td><a title="Saisir le solde d'ouverture" href="{{ path('admin_parametres_caisse_solde', { 'id': chaine.caisse.id }) }}">{{ chaine.caisse.numero }}</a></td>
+                <td>{{ chaine.caisse.soldeInitial|number_format(0, ',', ' ') }}</td>
+                <td>{% if chaine.caisse.getAffectationActive %}{{ chaine.caisse.getAffectationActive.agent.username }}{% else %}Pas d'agent affecté{%endif%}</td>
+                <td>{{ chaine.piste.numero }}</td>
+                <td>{% if chaine.piste.getAffectationActive %}{{ chaine.piste.getAffectationActive.agent.username }}{% else %}Pas d'agent affecté{%endif%}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div id="demo-modal" title="OUVRIR/FERMER LE CENTRE"></div>
+{% endblock %}
+
+{% block javascripts -%}
+<script type="text/javascript">
+    function ouvrir(){
+	var options = {
+            modal: true,
+            height:400,
+            width:700,
+            buttons: {
+                "Valider": function() {
+                    $(location).attr('href', 'http://localhost/autoscan/web/app_dev.php/admin/gestion/centre/ouvrir')
+                },
+                Annuler: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        };
+        $('#demo-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+        $('#demo-modal').load('http://localhost/autoscan/web/app_dev.php/admin/gestion/centre/ouverture/confirmer').dialog(options).dialog('open');
+    }
+    
+    function fermer(){
+	var options = {
+            modal: true,
+            height:400,
+            width:700,
+            buttons: {
+                "Valider": function() {
+                    $(location).attr('href', 'http://localhost/autoscan/web/app_dev.php/admin/gestion/centre/fermer')
+                },
+                Annuler: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        };
+        $('#demo-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+        $('#demo-modal').load('http://localhost/autoscan/web/app_dev.php/admin/gestion/centre/fermeture/confirmer').dialog(options).dialog('open');
+    }
+    
+    $(document).ready(function() {
+        $('#liste_clients').DataTable({
+        "paging" : true,
+        "info" : true, 
+        "searching": false,
+        "responsive": true,
+        "pageLength": 100,
+        "order": [[0, 'asc']],
+       language: {
+        processing:     "Traitement en cours...",
+        search:         "Rechercher&nbsp;:",
+        lengthMenu:    "Afficher _MENU_ &eacute;l&eacute;ments",
+        info:           "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+        infoEmpty:      "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+        infoFiltered:   "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+        infoPostFix:    "",
+        loadingRecords: "Chargement en cours...",
+        zeroRecords:    "Aucun &eacute;l&eacute;ment &agrave; afficher",
+        emptyTable:     "Aucune donnée disponible dans le tableau",
+        paginate: {
+            first:      "Premier",
+            previous:   "Pr&eacute;c&eacute;dent",
+            next:       "Suivant",
+            last:       "Dernier"
+        },
+        aria: {
+            sortAscending:  ": activer pour trier la colonne par ordre croissant",
+            sortDescending: ": activer pour trier la colonne par ordre décroissant"
+        }
+    }
+    });
+    
+     
+		
+		        
+                   } );    
+        </script>
+    {% endblock %}
+

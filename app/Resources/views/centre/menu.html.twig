@@ -1,0 +1,46 @@
+{% if is_granted('ROLE_SUPERVISEUR') %} 
+<li class="nav-item">
+    <a class="nav-link {% block menu_centres_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_index') }}">
+        <i class="nav-icon fa fa-home"></i> Centre
+    </a>
+</li>
+{% endif %}
+{% if is_granted('ROLE_CAISSIER_PRINCIPAL') %} 
+    <li class="nav-item">
+        <a class="nav-link {% block menu_ouvertures_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_ouverture') }}">
+            <i class="nav-icon fa fa-key"></i> Ouverture
+        </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% block menu_affectationcaisse_actif %}{% endblock %}" href="{{ path('admin_gestion_affectation_index') }}">
+        <i class="nav-icon fa fa-bank"></i> Affectation aux caisses</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% block menu_affectationpiste_actif %}{% endblock %}" href="{{ path('admin_gestion_affectationpiste_index') }}">
+            <i class="nav-icon fa fa-road"></i> Affectation aux pistes</a>
+    </li>
+{% endif %}
+{% if is_granted('ROLE_SUPERVISEUR') %} 
+    <li class="nav-item nav-dropdown {% block menu_statistiques_open %}{% endblock %}">
+        <a class="nav-link nav-dropdown-toggle" href="#">
+            <i class="nav-icon fa fa-bar-chart"></i> Statistiques</a>
+        <ul class="nav-dropdown-items">
+            <li class="nav-item {% block menu_encours_open %}{% endblock %}">
+                <a class="nav-link {% block menu_encours_actif %}{% endblock %}" href="#">
+                    <i class="nav-icon icon-list"></i> Visites en cours</a>
+            </li>
+            <li class="nav-item {% block menu_succes_open %}{% endblock %}">
+                <a class="nav-link {% block menu_succes_actif %}{% endblock %}" href="#">
+                    <i class="nav-icon icon-list"></i> Visites réussies</a>
+            </li>
+            <li class="nav-item {% block menu_revisites_open %}{% endblock %}">
+                <a class="nav-link {% block menu_revisites_actif %}{% endblock %}" href="#">
+                    <i class="nav-icon icon-list"></i> Revisites</a>
+            </li>
+            <li class="nav-item {% block menu_etatcaisses_open %}{% endblock %}">
+                <a class="nav-link {% block menu_etatcaisses_actif %}{% endblock %}" href="#">
+                <i class="nav-icon icon-list"></i> Etat financier</a>
+            </li>
+        </ul>
+    </li>
+{% endif %}

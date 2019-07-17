@@ -119,6 +119,13 @@ class Visite
     */
    protected $quittance;
    
+   /**
+    * @ORM\ManyToOne(targetEntity="Centre", inversedBy="visites", cascade={"persist","refresh"})
+    * @ORM\JoinColumn(name="centre_id", referencedColumnName="id")
+    * @Assert\NotBlank
+    */
+    protected $centre;
+   
    //Debut relation Visite Parent a plusieurs revisite
     /**
     * @ORM\OneToMany(targetEntity="Visite", mappedBy="visiteParent", cascade={"persist"})
@@ -210,6 +217,14 @@ class Visite
     public function setVersion($version) {
         $this->version = $version;
     }
+    function getCentre() {
+        return $this->centre;
+    }
+
+    function setCentre($centre) {
+        $this->centre = $centre;
+    }
+    
     function getObservations() {
         return $this->observations;
     }
@@ -395,7 +410,7 @@ class Visite
         $this->revisites = new ArrayCollection();
     }
     
-    public function aiguiller($vehicule, $statut, $chaine, $visiteParent)
+    public function aiguiller($vehicule, $statut, $chaine, $visiteParent, $centre)
     {
         $this->setVehicule($vehicule);
         $this->setStatut($statut);
@@ -409,6 +424,7 @@ class Visite
         }else{
             $this->setRevisite(0);
         }
+        $this->centre = $centre;
     }
 
 }

@@ -64,19 +64,15 @@ class Utilisateur extends BaseUser
     private $telephone;
     
     /**
-     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Group")
-     * @ORM\JoinTable(name="user_role",
-     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
-     * )
-     * @Assert\NotBlank
-     */
-    protected $groups;
+    * @ORM\ManyToOne(targetEntity="Group", inversedBy="users", cascade={"persist","refresh"})
+    * @ORM\JoinColumn(name="groupe_id", referencedColumnName="id")
+    * @Assert\NotBlank
+    */
+    protected $groupe;
     
     public function __construct()
     {
         parent::__construct();
-        $this->groups = new ArrayCollection();
         // your own logic
     }
     
@@ -125,7 +121,7 @@ class Utilisateur extends BaseUser
     
     
     public function getNomComplet(){
-        return $this->nom." ".$this->prenom;
+        return $this->nom." ".$this->prenom." (".$this->username.")";
     }
 
     public function estSupprimable(){
@@ -143,35 +139,12 @@ class Utilisateur extends BaseUser
         $this->telephone = $telephone;
     }
     
-    /**
-     * @param $group
-     * @return $this
-     */
-    public function addGoup($group)
-    {
-        $this->groups[] = $group;
-        $group->setUser($this);
-
-        return $this;
+    function getGroupe() {
+        return $this->groupe;
     }
 
-    /**
-     * @param $groups
-     */
-    public function setGroups($groups)
-    {
-        $this->groups->clear();
-        foreach ($groups as $group) {
-            $this->addGroup($group);
-        }
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getGroups()
-    {
-        return $this->groups;
+    function setGroupe($groupe) {
+        $this->groupe = $groupe;
     }
 
 }

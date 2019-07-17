@@ -104,7 +104,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r FROM AppBundle:Visite r LEFT JOIN r.vehicule v '
-                    . ' WHERE v.id = :vehicule AND r.id <> :encours'
+                    . ' WHERE v.id = :vehicule AND r.id <> :encours AND r.statut < 5'
                     . ' ORDER BY r.date DESC')
             ->setParameter('vehicule', $vehicule)
             ->setParameter('encours', $encours);

@@ -1,18 +1,28 @@
 {% extends '::base.html.twig' %}
+{% block menu -%}
+{% embed  '::parametres/menu.html.twig' %}
+{% block menu_centre_open %}open{% endblock %}
+{% block menu_caisse_open %}open{% endblock %}
+{% block menu_caisse_actif %}active{% endblock %}
+{% endembed %}
+{% endblock %}
+{% block menu_parametres_actif %}active{% endblock %}
 {% block ariane -%}
     <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('parametre_index') }}">Paramètres</a></li>
           <li class="breadcrumb-item"><a href="{{ path('admin_parametres_caisse_index') }}">Caisse</a></li>
           <li class="breadcrumb-item">Détail</li>
     </ol>
 {% endblock %}
 {% block pagetitle -%}VOIR UNE CAISSE{% endblock %}
 {% block actions %}
-    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_caisse_index') }}">Liste des caisses</a></label>
-    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_caisse_edit', { 'id': caisse.id }) }}">Modifier</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_caisse_index') }}">LISTER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_caisse_edit', { 'id': caisse.id }) }}">MODIFIER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_caisse_new') }}">CREER</a></label>
     <label class="btn btn-outline-secondary">
         {{ form_start(delete_form) }}
-            <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
+            <input type="submit" value="SUPPRIMER" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
         {{ form_end(delete_form) }}
     </label>
 {% endblock %}
@@ -20,12 +30,16 @@
     <table class="table table-hover">
         <tbody>
             <tr>
-                <th>Numero</th>
+                <th>Numéro</th>
                 <td>{{ caisse.numero }}</td>
             </tr>
             <tr>
                 <th>Actif</th>
                 <td>{% if caisse.actif %}Active{% else %}Inactive{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Ouverture</th>
+                <td>{% if caisse.ouvert %}Ouverte{% else %}Fermée{% endif %}</td>
             </tr>
             <tr>
                 <th>Créé par</th>

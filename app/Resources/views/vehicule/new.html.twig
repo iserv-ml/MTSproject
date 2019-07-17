@@ -12,7 +12,8 @@
 {% endblock %}
 {% block pagetitle -%}CREER UN VEHICULE{% endblock %}
 {% block actions %} 
-    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_index') }}">Retour à la liste</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_index') }}">RETOUR A LA LISTE</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('proprietaire_new') }}">CREER UN PROPRIETAIRE</a></label>
 {% endblock %}
 {% block body %}
     {{ form_start(form) }}
@@ -24,19 +25,27 @@
   <script>
   $( function() {
         $( "#appbundle_vehicule_genre" ).prop("disabled", true);
-        $( "#appbundle_vehicule_dateCarteGrise" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y" });
-        $( "#appbundle_vehicule_dateMiseCirculation" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y" });
-        $( "#appbundle_vehicule_dateValidite" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y" });
-        $( "#appbundle_vehicule_dateImmatriculationPrecedent" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y" });
-    
-    $( "#appbundle_vehicule_ptac" ).change(function() {
-        var ptac = $( "#appbundle_vehicule_ptac" ).val();
-        if(ptac <= 3500){
-            $( "#appbundle_vehicule_genre" ).val('VL');
-        }else{
-            $( "#appbundle_vehicule_genre" ).val('PL');
-        }
-      });    
+        $( "#appbundle_vehicule_dateCarteGrise" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
+        $( "#appbundle_vehicule_dateMiseCirculation" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
+        $( "#appbundle_vehicule_dateValidite" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
+        $( "#appbundle_vehicule_dateImmatriculationPrecedent" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
+        {% if vehicule.proprietaire %}
+            $("#appbundle_vehicule_proprietaireId" ).val("{{- vehicule.proprietaire.id -}}");
+            $("#appbundle_vehicule_proprietaireAjax" ).val("{{ vehicule.proprietaire.nom }} {{ vehicule.proprietaire.prenom }} {{ vehicule.proprietaire.telephone }}");
+        {% endif %}
+        $( "#appbundle_vehicule_immatriculation" ).change(function() {
+            var immat = $( "#appbundle_vehicule_immatriculation" ).val();
+            var format = immat.slice(0, 2) + "-"+immat.slice(2,6)+"-" + immat.slice(6);
+            $( "#appbundle_vehicule_immatriculation" ).val(format);
+        });
+        $( "#appbundle_vehicule_ptac" ).change(function() {
+            var ptac = $( "#appbundle_vehicule_ptac" ).val();
+            if(ptac <= 3,5){
+                $( "#appbundle_vehicule_genre" ).val('VL');
+            }else{
+                $( "#appbundle_vehicule_genre" ).val('PL');
+            }
+          });    
     function log( message ) {
       $( "<div>" ).text( message ).prependTo( "#log" );
       $( "#log" ).scrollTop( 0 );

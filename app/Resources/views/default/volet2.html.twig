@@ -1,0 +1,19 @@
+<table width="600px">
+    <tr>
+    <td>Logo MTS</td>
+    <td>N&deg; {{ visite.numeroCertificat }}</td>
+    </tr>
+    <tr>
+        <td colspan="2">CONTROLE TECHNIQUE</td>
+    </tr>
+    <tr>
+        <td colspan="2">Date limite de validit&eacute;</td>
+    </tr>
+
+    <tr>
+        <td colspan="2">{{ visite.vehicule.immatriculation}}</td>
+    </tr>
+    <tr>
+        <td colspan="2">{{ visite.date|date('Y-m-d') }}</td>
+    </tr>
+</table>

@@ -12,8 +12,10 @@
 {% endblock %}
 {% block pagetitle -%}VOIR UN PROPRIETAIRE DE VEHICULE{% endblock %}
 {% block actions %}
-    <label class="btn btn-outline-secondary"><a href="{{ path('proprietaire_index') }}">Liste des propriétaires</a></label>
-    <label class="btn btn-outline-secondary"><a href="{{ path('proprietaire_edit', { 'id': proprietaire.id }) }}">Modifier</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('proprietaire_index') }}">LISTER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('proprietaire_edit', { 'id': proprietaire.id }) }}">MODIFIER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('proprietaire_new') }}">CREER PROPRIETAIRE</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_new', { 'proprietaireid': proprietaire.id }) }}">CREER VEHICULE</a></label>
     <label class="btn btn-outline-secondary">
         {{ form_start(delete_form) }}
             <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
@@ -74,10 +76,6 @@
             <tr>
                 <th>Date de dernière modification</th>
                 <td>{% if proprietaire.dateModification %}{{ proprietaire.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Pièce</th>
-                <td>{{ proprietaire.path }}</td>
             </tr>
         </tbody>
     </table>

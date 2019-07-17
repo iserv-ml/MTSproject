@@ -85,6 +85,60 @@ class Piste
         $this->chaines = $chaines;
     }
     //Fin relation piste a plusieurs chaines
+    
+    //Debut relation Piste a plusieurs affectations
+    /**
+    * @ORM\OneToMany(targetEntity="AffectationPiste", mappedBy="piste", cascade={"persist"})
+    */
+    protected $affectations;
+    
+    /**
+    * Add affectation
+    *
+    * @param AppBundle\Entity\AffectationPiste $affectation
+    */
+    public function addAffectation(\AppBundle\Entity\AffectationPiste $affectation)
+    {
+        $this->affectations[] = $affectation;
+    }
+
+    /**
+     * Get affectations
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAffectations()
+    {
+        return $this->affectations;
+    }
+    
+    /**
+     * Get affectation active
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAffectationActive()
+    {
+        $active = null;
+        foreach($this->affectations as $affectation){
+            if($affectation->getActif()){
+                $active = $affectation;
+                break;
+            }
+        }
+        return $active;
+    }
+
+    /**
+     * Set affectations
+     *
+     * @param \Doctrine\Common\Collections\Collection $affectations
+     */
+    public function setAffectations(\Doctrine\Common\Collections\Collection $affectations)
+    {
+        $this->affectations = $affectations;
+    }
+    //Fin relation piste a plusieurs affectations
 
     /**
      * Get id

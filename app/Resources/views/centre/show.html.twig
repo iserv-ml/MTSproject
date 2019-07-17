@@ -1,0 +1,69 @@
+{% extends '::base.html.twig' %}
+{% block menu -%}
+{% embed  '::centre/menu.html.twig' %}
+{% block menu_centres_actif %}active{% endblock %}
+{% endembed %}
+{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('admin_gestion_centre_index') }}">Centres</a></li>
+          <li class="breadcrumb-item">Détail</li>
+    </ol>
+{% endblock %}
+{% block menu_gestion_actif %}active{% endblock %}
+{% block pagetitle -%}DETAIL DU CENTRE{% endblock %}
+{% block actions %}
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_centre_index') }}">ACCUEIL DU CENTRE</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_centre_modifier') }}">MODIFIER</a></label>
+{% endblock %}
+{% block body %}
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th>Code</th>
+                <td>{{ centre.code }}</td>
+            </tr>
+            <tr>
+                <th>Libelle</th>
+                <td>{{ centre.libelle }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ centre.description }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ centre.adresse }}</td>
+            </tr>
+            <tr>
+                <th>Téléphone</th>
+                <td>{{ centre.telephone }}</td>
+            </tr>
+            <tr>
+                <th>Etat</th>
+                <td>{% if centre.etat %}Ouvert{% else %}Fermé{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Solde</th>
+                <td>{{ centre.solde }}</td>
+            </tr>
+            <tr>
+                <th>Créé par</th>
+                <td>{{ centre.creePar }}</td>
+            </tr>
+            <tr>
+                <th>Modifié par</th>
+                <td>{{ centre.modifierPar }}</td>
+            </tr>
+            <tr>
+                <th>Date de création</th>
+                <td>{% if centre.dateCreation %}{{ centre.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Date de dernière modification</th>
+                <td>{% if centre.dateModification %}{{ centre.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

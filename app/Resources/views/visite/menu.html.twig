@@ -7,7 +7,7 @@
 {% endif %}
 {% if is_granted('ROLE_CONTROLLEUR') %} 
 <li class="nav-item">
-    <a class="nav-link {% block menu_controle_actif %}{% endblock %}" href="{{ path('visite_controle') }}">
+    <a class="nav-link {% block menu_controles_actif %}{% endblock %}" href="{{ path('visite_controle') }}">
         <i class="nav-icon fa fa-tasks"></i> CONTROLES
     </a>
 </li>

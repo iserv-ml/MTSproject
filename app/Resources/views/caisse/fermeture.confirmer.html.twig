@@ -1,0 +1,15 @@
+<div class="table-responsive">
+    Vous allez fermer la caisse. Merci de confirmer. 
+        <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+            <tr><th>CAISSE</th><td>{{ caisse.numero }}</td></tr>
+            <tr><th>CAISSIER</th><td>{{app.user.username}}</td></tr>
+            <tr><th>SOLDE</th><td>{{ caisse.solde|number_format(0, ',', ' ') }} FCFA</td></tr>
+            <tr>
+                <th>VISITES</th><td>NB : {{ caisse.nbvisite }} pour un montant de : {{ caisse.montantvisite|number_format(0, ',', ' ') }} FCFA</td>
+            </tr>
+            <tr>
+                <th>REVISITES</th><td>NB : {{ caisse.nbrevisite }} pour un montant de : {{ caisse.montantrevisite|number_format(0, ',', ' ') }} FCFA</td>
+            </tr>
+        </table>
+    </div>
+

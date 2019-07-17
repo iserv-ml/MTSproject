@@ -93,11 +93,11 @@ class UtilisateurController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $groups = $utilisateur->getGroups();
-            if(count($groups) == 0){
+            $groupe = $utilisateur->getGroupe();
+            if(!$groupe){
                 $em = $this->getDoctrine()->getManager();
-                $group = $em->getRepository('AppBundle:Group')->findOneByName("ROLE_USER");
-                $utilisateur->addGroupe($group);
+                $groupe = $em->getRepository('AppBundle:Group')->findOneByName("ROLE_USER");
+                $utilisateur->setGroupe($groupe);
             } 
             $userManager->updateUser($utilisateur, true);
             $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
@@ -234,17 +234,17 @@ class UtilisateurController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['username'],$aRow['nom'],$aRow['prenom'], $action);
+            $output['aaData'][] = array($aRow['username'],$aRow['nom'].' '.$aRow['prenom'],$aRow['groupe'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
     
     private function genererAction($id){
-        $action = "<a title='Voir' class='btn btn-success' href='".$this->generateUrl('admin_gestion_utilisateur_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
+        $action = "<a title='Détail' class='btn btn-success' href='".$this->generateUrl('admin_gestion_utilisateur_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
                 $action .= " <a title='Modifier' class='btn btn-info' href='".$this->generateUrl('admin_gestion_utilisateur_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
                 $action .= " <a title='Supprimer' class='btn btn-danger' href='".$this->generateUrl('admin_gestion_utilisateur_delete', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
-                $action .= " <a title='Changer le mot de passe' class='btn btn-info' href='".$this->generateUrl('admin_gestion_utilisateur_password', array('id'=> $id ))."'><i class='fa fa-vcard' ></i></a>";
+                $action .= " <a title='Changer le mot de passe' class='btn btn-info' href='".$this->generateUrl('admin_gestion_utilisateur_password', array('id'=> $id ))."'><i class='fa fa-key' ></i></a>";
         }
         return $action;
     }

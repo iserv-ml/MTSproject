@@ -1,15 +1,32 @@
 {% extends '::base.html.twig' %}
 {% block menu -%}
-{% include '::visite/menu.html.twig' %}
-{% endblock %}
+{% embed  '::visite/menu.html.twig' %}
 {% block menu_quittance_actif %}active{% endblock %}
+{% endembed %}
+{% endblock %}
+{% block menu_caisse_actif %}active{% endblock %}
 {% block ariane -%}
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
         <li class="breadcrumb-item">Caisses</li>
     </ol>
 {% endblock %}
-{% block pagetitle -%}LISTE DES QUITTANCES : {{ caisse }}{% endblock %}
+{% block pagetitle -%}LISTE DES QUITTANCES : {{ profil }}{% endblock %}
+{% block actions %}
+    {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
+        {% if centre.etat %}
+            {% if caisse.ouvert %}
+                <label class="btn btn-success">LA CAISSE EST OUVERTE</label>
+                <label onclick='fermer()' title='Cliquer pour fermer la caisse' class="btn btn-danger" style='cursor: pointer'>FERMER</label>
+            {% else %}
+                <label class="btn btn-warning pointer-event">LA CAISSE EST FERMEE</label>
+                <label onclick='ouvrir()' title='cliquer pour ouvrir la caisse' class="btn btn-success" style='cursor: pointer'>OUVRIR</label>
+            {% endif %}
+        {% else %}
+            <label class="btn btn-warning pointer-event">LE CENTRE EST FERME. ATTENDEZ SON OUVERTURE</label>
+        {% endif %}
+    {% endif %}
+{% endblock %}
 
 {% block body -%}
 <div class="table-responsive">
@@ -36,10 +53,48 @@
             </tr>
         </tfoot>
     </table>
+</div>
 <div id="demo-modal" title="VISITE NORMALE"></div>
+<div id="ouverture-modal" title="OUVERTURE/FERMETURE DE CAISSE"></div>
 {% endblock %}
 {% block javascripts -%}
 <script type="text/javascript">
+    function ouvrir(){
+	var options = {
+            modal: true,
+            height:200,
+            width:700,
+            buttons: {
+                "Valider": function() {
+                    $(location).attr('href', 'http://localhost/autoscan/web/app_dev.php/admin/parametres/caisse/ouvrir/{{caisse.id}}')
+                },
+                Annuler: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        };
+        $('#ouverture-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+        $('#ouverture-modal').load('http://localhost/autoscan/web/app_dev.php/admin/parametres/caisse/ouverture/confirmer/{{caisse.id}}').dialog(options).dialog('open');
+    }
+    
+    function fermer(){
+	var options = {
+            modal: true,
+            height:400,
+            width:700,
+            buttons: {
+                "Valider": function() {
+                    $(location).attr('href', 'http://localhost/autoscan/web/app_dev.php/admin/parametres/caisse/fermer/{{caisse.id}}')
+                },
+                Annuler: function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        };
+        $('#ouverture-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+        $('#ouverture-modal').load('http://localhost/autoscan/web/app_dev.php/admin/parametres/caisse/fermeture/confirmer/{{caisse.id}}').dialog(options).dialog('open');
+    }
+    
     function loadDynamicContentModal(id){
 	var options = {
 			modal: true,

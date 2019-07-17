@@ -17,7 +17,7 @@ class UtilisateurRepository extends EntityRepository
         
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.username, r.nom, r.prenom FROM AppBundle:Utilisateur r '
+                'SELECT r.id, r.username, r.nom, r.prenom, g.name as groupe FROM AppBundle:Utilisateur r LEFT JOIN r.groupe g '
                     . ' WHERE r.nom LIKE :search OR r.prenom LIKE :search OR r.username LIKE :search  '
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')

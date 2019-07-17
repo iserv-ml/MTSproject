@@ -1,0 +1,26 @@
+    <div class="table-responsive">
+        Confirmez-vous l'ouverture du centre?
+        <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+            <thead>
+            <tr>
+                <th>CAISSE</th>
+                <th>SOLDE INITIAL</th>
+                <th>CAISSIER</th>
+                <th>PISTE</th>
+                <th>CONTROLLEUR</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for chaine in chaines %}
+                <tr>
+                    <td>{{ chaine.caisse.numero }}</td>
+                    <td>{{ chaine.caisse.soldeInitial|number_format(0, ',', ' ') }}</td>
+                    <td>{{ chaine.caisse.getAffectationActive.agent.username }}</td>
+                    <td>{{ chaine.piste.numero }}</td>
+                    <td>{{ chaine.piste.getAffectationActive.agent.username }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
