@@ -11,7 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * TypeVehicule
  *
- * @ORM\Table(name="typeVehicule")
+ * @ORM\Table(name="typevehicule")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\TypeVehiculeRepository")
  * @UniqueEntity("libelle")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
