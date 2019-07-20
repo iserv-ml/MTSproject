@@ -66,7 +66,7 @@
             width:700,
             buttons: {
                 "Valider": function() {
-                    $(location).attr('href', 'http://localhost/autoscan/web/app_dev.php/admin/parametres/caisse/ouvrir/{{caisse.id}}')
+                    $(location).attr('href', '{{ path('admin_parametres_caisse_ouvrir', { 'id': caisse.id }) }}')
                 },
                 Annuler: function() {
                     $( this ).dialog( "close" );
@@ -74,7 +74,7 @@
             }
         };
         $('#ouverture-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
-        $('#ouverture-modal').load('http://localhost/autoscan/web/app_dev.php/admin/parametres/caisse/ouverture/confirmer/{{caisse.id}}').dialog(options).dialog('open');
+        $('#ouverture-modal').load('{{ path('caisse_ouverture_confirmer', { 'id': caisse.id }) }}').dialog(options).dialog('open');
     }
     
     function fermer(){
@@ -84,7 +84,7 @@
             width:700,
             buttons: {
                 "Valider": function() {
-                    $(location).attr('href', 'http://localhost/autoscan/web/app_dev.php/admin/parametres/caisse/fermer/{{caisse.id}}')
+                    $(location).attr('href', '{{ path('admin_parametres_caisse_fermer', { 'id': caisse.id }) }}')
                 },
                 Annuler: function() {
                     $( this ).dialog( "close" );
@@ -92,7 +92,7 @@
             }
         };
         $('#ouverture-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
-        $('#ouverture-modal').load('http://localhost/autoscan/web/app_dev.php/admin/parametres/caisse/fermeture/confirmer/{{caisse.id}}').dialog(options).dialog('open');
+        $('#ouverture-modal').load('{{ path('caisse_fermeture_confirmer', { 'id': caisse.id }) }}').dialog(options).dialog('open');
     }
     
     function loadDynamicContentModal(id){
@@ -102,7 +102,7 @@
 			width:700,
                               buttons: {
         "Valider": function() {
-         $(location).attr('href', 'http://localhost/autoscan/web/app_dev.php/caisse/quittance/'+id+'/creer')
+         $(location).attr('href', '{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/caisse/quittance/'+id+'/creer')
         },
         Annuler: function() {
           $( this ).dialog( "close" );
@@ -111,7 +111,7 @@
 		};
 
 	$('#demo-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
-	$('#demo-modal').load('http://localhost/autoscan/web/app_dev.php/caisse/quittance/'+id+'/confirmer').dialog(options).dialog('open');
+	$('#demo-modal').load('{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/caisse/quittance/'+id+'/confirmer').dialog(options).dialog('open');
 }
     $(document).ready(function() {
 

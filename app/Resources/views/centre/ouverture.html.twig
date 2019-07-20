@@ -59,7 +59,7 @@
             width:700,
             buttons: {
                 "Valider": function() {
-                    $(location).attr('href', 'http://localhost/autoscan/web/app_dev.php/admin/gestion/centre/ouvrir')
+                    $(location).attr('href', '{{ path('admin_gestion_centre_ouverture') }}')
                 },
                 Annuler: function() {
                     $( this ).dialog( "close" );
@@ -67,7 +67,7 @@
             }
         };
         $('#demo-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
-        $('#demo-modal').load('http://localhost/autoscan/web/app_dev.php/admin/gestion/centre/ouverture/confirmer').dialog(options).dialog('open');
+        $('#demo-modal').load('{{ path('centre_ouverture_confirmer') }}').dialog(options).dialog('open');
     }
     
     function fermer(){
@@ -77,7 +77,7 @@
             width:700,
             buttons: {
                 "Valider": function() {
-                    $(location).attr('href', 'http://localhost/autoscan/web/app_dev.php/admin/gestion/centre/fermer')
+                    $(location).attr('href', '{{ path('admin_gestion_centre_fermeture') }}')
                 },
                 Annuler: function() {
                     $( this ).dialog( "close" );
@@ -85,7 +85,7 @@
             }
         };
         $('#demo-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
-        $('#demo-modal').load('http://localhost/autoscan/web/app_dev.php/admin/gestion/centre/fermeture/confirmer').dialog(options).dialog('open');
+        $('#demo-modal').load('{{ path('centre_fermeture_confirmer') }}').dialog(options).dialog('open');
     }
     
     $(document).ready(function() {
