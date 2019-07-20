@@ -103,7 +103,7 @@ class Affectation
         return $this->agent;
     }
 
-    function setDate(datetime $date) {
+    function setDate($date) {
         $this->date = $date;
     }
 
