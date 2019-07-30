@@ -15,9 +15,15 @@
                 <tr>
                     <td>{{ chaine.caisse.numero }}</td>
                     <td>{{ chaine.caisse.soldeInitial|number_format(0, ',', ' ') }}</td>
-                    <td>{{ chaine.caisse.getAffectationActive.agent.username }}</td>
+                    <td>{% if chaine.caisse.getAffectationActive %}
+                            {{ chaine.caisse.getAffectationActive.agent.username }}
+                        {% endif %}
+                    </td>
                     <td>{{ chaine.piste.numero }}</td>
-                    <td>{{ chaine.piste.getAffectationActive.agent.username }}</td>
+                    <td>{% if chaine.piste.getAffectationActive %}
+                            {{ chaine.piste.getAffectationActive.agent.username }}
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
             </tbody>
