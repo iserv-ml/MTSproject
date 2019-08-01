@@ -30,6 +30,8 @@
                 <th>Libellé</th>
                 <th>Adresse</th>
                 <th>Téléphone</th>
+                <th>Solde</th>
+                <th>Cartes vierges</th>
             </tr>
         </thead>
         <tbody>
@@ -39,10 +41,13 @@
                 <td>{{ centre.libelle }}</td>
                 <td>{{ centre.adresse }}</td>
                 <td>{{ centre.telephone }}</td>
+                <td>{{ centre.solde|number_format(0, ',', ' ') }}</td>
+                <td>{{ centre.carteVierge|number_format(0, ',', ' ') }}</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
+    </div>
 {% endblock %}
 
 {% block javascripts -%}

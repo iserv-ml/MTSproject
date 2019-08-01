@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CentreType extends AbstractType
+class CentreCarteType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -14,11 +14,6 @@ class CentreType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('code')
-                ->add('libelle')
-                ->add('description')
-                ->add('adresse')
-                ->add('telephone')
                 ->add('carteVierge');
     }
     
@@ -37,7 +32,7 @@ class CentreType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'appbundle_centre';
+        return 'appbundle_centre_carte';
     }
 
 

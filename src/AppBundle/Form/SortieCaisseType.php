@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CentreType extends AbstractType
+class SortieCaisseType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -14,12 +14,13 @@ class CentreType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('code')
-                ->add('libelle')
-                ->add('description')
-                ->add('adresse')
-                ->add('telephone')
-                ->add('carteVierge');
+                ->add('type', 'choice', array(
+                        'choices' => array(
+                            'Achat'    => 'Sortie Achat',
+                            'Vente' => 'Sortie Banque',
+                    )))
+                ->add('montant')
+                ->add('centre');
     }
     
     /**
@@ -28,7 +29,7 @@ class CentreType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Centre'
+            'data_class' => 'AppBundle\Entity\SortieCaisse'
         ));
     }
 
@@ -37,7 +38,7 @@ class CentreType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'appbundle_centre';
+        return 'appbundle_sortiecaisse';
     }
 
 

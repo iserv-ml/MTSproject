@@ -88,6 +88,22 @@ class Centre
      * 
      */
     private $solde;
+    
+    /**
+     * @var integer $carteVierge
+     *
+     * @ORM\Column(name="carte_vierge", type="integer", nullable=false)
+     * @Assert\NotBlank
+     */
+    private $carteVierge;
+    
+    /**
+     * @var integer $carteViergeOuverture
+     *
+     * @ORM\Column(name="carte_vierge_ouverture", type="integer", nullable=false)
+     * @Assert\NotBlank
+     */
+    private $carteViergeOuverture;
    
    //Debut relation Centre a plusieurs visites
     /**
@@ -125,6 +141,43 @@ class Centre
         $this->visites = $visites;
     }
     //Fin relation centre a plusieurs visites
+    
+    //Debut relation Centre a plusieurs sorties de caisse
+    /**
+    * @ORM\OneToMany(targetEntity="SortieCaisse", mappedBy="centre", cascade={"persist"})
+    */
+    protected $sorties;
+    
+    /**
+    * Add sortie
+    *
+    * @param AppBundle\Entity\SortieCaisse $sortie
+    */
+    public function addSortie(\AppBundle\Entity\SortieCaisse $sortie)
+    {
+        $this->sorties[] = $sortie;
+    }
+
+    /**
+     * Get sorties
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getSorties()
+    {
+        return $this->sorties;
+    }
+
+    /**
+     * Set sorties
+     *
+     * @param \Doctrine\Common\Collections\Collection $sorties
+     */
+    public function setSorties(\Doctrine\Common\Collections\Collection $sorties)
+    {
+        $this->sorties = $sorties;
+    }
+    //Fin relation centre a plusieurs sorties de caisse
 
     /**
      * Get id
@@ -197,6 +250,22 @@ class Centre
 
     function setEtat($etat) {
         $this->etat = $etat;
+    }
+    
+    function getCarteVierge() {
+        return $this->carteVierge;
+    }
+
+    function setCarteVierge($carteVierge) {
+        $this->carteVierge = $carteVierge;
+    }
+    
+    function getCarteViergeOuverture() {
+        return $this->carteViergeOuverture;
+    }
+
+    function setCarteViergeOuverture($carteViergeOuverture) {
+        $this->carteViergeOuverture = $carteViergeOuverture;
     }
 
     //BEHAVIOR
@@ -298,8 +367,19 @@ class Centre
     }
     //fin behavior
 
-    public function encaisser($montant){
-        $this->solde = $this->getSolde()+$montant;
+    public function encaisser(Caisse $caisse, SortieCaisse $sortie){
+        $this->solde = $this->getSolde()+$caisse->getSolde();
+        $sortie->setCentre($this);
+        $sortie->setMontant($caisse->getSolde());
+        $sortie->setType("Entréee - Fermeture de la caisse ".$caisse->getNumero());
+    }
+    
+    public function decaisser($montant){
+        $this->solde = $this->getSolde()-$montant;
+    }
+    
+    public function decrementerCarteVierge(){
+        $this->carteVierge -= 1; 
     }
 
 }

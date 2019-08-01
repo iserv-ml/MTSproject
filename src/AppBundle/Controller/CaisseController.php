@@ -169,7 +169,7 @@ class CaisseController extends Controller
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Suppression effectuée.');    
         }else{
-            $this->get('session')->getFlashBag()->add('error', 'Impossible de supprimer cette caisse car elle est utilisé');
+            $this->get('session')->getFlashBag()->add('error', 'Impossible de supprimer cette caisse car elle est utilisée');
         }
         return $this->redirectToRoute('admin_parametres_caisse_index');
     }
@@ -343,7 +343,11 @@ class CaisseController extends Controller
             throw $this->createNotFoundException("Cette opération est interdite!");
         }
         if($caisse->getOuvert()){
-            $centre->encaisser($caisse->getSolde());
+            if($caisse->getSolde() > 0){
+                $sortie = new \AppBundle\Entity\SortieCaisse();
+                $centre->encaisser($caisse, $sortie);
+                $em->persist($sortie);
+            }
             $caisse->fermer();
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'La caisse est maintenant fermée.');

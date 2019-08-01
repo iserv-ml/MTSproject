@@ -24,29 +24,46 @@
     {% endif %}
 {% endblock %}
 {% block body -%}
+        <table class="table table-hover table-striped table-bordered">
+            <tbody>
+                <tr>
+                    {% if centre.etat %}
+                        <th>Cartes vierges à l'ouverture</th>
+                    {% endif %}
+                    <th>Cartes vierges en stock</th>
+                </tr>
+                <tr>
+                    {% if centre.etat %}
+                        <td>{{ centre.carteViergeOuverture }}</td>
+                    {% endif %}
+                    <td><a title="Modifier le nombre de carte vierges" href="{{ path('admin_gestion_centre_carte') }}">{{ centre.carteVierge }}</a></td>
+                </tr>
+            </tbody>
+        </table>
     <div class="table-responsive">
         <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
             <thead>
-            <tr>
-                <th>CAISSE</th>
-                <th>SOLDE INITIAL</th>
-                <th>CAISSIER</th>
-                <th>PISTE</th>
-                <th>CONTROLLEUR</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for chaine in chaines %}
-            <tr>
-                <td><a title="Saisir le solde d'ouverture" href="{{ path('admin_parametres_caisse_solde', { 'id': chaine.caisse.id }) }}">{{ chaine.caisse.numero }}</a></td>
-                <td>{{ chaine.caisse.soldeInitial|number_format(0, ',', ' ') }}</td>
-                <td>{% if chaine.caisse.getAffectationActive %}{{ chaine.caisse.getAffectationActive.agent.username }}{% else %}Pas d'agent affecté{%endif%}</td>
-                <td>{{ chaine.piste.numero }}</td>
-                <td>{% if chaine.piste.getAffectationActive %}{{ chaine.piste.getAffectationActive.agent.username }}{% else %}Pas d'agent affecté{%endif%}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                <tr>
+                    <th>CAISSE</th>
+                    <th>SOLDE INITIAL</th>
+                    <th>CAISSIER</th>
+                    <th>PISTE</th>
+                    <th>CONTROLLEUR</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for chaine in chaines %}
+                <tr>
+                    <td><a title="Saisir le solde d'ouverture" href="{{ path('admin_parametres_caisse_solde', { 'id': chaine.caisse.id }) }}">{{ chaine.caisse.numero }}</a></td>
+                    <td>{{ chaine.caisse.soldeInitial|number_format(0, ',', ' ') }}</td>
+                    <td>{% if chaine.caisse.getAffectationActive %}{{ chaine.caisse.getAffectationActive.agent.username }}{% else %}Pas d'agent affecté{%endif%}</td>
+                    <td>{{ chaine.piste.numero }}</td>
+                    <td>{% if chaine.piste.getAffectationActive %}{{ chaine.piste.getAffectationActive.agent.username }}{% else %}Pas d'agent affecté{%endif%}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <div id="demo-modal" title="OUVRIR/FERMER LE CENTRE"></div>
 {% endblock %}
 

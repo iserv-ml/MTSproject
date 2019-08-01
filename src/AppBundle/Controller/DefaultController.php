@@ -80,27 +80,31 @@ class DefaultController extends Controller
      */
     public function certificatAction(Visite $visite)
     {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre){
+            throw $this->createNotFoundException("Cette opération est interdite!");
+        }
         if(!$visite){
             throw $this->createNotFoundException("La visite demandée n'est pas disponible.");
         }
         $chemin = __DIR__.'/../../../web/visites/certificats/certificat_'.$visite->getNumeroCertificat().'.pdf';
         if (file_exists($chemin)) {
-            unlink($chemin);
+            //unlink($chemin);
         }else{
-            $em = $this->getDoctrine()->getManager();
             $visite->setStatut(4);
+            $centre->decrementerCarteVierge();
             $em->flush();
+            $this->get('knp_snappy.pdf')->generateFromHtml(
+                $this->renderView(
+                    'default/certificat.html.twig',
+                    array(
+                        'visite'  => $visite,
+                    )
+                ),
+                $chemin
+            );
         }     
-        
-        $this->get('knp_snappy.pdf')->generateFromHtml(
-            $this->renderView(
-                'default/certificat.html.twig',
-                array(
-                    'visite'  => $visite,
-                )
-            ),
-            $chemin
-        );
         
         $response = new BinaryFileResponse($chemin);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);

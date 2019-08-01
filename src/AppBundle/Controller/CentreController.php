@@ -49,7 +49,7 @@ class CentreController extends Controller
             throw $this->createNotFoundException("Cette opération est interdite!");
         }
         return $this->render('centre/ouverture.confirmer.html.twig', array(
-            'chaines' => $chaines,
+            'chaines' => $chaines,'centre' => $centre,
         ));
     }
     
@@ -68,7 +68,7 @@ class CentreController extends Controller
             throw $this->createNotFoundException("Cette opération est interdite!");
         }
         return $this->render('centre/fermeture.confirmer.html.twig', array(
-            'chaines' => $chaines,
+            'chaines' => $chaines, 'centre'=>$centre,
         ));
     }
     
@@ -167,6 +167,38 @@ class CentreController extends Controller
             'edit_form' => $editForm->createView(),
         ));
     }
+    
+    /**
+     * Displays a form to edit les cartes for an existing centre entity.
+     *
+     * @Route("/admin/gestion/centre/carte", name="admin_gestion_centre_carte")
+     * @Method({"GET", "POST"})
+     */
+    public function carteAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre){
+            throw $this->createNotFoundException("Cette opération est interdite!");
+        }
+        $editForm = $this->createForm('AppBundle\Form\CentreCarteType', $centre);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
+            $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives();
+            return $this->redirectToRoute('admin_gestion_centre_ouverture', array(
+                'centre' => $centre,
+                'chaines' => $chaines,
+            ));
+        }
+
+        return $this->render('centre/edit.html.twig', array(
+            'centre' => $centre,
+            'edit_form' => $editForm->createView(),
+        ));
+    }
 
     /**
      * Deletes a centre entity.
@@ -220,6 +252,7 @@ class CentreController extends Controller
         }
         if(!$centre->getEtat()){
             $centre->setEtat(true);
+            $centre->setCarteViergeOuverture($centre->getCarteVierge());
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Le centre est maintenant ouvert.');
         }else{
@@ -260,6 +293,7 @@ class CentreController extends Controller
             }
             if($caisses){
                 $centre->setEtat(false);
+                $centre->setCarteViergeOuverture(0);
                 $em->flush();
                 $this->get('session')->getFlashBag()->add('notice', 'Le centre est maintenant fermé.');
             }else{

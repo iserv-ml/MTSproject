@@ -12,6 +12,10 @@
         </a>
     </li>
     <li class="nav-item">
+        <a class="nav-link {% block menu_sorties_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_sorties_index') }}">
+            <i class="nav-icon fa fa-calculator"></i> Sorties de Caisse</a>
+    </li>
+    <li class="nav-item">
         <a class="nav-link {% block menu_affectationcaisse_actif %}{% endblock %}" href="{{ path('admin_gestion_affectation_index') }}">
         <i class="nav-icon fa fa-bank"></i> Affectation aux caisses</a>
     </li>
