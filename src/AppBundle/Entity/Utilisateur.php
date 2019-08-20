@@ -146,5 +146,32 @@ class Utilisateur extends BaseUser
     function setGroupe($groupe) {
         $this->groupe = $groupe;
     }
+    
+    /**
+     * Returns the user roles
+     *
+     * @return array The roles
+     */
+    public function getRoles()
+    {
+        $roles = $this->roles;
+
+        foreach ($this->getGroups() as $group) {
+            $roles = array_merge($roles, $group->getRoles());
+        }
+        if($this->groupe!=null){
+            $roles = array_merge($roles, $this->groupe->getRoles());
+        }
+        // we need to make sure to have at least one role
+        $roles[] = static::ROLE_DEFAULT;
+
+        return array_unique($roles);
+    }
+    
+    public function hasRole($role)
+    {
+        return in_array(strtoupper($role), $this->getRoles(), true);
+    }
+
 
 }
