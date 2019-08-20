@@ -30,9 +30,10 @@ class VisiteController extends Controller
         $affectation = $em->getRepository('AppBundle:Affectation')->derniereAffectation($user->getId());
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
-        if(!$centre || (!$affectation && !$admin)){
+        if(!$centre || !$affectation){
             throw $this->createNotFoundException("Vous n'êtes affecté à aucune caisse. Contacter l'administrateur.");
         }
+        
         $caisse = $affectation->getCaisse();
         $profil = $admin ? "ADMIN" : "CAISSE N° ".$caisse->getNumero();
         return $this->render('visite/quittance.html.twig', array('profil'=>$profil, 'caisse'=>$caisse, 'centre'=>$centre,));
