@@ -31,7 +31,8 @@ class VisiteController extends Controller
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
         if(!$centre || !$affectation){
-            throw $this->createNotFoundException("Vous n'êtes affecté à aucune caisse. Contacter l'administrateur.");
+            $this->get('session')->getFlashBag()->add('error', "Vous n'êtes affecté à aucune caisse. Contacter l'administrateur.");
+            return $this->redirectToRoute('homepage');
         }
         
         $caisse = $affectation->getCaisse();
