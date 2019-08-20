@@ -85,6 +85,10 @@ class DefaultController extends Controller
         if(!$centre){
             throw $this->createNotFoundException("Cette opération est interdite!");
         }
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_delivrance');
+        }
         if(!$visite){
             throw $this->createNotFoundException("La visite demandée n'est pas disponible.");
         }
@@ -121,6 +125,11 @@ class DefaultController extends Controller
     {
         if(!$visite){
             throw $this->createNotFoundException("La visite demandée n'est pas disponible.");
+        }
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_delivrance');
         }
         $chemin = __DIR__.'/../../../web/visites/certificats/volet2_'.$visite->getNumeroCertificat().'.pdf';
         if (file_exists($chemin)) {

@@ -13,7 +13,11 @@
     </li>
     <li class="nav-item">
         <a class="nav-link {% block menu_sorties_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_sorties_index') }}">
-            <i class="nav-icon fa fa-calculator"></i> Sorties de Caisse</a>
+            <i class="nav-icon fa fa-calculator"></i> Opérations de Caisse</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link {% block menu_quittance_actif %}{% endblock %}" href="{{ path('caisse_quittance_index') }}">
+            <i class="nav-icon fa fa-money"></i> Quittances</a>
     </li>
     <li class="nav-item">
         <a class="nav-link {% block menu_affectationcaisse_actif %}{% endblock %}" href="{{ path('admin_gestion_affectation_index') }}">
@@ -29,17 +33,9 @@
         <a class="nav-link nav-dropdown-toggle" href="#">
             <i class="nav-icon fa fa-bar-chart"></i> Statistiques</a>
         <ul class="nav-dropdown-items">
-            <li class="nav-item {% block menu_encours_open %}{% endblock %}">
-                <a class="nav-link {% block menu_encours_actif %}{% endblock %}" href="#">
-                    <i class="nav-icon icon-list"></i> Visites en cours</a>
-            </li>
-            <li class="nav-item {% block menu_succes_open %}{% endblock %}">
-                <a class="nav-link {% block menu_succes_actif %}{% endblock %}" href="#">
-                    <i class="nav-icon icon-list"></i> Visites réussies</a>
-            </li>
-            <li class="nav-item {% block menu_revisites_open %}{% endblock %}">
-                <a class="nav-link {% block menu_revisites_actif %}{% endblock %}" href="#">
-                    <i class="nav-icon icon-list"></i> Revisites</a>
+            <li class="nav-item {% block menu_parcaisse_open %}{% endblock %}">
+                <a class="nav-link {% block menu_parcaisse_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_statistique_caisse_index') }}">
+                    <i class="nav-icon icon-list"></i> Etat journalier</a>
             </li>
             <li class="nav-item {% block menu_etatcaisses_open %}{% endblock %}">
                 <a class="nav-link {% block menu_etatcaisses_actif %}{% endblock %}" href="#">

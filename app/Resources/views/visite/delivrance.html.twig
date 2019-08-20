@@ -13,6 +13,13 @@
     </ol>
 {% endblock %}
 {% block pagetitle -%}LISTE DES VISITES{% endblock %}
+{% block actions %}
+    {% if centre == false %}
+        <label class="btn btn-warning pointer-event">LE CENTRE EST FERME. ATTENDEZ SON OUVERTURE</label>
+    {% else %}
+        <label class="btn btn-success pointer-event">LE CENTRE EST OUVERT.</label>
+    {% endif %}
+{% endblock %}
 
 {% block body -%}
 <div class="table-responsive">

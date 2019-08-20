@@ -15,11 +15,13 @@ class SortieCaisseType extends AbstractType
     {
         $builder
                 ->add('type', 'choice', array(
-                        'choices' => array(
-                            'Achat'    => 'Sortie Achat',
-                            'Vente' => 'Sortie Banque',
+                    'choices' => array(
+                        'SORTIE'    => 'SORTIE',
+                        'ENTREE' => 'ENTREE',
                     )))
+                ->add('description')
                 ->add('montant')
+                ->add('commentaire')
                 ->add('centre');
     }
     

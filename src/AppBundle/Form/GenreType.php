@@ -17,7 +17,8 @@ class GenreType extends AbstractType
                 ->add('libelle')
                 ->add('code')
                 ->add('ptacMin')
-                ->add('ptacMax');
+                ->add('ptacMax')
+                ->add('delaiPremiereVisite');
         
     }
     

@@ -16,7 +16,7 @@ class SortieCaisseRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.type, r.montant, r.dateCreation FROM AppBundle:SortieCaisse r '
+                'SELECT r.id, r.type, r.description, r.montant, r.dateCreation FROM AppBundle:SortieCaisse r '
                     . ' WHERE r.type like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')

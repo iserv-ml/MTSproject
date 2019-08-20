@@ -17,7 +17,7 @@
     <label class="btn btn-outline-secondary"><a href="{{ path('visite_quittance') }}">LISTER</a></label>
     <label class="btn btn-outline-secondary"><a target="_blank" href="{{ path('quittance_imprim', { 'id': quittance.id }) }}">IMPRIMER</a></label>
     <label class="btn btn-outline-secondary">
-        {% if quittance.paye %}<a href="#">REMBOURSER</a>
+        {% if quittance.paye %}<a href="#" title="Rembourser" onclick="rembourser()">REMBOURSER</a>
         {% else %}<a onclick="return confirm('Veuiller confirmer l\'encaissement de la quittance N° {{quittance.numero}}');" href="{{ path('caisse_quittance_encaisser', { 'id': quittance.id }) }}">ENCAISSER</a>
         {% endif %}
     </label>
@@ -75,4 +75,27 @@
             </tr>
         </tbody>
     </table>
+    <div id="remboursement-modal" title="REMBOURSEMENT"></div>
+{% endblock %}
+{% block javascripts -%}
+    <script type="text/javascript">
+        function rembourser(){
+            var options = {
+                modal: true,
+                height:500,
+                width:700,
+                buttons: {
+                    "Rembourser": function() {
+                        $(location).attr('href', '{{ path('quittance_rembourser', { 'id': quittance.id }) }}')
+                    },
+                    Annuler: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            };
+            $('#remboursement-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+            $('#remboursement-modal').load('{{ path('quittance_remboursement_confirmer', { 'id': quittance.id }) }}').dialog(options).dialog('open');
+        }
+    </script>
+    
 {% endblock %}

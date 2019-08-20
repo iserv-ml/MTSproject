@@ -39,16 +39,17 @@ class SortieCaisseController extends Controller
         $form = $this->createForm('AppBundle\Form\SortieCaisseType', $sortieCaisse);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $centre = $sortieCaisse->getCentre();
-            $centre->decaisser($sortieCaisse->getMontant());
-            $em->persist($sortieCaisse);
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
-            return $this->redirectToRoute('admin_gestion_centre_sorties_show', array('id' => $sortieCaisse->getId()));
+            switch($sortieCaisse->traiter()){
+                case 0 : $this->get('session')->getFlashBag()->add('error', 'Cette opération est interdite!');break;
+                case 1: $this->get('session')->getFlashBag()->add('error', 'Le montant demandé est supérieur au solde du centre.');break;
+                case 2 : $em->persist($sortieCaisse);
+                        $em->flush();
+                        $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
+                        return $this->redirectToRoute('admin_gestion_centre_sorties_show', array('id' => $sortieCaisse->getId()));
+            }
         }
-
         return $this->render('sortiecaisse/new.html.twig', array(
             'sortieCaisse' => $sortieCaisse,
             'form' => $form->createView(),
@@ -191,7 +192,7 @@ class SortieCaisseController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['type'], $aRow['montant'], $aRow['dateCreation'], $action);
+            $output['aaData'][] = array($aRow['type'], $aRow['description'], $aRow['montant'], $aRow['dateCreation'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
@@ -199,8 +200,8 @@ class SortieCaisseController extends Controller
     private function genererAction($id){
         $action = "<a title='Détail' class='btn btn-success' href='".$this->generateUrl('admin_gestion_centre_sorties_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
-                $action .= " <a title='Modifier' class='btn btn-info' href='".$this->generateUrl('admin_gestion_centre_sorties_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
-                $action .= " <a title='Supprimer' class='btn btn-danger' href='".$this->generateUrl('admin_gestion_centre_sorties_delete_a', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
+                //$action .= " <a title='Modifier' class='btn btn-info' href='".$this->generateUrl('admin_gestion_centre_sorties_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
+                //$action .= " <a title='Supprimer' class='btn btn-danger' href='".$this->generateUrl('admin_gestion_centre_sorties_delete_a', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
         }
         return $action;
     }

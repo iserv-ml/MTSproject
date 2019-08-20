@@ -26,13 +26,7 @@ class QuittanceController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $quittances = $em->getRepository('AppBundle:Quittance')->findAll();
-
-        return $this->render('quittance/index.html.twig', array(
-            'quittances' => $quittances,
-        ));
+        return $this->render('quittance/index.html.twig');
     }
 
     /**
@@ -108,14 +102,17 @@ class QuittanceController extends Controller
      * @Route("/{id}/encaisser", name="caisse_quittance_encaisser")
      * @Method({"GET", "POST"})
      */
-    public function encaisserAction(Request $request, Quittance $quittance)
+    public function encaisserAction(Quittance $quittance)
     {
+        if(!$quittance->getVisite()->getChaine()->getCaisse()->getOuvert()){
+            $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!');
+            return $this->redirectToRoute('visite_quittance');
+        }
         if ($quittance->getPaye()) {
             $this->get('session')->getFlashBag()->add('notice', 'Cette quittance a déjà été encaissé.');
         }else{
             $em = $this->getDoctrine()->getManager();
-            $quittance->setPaye(1);
-            $quittance->getVisite()->setStatut(1);
+            $quittance->encaisser();
             $caisse = $quittance->getVisite()->getChaine()->getCaisse();
             $caisse->encaisser($quittance->getMontantVisite(), $quittance->getVisite()->getRevisite());
             $this->get('session')->getFlashBag()->add('notice', 'Quittance encaissée.');
@@ -123,6 +120,59 @@ class QuittanceController extends Controller
         }
         return $this->render('quittance/show.html.twig', array(
             'quittance' => $quittance,
+        ));
+    }
+    
+    /**
+     * Rembourser une quittance.
+     *
+     * @Route("/{id}/rembourser", name="quittance_rembourser")
+     * @Method({"GET", "POST"})
+     */
+    public function rembourserAction(Quittance $quittance)
+    {
+        if(!$quittance->getVisite()->getChaine()->getCaisse()->getOuvert()){
+            $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!');
+            return $this->redirectToRoute('visite_quittance');
+        }
+        $today = new \DateTime();
+        if($quittance->getPaye() && $quittance->getDateEncaissement()->format('Y-m-d') < $today->format('Y-m-d')){
+            $this->get('session')->getFlashBag()->add('error', "Le client doit passer à la caisse principale pour se faire rembourser!");
+        }else{
+            $em = $this->getDoctrine()->getManager();
+            $quittance->rembourser();
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'La quittance a été remboursée.');
+        }
+        return $this->render('quittance/show.html.twig', array(
+            'quittance' => $quittance,
+        ));
+    }
+    
+    /**
+     * Rembourser une quittance.
+     *
+     * @Route("/{id}/rembourser/confirmer", name="quittance_remboursement_confirmer")
+     * @Method({"GET", "POST"})
+     */
+    public function rembourserconfirmerAction(Quittance $quittance)
+    {
+        if(!$quittance->getVisite()->getChaine()->getCaisse()->getOuvert()){
+            $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!');
+            return $this->redirectToRoute('visite_quittance');
+        }
+        $today = new \DateTime();
+        if($quittance->getPaye() && $quittance->getDateEncaissement()->format('Y-m-d') < $today->format('Y-m-d')){
+            $style = "color:red";
+            $message = "Remboursement à la caisse principal.";
+        }else{
+            $style="";
+            $message = "Cliquer sur Rembourser pour confirmer le remboursement.";
+        }
+        return $this->render('quittance/rembourser.confirmer.html.twig', array(
+            'quittance' => $quittance,
+            'style' => $style,
+            'message' => $message,
         ));
     }
     
@@ -136,6 +186,10 @@ class QuittanceController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $visite = $em->getRepository('AppBundle:Visite')->find($request->get('id'));
+        if(!$visite->getChaine()->getCaisse()->getOuvert()){
+            $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!.');
+            return $this->redirectToRoute('visite_quittance');
+        }
         $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($request->get('id'));
         if($quittance){
             $this->get('session')->getFlashBag()->add('notice', 'La quittance existe déjà.');
@@ -168,6 +222,10 @@ class QuittanceController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $visite = $em->getRepository('AppBundle:Visite')->find($request->get('id'));
+        if(!$visite->getChaine()->getCaisse()->getOuvert()){
+            $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!.');
+            return $this->redirectToRoute('visite_quittance');
+        }
         $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($request->get('id'));
         if(!$quittance){
             $quittance = new Quittance();
@@ -251,5 +309,90 @@ class QuittanceController extends Controller
         $response = new BinaryFileResponse($chemin);
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         return $response;
+    }
+    
+    /**
+     * Lists all Quittance entities.
+     *
+     * @Route("/admin/gestion/centre/quittance/liste", name="quittanceprincipaleajax")
+     * 
+     * 
+     */
+    public function quittanceajaxAction(Request $request)
+    {
+        $search = $request->get('search')['value'];
+        $col = $request->get('order')[0]['column'];
+        $dir = $request->get('order')[0]['dir'];
+        $em = $this->getDoctrine()->getManager();
+	$aColumns = array( 'vh.immatriculation', 'p.nom', 'ca.numero', 'v.montantVisite', 'r.numero');
+        $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
+        $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
+        $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
+        $sdir = ($dir =='asc') ? 'asc' : 'desc';
+        $searchTerm = ($search != '') ? $search : NULL;
+        $rResult = $em->getRepository('AppBundle:Quittance')->findAllAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
+	$iTotal = $em->getRepository('AppBundle:Quittance')->countRows();
+	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
+	foreach ( $rResult as  $aRow )
+	{
+            $action = $this->genererAction($aRow['id'], $aRow['statut']);
+            $output['aaData'][] = array($aRow['immatriculation'], $aRow['nom']." ".$aRow['prenom'], $aRow['caisse'], $aRow['montantVisite'], $aRow['numero'], $action);
+	}
+	return new Response(json_encode( $output ));    
+    }
+    
+    private function genererAction($id, $statut){
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
+            switch($statut){
+                case 0 : case 1 : $action = " <a title='Rembourser' onclick='rembourser(".$id.")' class='btn btn-info' href='#'><i class='fa fa-edit' ></i></a>";break;
+                case 2 : case 3 : case 4: $action = "Déjà contrôlé";break;
+                case 5 : $action = "Déjà annulée";
+            }
+        }
+        return $action;
+    }
+    
+    /**
+     * Export all SortieCaisse entities.
+     *
+     * @Route("/admin/gestion/centre/sorties/download", name="sortiecaisse_export")
+     * @Method("GET")
+     * 
+     */
+    public function exportAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $entities = $em->getRepository('AppBundle:SortieCaisse')->findAll();
+        $date = new \DateTime("now");
+        $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
+        $phpExcelObject->getProperties()->setCreator("2SInnovation")
+            ->setTitle("SortieCaisse".$date->format('Y-m-d H:i:s'));
+        $this->writeRapport($phpExcelObject, $entities);
+        $writer = $this->get('phpexcel')->createWriter($phpExcelObject, 'Excel5');
+        $response = $this->get('phpexcel')->createStreamedResponse($writer);
+        $filename = 'SortieCaisse'.$date->format('Y_m_d_H_i_s').'.xls';
+        $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment;filename='.$filename);
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Cache-Control', 'maxage=1');
+        return $response;        
+    }
+
+    
+    private function writeRapport($phpExcelObject, $entities) {
+        $phpExcelObject->setActiveSheetIndex(0);
+        $col = 0;
+        $objWorksheet = $phpExcelObject->getActiveSheet();
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("TYPE");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("MONTANT");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("DATE");
+        $ligne =2;
+        foreach($entities as $entity){
+            $col=0;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getType());$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getMontant());$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getDateCreation());
+            $ligne++;
+        }
     }
 }

@@ -47,5 +47,18 @@ class CaisseRepository extends EntityRepository
         }
         
         return $result; 
-    }    
+    } 
+    
+    public function trouverPourEtat($start, $end, $sCol, $sdir, $search) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Caisse r '
+                    . ' WHERE r.numero like :search'
+                    . ' ORDER BY '.$sCol.' '.$sdir)
+            ->setParameter('search', '%'.$search.'%')
+            ->setFirstResult($start)
+            ->setMaxResults($end);
+        $arrayAss = $qb->getResult();
+        return $arrayAss;
+    }
 }

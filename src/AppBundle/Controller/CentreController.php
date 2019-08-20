@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\SortieCaisse;
 
 /**
  * Centre controller.
@@ -181,6 +182,10 @@ class CentreController extends Controller
         if(!$centre){
             throw $this->createNotFoundException("Cette opération est interdite!");
         }
+        if($centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est déjà ouvert!');
+            return $this->redirectToRoute('admin_gestion_centre_ouverture');
+        }
         $editForm = $this->createForm('AppBundle\Form\CentreCarteType', $centre);
         $editForm->handleRequest($request);
 
@@ -287,8 +292,9 @@ class CentreController extends Controller
                         $caisses = false;
                         break;
                     }
-                    $centre->encaisser($chaine->getCaisse()->getSolde());
-                    $chaine->getCaisse()->setSolde(0);
+                    $sortie = $centre->encaisser($chaine->getCaisse());
+                    $chaine->getCaisse()->cloturer();
+                    $em->persist($sortie);
                 }
             }
             if($caisses){
@@ -310,4 +316,66 @@ class CentreController extends Controller
             'centre' => $centre,
         ));
     }
+    
+    /**
+     * Rembourser une quittance par la caisse principale.
+     *
+     * @Route("/{id}/rembourser/principal", name="quittance_rembourser_principal")
+     * @Method({"GET", "POST"})
+     */
+    public function rembourserprincipalAction(\AppBundle\Entity\Quittance $quittance)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre || !$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('caisse_quittance_index');
+        }
+        switch($quittance->remboursableOu()){
+            case -1: $this->get('session')->getFlashBag()->add('error', "La visite a déjà été effectuée");break;
+            case 0: $this->get('session')->getFlashBag()->add('error', "Cette quittance n'a pas été encaissée!");break;
+            case 1: $this->get('session')->getFlashBag()->add('error', "Le client doit passer à la caisse N°".$quittance->getVisite()->getChaine()->getCaisse()->getNumero()." pour se faire rembourser!");break;
+            case 2: if($quittance->controleSolde($centre->getSolde())){
+                        $sortie = $centre->rembourser($quittance);
+                        $em->persist($sortie);
+                        $em->flush();
+                        $this->get('session')->getFlashBag()->add('notice', 'La quittance a été remboursée.');
+                    }else{
+                        $this->get('session')->getFlashBag()->add('error', "Le solde disponible ne permet pas de rembourser cette quittance!");
+                    }
+                break;
+        }
+        return $this->render('caisse_quittance_index');
+    }
+    
+    /**
+     * Rembourser une quittance.
+     *
+     * @Route("/{id}/rembourser/principal/confirmer", name="quittance_remboursement_principal_confirmer")
+     * @Method({"GET", "POST"})
+     */
+    public function rembourserconfirmerAction(\AppBundle\Entity\Quittance $quittance)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre || !$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('caisse_quittance_index');
+        }
+        $today = new \DateTime();
+        if($quittance->getPaye() && $quittance->getDateEncaissement()->format('Y-m-d') == $today->format('Y-m-d')){
+            $style = "color:red";
+            $message = "Remboursement à la caisse N°".$quittance->getVisite()->getChaine()->getCaisse()->getNumero()."!";
+        }else{
+            $style="";
+            $message = "Cliquer sur Rembourser pour confirmer le remboursement.";
+        }
+        return $this->render('quittance/rembourser.confirmer.html.twig', array(
+            'quittance' => $quittance,
+            'style' => $style,
+            'message' => $message,
+        ));
+    }
+    
+    
 }

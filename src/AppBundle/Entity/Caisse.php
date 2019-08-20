@@ -284,9 +284,9 @@ class Caisse
         $this->montantrevisite = $montantrevisite;
     }
     
-    function fermer(){
+    function cloturer(){
         $this->solde = 0;
-        $this->ouvert = false;
+        $this->soldeInitial = 0;
         $this->nbvisite = 0;
         $this->nbrevisite = 0;
         $this->montantvisite = 0;
@@ -301,6 +301,16 @@ class Caisse
     function ajouterRevisite($montant){
         $this->nbrevisite += 1;
         $this->montantrevisite += $montant;
+    }
+    
+    function retirerVisite($montant){
+        $this->nbvisite -= 1;
+        $this->montantvisite -= $montant;
+    }
+    
+    function retirerRevisite($montant){
+        $this->nbrevisite -= 1;
+        $this->montantrevisite -= $montant;
     }
 
     //BEHAVIOR
@@ -415,6 +425,15 @@ class Caisse
             $this->ajouterRevisite($montant);
         }else{
             $this->ajouterVisite($montant);
+        }
+    }
+    
+    public function rembourser($montant, $revisite){
+        $this->solde = $this->getSolde()-$montant;
+        if($revisite){
+            $this->retirerRevisite($montant);
+        }else{
+            $this->retirerVisite($montant);
         }
     }
 

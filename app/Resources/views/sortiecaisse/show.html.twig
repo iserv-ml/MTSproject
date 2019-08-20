@@ -7,21 +7,15 @@
 {% block ariane -%}
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
-        <li class="breadcrumb-item"><a href="{{ path('admin_gestion_centre_sorties_index') }}">Sorties de caisse</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('admin_gestion_centre_sorties_index') }}">Opérations de caisse</a></li>
         <li class="breadcrumb-item">Détail</li>
     </ol>
 {% endblock %}
 {% block menu_gestion_actif %}active{% endblock %}
-{% block pagetitle -%}DETAIL D'UNE SORTIE DE CAISSE{% endblock %}
+{% block pagetitle -%}DETAIL D'UNE OPERATION DE CAISSE{% endblock %}
 {% block actions %}
     <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_centre_sorties_index') }}">LISTER</a></label>
-    <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_centre_sorties_edit', { 'id': sortieCaisse.id }) }}">MODIFIER</a></label>
-    <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_centre_sorties_new') }}">CREER UNE SORTIE</a></label>
-    <label class="btn btn-outline-secondary">
-        {{ form_start(delete_form) }}
-            <input type="submit" value="SUPPRIMER" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
-        {{ form_end(delete_form) }}
-    </label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_centre_sorties_new') }}">CREER UNE OPERATION</a></label>
 {% endblock %}
 {% block body %}
     <table class="table table-hover">
@@ -31,8 +25,24 @@
                 <td>{{ sortieCaisse.type }}</td>
             </tr>
             <tr>
+                <th>Description</th>
+                <td>{{ sortieCaisse.description }}</td>
+            </tr>
+            <tr>
                 <th>Montant</th>
-                <td>{{ sortieCaisse.montant }}</td>
+                <td>{{ sortieCaisse.montant|number_format(0, ',', ' ') }}</td>
+            </tr>
+            <tr>
+                <th>Ancien solde</th>
+                <td>{{ sortieCaisse.ancienSolde|number_format(0, ',', ' ') }}</td>
+            </tr>
+            <tr>
+                <th>Nouveau solde</th>
+                <td>{{ sortieCaisse.nouveauSolde|number_format(0, ',', ' ') }}</td>
+            </tr>
+            <tr>
+                <th>Commentaire</th>
+                <td>{{ sortieCaisse.commentaire }}</td>
             </tr>
             <tr>
                 <th>Créé par</th>

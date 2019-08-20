@@ -65,6 +65,14 @@ class Genre
      */
     private $ptacMax; 
     
+    /**
+     * @var integer $delaiPremiereVisite
+     *
+     * @ORM\Column(name="delaiPremiereVisite", type="integer", nullable=false)
+     * @Assert\NotBlank
+     */
+    private $delaiPremiereVisite;
+    
     //Debut relation Genre a plusieurs typeVehicule
     /**
     * @ORM\OneToMany(targetEntity="TypeVehicule", mappedBy="genre", cascade={"persist"})
@@ -187,6 +195,14 @@ class Genre
 
     function setPtacMax($ptacMax) {
         $this->ptacMax = $ptacMax;
+    }
+    
+    function getDelaiPremiereVisite() {
+        return $this->delaiPremiereVisite;
+    }
+
+    function setDelaiPremiereVisite($delaiPremiereVisite) {
+        $this->delaiPremiereVisite = $delaiPremiereVisite;
     }
             
     //BEHAVIOR

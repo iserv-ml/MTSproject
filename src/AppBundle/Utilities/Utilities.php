@@ -2,8 +2,8 @@
 
 namespace AppBundle\Utilities;
 
-use AppBundle\Entity\Facture;
-use AppBundle\Entity\Affaire;
+use AppBundle\Entity\Vehicule;
+use AppBundle\Entity\Visite;
 
 
 
@@ -14,50 +14,49 @@ use AppBundle\Entity\Affaire;
  */
 class Utilities
 {
-   static function createFacture(Affaire $affaire, $type, $plein = false) {
-       $facture = null;
-       switch($type){
-           case "VENTE": $facture = Utilities::createFactureVente($affaire);break;
-           case "LONGUE DUREE": $facture = Utilities::createFactureLocationLongue($affaire,$plein);break;
-           case "JOURNALIERE": $facture = Utilities::createFactureLocationCourte($affaire);break;
+   public static function evaluerDemandeVisite($derniereVisite){
+       if($derniereVisite){
+           switch($derniereVisite->getStatut()){
+               case 0 : case 1 : return 1;
+               case 2 : case 4 : return 2;
+               case 3 : return 3;
+           }
+       }else{
+           return 0;
        }
-       return $facture;
+       if(!$derniereVisite || $derniereVisite->getStatut() == 2 || $derniereVisite->getStatut() == 4){
+            //il faudra tenir compte de la date de la dernière visite
+            if($derniereVisite){
+                verifierSiDateVisite();
+            }
+            $visiteParent = null;
+        }elseif($derniereVisite->getStatut() == 3){
+            $visiteParent = $derniereVisite;
+        }else{
+            $this->get('session')->getFlashBag()->add('notice', 'Visite déjà en cours.');
+            return $this->render('visite/visite.html.twig', array(
+            'visite' => $derniereVisite,
+            ));
+        }
    }
    
-   static function createFactureVente(Affaire $affaire) {
-       $facture = new Facture();
-       $facture->setStatut("OUVERTE");
-       $facture->setMontant($affaire->getMontant());
-       $facture->setPartProprio($affaire->getMontant()*$affaire->getBien()->getPartProprio()/100);
-       return $facture;
-   }
-   
-    static function createFactureLocationLongue(Affaire $affaire, $plein) {
-        $montant = ($plein) ? $affaire->getLoyer() : Utilities::prorater($affaire->getDateDebut(), $affaire->getLoyer());
-        $facture = new Facture();
-        $facture->setStatut("OUVERTE");
-        $facture->setMontant($montant);
-        $facture->setPartProprio($montant*$affaire->getBien()->getPartProprio()/100);
-        return $facture;
-    }
-   
-    static function prorater($dateDebut, $montant){
-        $finmois = new \DateTime(date("Y-m-t", $dateDebut->getTimestamp()));
-        $debutmois = new \DateTime(date("Y-m-01", $dateDebut->getTimestamp()));
-        $jours = intval($dateDebut->diff($finmois)->format('%a'))+1;
-        $total = intval($debutmois->diff($finmois)->format('%a'))+1;
-        return $montant*$jours/$total;
-    }
-   
-    static function createFactureLocationCourte(Affaire $affaire) {
-        $debut = new \DateTime($affaire->getDateDebut());
-        $jours = intval($debut->diff(new \DateTime($affaire->getDateFin()))->format('%a'))+1;
-        $montant = $affaire->getLoyer()*$jours;
-        $facture = new Facture();
-        $facture->setStatut("OUVERTE");
-        $facture->setMontant($montant);
-        $facture->setPartProprio($montant*$affaire->getBien()->getPartProprio()/100);
-        return $facture;
+    public static function trouverChaineOptimale($chaines, $em){
+        $min = 1000000000000000000000000;
+        $chaineOptimale = null;
+        $i=0;
+        if(count($chaines)>0){
+            foreach($chaines as $chaine){
+                if($i == 0){
+                    $chaineOptimale = $chaine;$i++;
+                }
+                $nb = $em->getRepository('AppBundle:Visite')->nbVisitesNonTerminees($chaine->getId());
+                if($min>$nb){
+                    $min = $nb;
+                    $chaineOptimale = $chaine;
+                }
+            }
+        }
+        return $chaineOptimale;
    }
 
 }

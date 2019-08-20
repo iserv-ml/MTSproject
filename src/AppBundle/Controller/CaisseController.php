@@ -111,11 +111,17 @@ class CaisseController extends Controller
         if (!$caisse) {
             throw $this->createNotFoundException("La caisse demandée n'est pas disponible.");
         }
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if($centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est déjà ouvert!');
+            return $this->redirectToRoute('admin_gestion_centre_ouverture');
+        }      
         $editForm = $this->createForm('AppBundle\Form\CaisseSoldeType', $caisse);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
             return $this->redirectToRoute('admin_gestion_centre_ouverture');
         }
@@ -319,7 +325,8 @@ class CaisseController extends Controller
             throw $this->createNotFoundException("Cette opération est interdite!");
         }
         if(!$caisse->getOuvert()){
-            $caisse->setOuvert(true);
+            $sortie = $centre->ouvertureCaisse($caisse);
+            $em->persist($sortie);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'La caisse est maintenant ouverte.');
         }else{
@@ -343,12 +350,7 @@ class CaisseController extends Controller
             throw $this->createNotFoundException("Cette opération est interdite!");
         }
         if($caisse->getOuvert()){
-            if($caisse->getSolde() > 0){
-                $sortie = new \AppBundle\Entity\SortieCaisse();
-                $centre->encaisser($caisse, $sortie);
-                $em->persist($sortie);
-            }
-            $caisse->fermer();
+            $caisse->setOuvert(false);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'La caisse est maintenant fermée.');
         }else{

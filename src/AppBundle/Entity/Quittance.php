@@ -90,6 +90,21 @@ class Quittance
     private $paye;
     
     /**
+     * @var boolean $rembourse
+     *
+     * @ORM\Column(name="rembourse", type="boolean", nullable=false)
+     * 
+     */
+    private $rembourse;
+    
+    /**
+     * @var \DateTime $dateEncaissement
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dateEncaissement;
+    
+    /**
     * @ORM\OneToOne(targetEntity="Visite", inversedBy="quittance", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="visite_id", referencedColumnName="id")
     * 
@@ -162,6 +177,22 @@ class Quittance
         $this->paye = $paye;
     }
 
+    function getDateEncaissement() {
+        return $this->dateEncaissement;
+    }
+
+    function setDateEncaissement($dateEncaissement) {
+        $this->dateEncaissement = $dateEncaissement;
+    }
+    
+    function getRembourse() {
+        return $this->rembourse;
+    }
+
+    function setRembourse($rembourse) {
+        $this->rembourse = $rembourse;
+    }
+    
     //BEHAVIOR
     /**
      * @var string $creePar
@@ -271,7 +302,7 @@ class Quittance
     
     public function calculerRetard($derniereVisite){
         if($derniereVisite == null){
-            $date = \DateTime::createFromFormat('Y-m-d',$this->visite->getVehicule()->getDateMiseCirculation());
+            $date = $this->visite->getVehicule()->prochaineVisite();
             $retard = $this->joursDeRetard($date);
         }else{
             if($derniereVisite->getStatut() == 3){
@@ -299,6 +330,7 @@ class Quittance
             $this->setPenalite(0);
         }
         $this->retard = $retard;
+        $this->rembourse = false;
         $this->setNumero('BKO'.\time());
     }
     
@@ -316,6 +348,45 @@ class Quittance
 
     function setTimbre($timbre) {
         $this->timbre = $timbre;
+    }
+    
+    public function encaisser(){
+        $this->setPaye(1);
+        $this->getVisite()->setStatut(1);
+        $this->setDateEncaissement(new \DateTime());
+    }
+    
+    public function rembourser(){
+        $this->setRembourse(true);
+        $this->getVisite()->setStatut(5);
+        $this->getVisite()->getChaine()->getCaisse()->rembourser($this->getMontantVisite(),$this->getVisite()->getRevisite());        
+    }
+    
+    public function remboursableOu(){
+        if($this->visiteDejaFaite()){
+            return -1;
+        }
+        if(!$this->getPaye()){
+            return 0;
+        }else{
+            switch ($this->ouRembourser($this->getDateEncaissement())){
+                case 1: return 1;
+                case 2 : return 2;
+            }
+        }
+    }
+    
+    public function controleSolde($solde){
+        return $this->getMontantVisite() <= $solde;
+    }
+    
+    public function visiteDejaFaite(){
+        return $this->getVisite()->getStatut() > 1;
+    }
+    
+    public function ouRembourser($datePaiement){
+        $today = new \DateTime();
+        return $datePaiement->format('Y-m-d') == $today->format('Y-m-d') ? 1 : 2;
     }
 
 }

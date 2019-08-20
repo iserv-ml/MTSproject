@@ -12,7 +12,7 @@
         <li class="breadcrumb-item">Initialiser la caisse
     </ol>
 {% endblock %}
-{% block pagetitle -%}INITIALISER LA CAISSE{% endblock %}
+{% block pagetitle -%}INITIALISER LA CAISSE N°{{caisse.numero}}{% endblock %}
 {% block actions %}
     {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
         <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_centre_ouverture') }}">RETOUR A L'OUVERTURE</a></label>

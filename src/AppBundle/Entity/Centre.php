@@ -367,11 +367,18 @@ class Centre
     }
     //fin behavior
 
-    public function encaisser(Caisse $caisse, SortieCaisse $sortie){
-        $this->solde = $this->getSolde()+$caisse->getSolde();
+    public function encaisser(Caisse $caisse){
+        $sortie = new SortieCaisse($this);
+        $this->solde = $sortie->initialiser($caisse->getSolde()+$caisse->getSoldeInitial(), $this->getSolde(), "ENTREE", "Fermeture de la caisse N° ".$caisse->getNumero());
+        return $sortie;
+    }
+    
+    public function ouvertureCaisse(Caisse $caisse){
+        $caisse->setOuvert(true);
+        $sortie = new \AppBundle\Entity\SortieCaisse();
+        $this->solde = $sortie->ouvertureCaisse($caisse->getSoldeInitial(), $this->getSolde(),"SORTIE", "Ouverture de la caisse N°".$caisse->getNumero());
         $sortie->setCentre($this);
-        $sortie->setMontant($caisse->getSolde());
-        $sortie->setType("Entréee - Fermeture de la caisse ".$caisse->getNumero());
+        return $sortie;
     }
     
     public function decaisser($montant){
@@ -380,6 +387,18 @@ class Centre
     
     public function decrementerCarteVierge(){
         $this->carteVierge -= 1; 
+    }
+    
+    public function rembourser(Quittance $quittance){
+        $quittance->setRembourse(true);
+        $quittance->getVisite()->setStatut(5);
+        $sortie = new SortieCaisse($this);
+        $this->solde = $sortie->rembourser($quittance->getMontantVisite(), $this->getSolde(), "SORTIE", "Remboursement de la quittance N° ".$quittance->getNumero());
+        return $sortie;
+    }
+    
+    public function estOuvert(){
+        return $this->getEtat();
     }
 
 }

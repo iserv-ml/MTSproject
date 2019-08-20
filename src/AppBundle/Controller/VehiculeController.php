@@ -24,7 +24,11 @@ class VehiculeController extends Controller
      */
     public function indexAction()
     {
-        return $this->render('vehicule/index.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        return $this->render('vehicule/index.html.twig', array(
+            'centre' => $centre,
+        ));
     }
 
     /**
@@ -217,7 +221,7 @@ class VehiculeController extends Controller
         if ($this->get('security.authorization_checker')->isGranted('ROLE_ENREGISTREMENT')){
                 $action .= " <a title='Modifier' class='btn btn-info' href='".$this->generateUrl('vehicule_edit', array('id'=> $id ))."'><i class='fa fa-edit' ></i></a>";
                 $action .= " <a title='Supprimer' class='btn btn-danger' href='".$this->generateUrl('vehicule_delete_a', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-trash-o'> </i></a>";
-                $action .= " <a title='Aiguiller' class='btn btn-warning' href='".$this->generateUrl('aiguiller', array('id'=> $id ))."'><i class='fa fa-compass'> </i></a>";
+                $action .= " <a title='Aiguiller' class='btn btn-warning' href='".$this->generateUrl('aiguiller', array('id'=> $id ))."' ><i class='fa fa-compass'> </i></a>";
         }
         return $action;
     }

@@ -1,55 +1,106 @@
-{% extends 'base.html.twig' %}
-
-{% block body %}
-    <h1>Quittances list</h1>
-
-    <table>
-        <thead>
+{% extends '::base.html.twig' %}
+{% block menu -%}
+{% embed  '::centre/menu.html.twig' %}
+{% block menu_quittances_actif %}active{% endblock %}
+{% endembed %}
+{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+        <li class="breadcrumb-item">Quittances</li>
+    </ol>
+{% endblock %}
+{% block menu_gestion_actif %}active{% endblock %}
+{% block pagetitle -%}QUITTANCES{% endblock %}
+{% block body -%}
+    <div class="table-responsive">
+        <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+            <thead>
             <tr>
-                <th>Id</th>
-                <th>Version</th>
-                <th>Numero</th>
-                <th>Penalite</th>
-                <th>Montantvisite</th>
-                <th>Creepar</th>
-                <th>Modifierpar</th>
-                <th>Deletedat</th>
-                <th>Datecreation</th>
-                <th>Datemodification</th>
+                <th>Véhicule</th>
+                <th>Propriétaire</th>
+                <th>Caisse</th>
+                <th>Montant</th>
+                <th>N° Quittance</th>
                 <th>Actions</th>
             </tr>
         </thead>
-        <tbody>
-        {% for quittance in quittances %}
-            <tr>
-                <td><a href="{{ path('caisse_quittance_show', { 'id': quittance.id }) }}">{{ quittance.id }}</a></td>
-                <td>{{ quittance.version }}</td>
-                <td>{{ quittance.numero }}</td>
-                <td>{{ quittance.penalite }}</td>
-                <td>{{ quittance.montantVisite }}</td>
-                <td>{{ quittance.creePar }}</td>
-                <td>{{ quittance.modifierPar }}</td>
-                <td>{% if quittance.deletedAt %}{{ quittance.deletedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if quittance.dateCreation %}{{ quittance.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if quittance.dateModification %}{{ quittance.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>
-                    <ul>
-                        <li>
-                            <a href="{{ path('caisse_quittance_show', { 'id': quittance.id }) }}">show</a>
-                        </li>
-                        <li>
-                            <a href="{{ path('caisse_quittance_edit', { 'id': quittance.id }) }}">edit</a>
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        {% endfor %}
+        <tbody>        
         </tbody>
+        <tfoot>
+            <tr>
+                <th>Véhicule</th>
+                <th>Propriétaire</th>
+                <th>Caisse</th>
+                <th>Montant</th>
+                <th>N° Quittance</th>
+                <th>Actions</th>
+            </tr>
+        </tfoot>
     </table>
-
-    <ul>
-        <li>
-            <a href="{{ path('caisse_quittance_new') }}">Create a new quittance</a>
-        </li>
-    </ul>
+        <div id="remboursement-modal" title="REMBOURSEMENT"></div>
 {% endblock %}
+
+{% block javascripts -%}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#liste_clients').DataTable({
+                "columnDefs": [
+                { "orderable": false, "targets": 5 }
+                ],
+                "processing": true,
+                "serverSide": true,
+                "ajax": {
+                    "url": "{{ path('quittanceprincipaleajax') }}",
+                },
+                "paging" : true,
+                "info" : true, 
+                "searching": true,
+                "responsive": true,
+                "pageLength": 50,
+                "order": [[0, 'asc']],
+                language: {
+                    processing:     "Traitement en cours...",
+                    search:         "Rechercher&nbsp;:",
+                    lengthMenu:    "Afficher _MENU_ &eacute;l&eacute;ments",
+                    info:           "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+                    infoEmpty:      "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+                    infoFiltered:   "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+                    infoPostFix:    "",
+                    loadingRecords: "Chargement en cours...",
+                    zeroRecords:    "Aucun &eacute;l&eacute;ment &agrave; afficher",
+                    emptyTable:     "Aucune donnée disponible dans le tableau",
+                    paginate: {
+                        first:      "Premier",
+                        previous:   "Pr&eacute;c&eacute;dent",
+                        next:       "Suivant",
+                        last:       "Dernier"
+                    },
+                    aria: {
+                        sortAscending:  ": activer pour trier la colonne par ordre croissant",
+                        sortDescending: ": activer pour trier la colonne par ordre décroissant"
+                    }
+                }
+            });
+        } ); 
+        
+        function rembourser(id){
+            var options = {
+                modal: true,
+                height:500,
+                width:700,
+                buttons: {
+                    "Rembourser": function() {
+                        $(location).attr('href', '{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/admin/gestion/centre/'+id+'/rembourser/principal')
+                    },
+                    Annuler: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            };
+            $('#remboursement-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+            $('#remboursement-modal').load('{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/admin/gestion/centre/'+id+'/rembourser/principal/confirmer').dialog(options).dialog('open');
+        }
+    </script>
+{% endblock %}
+

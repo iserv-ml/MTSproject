@@ -12,6 +12,13 @@
         <li class="breadcrumb-item">Contrôles</li>
     </ol>
 {% endblock %}
+{% block actions %}
+    {% if centre == false %}
+        <label class="btn btn-warning pointer-event">LE CENTRE EST FERME. ATTENDEZ SON OUVERTURE</label>
+    {% else %}
+        <label class="btn btn-success pointer-event">LE CENTRE EST OUVERT.</label>
+    {% endif %}
+{% endblock %}
 {% block pagetitle -%}VEHICULES A CONTROLLER : {{ piste }}{% endblock %}
 
 {% block body -%}

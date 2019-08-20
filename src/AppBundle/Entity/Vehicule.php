@@ -92,6 +92,14 @@ class Vehicule
     private $dateValidite;
     
     /**
+     * @var string $dateProchaineVisite
+     *
+     * @ORM\Column(name="dateProchaineVisite", type="string", nullable=true)
+     * 
+     */
+    private $dateProchaineVisite;
+    
+    /**
      * @var string $energie
      *
      * @ORM\Column(name="energie", type="string", nullable=false)
@@ -335,6 +343,32 @@ class Vehicule
 
     function getDateMiseCirculation() {
         return $this->dateMiseCirculation;
+    }
+    
+    function prochaineVisite(){
+        return $this->dateProchaineVisite != null ? \DateTime::createFromFormat('Y-m-d',$this->dateProchaineVisite) : $this->datePremiereVisite();
+    }
+    
+    public function visiteArrive(){
+        $date = new \DateTime();
+        $date->add(new \DateInterval('P32D'));
+        $dateProchaineVisite = $this->prochaineVisite();
+        $ecart = \date_diff($date,$dateProchaineVisite, true);
+        return $date >= $dateProchaineVisite;
+    }
+    
+    function datePremiereVisite(){
+        $dmc  = \DateTime::createFromFormat('Y-m-d', $this->getDateMiseCirculation());
+        $dmc->add(new \DateInterval('P'.$this->getTypeVehicule()->getGenre()->getDelaiPremiereVisite().'Y'));
+        return $dmc;
+    }
+    
+    function getDateProchaineVisite() {
+        return $this->dateProchaineVisite;
+    }
+
+    function setDateProchaineVisite($dateProchaineVisite) {
+        $this->dateProchaineVisite = $dateProchaineVisite;
     }
 
     function getPtac() {

@@ -64,6 +64,7 @@ class VisiteController extends Controller
     public function visitecontroleAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         $user = $this->container->get('security.context')->getToken()->getUser();
         $affectation = $em->getRepository('AppBundle:AffectationPiste')->derniereAffectation($user->getId());
         $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
@@ -71,7 +72,7 @@ class VisiteController extends Controller
             throw $this->createNotFoundException("Vous n'êtes affecté à aucune piste. Contacter l'administrateur.");
         }
         $piste = $admin ? "ADMIN" : "PISTE N° ".$affectation->getPiste()->getNumero();
-        return $this->render('visite/controles.html.twig', array('piste'=>$piste));
+        return $this->render('visite/controles.html.twig', array('piste'=>$piste, 'centre'=>$centre->getEtat()));
     }
     
     /**
@@ -82,7 +83,9 @@ class VisiteController extends Controller
      */
     public function delivranceAction()
     {
-        return $this->render('visite/delivrance.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        return $this->render('visite/delivrance.html.twig', array('centre'=>$centre->getEtat()));
     }
 
     /**
@@ -120,59 +123,42 @@ class VisiteController extends Controller
     public function aiguillerAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', "Le centre n'est pas encore ouvert.");
+            return $this->render('vehicule/index.html.twig', array('centre' => $centre,));
+        }
         $vehicule = $em->getRepository('AppBundle:Vehicule')->find($request->get('id'));
         if(!$vehicule){
             throw $this->createNotFoundException("Ooops... Une erreur s'est produite.");
         }
-        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
-        if(!$centre){
-            throw $this->createNotFoundException("Le centre n'est pas encore ouvert!");
-        }
-        $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($vehicule->getId());
-        //$visiteParent = $em->getRepository('AppBundle:Visite')->visiteParent($vehicule->getId());
-        /*if($visiteParent == -1){
-            throw $this->createNotFoundException("Merci de vérifier l'historique des visites de ce véhicule.");
-        }*/
-        if(!$derniereVisite || $derniereVisite->getStatut() == 2 || $derniereVisite->getStatut() == 4){
-            //il faudra tenir compte de la date de la dernière visite
-            $visiteParent = null;
-        }elseif($derniereVisite->getStatut() == 3){
-            $visiteParent = $derniereVisite;
-        }else{
-            $this->get('session')->getFlashBag()->add('notice', 'Visite déjà en cours.');
-            return $this->render('visite/visite.html.twig', array(
-            'visite' => $derniereVisite,
-            ));
-        }
-        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives();
-        $min = 1000000000000000000000000;
-        $chaineOptimale = null;
-        $i=0;
-        if(count($chaines)>0){
-            foreach($chaines as $chaine){
-                if($i == 0){
-                    $chaineOptimale = $chaine;$i++;
-                }
-                $nb = $em->getRepository('AppBundle:Visite')->nbVisitesNonTerminees($chaine->getId());
-                if($min>$nb){
-                    $min = $nb;
-                    $chaineOptimale = $chaine;
-                }
+        if($vehicule->visiteArrive()){
+            $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($vehicule->getId());
+            switch(\AppBundle\Utilities\Utilities::evaluerDemandeVisite($derniereVisite)){
+                case 1: 
+                    $this->get('session')->getFlashBag()->add('notice', 'Visite déjà en cours.');
+                    return $this->render('visite/visite.html.twig', array('visite' => $derniereVisite,));
+                case 0: case 2: $visiteParent = null; break;
+                case 3 : $visiteParent = $derniereVisite;break;
             }
+        }else{
+            $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La date de la prochaine visite n'est pas arrivée.");
+            return $this->redirectToRoute('vehicule_index');
+        }        
+        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives();
+        $chaineOptimale = \AppBundle\Utilities\Utilities::trouverChaineOptimale($chaines, $em);
+        if($chaineOptimale != null){
+            $visite = new Visite();
+            $visite->aiguiller($vehicule, 0, $chaineOptimale, $visiteParent, $centre);
+            $em->persist($visite);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Aiguillage effectué.');
+            return $this->render('visite/visite.html.twig', array(
+                'visite' => $visite,
+                ));
         }else{
             throw $this->createNotFoundException("Aucune chaine active. Merci de contacter l'administrateur.");
         }
-        if(!$chaineOptimale){
-            throw $this->createNotFoundException("CHAINE OPTIMALE");
-        }
-        $visite = new Visite();
-        $visite->aiguiller($vehicule, 0, $chaineOptimale, $visiteParent, $centre);
-        $em->persist($visite);
-        $em->flush();
-        $this->get('session')->getFlashBag()->add('notice', 'Aiguillage effectué.');
-        return $this->render('visite/visite.html.twig', array(
-            'visite' => $visite,
-            ));
     }
 
     /**
@@ -320,7 +306,7 @@ class VisiteController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($aRow['id']);
-            $action = $this->genererAction($aRow['id'], $quittance);
+            $action = $aRow['ouvert'] ? $this->genererAction($aRow['id'], $quittance) : "Caisse Fermée";
             $revisite = $aRow['revisite'] == 1 ? "REVISITE" : "NORMALE";
             $output['aaData'][] = array($aRow['immatriculation'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$aRow['caisse'], $action);
 	}
@@ -419,6 +405,7 @@ class VisiteController extends Controller
         if(!$affectation && !$admin){
             throw $this->createNotFoundException("Vous n'êtes affecté à aucune piste. Contacter l'administrateur.");
         }
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         if($admin){
             $rResult = $em->getRepository('AppBundle:Visite')->findControlesAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, 0);
             $iTotal = $em->getRepository('AppBundle:Visite')->countControlesRows(0);    
@@ -431,7 +418,7 @@ class VisiteController extends Controller
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
-            $action = $this->genererPisteAction($aRow['id'], $aRow['statut']);
+            $action = ($centre->getEtat())?$this->genererPisteAction($aRow['id'], $aRow['statut']) : "Centre fermé";
             $revisite = $aRow['revisite'] == 1 ? "REVISITE" : "NORMALE";
             if($aRow['statut'] == 1){
                 $etat = "A CONTROLER";
@@ -478,11 +465,11 @@ class VisiteController extends Controller
         $searchTerm = ($search != '') ? $search : NULL;
         $rResult = $em->getRepository('AppBundle:Visite')->findAllAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
         $iTotal = $em->getRepository('AppBundle:Visite')->countRows();
-        
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
-            $action = $this->genererDelivranceAction($aRow['id'], $aRow['statut']);
+            $action = ($centre->getEtat())?$this->genererDelivranceAction($aRow['id'], $aRow['statut']):"Centre fermé";
             $revisite = $aRow['revisite'] == 1 ? "REVISITE" : "NORMALE";
             switch($aRow['statut']){
                 case 0 : $etat = "QUITTANCE A PAYER";break;
@@ -518,6 +505,11 @@ class VisiteController extends Controller
     {
         //$id = $request->get('id');echo $id;exit;
         $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_controle');
+        }
         $visite = $em->getRepository('AppBundle:Visite')->find($request->get('id'));
         $user = $this->container->get('security.context')->getToken()->getUser();
         $affectation = $em->getRepository('AppBundle:AffectationPiste')->derniereAffectation($user->getId());
@@ -557,6 +549,7 @@ class VisiteController extends Controller
                 $date->add(new \DateInterval('P'.$visite->getVehicule()->getTypeVehicule()->getValidite().'M')); // P1D means a period of 1 day
                 $visite->setDateValidite($date);
                 $visite->setNumeroCertificat('BKO'.\time());
+                $visite->getVehicule()->setDateProchaineVisite($date->format('Y-m-d'));
             }else{
                 $visite->setStatut(3);
             }
