@@ -11,7 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * TypePiece
  *
- * @ORM\Table(name="typePiece")
+ * @ORM\Table(name="typepiece")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\TypePieceRepository")
  * @UniqueEntity("code")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
