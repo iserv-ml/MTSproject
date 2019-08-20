@@ -12,7 +12,7 @@
 {% block pagetitle -%}LISTE DES PROPRIETAIRES DE VEHICULE{% endblock %}
 {% block actions %}
     <label class="btn btn-outline-secondary"><a href="{{ path('marque_export') }}">EXPORTER</a></label>
-    {% if is_granted('ROLE_SUPERVISEUR') %} 
+    {% if is_granted('ROLE_ENREGISTREMENT') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('proprietaire_new') }}">CREER</a></label>
     {% endif %}
 {% endblock %}

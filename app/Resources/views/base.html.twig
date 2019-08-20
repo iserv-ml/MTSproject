@@ -47,26 +47,26 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <ul class="nav navbar-nav d-md-down-none">
-        {% if app.user.hasRole('ROLE_ENREGISTREMENT') or is_granted('ROLE_ENREGISTREMENT') %}
+        {% if is_granted('ROLE_ENREGISTREMENT') %}
             <li class="nav-item px-3">
               <a class="nav-link {% block menu_enregistrement_actif %}{% endblock %}" href="{{ path('vehicule_index') }}">AIGUILLAGE</a>
             </li>
         {% endif %}
-        {% if app.user.hasRole('ROLE_CAISSIER') or is_granted('ROLE_CAISSIER') %}
+        {% if is_granted('ROLE_CAISSIER') %}
             <li class="nav-item px-3">
               <a class="nav-link {% block menu_caisse_actif %}{% endblock %}" href="{{ path('visite_quittance') }}">VISITES</a>
             </li>
-        {% elseif app.user.hasRole('ROLE_CONTROLLEUR') or is_granted('ROLE_CONTROLLEUR') %}
+        {% elseif is_granted('ROLE_CONTROLLEUR') %}
             <li class="nav-item px-3">
                 <a class="nav-link {% block menu_controle_actif %}{% endblock %}" href="{{ path('visite_controle') }}">VISITES</a>
             </li>
         {% endif %}
-        {% if app.user.hasRole('ROLE_CAISSIER_PRINCIPAL') or is_granted('ROLE_CAISSIER_PRINCIPAL') %}
+        {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
         <li class="nav-item px-3">
           <a class="nav-link {% block menu_gestion_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_index') }}">GESTION</a>
         </li>
         {% endif %}
-        {% if app.user.hasRole('ROLE_SUPERVISEUR') or is_granted('ROLE_SUPERVISEUR') %}
+        {% if is_granted('ROLE_SUPERVISEUR') %}
         <li class="nav-item px-3">
           <a class="nav-link {% block menu_parametres_actif %}{% endblock %}" href="{{ path('parametre_index') }}">PARAMETRES</a>
         </li>
