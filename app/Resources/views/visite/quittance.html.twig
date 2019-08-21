@@ -13,7 +13,7 @@
 {% endblock %}
 {% block pagetitle -%}LISTE DES QUITTANCES : {{ profil }}{% endblock %}
 {% block actions %}
-    {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
+    {% if is_granted('ROLE_CAISSIER') %}
         {% if centre.etat %}
             {% if caisse.ouvert %}
                 <label class="btn btn-success">LA CAISSE EST OUVERTE</label>
