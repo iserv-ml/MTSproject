@@ -136,4 +136,13 @@ class VisiteRepository extends EntityRepository
                ->setParameter('piste', $piste);
         return  $qb->getSingleScalarResult();
     }
+    
+    public function nbVisitesParStatut() {
+        $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.statut, count(r.id) FROM AppBundle:Visite r GROUP BY r.statut ORDER BY r.statut asc'
+            )
+            ->getResult();
+        return $result; 
+    }
 }

@@ -9,6 +9,7 @@ use AppBundle\Entity\Visite;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use AppBundle\Entity\Stat;
 
 class DefaultController extends Controller
 {
@@ -17,8 +18,28 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $nbVehicule = $em->getRepository('AppBundle:Vehicule')->countRows();
+        $enCours = 0;
+        $succes = 0;
+        $echec = 0;
+        $visites = $em->getRepository('AppBundle:Visite')->nbVisitesParStatut();
+        if(count($visites) > 0){
+            foreach($visites as $visite){
+                switch($visite['statut']){
+                    case 0 : $enCours += $visite[1];break;
+                    case 1 : $enCours += $visite[1];break;
+                    case 2 : $succes += $visite[1];break;
+                    case 3 : $echec += $visite[1];break;
+                    case 4 : $succes += $visite[1];break;
+                }
+            }
+        }
+        return $this->render('default/index.html.twig', array(
+            "nbVehicule"=>$nbVehicule, 
+            "enCours"=>$enCours,
+            "succes"=>$succes,
+            "echec"=>$echec,));
     }
     
     /**
