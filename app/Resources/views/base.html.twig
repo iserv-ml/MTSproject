@@ -60,6 +60,10 @@
             <li class="nav-item px-3">
                 <a class="nav-link {% block menu_controle_actif %}{% endblock %}" href="{{ path('visite_controle') }}">VISITES</a>
             </li>
+        {% elseif is_granted('ROLE_DELIVRANCE') %}
+            <li class="nav-item px-3">
+                <a class="nav-link {% block menu_delivrance_actif %}{% endblock %}" href="{{ path('visite_delivrance') }}">VISITES</a>
+            </li>
         {% endif %}
         {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
         <li class="nav-item px-3">
