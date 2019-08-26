@@ -38,16 +38,16 @@ class Vehicule
     /**
      * @var string $chassis
      *
-     * @ORM\Column(name="chassis", type="string", length=255, nullable=true)
-     * 
+     * @ORM\Column(name="chassis", type="string", length=255, nullable=false)
+     * @Assert\NotBlank
      */
     private $chassis;
     
     /**
      * @var string $carteGrise
      *
-     * @ORM\Column(name="carteGrise", type="string", length=255, nullable=false)
-     * @Assert\NotBlank
+     * @ORM\Column(name="carteGrise", type="string", length=255, nullable=true)
+     * 
      */
     private $carteGrise;
     
@@ -64,20 +64,14 @@ class Vehicule
      *
      * @ORM\Column(name="immatriculation", type="string", length=255, nullable=false)
      * @Assert\NotBlank
-     * @Assert\Length(
-     *      min = 10,
-     *      max = 10,
-     *      minMessage = "Veuillez saisir une immatriculation valide de 8 charactères",
-     *      maxMessage = "Veuillez saisir une immatriculation valide de 8 charactères"
-     * )
+     * 
      */
     private $immatriculation;
     
     /**
      * @var date $dateCarteGrise
      *
-     * @ORM\Column(name="dateCarteGrise", type="string", nullable=false)
-     * @Assert\NotBlank
+     * @ORM\Column(name="dateCarteGrise", type="string", nullable=true)
      * 
      */
     private $dateCarteGrise;
@@ -85,8 +79,7 @@ class Vehicule
     /**
      * @var string $dateValidite
      *
-     * @ORM\Column(name="dateValidite", type="string", nullable=false)
-     * @Assert\NotBlank
+     * @ORM\Column(name="dateValidite", type="string", nullable=true)
      * 
      */
     private $dateValidite;
@@ -102,7 +95,7 @@ class Vehicule
     /**
      * @var string $energie
      *
-     * @ORM\Column(name="energie", type="string", nullable=false)
+     * @ORM\Column(name="energie", type="string", nullable=true)
      * 
      */
     private $energie;
@@ -110,7 +103,7 @@ class Vehicule
     /**
      * @var integer $pv
      *
-     * @ORM\Column(name="pv", type="integer", nullable=false)
+     * @ORM\Column(name="pv", type="integer", nullable=true)
      * 
      */
     private $pv;
@@ -118,7 +111,7 @@ class Vehicule
     /**
      * @var integer $cu
      *
-     * @ORM\Column(name="cu", type="integer", nullable=false)
+     * @ORM\Column(name="cu", type="integer", nullable=true)
      * 
      */
     private $cu;
@@ -175,12 +168,10 @@ class Vehicule
     private $dateImmatriculationPrecedent;
     
     /**
-     * @var string $typeCarte
-     *
-     * @ORM\Column(name="typeCarte", type="string", nullable=false)
-     * 
-     */
-    private $typeCarte;    
+    * @ORM\ManyToOne(targetEntity="TypeCarteGrise", inversedBy="vehicules", cascade={"persist","refresh"})
+    * @ORM\JoinColumn(name="type_carte_grise_id", referencedColumnName="id")
+    */
+    protected $typeCarteGrise;    
     
     /**
      * @var datetime $dateMiseCirculation
@@ -226,14 +217,14 @@ class Vehicule
     /**
      * @var string $couleur
      *
-     * @ORM\Column(name="couleur", type="string", length=255, nullable=false)
-     * @Assert\NotBlank
+     * @ORM\Column(name="couleur", type="string", length=255, nullable=true)
      */
     private $couleur;
     
     /**
     * @ORM\ManyToOne(targetEntity="Modele", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="modele_id", referencedColumnName="id")
+    * @Assert\NotBlank
     * 
     */
     protected $modele;
@@ -293,21 +284,20 @@ class Vehicule
     /**
     * @ORM\ManyToOne(targetEntity="Proprietaire", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="proprietaire_id", referencedColumnName="id")
-    * 
+    * @Assert\NotBlank
     */
     protected $proprietaire;
     
     /**
     * @ORM\ManyToOne(targetEntity="TypeVehicule", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="type_vehicule_id", referencedColumnName="id")
-    * 
+    * @Assert\NotBlank
     */
     protected $typeVehicule;
     
     /**
     * @ORM\ManyToOne(targetEntity="TypeImmatriculation", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="type_immatriculation_id", referencedColumnName="id")
-    * @Assert\NotBlank
     */
    protected $typeImmatriculation;
 
@@ -528,10 +518,6 @@ class Vehicule
         return $this->dateImmatriculationPrecedent;
     }
 
-    function getTypeCarte() {
-        return $this->typeCarte;
-    }
-
     function setDateValidite($dateValidite) {
         $this->dateValidite = $dateValidite;
     }
@@ -572,10 +558,13 @@ class Vehicule
         $this->dateImmatriculationPrecedent = $dateImmatriculationPrecedent;
     }
 
-    function setTypeCarte($typeCarte) {
-        $this->typeCarte = $typeCarte;
+    function getTypeCarteGrise() {
+        return $this->typeCarteGrise;
     }
 
+    function setTypeCarteGrise($typeCarteGrise) {
+        $this->typeCarteGrise = $typeCarteGrise;
+    }
             
     //BEHAVIOR
     /**

@@ -428,6 +428,8 @@ class VisiteController extends Controller
                 $etat = "SUCCESS";
             }else if($aRow['statut'] == 3){
                 $etat = "ECHEC";
+            }else if($aRow['statut'] == 4){
+                $etat = "DELIVRE";
             }
             $output['aaData'][] = array($aRow['immatriculation'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['piste'], $action);
 	}

@@ -43,12 +43,6 @@
             $("#appbundle_vehicule_carrosserieAjax" ).val("{{- vehicule.typeVehicule.carrosserie.libelle -}}");
             $( "#appbundle_vehicule_dateValidite" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
             $( "#appbundle_vehicule_dateImmatriculationPrecedent" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
-        
-             $( "#appbundle_vehicule_immatriculation" ).change(function() {
-            var immat = $( "#appbundle_vehicule_immatriculation" ).val();
-            var format = immat.slice(0, 2) + "-"+immat.slice(2,6)+"-" + immat.slice(6);
-            $( "#appbundle_vehicule_immatriculation" ).val(format);
-        });
         $( "#appbundle_vehicule_ptac" ).change(function() {
             var ptac = $( "#appbundle_vehicule_ptac" ).val();
             if(ptac <= 3,5){

@@ -17,7 +17,7 @@ class VehiculeRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.id, r.chassis, r.carteGrise, m.libelle as modele, ma.libelle as marque, r.immatriculation, p.nom, p.prenom, p.telephone FROM AppBundle:Vehicule r LEFT JOIN r.modele m LEFT JOIN m.marque ma LEFT JOIN r.proprietaire p '
-                    . ' WHERE r.chassis like :search or r.carteGrise like :search or r.immatriculation like :search or p.telephone like :search'
+                    . ' WHERE r.chassis like :search or r.carteGrise like :search or r.immatriculation like :search or p.telephone like :search or p.nom like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setFirstResult($start)

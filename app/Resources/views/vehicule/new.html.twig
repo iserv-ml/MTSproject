@@ -33,11 +33,6 @@
             $("#appbundle_vehicule_proprietaireId" ).val("{{- vehicule.proprietaire.id -}}");
             $("#appbundle_vehicule_proprietaireAjax" ).val("{{ vehicule.proprietaire.nom }} {{ vehicule.proprietaire.prenom }} {{ vehicule.proprietaire.telephone }}");
         {% endif %}
-        $( "#appbundle_vehicule_immatriculation" ).change(function() {
-            var immat = $( "#appbundle_vehicule_immatriculation" ).val();
-            var format = immat.slice(0, 2) + "-"+immat.slice(2,6)+"-" + immat.slice(6);
-            $( "#appbundle_vehicule_immatriculation" ).val(format);
-        });
         $( "#appbundle_vehicule_ptac" ).change(function() {
             var ptac = $( "#appbundle_vehicule_ptac" ).val();
             if(ptac <= 3,5){

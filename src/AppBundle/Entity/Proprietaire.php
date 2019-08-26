@@ -61,7 +61,8 @@ class Proprietaire
     /**
      * @var string $telephone
      *
-     * @ORM\Column(name="telephone", type="string", length=255, nullable=true)
+     * @ORM\Column(name="telephone", type="string", length=255, nullable=false)
+     * @Assert\NotBlank
      */
     private $telephone;
     
@@ -92,8 +93,8 @@ class Proprietaire
     /**
      * @var string $fonction
      *
-     * @ORM\Column(name="fonction", type="string", length=255, nullable=true)
-     * 
+     * @ORM\Column(name="fonction", type="string", length=255, nullable=false)
+     * @Assert\NotBlank
      */
     private $fonction;
     
@@ -108,7 +109,6 @@ class Proprietaire
    /**
     * @ORM\ManyToOne(targetEntity="TypePiece", inversedBy="proprietaires", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="typePiece_id", referencedColumnName="id")
-    * @Assert\NotBlank
     */
    protected $typePiece;
     

@@ -143,7 +143,7 @@ class TypePieceController extends Controller
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Suppression effectuée.');    
         }else{
-            $this->get('session')->getFlashBag()->add('error', 'Impossible de supprimer ce genre car il est utilisé');
+            $this->get('session')->getFlashBag()->add('error', 'Impossible de supprimer ce type de pièce car il est utilisé');
         }
         return $this->redirectToRoute('admin_parametres_typepiece_index');
     }

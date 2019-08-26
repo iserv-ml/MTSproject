@@ -15226,3 +15226,5 @@ a.selected {
     color : #f86c6b;
     font-weight : bold;
 }
+
+.ui-autocomplete-loading { background:#8ad4ee !important }

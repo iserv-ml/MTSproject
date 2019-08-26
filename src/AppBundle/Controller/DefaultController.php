@@ -147,6 +147,7 @@ class DefaultController extends Controller
         if(!$visite){
             throw $this->createNotFoundException("La visite demandée n'est pas disponible.");
         }
+        $em = $this->getDoctrine()->getManager();
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         if(!$centre->getEtat()){
             $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
@@ -156,7 +157,6 @@ class DefaultController extends Controller
         if (file_exists($chemin)) {
             unlink($chemin);
         }else{
-            $em = $this->getDoctrine()->getManager();
             $visite->setStatut(4);
             $em->flush();
         }     

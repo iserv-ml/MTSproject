@@ -108,9 +108,23 @@ class VehiculeController extends Controller
         $deleteForm = $this->createDeleteForm($vehicule);
         $editForm = $this->createForm('AppBundle\Form\VehiculeType', $vehicule);
         $editForm->handleRequest($request);
-
+        $em = $this->getDoctrine()->getManager();
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $field = $request->get("appbundle_vehicule");
+            $proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($field['proprietaireId']);
+            $modele = $em->getRepository('AppBundle:Modele')->find($field['modeleId']);
+            $genre = $field['ptac'] < 3500 ? "VL" : "PL";
+            $typeVehicule = $em->getRepository('AppBundle:TypeVehicule')->trouver($genre, $field['usageId'], $field['carrosserieId']);
+            if($proprietaire){
+                $vehicule->setProprietaire($proprietaire);
+            }
+            if($typeVehicule){
+                $vehicule->setTypeVehicule($typeVehicule);
+            }
+            if($modele){
+                $vehicule->setModele($modele);
+            }
+            $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
             return $this->redirectToRoute('vehicule_edit', array('id' => $vehicule->getId()));
         }

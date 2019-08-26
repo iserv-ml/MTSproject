@@ -1,0 +1,54 @@
+{% extends '::base.html.twig' %}
+{% block menu -%}
+{% embed  '::parametres/menu.html.twig' %}
+{% block menu_vehicules_open %}open{% endblock %}
+{% block menu_typecartegrise_open %}open{% endblock %}
+{% block menu_typecartegrise_actif %}active{% endblock %}
+{% endembed %}
+{% endblock %}
+{% block menu_parametres_actif %}active{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('parametre_index') }}">Paramètres</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('admin_parametres_typecartegrise_index') }}">Types de carte grise</a></li>
+          <li class="breadcrumb-item">Détail</li>
+    </ol>
+{% endblock %}
+{% block pagetitle -%}VOIR UN TYPE DE CARTE GRISE{% endblock %}
+{% block actions %}
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_typecartegrise_index') }}">LISTER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_typecartegrise_edit', { 'id': typeCarteGrise.id }) }}">MODIFIER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_typecartegrise_new') }}">CREER</a></label>
+    <label class="btn btn-outline-secondary">
+        {{ form_start(delete_form) }}
+            <input type="submit" value="SUPPRIMER" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
+        {{ form_end(delete_form) }}
+    </label>
+{% endblock %}
+{% block body %}
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th>Libelle</th>
+                <td>{{ typeCarteGrise.libelle }}</td>
+            </tr>
+            <tr>
+                <th>Créé par</th>
+                <td>{{ typeCarteGrise.creePar }}</td>
+            </tr>
+            <tr>
+                <th>Modifié par</th>
+                <td>{{ typeCarteGrise.modifierPar }}</td>
+            </tr>
+            <tr>
+                <th>Date de création</th>
+                <td>{% if typeCarteGrise.dateCreation %}{{ typeCarteGrise.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Date de dernière modification</th>
+                <td>{% if typeCarteGrise.dateModification %}{{ typeCarteGrise.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+{% endblock %}

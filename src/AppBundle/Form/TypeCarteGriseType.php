@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProprietaireType extends AbstractType
+class TypeCarteGriseType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -14,16 +14,7 @@ class ProprietaireType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('nom')
-                ->add('prenom')
-                ->add('telephone')
-                ->add('adresse')
-                ->add('fonction')
-                ->add('personneMorale')
-                ->add('typePiece')
-                ->add('numpiece')
-                ->add('autreTelephone')
-                ->add('email');
+                ->add('libelle');
     }
     
     /**
@@ -32,7 +23,7 @@ class ProprietaireType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Proprietaire'
+            'data_class' => 'AppBundle\Entity\TypeCarteGrise'
         ));
     }
 
@@ -41,7 +32,7 @@ class ProprietaireType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'appbundle_proprietaire';
+        return 'appbundle_typecartegrise';
     }
 
 

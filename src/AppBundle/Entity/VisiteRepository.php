@@ -117,7 +117,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.id, v.immatriculation, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste FROM AppBundle:Visite r LEFT JOIN r.vehicule v LEFT JOIN v.proprietaire p LEFT JOIN r.chaine c LEFT JOIN c.piste pi '
-                    . ' WHERE r.statut IN (1,2,3) AND v.immatriculation like :search AND '.$controle
+                    . ' WHERE r.statut IN (1,2,3,4) AND v.immatriculation like :search AND '.$controle
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setParameter('piste', $piste)

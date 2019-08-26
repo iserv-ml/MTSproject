@@ -1,0 +1,90 @@
+{% extends '::base.html.twig' %}
+{% block menu -%}
+{% embed  '::parametres/menu.html.twig' %}
+{% block menu_vehicules_open %}open{% endblock %}
+{% block menu_typecartegrise_open %}open{% endblock %}
+{% block menu_typecartegrise_actif %}active{% endblock %}
+{% endembed %}
+{% endblock %}
+{% block menu_parametres_actif %}active{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+        <li class="breadcrumb-item"><a href="{{ path('parametre_index') }}">Paramètres</a></li>
+        <li class="breadcrumb-item">Types de carte grise</li>
+    </ol>
+{% endblock %}
+{% block pagetitle -%}LISTE DES TYPES DE CARTE GRISE{% endblock %}
+{% block actions %}
+    <label class="btn btn-outline-secondary"><a href="{{ path('typecartegrise_export') }}">EXPORTER</a></label>
+    {% if is_granted('ROLE_SUPERVISEUR') %} 
+        <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_typecartegrise_new') }}">CREER</a></label>
+    {% endif %}
+{% endblock %}
+{% block body -%}
+<div class="table-responsive">
+    <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+        <thead>
+            <tr>
+                <th>Libelle</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for typeCarteGrise in typeCarteGrises %}
+            <tr>
+                <td>{{ typeCarteGrise.libelle }}</td>
+                <td>
+                    <a class='btn btn-info' title="Détail" href="{{ path('admin_parametres_typecartegrise_show', { 'id': typeCarteGrise.id }) }}"><i class='fa fa-search-plus'></i></a>
+                    <a class='btn btn-warning' title="Détail" href="{{ path('admin_parametres_typecartegrise_edit', { 'id': typeCarteGrise.id }) }}"><i class='fa fa-edit'></i></a>
+                    <a class='btn btn-danger' title="Détail" href="{{ path('admin_parametres_typepiece_delete_a', { 'id': typeCarteGrise.id }) }}" onclick='return confirm("Confirmer la suppression?");'><i class='fa fa-trash-o'> </i></a>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+{% block javascripts -%}
+    <script type="text/javascript">
+        $(document).ready(function() {
+        $('#liste_clients').DataTable({
+            "columnDefs": [
+                { "orderable": false, "targets": 1 }
+            ],
+            "processing": true,
+            "paging" : true,
+            "info" : true, 
+            "searching": true,
+            "responsive": true,
+            "pageLength": 50,
+            "order": [[1, 'asc']],
+       language: {
+        processing:     "Traitement en cours...",
+        search:         "Rechercher&nbsp;:",
+        lengthMenu:    "Afficher _MENU_ &eacute;l&eacute;ments",
+        info:           "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+        infoEmpty:      "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+        infoFiltered:   "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+        infoPostFix:    "",
+        loadingRecords: "Chargement en cours...",
+        zeroRecords:    "Aucun &eacute;l&eacute;ment &agrave; afficher",
+        emptyTable:     "Aucune donnée disponible dans le tableau",
+        paginate: {
+            first:      "Premier",
+            previous:   "Pr&eacute;c&eacute;dent",
+            next:       "Suivant",
+            last:       "Dernier"
+        },
+        aria: {
+            sortAscending:  ": activer pour trier la colonne par ordre croissant",
+            sortDescending: ": activer pour trier la colonne par ordre décroissant"
+        }
+    }
+    });
+    
+     
+		
+		        
+                   } );    
+        </script>
+{% endblock %}
