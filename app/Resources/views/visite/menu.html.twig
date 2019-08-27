@@ -4,6 +4,11 @@
         <i class="nav-icon fa fa-money"></i> QUITTANCE
     </a>
 </li>
+<li class="nav-item">
+    <a class="nav-link {% block menu_caissier_actif %}{% endblock %}" href="{{ path('centre_gestion_statistiques_caissier_etat') }}">
+        <i class="nav-icon fa fa-money"></i> ETAT DU JOUR
+    </a>
+</li>
 {% endif %}
 {% if is_granted('ROLE_CONTROLLEUR') %} 
 <li class="nav-item">

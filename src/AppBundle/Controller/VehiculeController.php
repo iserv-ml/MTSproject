@@ -49,9 +49,9 @@ class VehiculeController extends Controller
             $field = $request->get("appbundle_vehicule");
             $proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($field['proprietaireId']);
             $modele = $em->getRepository('AppBundle:Modele')->find($field['modeleId']);
-            $genre = $field['ptac'] < 3500 ? "VL" : "PL";
-            $typeVehicule = $em->getRepository('AppBundle:TypeVehicule')->trouver($genre, $field['usageId'], $field['carrosserieId']);
-            if (!$proprietaire || !$typeVehicule || !$modele) {
+            //$genre = $field['ptac'] < 3500 ? "VL" : "PL";
+            //$typeVehicule = $em->getRepository('AppBundle:TypeVehicule')->trouver($genre, $field['usageId'], $field['carrosserieId']);
+            if (!$proprietaire || !$modele) {
                 $this->get('session')->getFlashBag()->add('error', "Merci de remplir correctement le formulaire!.");
                 return $this->render('vehicule/new.html.twig', array(
             'vehicule' => $vehicule,
@@ -59,7 +59,6 @@ class VehiculeController extends Controller
         ));
             }else{
                 $vehicule->setProprietaire($proprietaire); 
-                $vehicule->setTypeVehicule($typeVehicule);
                 $vehicule->setModele($modele);
                 $em->persist($vehicule);
                 $em->flush();
@@ -113,13 +112,10 @@ class VehiculeController extends Controller
             $field = $request->get("appbundle_vehicule");
             $proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($field['proprietaireId']);
             $modele = $em->getRepository('AppBundle:Modele')->find($field['modeleId']);
-            $genre = $field['ptac'] < 3500 ? "VL" : "PL";
-            $typeVehicule = $em->getRepository('AppBundle:TypeVehicule')->trouver($genre, $field['usageId'], $field['carrosserieId']);
+            //$genre = $field['ptac'] < 3500 ? "VL" : "PL";
+            //$typeVehicule = $em->getRepository('AppBundle:TypeVehicule')->trouver($genre, $field['usageId'], $field['carrosserieId']);
             if($proprietaire){
                 $vehicule->setProprietaire($proprietaire);
-            }
-            if($typeVehicule){
-                $vehicule->setTypeVehicule($typeVehicule);
             }
             if($modele){
                 $vehicule->setModele($modele);

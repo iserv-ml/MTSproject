@@ -69,7 +69,7 @@ class Vehicule
     private $immatriculation;
     
     /**
-     * @var date $dateCarteGrise
+     * @var string $dateCarteGrise
      *
      * @ORM\Column(name="dateCarteGrise", type="string", nullable=true)
      * 
@@ -224,7 +224,6 @@ class Vehicule
     /**
     * @ORM\ManyToOne(targetEntity="Modele", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="modele_id", referencedColumnName="id")
-    * @Assert\NotBlank
     * 
     */
     protected $modele;
@@ -284,7 +283,7 @@ class Vehicule
     /**
     * @ORM\ManyToOne(targetEntity="Proprietaire", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="proprietaire_id", referencedColumnName="id")
-    * @Assert\NotBlank
+    * 
     */
     protected $proprietaire;
     

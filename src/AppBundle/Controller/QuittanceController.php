@@ -115,7 +115,20 @@ class QuittanceController extends Controller
             $quittance->encaisser();
             $caisse = $quittance->getVisite()->getChaine()->getCaisse();
             $caisse->encaisser($quittance->getMontantVisite(), $quittance->getVisite()->getRevisite());
+            if($quittance->getVisite()->getRevisite()){
+                $montantVisite = 0;
+                $nbVisite = 0;
+                $montantRevisite = $quittance->getMontantVisite();
+                $nbRevisite = 1;
+            }else{
+                $montantVisite = $quittance->getMontantVisite();
+                $nbVisite = 1;
+                $montantRevisite = 0;
+                $nbRevisite = 0;
+            }
+            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero());
             $this->get('session')->getFlashBag()->add('notice', 'Quittance encaissée.');
+            $em->persist($etat);
             $em->flush();
         }
         return $this->render('quittance/show.html.twig', array(
