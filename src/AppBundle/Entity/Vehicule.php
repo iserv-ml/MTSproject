@@ -46,7 +46,7 @@ class Vehicule
     /**
      * @var string $carteGrise
      *
-     * @ORM\Column(name="carteGrise", type="string", length=255, nullable=true)
+     * @ORM\Column(name="carte_grise", type="string", length=255, nullable=true)
      * 
      */
     private $carteGrise;
@@ -71,7 +71,7 @@ class Vehicule
     /**
      * @var string $dateCarteGrise
      *
-     * @ORM\Column(name="dateCarteGrise", type="string", nullable=true)
+     * @ORM\Column(name="date_carte_grise", type="string", nullable=true)
      * 
      */
     private $dateCarteGrise;
@@ -79,7 +79,7 @@ class Vehicule
     /**
      * @var string $dateValidite
      *
-     * @ORM\Column(name="dateValidite", type="string", nullable=true)
+     * @ORM\Column(name="date_validite", type="string", nullable=true)
      * 
      */
     private $dateValidite;
@@ -87,7 +87,7 @@ class Vehicule
     /**
      * @var string $dateProchaineVisite
      *
-     * @ORM\Column(name="dateProchaineVisite", type="string", nullable=true)
+     * @ORM\Column(name="date_prochaine_visite", type="string", nullable=true)
      * 
      */
     private $dateProchaineVisite;
@@ -119,7 +119,7 @@ class Vehicule
     /**
      * @var integer $puissanceReelle
      *
-     * @ORM\Column(name="puissanceReelle", type="integer", nullable=true)
+     * @ORM\Column(name="puissance_reelle", type="integer", nullable=true)
      * 
      */
     private $puissanceReelle;
@@ -144,7 +144,7 @@ class Vehicule
     /**
      * @var string $typeChassis
      *
-     * @ORM\Column(name="typeChassis", type="string", nullable=false)
+     * @ORM\Column(name="type_chassis", type="string", nullable=false)
      * @Assert\NotBlank
      * 
      */
@@ -153,7 +153,7 @@ class Vehicule
     /**
      * @var string $immatriculationPrecedent
      *
-     * @ORM\Column(name="immatriculationPrecedent", type="string", nullable=true)
+     * @ORM\Column(name="immatriculation_precedent", type="string", nullable=true)
      * 
      * 
      */
@@ -162,7 +162,7 @@ class Vehicule
     /**
      * @var string $dateImmatriculationPrecedent
      *
-     * @ORM\Column(name="dateImmatriculationPrecedent", type="string", nullable=true)
+     * @ORM\Column(name="date_immatriculation_precedent", type="string", nullable=true)
      * 
      */
     private $dateImmatriculationPrecedent;
@@ -176,7 +176,7 @@ class Vehicule
     /**
      * @var datetime $dateMiseCirculation
      *
-     * @ORM\Column(name="dateMiseCirculation", type="string", nullable=false)
+     * @ORM\Column(name="date_mise_circulation", type="string", nullable=false)
      * @Assert\NotBlank
      * 
      */
