@@ -32,7 +32,7 @@ class EtatJournalier
     /**
      * @var date $date
      *
-     * @ORM\Column(name="date", type="string", nullable=false)
+     * @ORM\Column(name="date_visite", type="string", nullable=false)
      * 
      */
     private $date;
