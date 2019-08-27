@@ -42,7 +42,7 @@ class Affectation
     /**
      * @var datetime $date
      *
-     * @ORM\Column(name="date", type="datetime", length=255, nullable=false)
+     * @ORM\Column(name="date_affectation", type="datetime", length=255, nullable=false)
      * 
      */
     private $date;
@@ -124,12 +124,12 @@ class Affectation
      * @var string $modifierPar
      *
      * @Gedmo\Blameable(on="update")
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="modifier_par",type="string")
      */
     private $modifierPar;
     
     /**
-     * @ORM\Column(name="deletedAt", type="datetime", nullable=true)
+     * @ORM\Column(name="deleted_at", type="datetime", nullable=true)
      */
     private $deletedAt;
     
@@ -137,7 +137,7 @@ class Affectation
      * @var \DateTime $dateCreation
      *
      * @Gedmo\Timestampable(on="create")
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="date_creation",type="datetime")
      */
     private $dateCreation;
 
@@ -145,7 +145,7 @@ class Affectation
      * @var \DateTime $dateModification
      *
      * @Gedmo\Timestampable(on="update")
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(name="date_modification", type="datetime")
      */
     private $dateModification;
     

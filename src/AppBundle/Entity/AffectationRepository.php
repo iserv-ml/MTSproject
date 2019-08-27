@@ -17,7 +17,7 @@ class AffectationRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.id, r.actif, r.date, a.username, c.numero FROM AppBundle:Affectation r LEFT JOIN r.agent a LEFT JOIN r.caisse c '
-                    . ' WHERE r.actif like :search or a.username like :search or c.numero like :search '
+                    . ' WHERE r.actif = 1 AND (a.username like :search or c.numero like :search) '
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setFirstResult($start)

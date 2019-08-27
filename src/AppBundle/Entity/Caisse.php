@@ -436,5 +436,18 @@ class Caisse
             $this->retirerVisite($montant);
         }
     }
+    
+    public function derniereAffectation(){
+        $derniere = null;
+        if($this->getAffectations() != null && count($this->getAffectations()) > 0){
+            foreach($this->getAffectations() as $affectation){
+                if($affectation->getActif()){
+                    $derniere = $affectation;
+                    break;
+                }
+            }
+        }
+        return $derniere;
+    }
 
 }

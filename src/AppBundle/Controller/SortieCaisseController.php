@@ -178,12 +178,13 @@ class SortieCaisseController extends Controller
     {
         $search = $request->get('search')['value'];
         $col = $request->get('order')[0]['column'];
+        
         $dir = $request->get('order')[0]['dir'];
         $em = $this->getDoctrine()->getManager();
-	$aColumns = array( 'r.type', 'r.montant', 'r.dateCreation');
+	$aColumns = array( 'r.type', 'r.description', 'r.montant','r.dateCreation');
         $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
         $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
-        $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
+        $sCol = (intval($col) > 0 && intval($col) < 5) ? intval($col) : 0;
         $sdir = ($dir =='asc') ? 'asc' : 'desc';
         $searchTerm = ($search != '') ? $search : NULL;
         $rResult = $em->getRepository('AppBundle:SortieCaisse')->findAllAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);

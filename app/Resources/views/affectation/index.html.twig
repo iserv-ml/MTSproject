@@ -11,13 +11,14 @@
         <li class="breadcrumb-item">Affectations</li>
     </ol>
 {% endblock %}
-{% block pagetitle -%}LISTE DES AFFECTATIONS{% endblock %}
+{% block pagetitle -%}AFFECTER LES CAISSIERS{% endblock %}
 {% block menu_affectations_actif %}active{% endblock %}
 
 {% block actions %}
-    <label class="btn btn-outline-secondary"><a href="{{ path('affectation_export') }}">EXPORTER</a></label>
+    
     {% if is_granted('ROLE_SUPERVISEUR') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_affectation_new') }}">AFFECTER</a></label>
+        <label class="btn btn-outline-secondary"><a href="{{ path('affectation_export') }}">EXPORTER L'HISTORIQUE</a></label>
     {% endif %}
 {% endblock %}
 {% block body -%}
@@ -25,22 +26,42 @@
         <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
             <thead>
                 <tr>
-                    <th>Agent</th>
                     <th>Caisse</th>
-                    <th>Statut</th>
-                    <th>Date</th>
+                    <th>Etat</th>
+                    <th>Caissier</th>
+                    <th>Début affectation</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-
+                {% for caisse in caisses %}
+                    <tr>
+                        <td>{{ caisse.numero }}</td>
+                        {% if caisse.actif %}
+                            <td>Active</td>
+                            {% if caisse.derniereAffectation %}
+                            <td>{{caisse.derniereAffectation.agent.nomComplet }}</td>
+                            <td>{{caisse.derniereAffectation.dateCreation|date('Y-m-d H:i:s') }}</td>
+                            <td><a class='btn btn-success' title="Détail" href="{{ path('admin_gestion_affectation_show', {'id':caisse.derniereAffectation.id}) }}"><i class='fa fa-search-plus'></i></a></td>
+                            {% endif %}
+                        {% else %}
+                            <td>Inactive</td>
+                            {% if caisse.derniereAffectation %}
+                            <td></td>
+                            <td></td>
+                            <td><a class='btn btn-success' title="Détail" href="{{ path('admin_gestion_affectation_show', {'id':caisse.derniereAffectation.id}) }}"><i class='fa fa-search-plus'></i></a></td>
+                            {%endif %}
+                        {% endif%}
+                        
+                    </tr>
+                {% endfor %}
             </tbody>
             <tfoot>
                 <tr>
-                    <th>Agent</th>
                     <th>Caisse</th>
-                    <th>Statut</th>
-                    <th>Date</th>
+                    <th>Etat</th>
+                    <th>Caissier</th>
+                    <th>Début affectation</th>
                     <th>Actions</th>
                 </tr>
             </tfoot>
@@ -57,10 +78,7 @@
             { "orderable": false, "targets": 4 }
         ],
         "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "{{ path('affectationajax') }}",
-        },
+
         "paging" : true,
         "info" : true, 
         "searching": true,
@@ -94,6 +112,6 @@
      
 		
 		        
-        } );    
+        } );  
     </script>
 {% endblock %}

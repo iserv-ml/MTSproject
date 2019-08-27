@@ -24,7 +24,9 @@ class AffectationController extends Controller
      */
     public function indexAction()
     {
-        return $this->render('affectation/index.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $caisses = $em->getRepository('AppBundle:Caisse')->findAll();
+        return $this->render('affectation/index.html.twig', array('caisses'=>$caisses));
     }
 
     /**
@@ -195,11 +197,11 @@ class AffectationController extends Controller
         $date = new \DateTime("now");
         $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
         $phpExcelObject->getProperties()->setCreator("2SInnovation")
-            ->setTitle("Affectation".$date->format('Y-m-d H:i:s'));
+            ->setTitle("Affectation-".$date->format('Y-m-d H:i:s'));
         $this->writeRapport($phpExcelObject, $entities);
         $writer = $this->get('phpexcel')->createWriter($phpExcelObject, 'Excel5');
         $response = $this->get('phpexcel')->createStreamedResponse($writer);
-        $filename = 'Affectation'.$date->format('Y_m_d_H_i_s').'.xls';
+        $filename = 'Affectation-'.$date->format('Y_m_d_H_i_s').'.xls';
         $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
         $response->headers->set('Content-Disposition', 'attachment;filename='.$filename);
         $response->headers->set('Pragma', 'public');
@@ -212,15 +214,21 @@ class AffectationController extends Controller
         $phpExcelObject->setActiveSheetIndex(0);
         $col = 0;
         $objWorksheet = $phpExcelObject->getActiveSheet();
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("CAISSE");$col++;
         $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("AGENT");$col++;
-        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("PISTE");$col++;
-        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("STATUT");
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("DATE DEBUT AFFECTATION");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("ETAT AFFECTATION");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("DATE FIN AFFECTATION");$col++;
         $ligne =2;
         foreach($entities as $entity){
             $col=0;
-            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getAgent()->getUsername());$col++;
             $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getCaisse()->getNumero());$col++;
-            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getActif());$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getAgent()->getUsername());$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getDateCreation());$col++;
+            $etat = $entity->getActif() ? "En cours" : "Terminée";
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($etat);$col++;
+            $fin = !$entity->getActif() ? $entity->getDateModification() : "";
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($fin);$col++;
             $ligne++;
         }
     }

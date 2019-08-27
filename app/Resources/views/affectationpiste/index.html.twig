@@ -11,13 +11,14 @@
         <li class="breadcrumb-item">Affectations aux pistes</li>
     </ol>
 {% endblock %}
-{% block pagetitle -%}LISTE DES AFFECTATIONS AUX PISTES{% endblock %}
+{% block pagetitle -%}AFFECTER DES CONTROLLEURS{% endblock %}
 {% block menu_affectationspiste_actif %}active{% endblock %}
 
 {% block actions %}
-    <label class="btn btn-outline-secondary"><a href="{{ path('affectationpiste_export') }}">EXPORTER</a></label>
+    
     {% if is_granted('ROLE_SUPERVISEUR') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_affectationpiste_new') }}">AFFECTER</a></label>
+        <label class="btn btn-outline-secondary"><a href="{{ path('affectationpiste_export') }}">EXPORTER L'HISTORIQUE</a></label>
     {% endif %}
 {% endblock %}
 {% block body -%}

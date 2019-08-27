@@ -161,7 +161,7 @@ class AffectationPisteController extends Controller
 	$aColumns = array( 'a.username', 'p.numero', 'r.actif', 'r.date');
         $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
         $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
-        $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
+        $sCol = (intval($col) > 0 && intval($col) < 5) ? intval($col) : 0;
         $sdir = ($dir =='asc') ? 'asc' : 'desc';
         $searchTerm = ($search != '') ? $search : NULL;
         $rResult = $em->getRepository('AppBundle:AffectationPiste')->findAllAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
@@ -195,11 +195,11 @@ class AffectationPisteController extends Controller
         $date = new \DateTime("now");
         $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
         $phpExcelObject->getProperties()->setCreator("2SInnovation")
-            ->setTitle("Affectation".$date->format('Y-m-d H:i:s'));
+            ->setTitle("Affectation_piste_".$date->format('Y-m-d H:i:s'));
         $this->writeRapport($phpExcelObject, $entities);
         $writer = $this->get('phpexcel')->createWriter($phpExcelObject, 'Excel5');
         $response = $this->get('phpexcel')->createStreamedResponse($writer);
-        $filename = 'Affectation'.$date->format('Y_m_d_H_i_s').'.xls';
+        $filename = 'Affectation_piste_'.$date->format('Y_m_d_H_i_s').'.xls';
         $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
         $response->headers->set('Content-Disposition', 'attachment;filename='.$filename);
         $response->headers->set('Pragma', 'public');
@@ -212,15 +212,21 @@ class AffectationPisteController extends Controller
         $phpExcelObject->setActiveSheetIndex(0);
         $col = 0;
         $objWorksheet = $phpExcelObject->getActiveSheet();
-        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("AGENT");$col++;
         $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("PISTE");$col++;
-        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("STATUT");
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("AGENT");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("DEBUT");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("STATUT");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("FIN");$col++;
         $ligne =2;
         foreach($entities as $entity){
             $col=0;
-            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getAgent()->getUsername());$col++;
             $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getPiste()->getNumero());$col++;
-            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getActif());$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getAgent()->getUsername());$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getDateCreation());$col++;
+            $tmp = $entity->getActif() ? "En cours" : "Terminée";
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($tmp);$col++;
+            $tmp = $entity->getActif() ? "" : $entity->getDateModification();
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($tmp);$col++;
             $ligne++;
         }
     }

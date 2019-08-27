@@ -17,7 +17,7 @@ class SortieCaisseRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.id, r.type, r.description, r.montant, r.dateCreation FROM AppBundle:SortieCaisse r '
-                    . ' WHERE r.type like :search'
+                    . ' WHERE r.type like :search '
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setFirstResult($start)
