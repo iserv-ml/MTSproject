@@ -43,8 +43,8 @@ class VehiculeController extends Controller
         $vehicule = new Vehicule();
         $form = $this->createForm('AppBundle\Form\VehiculeType', $vehicule);
         $form->handleRequest($request);
-        //$proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($request->get("proprietaireid", 0));
-        //$vehicule->setProprietaire($proprietaire);
+        $proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($request->get("proprietaireid", 0));
+        $vehicule->setProprietaire($proprietaire);
         if ($form->isSubmitted() && $form->isValid()) {
             $field = $request->get("appbundle_vehicule");
             $proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($field['proprietaireId']);
