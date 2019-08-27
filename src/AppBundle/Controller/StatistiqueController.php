@@ -72,6 +72,7 @@ class StatistiqueController extends Controller
     }
     
     private function genererCaisseAction($id, $etat){
+        $action = "";
         if($etat){
             $action = "<a title='Etat journalier' class='btn btn-success' href='".$this->generateUrl('centre_gestion_statistiques_caisse_etat', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";        
         }
