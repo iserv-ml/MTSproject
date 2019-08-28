@@ -39,11 +39,9 @@
                         <td>{{ caisse.numero }}</td>
                         {% if caisse.actif %}
                             <td>Active</td>
-                            {% if caisse.derniereAffectation %}
-                            <td>{{caisse.derniereAffectation.agent.nomComplet }}</td>
-                            <td>{{caisse.derniereAffectation.dateCreation|date('Y-m-d H:i:s') }}</td>
-                            <td><a class='btn btn-success' title="Détail" href="{{ path('admin_gestion_affectation_show', {'id':caisse.derniereAffectation.id}) }}"><i class='fa fa-search-plus'></i></a></td>
-                            {% endif %}
+                            <td>{% if caisse.derniereAffectation %}{{caisse.derniereAffectation.agent.nomComplet }}{% endif %}</td>
+                            <td>{% if caisse.derniereAffectation %}{{caisse.derniereAffectation.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+                            <td>{% if caisse.derniereAffectation %}<a class='btn btn-success' title="Détail" href="{{ path('admin_gestion_affectation_show', {'id':caisse.derniereAffectation.id}) }}"><i class='fa fa-search-plus'></i></a>{% endif %}</td>
                         {% else %}
                             <td>Inactive</td>
                             {% if caisse.derniereAffectation %}
