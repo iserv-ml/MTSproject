@@ -30,7 +30,7 @@ class EtatJournalier
     private $version;
     
     /**
-     * @var date $date
+     * @var string $date
      *
      * @ORM\Column(name="date_visite", type="string", nullable=false)
      * 
@@ -270,7 +270,7 @@ class EtatJournalier
         return $this->carrosserie;
     }
 
-    function setDate(date $date) {
+    function setDate($date) {
         $this->date = $date;
     }
 
