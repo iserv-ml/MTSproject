@@ -82,4 +82,13 @@ class AffectationPisteRepository extends EntityRepository
         
         return $result; 
     }
+    
+    public function affectationsActives($piste) {
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:AffectationPiste r LEFT JOIN r.piste p WHERE p.id = :pisteid AND r.actif = 1'
+            )->setParameter("pisteid",$piste)
+            ->getResult();        
+        return $result; 
+    }
 }

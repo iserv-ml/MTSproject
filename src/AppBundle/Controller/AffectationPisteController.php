@@ -47,12 +47,13 @@ class AffectationPisteController extends Controller
             }else if($derniere){
                $derniere->setActif(0);
             }
+            /**on ne désactive plus la dernière affectation pour autoriser plusieurs controlleurs
             $dernierePiste = $em->getRepository('AppBundle:AffectationPiste')->derniereAffectationPiste($affectationPiste->getPiste()->getId());
             if(is_int($dernierePiste)){
                 throw $this->createNotFoundException("Oops... Une erreur s'est produite.");
             }else if($dernierePiste){
                $dernierePiste->setActif(0);
-            }
+            }*/
             $em->persist($affectationPiste);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
@@ -158,20 +159,24 @@ class AffectationPisteController extends Controller
         $col = $request->get('order')[0]['column'];
         $dir = $request->get('order')[0]['dir'];
         $em = $this->getDoctrine()->getManager();
-	$aColumns = array( 'a.username', 'p.numero', 'r.actif', 'r.date');
+	$aColumns = array( 'r.numero', 'r.actif');
         $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
         $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
         $sCol = (intval($col) > 0 && intval($col) < 5) ? intval($col) : 0;
         $sdir = ($dir =='asc') ? 'asc' : 'desc';
         $searchTerm = ($search != '') ? $search : NULL;
-        $rResult = $em->getRepository('AppBundle:AffectationPiste')->findAllAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
-	$iTotal = $em->getRepository('AppBundle:AffectationPiste')->countRows();
+        $rResult = $em->getRepository('AppBundle:Piste')->findAllAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
+	$iTotal = $em->getRepository('AppBundle:Piste')->countRows();
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
-            $actif = $aRow['actif'] ? "Active" : "Inactive";
-            $output['aaData'][] = array($aRow['username'],$aRow['numero'],$actif,$aRow['date'], $action);
+            $controlleurs = $em->getRepository('AppBundle:AffectationPiste')->affectationsActives($aRow['id']);
+            $controlleur = "";
+            foreach($controlleurs as $c){
+                $controlleur .= $c->getAgent()->getUsername()." ";
+            }
+            $output['aaData'][] = array($aRow['numero'], $controlleur, $action);
 	}
 	return new Response(json_encode( $output ));    
     }

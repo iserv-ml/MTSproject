@@ -128,6 +128,22 @@ class Piste
         }
         return $active;
     }
+    
+    /**
+     * Get affectation active
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAffectationsActives()
+    {
+        $affectations = array();
+        foreach($this->affectations as $affectation){
+            if($affectation->getActif()){
+                $affectations[] = $affectation;
+            }
+        }
+        return $affectations;
+    }
 
     /**
      * Set affectations

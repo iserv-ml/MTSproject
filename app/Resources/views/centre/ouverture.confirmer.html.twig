@@ -25,9 +25,13 @@
                         {% endif %}
                     </td>
                     <td>{{ chaine.piste.numero }}</td>
-                    <td>{% if chaine.piste.getAffectationActive %}
-                            {{ chaine.piste.getAffectationActive.agent.username }}
-                        {% endif %}
+                    <td>
+                    {% if chaine.piste.affectationsActives is not empty %}
+                        {% for affectation in chaine.piste.affectationsActives %}
+                            {{ affectation.agent.username }}<br/>
+                        {%endfor%}
+                    {% else %}
+                        Pas d'agent affecté{%endif%}
                     </td>
                 </tr>
             {% endfor %}

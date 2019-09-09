@@ -26,6 +26,19 @@ class PisteRepository extends EntityRepository
         return $arrayAss;
     }
     
+    public function affectationsActives($idpiste) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.id, r.numero, r.actif FROM AppBundle:Piste r '
+                    . ' WHERE r.numero like :search'
+                    . ' ORDER BY '.$sCol.' '.$sdir)
+            ->setParameter('search', '%'.$search.'%')
+            ->setFirstResult($start)
+            ->setMaxResults($end);
+        $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+        return $arrayAss;
+    }
+    
      public function countRows() {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
