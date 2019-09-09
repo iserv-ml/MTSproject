@@ -39,7 +39,7 @@
             </tr>
             <tr>
                 <th>TYPE</th>
-                <td>{% if visite.revisite %}REVISITE{% else %}NORMALE{% endif %}</td>
+                <td>{% if visite.contreVisite %} Contre visite {% elseif visite.revisite %}Revisite{% else %}Normale{% endif %}</td>
             </tr>
         </tbody>
     </table>

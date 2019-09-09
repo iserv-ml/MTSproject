@@ -291,12 +291,28 @@ class Quittance
         //$this->users = new ArrayCollection();
     }
     
-    public function calculerMontant(){
+    public function calculerMontant($derniereVisite){
         if($this->visite){
             switch($this->visite->getRevisite()){
                 case 0 : return $this->visite->getVehicule()->getTypeVehicule()->getMontantVisite();
-                case 1 : return $this->visite->getVehicule()->getTypeVehicule()->getMontantRevisite();
+                case 1 : calculerMontantRevisite($derniereVisite);
             }
+        }
+    }
+    
+    public function calculerMontantRevisite($derniereVisite){
+        if($this->visite){
+            $date = new \DateTime();
+            $moisEncours = \date('m', strtotime($date));
+            $mois = \date('m', strtotime($derniereVisite->getDate()));
+            if($moisEncours > $mois){
+                return $this->visite->getVehicule()->getTypeVehicule()->getMontantVisite();
+            }else{
+                switch($this->visite->getVehicule()->getCompteurRevisite()){
+                    case 0 : case 1 : case 2 : return $this->visite->getVehicule()->getTypeVehicule()->getMontantRevisite();
+                    default :return 0;
+                }
+            }        
         }
     }
     

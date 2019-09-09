@@ -222,6 +222,14 @@ class Vehicule
     private $couleur;
     
     /**
+     * @var integer $compteurRevisite
+     *
+     * @ORM\Column(name="compteur_revisitepv", type="integer", nullable=true)
+     * 
+     */
+    private $compteurRevisite;
+    
+    /**
     * @ORM\ManyToOne(targetEntity="Modele", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="modele_id", referencedColumnName="id")
     * 
@@ -332,6 +340,18 @@ class Vehicule
 
     function getDateMiseCirculation() {
         return $this->dateMiseCirculation;
+    }
+    
+    function getCompteurRevisite() {
+        return $this->compteurRevisite;
+    }
+
+    function setCompteurRevisite($compteurRevisite) {
+        $this->compteurRevisite = $compteurRevisite;
+    }
+    
+    function incrementerCompteurRevisite(){
+        $this->compteurRevisite = $this->compteurRevisite + 1;
     }
     
     function prochaineVisite(){

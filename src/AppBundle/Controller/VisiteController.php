@@ -554,8 +554,10 @@ class VisiteController extends Controller
                 $visite->setDateValidite($date);
                 $visite->setNumeroCertificat('BKO'.\time());
                 $visite->getVehicule()->setDateProchaineVisite($date->format('Y-m-d'));
+                $visite->getVehicule()->setCompteurRevisite(0);
             }else{
                 $visite->setStatut(3);
+                $visite->getVehicule()->incrementerCompteurRevisite();
             }
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Controle terminé. Merci de consulter le résultat');
@@ -578,5 +580,52 @@ class VisiteController extends Controller
             'visite' => $visite,
         ));
         
+    }
+    
+    /**
+     * Creates a new visite entity.
+     *
+     * @Route("/contrevisite/creer", name="contrevisite")
+     * @Method({"GET", "POST"})
+     */
+    public function contrevisiteAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', "Le centre n'est pas encore ouvert.");
+            return $this->render('vehicule/index.html.twig', array('centre' => $centre,));
+        }
+        $vehicule = $em->getRepository('AppBundle:Vehicule')->find($request->get('id'));
+        if(!$vehicule){
+            throw $this->createNotFoundException("Ooops... Une erreur s'est produite.");
+        }  
+        if($vehicule->visiteArrive()){
+            $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($vehicule->getId());
+            switch(\AppBundle\Utilities\Utilities::evaluerDemandeVisite($derniereVisite)){
+                case 1:  
+                    $this->get('session')->getFlashBag()->add('notice', 'Visite déjà en cours.');
+                    return $this->render('visite/visite.html.twig', array('visite' => $derniereVisite,));
+            }
+        }else{
+            $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La date de la prochaine visite n'est pas arrivée.");
+            return $this->redirectToRoute('vehicule_index');
+        }
+        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives();
+        $chaineOptimale = \AppBundle\Utilities\Utilities::trouverChaineOptimale($chaines, $em);
+        if($chaineOptimale != null){
+            $visite = new Visite();
+            $visite->setContreVisite(true);
+            $visite->setStatut(1);
+            $visite->aiguiller($vehicule, 0, $chaineOptimale, null, $centre);
+            $em->persist($visite);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Aiguillage effectué.');
+            return $this->render('visite/visite.html.twig', array(
+                'visite' => $visite,
+                ));
+        }else{
+            throw $this->createNotFoundException("Aucune chaine active. Merci de contacter l'administrateur.");
+        }
     }
 }

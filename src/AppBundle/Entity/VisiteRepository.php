@@ -31,7 +31,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.id, v.immatriculation, r.revisite, p.nom, p.prenom, ca.numero as caisse, ca.ouvert FROM AppBundle:Visite r LEFT JOIN r.vehicule v LEFT JOIN v.proprietaire p LEFT JOIN r.chaine c LEFT JOIN c.caisse ca '
-                    . ' WHERE r.statut < 2 AND v.immatriculation like :search AND '.$controle
+                    . ' WHERE r.contreVisite = false AND r.statut < 2 AND v.immatriculation like :search AND '.$controle
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setParameter('caisse', $caisse)

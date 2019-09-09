@@ -85,6 +85,14 @@ class Visite
     private $revisite;
     
     /**
+     * @var boolean $contreVisite
+     *
+     * @ORM\Column(name="contre_visite", type="boolean", nullable=false)
+     * 
+     */
+    private $contreVisite;
+    
+    /**
     * @ORM\ManyToOne(targetEntity="Visite", inversedBy="revisites", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="visite_id", referencedColumnName="id")
     * 
@@ -235,6 +243,14 @@ class Visite
 
     function getNumeroCertificat() {
         return $this->numeroCertificat;
+    }
+    
+    function getContreVisite() {
+        return $this->contreVisite;
+    }
+
+    function setContreVisite($contreVisite) {
+        $this->contreVisite = $contreVisite;
     }
 
     function getDate() {
