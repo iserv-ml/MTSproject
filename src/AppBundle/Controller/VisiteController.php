@@ -71,7 +71,8 @@ class VisiteController extends Controller
         $affectation = $em->getRepository('AppBundle:AffectationPiste')->derniereAffectation($user->getId());
         $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
         if(!$affectation && !$admin){
-            throw $this->createNotFoundException("Vous n'êtes affecté à aucune piste. Contacter l'administrateur.");
+            $this->get('session')->getFlashBag()->add('error', "Vous n'êtes affecté à aucune piste. Contacter l'administrateur.");
+            return $this->redirectToRoute('homepage');
         }
         $piste = $admin ? "ADMIN" : "PISTE N° ".$affectation->getPiste()->getNumero();
         return $this->render('visite/controles.html.twig', array('piste'=>$piste, 'centre'=>$centre->getEtat()));
