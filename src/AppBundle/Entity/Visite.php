@@ -87,7 +87,7 @@ class Visite
     /**
      * @var boolean $contreVisite
      *
-     * @ORM\Column(name="contre_visite", type="boolean", nullable=false)
+     * @ORM\Column(name="contre_visite", type="boolean", nullable=true)
      * 
      */
     private $contreVisite;
@@ -424,6 +424,7 @@ class Visite
     public function __construct()
     {
         $this->revisites = new ArrayCollection();
+        $this->contreVisite = false;
     }
     
     public function aiguiller($vehicule, $statut, $chaine, $visiteParent, $centre)
