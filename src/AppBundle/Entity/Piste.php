@@ -48,6 +48,14 @@ class Piste
      * 
      */
     private $actif;
+    
+    /**
+     * @var string $repertoire
+     *
+     * @ORM\Column(name="repertoire", type="string", length=255, nullable=false)
+     * @Assert\NotBlank
+     */
+    private $repertoire;
    
    //Debut relation Piste a plusieurs chaines
     /**
@@ -267,6 +275,14 @@ class Piste
 
     public function setDateModification(\DateTime $dateModification) {
         $this->dateModification = $dateModification;
+    }
+    
+    function getRepertoire() {
+        return $this->repertoire;
+    }
+
+    function setRepertoire($repertoire) {
+        $this->repertoire = $repertoire;
     }
     
     public function getNomComplet(){

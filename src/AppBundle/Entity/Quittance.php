@@ -291,7 +291,7 @@ class Quittance
         //$this->users = new ArrayCollection();
     }
     
-    public function calculerMontant($derniereVisite){
+    public function calculerMontant($derniereVisite = null){
         if($this->visite){
             switch($this->visite->getRevisite()){
                 case 0 : return $this->visite->getVehicule()->getTypeVehicule()->getMontantVisite();

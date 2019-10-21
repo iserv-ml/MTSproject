@@ -791,5 +791,27 @@ class Vehicule
     public function setPath($path) {
         $this->path = $path;
     }
+    
+    public function genererFichierCg(){
+        $contenu = '[CARTEGRISE]'.PHP_EOL;
+        $contenu .= '0200='.$this->getImmatriculation().PHP_EOL;
+        $contenu .= '0201='.$this->getKilometrage().PHP_EOL;
+        $contenu .= '0202='.$this->getChassis().PHP_EOL;
+        $contenu .= '0203='.$this->getDateMiseCirculation().PHP_EOL;
+        $contenu .= '0204='.$this->getEnergie().PHP_EOL;
+        $contenu .= '0205='.PHP_EOL;//alimentation du véhicule. Correspond à quoi sur nos CG?
+        $contenu .= '0206='.PHP_EOL;//présence d'un pot catalytique
+        $contenu .= '0207='.$this->getProprietaire()->getNomComplet().PHP_EOL;
+        $contenu .= '0208='.$this->getProprietaire()->getAdresse().PHP_EOL;
+        $contenu .= '0209='.PHP_EOL;
+        $contenu .= '0210='.PHP_EOL;
+        $contenu .= '0211='.PHP_EOL;
+        $contenu .= '0212='.$this->getTypeVehicule()->getGenre()->getCode().PHP_EOL;
+        $contenu .= '0213='.$this->getModele()->getMarque()->getCode().PHP_EOL;
+        $contenu .= '0214='.$this->getModele()->getCode().PHP_EOL;
+        $contenu .= '0215='.PHP_EOL;
+        $contenu .= '0216='.$this->getCarteGrise().PHP_EOL;
+        return $contenu;
+    }
 
 }

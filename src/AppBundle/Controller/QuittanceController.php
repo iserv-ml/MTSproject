@@ -111,11 +111,12 @@ class QuittanceController extends Controller
         if ($quittance->getPaye()) {
             $this->get('session')->getFlashBag()->add('notice', 'Cette quittance a déjà été encaissé.');
         }else{
+            $visite = $quittance->getVisite();
             $em = $this->getDoctrine()->getManager();
             $quittance->encaisser();
-            $caisse = $quittance->getVisite()->getChaine()->getCaisse();
+            $caisse = $visite->getChaine()->getCaisse();
             $caisse->encaisser($quittance->getMontantVisite(), $quittance->getVisite()->getRevisite());
-            if($quittance->getVisite()->getRevisite()){
+            if($visite->getRevisite()){
                 $montantVisite = 0;
                 $nbVisite = 0;
                 $montantRevisite = $quittance->getMontantVisite();
@@ -126,8 +127,9 @@ class QuittanceController extends Controller
                 $montantRevisite = 0;
                 $nbRevisite = 0;
             }
+            $message = $visite->genererFichierMaha();
             $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero());
-            $this->get('session')->getFlashBag()->add('notice', 'Quittance encaissée.');
+            $this->get('session')->getFlashBag()->add('notice', $message);
             $em->persist($etat);
             $em->flush();
         }

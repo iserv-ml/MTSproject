@@ -15,7 +15,9 @@ class PisteType extends AbstractType
     {
         $builder
                 ->add('numero')
-                ->add('actif');
+                ->add('actif')
+                ->add('repertoire');
+        
     }
     
     /**

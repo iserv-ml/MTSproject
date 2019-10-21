@@ -1,0 +1,1 @@
+Ecriture dans un fichier

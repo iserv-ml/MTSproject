@@ -443,5 +443,16 @@ class Visite
         }
         $this->centre = $centre;
     }
+    
+    public function genererFichierMaha(){
+        $path = $this->getChaine()->getPiste()->getRepertoire().'\\'.$this->getVehicule()->getImmatriculation().'.CG';
+        $contenu = $this->getVehicule()->genererFichierCg();
+        try{
+            \file_put_contents($path, $contenu);
+            return 'Quittance encaissée.';
+        } catch (\Exception $exeption){
+            return 'Impossible de créer le fichier';
+        }
+    }
 
 }
