@@ -190,7 +190,7 @@ class PisteController extends Controller
 	{
             $action = $this->genererAction($aRow['id']);
             $actif = $aRow['actif'] ? 'Active' : 'Inactive';
-            $output['aaData'][] = array($aRow['numero'],$actif, $action);
+            $output['aaData'][] = array($aRow['numero'],$actif,$aRow['repertoire'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }

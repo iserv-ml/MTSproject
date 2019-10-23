@@ -16,7 +16,7 @@ class PisteRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.numero, r.actif FROM AppBundle:Piste r '
+                'SELECT r.id, r.numero, r.actif, r.repertoire FROM AppBundle:Piste r '
                     . ' WHERE r.numero like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
