@@ -445,7 +445,7 @@ class Visite
     }
     
     public function genererFichierMaha(){
-        $path = $this->getChaine()->getPiste()->getRepertoire().'\\'.$this->getVehicule()->getImmatriculation().'.CG';
+        $path = $this->getChaine()->getPiste()->getRepertoire().$this->getVehicule()->getImmatriculation().'.CG';
         $contenu = $this->getVehicule()->genererFichierCg();
         try{
             \file_put_contents($path, $contenu);
