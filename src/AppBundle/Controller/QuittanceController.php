@@ -215,7 +215,7 @@ class QuittanceController extends Controller
         $quittance = new Quittance();
         $quittance->setVisite($visite);
         $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($visite->getVehicule()->getId(), $visite->getId());
-        $montant = $quittance->calculerMontant();
+        $montant = $quittance->calculerMontant($derniereVisite);
         $retard = $quittance->calculerRetard($derniereVisite);
         $penalite = $em->getRepository('AppBundle:Penalite')->trouverParNbJours($retard);
         $quittance->generer($montant, $penalite, $retard);

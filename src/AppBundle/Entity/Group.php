@@ -89,4 +89,8 @@ class Group extends BaseGroup
     {
         return $this->users;
     }
+    
+    public function estSupprimable(){
+        return $this->users == null || count($this->users) == 0;
+    }
 }

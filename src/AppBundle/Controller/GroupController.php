@@ -135,7 +135,7 @@ class GroupController extends Controller
      * @Route("/{id}/delete", name="admin_gestion_group_delete_a")
      * @Method("GET")
      */
-    public function deleteaAction(Groupe $group)
+    public function deleteaAction(Group $group)
     {
         if (!$group) {
             $this->get('session')->getFlashBag()->add('error', "Oops! Une erreur s'est produite");
@@ -169,7 +169,7 @@ class GroupController extends Controller
     }
     
     /**
-     * Lists all Groupe entities.
+     * Lists all Group entities.
      *
      * @Route("/admin/gestion/groupajax/liste", name="groupajax")
      * 

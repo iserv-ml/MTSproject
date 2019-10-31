@@ -30,7 +30,7 @@ class VisiteController extends Controller
         $affectation = $em->getRepository('AppBundle:Affectation')->derniereAffectation($user->getId());
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
-        if(!$centre || !$affectation || $affectation == -1){
+        if(!$centre || !$affectation || $affectation === -1){
             $this->get('session')->getFlashBag()->add('error', "Vous n'êtes affecté à aucune caisse. Contacter l'administrateur.");
             return $this->redirectToRoute('homepage');
         }

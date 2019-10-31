@@ -125,7 +125,7 @@ class Utilisateur extends BaseUser
     }
 
     public function estSupprimable(){
-        return true;
+        return $this->affectations == null || count($this->affectations) == 0;
     }
     
     public function __toString(){
@@ -173,5 +173,41 @@ class Utilisateur extends BaseUser
         return in_array(strtoupper($role), $this->getRoles(), true);
     }
 
+    //Debut relation Utilisateur a plusieurs affectations
+    /**
+    * @ORM\OneToMany(targetEntity="Affectation", mappedBy="agent", cascade={"persist"})
+    */
+    protected $affectations;
+    
+    /**
+    * Add affectation
+    *
+    * @param AppBundle\Entity\Affectation $affectation
+    */
+    public function addAffectation(\AppBundle\Entity\Affectation $affectation)
+    {
+        $this->affectations[] = $affectation;
+    }
+
+    /**
+     * Get affectations
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getAffectations()
+    {
+        return $this->affectations;
+    }
+
+    /**
+     * Set affectations
+     *
+     * @param \Doctrine\Common\Collections\Collection $affectations
+     */
+    public function setAffectations(\Doctrine\Common\Collections\Collection $affectations)
+    {
+        $this->affectations = $affectations;
+    }
+    //Fin relation caisse a plusieurs affectations
 
 }

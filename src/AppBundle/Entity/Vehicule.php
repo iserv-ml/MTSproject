@@ -811,7 +811,41 @@ class Vehicule
         $contenu .= '0214='.$this->getModele()->getCode().PHP_EOL;
         $contenu .= '0215='.PHP_EOL;
         $contenu .= '0216='.$this->getCarteGrise().PHP_EOL;
+        $contenu .= '[CRC]'.PHP_EOL;
+        $contenu .= '0200='.$this->genererCrc($this->getImmatriculation()).PHP_EOL;
+        $contenu .= '0201='.$this->genererCrc($this->getKilometrage()).PHP_EOL;
+        $contenu .= '0202='.$this->genererCrc($this->getChassis()).PHP_EOL;
+        $contenu .= '0203='.$this->genererCrc($this->getDateMiseCirculation()).PHP_EOL;
+        $contenu .= '0204='.$this->genererCrc($this->getEnergie()).PHP_EOL;
+        $contenu .= '0205='.PHP_EOL;//alimentation du véhicule. Correspond à quoi sur nos CG?
+        $contenu .= '0206='.PHP_EOL;//présence d'un pot catalytique
+        $contenu .= '0207='.$this->genererCrc($this->getProprietaire()->getNomComplet()).PHP_EOL;
+        $contenu .= '0208='.$this->genererCrc($this->getProprietaire()->getAdresse()).PHP_EOL;
+        $contenu .= '0209='.PHP_EOL;
+        $contenu .= '0210='.PHP_EOL;
+        $contenu .= '0211='.PHP_EOL;
+        $contenu .= '0212='.$this->genererCrc($this->getTypeVehicule()->getGenre()->getCode()).PHP_EOL;
+        $contenu .= '0213='.$this->genererCrc($this->getModele()->getMarque()->getCode()).PHP_EOL;
+        $contenu .= '0214='.$this->genererCrc($this->getModele()->getCode()).PHP_EOL;
+        $contenu .= '0215='.PHP_EOL;
+        $contenu .= '0216='.$this->genererCrc($this->getCarteGrise()).PHP_EOL;
         return $contenu;
+    }
+    
+    public function genererCrc($chaine){
+        $i = 0;
+        $j = 1;
+        $r = 0;
+        while($i<strlen($chaine)){
+            $d = ord($chaine[$i]);
+            $i++;
+            if($j>5){
+                $j=1;
+            }
+            $r = $r + ($d * $j);
+            $j++;
+        }
+        return $r;
     }
 
 }

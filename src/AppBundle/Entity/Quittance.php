@@ -295,7 +295,7 @@ class Quittance
         if($this->visite){
             switch($this->visite->getRevisite()){
                 case 0 : return $this->visite->getVehicule()->getTypeVehicule()->getMontantVisite();
-                case 1 : calculerMontantRevisite($derniereVisite);
+                case 1 : return $this->calculerMontantRevisite($derniereVisite);
             }
         }
     }
@@ -303,8 +303,8 @@ class Quittance
     public function calculerMontantRevisite($derniereVisite){
         if($this->visite){
             $date = new \DateTime();
-            $moisEncours = \date('m', strtotime($date));
-            $mois = \date('m', strtotime($derniereVisite->getDate()));
+            $moisEncours = \date('m', strtotime($date->format('Y-m-d')));
+            $mois = \date('m', strtotime($derniereVisite->getDate()->format('Y-m-d')));
             if($moisEncours > $mois){
                 return $this->visite->getVehicule()->getTypeVehicule()->getMontantVisite();
             }else{
