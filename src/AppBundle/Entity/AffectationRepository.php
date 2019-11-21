@@ -31,6 +31,12 @@ class AffectationRepository extends EntityRepository
         $qb->select('count(c.id)');
         return  $qb->getQuery()->getSingleScalarResult();
      }
+     
+     public function countRowsFiltre($search) {
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('count(r.id)')->leftJoin('r.agent', 'a')->leftJoin('r.caisse', 'c')->where('r.actif = 1 AND (a.username like :search or c.numero like :search)')->setParameter('search', '%'.$search.'%');
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
     
      public function trouverParLibelle($libelle) {
        try{ 

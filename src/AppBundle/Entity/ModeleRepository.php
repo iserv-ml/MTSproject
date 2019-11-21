@@ -26,11 +26,17 @@ class ModeleRepository extends EntityRepository
         return $arrayAss;
     }
     
-     public function countRows() {
+    public function countRows() {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
         return  $qb->getQuery()->getSingleScalarResult();
-     }
+    }
+    
+    public function countRowsFiltre($search) {
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('count(r.id)')->leftJoin('r.marque', 'm')->where('r.libelle like :search or m.libelle like :search')->setParameter('search', '%'.$search.'%');
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
     
      public function trouverParLibelle($libelle) {
        try{ 

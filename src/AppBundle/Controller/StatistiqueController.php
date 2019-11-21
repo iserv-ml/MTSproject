@@ -59,7 +59,8 @@ class StatistiqueController extends Controller
         $searchTerm = ($search != '') ? $search : NULL;
         $rResult = $em->getRepository('AppBundle:Caisse')->trouverPourEtat($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
 	$iTotal = $em->getRepository('AppBundle:Caisse')->countRows();
-	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
+        $iTotalFiltre = $em->getRepository('AppBundle:Caisse')->countRowsFiltre($searchTerm);
+	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
             $ouvert = ($aRow->getOuvert() == 1) ? "O" : "F";

@@ -44,6 +44,12 @@ class PisteRepository extends EntityRepository
         $qb->select('count(c.id)');
         return  $qb->getQuery()->getSingleScalarResult();
      }
+     
+     public function countRowsFiltre($search) {
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('count(r.id)')->where('r.numero like :search')->setParameter('search', '%'.$search.'%');
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
     
     public function trouverParLibelle($libelle) {
        try{ 

@@ -230,6 +230,22 @@ class Vehicule
     private $compteurRevisite;
     
     /**
+     * @var integer $alimentation
+     *
+     * @ORM\Column(name="alimentation", type="integer", nullable=false)
+     * @Assert\NotBlank
+     */
+    private $alimentation;
+    
+    /**
+     * @var integer $potCatalytique
+     *
+     * @ORM\Column(name="potCatalytique", type="integer", nullable=false)
+     * @Assert\NotBlank
+     */
+    private $potCatalytique;
+    
+    /**
     * @ORM\ManyToOne(targetEntity="Modele", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="modele_id", referencedColumnName="id")
     * 
@@ -348,6 +364,22 @@ class Vehicule
 
     function setCompteurRevisite($compteurRevisite) {
         $this->compteurRevisite = $compteurRevisite;
+    }
+    
+    function getAlimentation() {
+        return $this->alimentation;
+    }
+
+    function getPotCatalytique() {
+        return $this->potCatalytique;
+    }
+
+    function setAlimentation($alimentation) {
+        $this->alimentation = $alimentation;
+    }
+
+    function setPotCatalytique($potCatalytique) {
+        $this->potCatalytique = $potCatalytique;
     }
     
     function incrementerCompteurRevisite(){
@@ -669,7 +701,7 @@ class Vehicule
     }
 
     public function estSupprimable(){
-        return true;
+        return $this->visites == null || count($this->visites) == 0;
     }
     
     public function __toString(){
@@ -793,42 +825,42 @@ class Vehicule
     }
     
     public function genererFichierCg(){
-        $contenu = '[CARTEGRISE]'.PHP_EOL;
-        $contenu .= '0200='.$this->getImmatriculation().PHP_EOL;
-        $contenu .= '0201='.$this->getKilometrage().PHP_EOL;
-        $contenu .= '0202='.$this->getChassis().PHP_EOL;
-        $contenu .= '0203='.$this->getDateMiseCirculation().PHP_EOL;
-        $contenu .= '0204='.$this->getEnergie().PHP_EOL;
-        $contenu .= '0205='.PHP_EOL;//alimentation du véhicule. Correspond à quoi sur nos CG?
-        $contenu .= '0206='.PHP_EOL;//présence d'un pot catalytique
-        $contenu .= '0207='.$this->getProprietaire()->getNomComplet().PHP_EOL;
-        $contenu .= '0208='.$this->getProprietaire()->getAdresse().PHP_EOL;
-        $contenu .= '0209='.PHP_EOL;
-        $contenu .= '0210='.PHP_EOL;
-        $contenu .= '0211='.PHP_EOL;
-        $contenu .= '0212='.$this->getTypeVehicule()->getGenre()->getCode().PHP_EOL;
-        $contenu .= '0213='.$this->getModele()->getMarque()->getCode().PHP_EOL;
-        $contenu .= '0214='.$this->getModele()->getCode().PHP_EOL;
-        $contenu .= '0215='.PHP_EOL;
-        $contenu .= '0216='.$this->getCarteGrise().PHP_EOL;
-        $contenu .= '[CRC]'.PHP_EOL;
-        $contenu .= '0200='.$this->genererCrc($this->getImmatriculation()).PHP_EOL;
-        $contenu .= '0201='.$this->genererCrc($this->getKilometrage()).PHP_EOL;
-        $contenu .= '0202='.$this->genererCrc($this->getChassis()).PHP_EOL;
-        $contenu .= '0203='.$this->genererCrc($this->getDateMiseCirculation()).PHP_EOL;
-        $contenu .= '0204='.$this->genererCrc($this->getEnergie()).PHP_EOL;
-        $contenu .= '0205='.PHP_EOL;//alimentation du véhicule. Correspond à quoi sur nos CG?
-        $contenu .= '0206='.PHP_EOL;//présence d'un pot catalytique
-        $contenu .= '0207='.$this->genererCrc($this->getProprietaire()->getNomComplet()).PHP_EOL;
-        $contenu .= '0208='.$this->genererCrc($this->getProprietaire()->getAdresse()).PHP_EOL;
-        $contenu .= '0209='.PHP_EOL;
-        $contenu .= '0210='.PHP_EOL;
-        $contenu .= '0211='.PHP_EOL;
-        $contenu .= '0212='.$this->genererCrc($this->getTypeVehicule()->getGenre()->getCode()).PHP_EOL;
-        $contenu .= '0213='.$this->genererCrc($this->getModele()->getMarque()->getCode()).PHP_EOL;
-        $contenu .= '0214='.$this->genererCrc($this->getModele()->getCode()).PHP_EOL;
-        $contenu .= '0215='.PHP_EOL;
-        $contenu .= '0216='.$this->genererCrc($this->getCarteGrise()).PHP_EOL;
+        $contenu = '[CARTEGRISE]'."\r\n";
+        $contenu .= '0200='.$this->getImmatriculation()."\r\n";
+        $contenu .= '0201='.$this->getKilometrage()."\r\n";
+        $contenu .= '0202='.$this->getChassis()."\r\n";
+        $contenu .= '0203='.$this->getDateMiseCirculationFormatCrc()."\r\n";
+        $contenu .= '0204='.$this->getEnergie()."\r\n";
+        $contenu .= '0205='.$this->getAlimentation()."\r\n";//alimentation du véhicule. Correspond à quoi sur nos CG?
+        $contenu .= '0206='.$this->getPotCatalytique()."\r\n";//présence d'un pot catalytique
+        $contenu .= '0207='.$this->getProprietaire()->getNomComplet()."\r\n";
+        $contenu .= '0208='.$this->getProprietaire()->getAdresse()."\r\n";
+        $contenu .= '0209='."\r\n";
+        $contenu .= '0210='."\r\n";
+        $contenu .= '0211='."\r\n";
+        $contenu .= '0212='.$this->getTypeVehicule()->getGenre()->getCode()."\r\n";
+        $contenu .= '0213='.$this->getModele()->getMarque()->getCode()."\r\n";
+        $contenu .= '0214='.$this->getModele()->getCode()."\r\n";
+        $contenu .= '0215='."\r\n";
+        $contenu .= '0216='.$this->getCarteGrise()."\r\n";
+        $contenu .= '[CRC]'."\r\n";
+        $contenu .= '0200='.$this->genererCrc($this->getImmatriculation())."\r\n";
+        $contenu .= '0201='.$this->genererCrc($this->getKilometrage())."\r\n";
+        $contenu .= '0202='.$this->genererCrc($this->getChassis())."\r\n";
+        $contenu .= '0203='.$this->genererCrc($this->getDateMiseCirculation())."\r\n";
+        $contenu .= '0204='.$this->genererCrc($this->getEnergie())."\r\n";
+        $contenu .= '0205='.$this->genererCrc($this->getAlimentation())."\r\n";//alimentation du véhicule. Correspond à quoi sur nos CG?
+        $contenu .= '0206='.$this->genererCrc($this->getPotCatalytique())."\r\n";//présence d'un pot catalytique
+        $contenu .= '0207='.$this->genererCrc($this->getProprietaire()->getNomComplet())."\r\n";
+        $contenu .= '0208='.$this->genererCrc($this->getProprietaire()->getAdresse())."\r\n";
+        $contenu .= '0209=0'."\r\n";
+        $contenu .= '0210=0'."\r\n";
+        $contenu .= '0211=0'."\r\n";
+        $contenu .= '0212='.$this->genererCrc($this->getTypeVehicule()->getGenre()->getCode())."\r\n";
+        $contenu .= '0213='.$this->genererCrc($this->getModele()->getMarque()->getCode())."\r\n";
+        $contenu .= '0214='.$this->genererCrc($this->getModele()->getCode())."\r\n";
+        $contenu .= '0215=0'."\r\n";
+        $contenu .= '0216='.$this->genererCrc($this->getCarteGrise())."\r\n";
         return $contenu;
     }
     
@@ -837,7 +869,7 @@ class Vehicule
         $j = 1;
         $r = 0;
         while($i<strlen($chaine)){
-            $d = ord($chaine[$i]);
+            $d = ord(substr($chaine,$i,1));
             $i++;
             if($j>5){
                 $j=1;
@@ -846,6 +878,10 @@ class Vehicule
             $j++;
         }
         return $r;
+    }
+    
+    private function getDateMiseCirculationFormatCrc(){
+        return date("dmY", strtotime($this->getDateMiseCirculation()));
     }
 
 }

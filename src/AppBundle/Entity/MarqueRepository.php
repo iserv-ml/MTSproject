@@ -33,6 +33,12 @@ class MarqueRepository extends EntityRepository
         $qb->select('count(c.id)');
         return  $qb->getQuery()->getSingleScalarResult();
      }
+     
+    public function countRowsFiltre($search) {
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('count(r.id)')->where('r.libelle like :search')->setParameter('search', '%'.$search.'%');
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
     
      public function trouverParLibelle($libelle) {
        try{ 

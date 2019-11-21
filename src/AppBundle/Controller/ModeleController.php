@@ -185,7 +185,8 @@ class ModeleController extends Controller
         $searchTerm = ($search != '') ? $search : NULL;
         $rResult = $em->getRepository('AppBundle:Modele')->findAllAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
 	$iTotal = $em->getRepository('AppBundle:Modele')->countRows();
-	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
+        $iTotalFiltre = $em->getRepository('AppBundle:Modele')->countRowsFiltre($searchTerm);
+	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);

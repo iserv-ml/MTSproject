@@ -29,11 +29,17 @@ class ProprietaireRepository extends EntityRepository
        
     }
     
-     public function countRows() {
+    public function countRows() {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
         return  $qb->getQuery()->getSingleScalarResult();
-     }
+    }
+    
+    public function countRowsFiltre($search) {
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('count(r.id)')->where('r.nom LIKE :search OR r.prenom LIKE :search OR r.telephone LIKE :search OR r.numpiece like :search OR r.id like :search OR CONCAT(r.nom, :vide, r.prenom) LIKE :search OR  r.email LIKE :search')->setParameter('search', '%'.$search.'%')->setParameter('vide', ' ');
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
      
     /* public function findAjax($search, $maxRows) {
         

@@ -180,11 +180,11 @@ class ClientController extends Controller
         
         $rResult = $em->getRepository('AppBundle:Client')->findAllAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
 	$iTotal = $em->getRepository('AppBundle:Client')->countRows();
-	
+	$iTotalFiltre = $em->getRepository('AppBundle:Client')->countRowsFiltre($searchTerm);
 	$output = array(
                 "sEcho" => intval($request->get('sEcho')),
 		"iTotalRecords" => $iTotal,
-		"iTotalDisplayRecords" => $iTotal,
+		"iTotalDisplayRecords" => $iTotalFiltre,
 		"aaData" => array()
 	);
         $i = 1;

@@ -26,11 +26,17 @@ class ResultatRepository extends EntityRepository
         return $arrayAss;
     }
     
-     public function countRows() {
+    public function countRows() {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
         return  $qb->getQuery()->getSingleScalarResult();
-     }
+    }
+    
+    public function countRowsFiltre($search) {
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('count(r.id)')->where('r.statut like :search or r.date like :search')->setParameter('search', '%'.$search.'%');
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
     
      public function trouverParLibelle($libelle) {
        try{ 

@@ -41,9 +41,15 @@ class VisiteRepository extends EntityRepository
         return $arrayAss;
     }
     
-     public function countRows() {
+    public function countRows() {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
+    
+    public function countRowsFiltre($search) {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)')->leftJoin('c.vehicule', 'v')->where('v.immatriculation like :search')->setParameter('search', '%'.$search.'%');
         return  $qb->getQuery()->getSingleScalarResult();
     }
     
@@ -52,8 +58,18 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.chaine c LEFT JOIN c.caisse ca '
-                    . ' WHERE r.statut < 2 AND '.$controle)
+                    . ' WHERE r.contreVisite = false AND r.statut < 2 AND '.$controle)
                ->setParameter('caisse', $caisse);
+        return  $qb->getSingleScalarResult();
+    }
+    
+    public function countQuittanceRowsFiltre($caisse, $search) {
+        $controle = ($caisse == 0) ? 'ca.id > :caisse ' : ' ca.id = :caisse ';
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.chaine c LEFT JOIN c.caisse ca LEFT JOIN r.vehicule v '
+                    . ' WHERE r.contreVisite = false AND r.statut < 2 AND v.immatriculation like :search AND '.$controle)
+               ->setParameter('caisse', $caisse)->setParameter('search', '%'.$search.'%');
         return  $qb->getSingleScalarResult();
     }
     
@@ -134,6 +150,16 @@ class VisiteRepository extends EntityRepository
                 'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.chaine c LEFT JOIN c.piste pi '
                     . ' WHERE r.statut IN (1,2,3) AND '.$controle)
                ->setParameter('piste', $piste);
+        return  $qb->getSingleScalarResult();
+    }
+    
+    public function countControlesRowsFiltre($piste, $search) {
+        $controle = ($piste == 0) ? 'pi.id > :piste ' : ' pi.id = :piste ';
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.chaine c LEFT JOIN c.piste pi '
+                    . ' WHERE r.statut IN (1,2,3) AND v.immatriculation like :search AND '.$controle)
+               ->setParameter('piste', $piste)->setParameter('search', '%'.$search.'%');
         return  $qb->getSingleScalarResult();
     }
     

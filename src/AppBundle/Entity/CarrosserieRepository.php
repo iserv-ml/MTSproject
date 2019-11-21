@@ -26,25 +26,31 @@ class CarrosserieRepository extends EntityRepository
         return $arrayAss;
     }
     
-     public function countRows() {
+    public function countRows() {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
         return  $qb->getQuery()->getSingleScalarResult();
-     }
+    }
+     
+    public function countRowsFiltre($search){
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('count(r.id)')->where('r.libelle like :search or r.code like :search')->setParameter('search', '%'.$search.'%');
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
     
-     public function trouverParLibelle($libelle) {
-       try{ 
-         $result = $this->getEntityManager()
+    public function trouverParLibelle($libelle) {
+        try{ 
+            $result = $this->getEntityManager()
             ->createQuery(
                 'SELECT r FROM AppBundle:Carrosserie r WHERE r.libelle = :libelle'
             )->setParameter("libelle",$libelle)
             ->getSingleResult();
-       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
             $result = null;
         }
         catch (\Doctrine\ORM\NoResultException $ex){
             $result = null;
-        }
+    }
         
         return $result; 
     }    

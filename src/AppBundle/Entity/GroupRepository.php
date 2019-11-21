@@ -31,6 +31,12 @@ class GroupRepository extends EntityRepository
         $qb->select('count(c.id)');
         return  $qb->getQuery()->getSingleScalarResult();
      }
+     
+     public function countRowsFiltre($search) {
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('count(r.id)')->where('r.name like :search')->setParameter('search', '%'.$search.'%');
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
     
      public function trouverParLibelle($libelle) {
        try{ 

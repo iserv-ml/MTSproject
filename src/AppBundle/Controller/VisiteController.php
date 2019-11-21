@@ -300,12 +300,14 @@ class VisiteController extends Controller
         }
         if($admin){
             $rResult = $em->getRepository('AppBundle:Visite')->findQuittancesAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, 0);
-            $iTotal = $em->getRepository('AppBundle:Visite')->countQuittanceRows($affectation->getCaisse()->getId());    
+            $iTotal = $em->getRepository('AppBundle:Visite')->countQuittanceRows($affectation->getCaisse()->getId());  
+            $iTotalFiltre = $em->getRepository('AppBundle:Visite')->countQuittanceRowsFiltre($affectation->getCaisse()->getId(), $searchTerm);
         }else{
             $rResult = $em->getRepository('AppBundle:Visite')->findQuittancesAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, $affectation->getCaisse()->getId());
-            $iTotal = $em->getRepository('AppBundle:Visite')->countQuittanceRows($affectation->getCaisse()->getId());    
+            $iTotal = $em->getRepository('AppBundle:Visite')->countQuittanceRows($affectation->getCaisse()->getId()); 
+            $iTotalFiltre = $em->getRepository('AppBundle:Visite')->countQuittanceRows($affectation->getCaisse()->getId(), $searchTerm);
         }
-	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
+	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
             $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($aRow['id']);
@@ -412,13 +414,15 @@ class VisiteController extends Controller
         if($admin){
             $rResult = $em->getRepository('AppBundle:Visite')->findControlesAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, 0);
             $iTotal = $em->getRepository('AppBundle:Visite')->countControlesRows(0);    
+            $iTotalFiltre = $em->getRepository('AppBundle:Visite')->countControlesRows(0, $searchTerm);
         }
         else {
             $rResult = $em->getRepository('AppBundle:Visite')->findControlesAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, $affectation->getPiste()->getId());
             $iTotal = $em->getRepository('AppBundle:Visite')->countControlesRows($affectation->getPiste()->getId());
+            $iTotalFiltre = $em->getRepository('AppBundle:Visite')->countControlesRows($affectation->getPiste()->getId(), $searchTerm);
         }
         
-	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
+	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
             $action = ($centre->getEtat())?$this->genererPisteAction($aRow['id'], $aRow['statut']) : "Centre fermé";
@@ -470,8 +474,9 @@ class VisiteController extends Controller
         $searchTerm = ($search != '') ? $search : NULL;
         $rResult = $em->getRepository('AppBundle:Visite')->findAllAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
         $iTotal = $em->getRepository('AppBundle:Visite')->countRows();
+        $iTotalFiltre = $em->getRepository('AppBundle:Visite')->countRowsFiltre($searchTerm);
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
-	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
+	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
             $action = ($centre->getEtat())?$this->genererDelivranceAction($aRow['id'], $aRow['statut']):"Centre fermé";

@@ -32,6 +32,12 @@ class ChaineRepository extends EntityRepository
         return  $qb->getQuery()->getSingleScalarResult();
     }
     
+    public function countRowsFiltre($search) {
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('count(r.id)')->leftJoin('r.caisse', 'c')->leftJoin('r.piste', 'p')->where('c.numero like :search or p.numero like :search')->setParameter('search', '%'.$search.'%');
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
+    
     public function trouverParLibelle($libelle) {
         try{ 
             $result = $this->getEntityManager()

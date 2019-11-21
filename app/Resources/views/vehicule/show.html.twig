@@ -112,6 +112,14 @@
                 <td>{{ vehicule.typeVehicule.libelle }}</td>
             </tr>
             <tr>
+                <th>Alimentation</th>
+                <td>{% if vehicule.alimentation == 0 %}Atmo{% else %}Turbo{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Présence d'un pot catalytique</th>
+                <td>{% if vehicule.potCatalytique == 0 %}Non{% else %}Oui{% endif %}</td>
+            </tr>
+            <tr>
                 <th>PROPRIETAIRE</th>
                 <td>{{ vehicule.proprietaire }}</td>
             </tr>

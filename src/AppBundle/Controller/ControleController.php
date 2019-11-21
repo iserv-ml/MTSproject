@@ -185,7 +185,8 @@ class ControleController extends Controller
         $searchTerm = ($search != '') ? $search : NULL;
         $rResult = $em->getRepository('AppBundle:Controle')->findAllAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
 	$iTotal = $em->getRepository('AppBundle:Controle')->countRows();
-	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => count($rResult), "aaData" => array());
+        $iTotalFiltre = $em->getRepository('AppBundle:Controle')->countRowsFiltre($searchTerm);
+	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
             $actif = $aRow['actif'] == 1 ? "Actif" : "Inactif";

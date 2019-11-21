@@ -46,6 +46,8 @@ class VehiculeType extends AbstractType
                 ->add('immatriculationPrecedent')
                 ->add('dateImmatriculationPrecedent')
                 ->add('typeCarteGrise')
+                ->add('alimentation', 'choice',['choices' => [0 => 'Atmo', 1 => 'Turbo' ]])   
+                ->add('potCatalytique', 'choice',['choices' => [0 => 'Non', 1 => 'Oui' ]])      
                 ->add('commentaire')
                 ->add('file', 'file', array('label'=>'Image 1 (limite 10M)', 'required'=>false))
                 ;

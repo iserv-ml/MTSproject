@@ -28,11 +28,17 @@ class UtilisateurRepository extends EntityRepository
        
     }
     
-     public function countRows() {
+    public function countRows() {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
         return  $qb->getQuery()->getSingleScalarResult();
-     }
+    }
+    
+    public function countRowsFiltre($search){
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('count(r.id)')->where('r.nom LIKE :search OR r.prenom LIKE :search OR r.username LIKE :search')->setParameter('search', '%'.$search.'%');
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
     
     
 }

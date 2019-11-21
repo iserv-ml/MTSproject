@@ -26,11 +26,17 @@ class QuittanceRepository extends EntityRepository
         return $arrayAss;
     }
     
-     public function countRows() {
+    public function countRows() {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');
         return  $qb->getQuery()->getSingleScalarResult();
-     }
+    }
+    
+    public function countRowsFiltre($search) {
+        $qb = $this->createQueryBuilder('r');
+        $qb->select('count(r.id)')->leftJoin('r.visite', 'v')->leftJoin('v.vehicule', 'vh')->where('r.numero like :search or vh.immatriculation like :search')->setParameter('search', '%'.$search.'%');
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
     
      public function trouverQuittanceParVisite($visite) {
        try{ 
