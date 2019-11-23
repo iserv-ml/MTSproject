@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Modeleimports list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Path</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for modeleImport in modeleImports %}
+            <tr>
+                <td><a href="{{ path('admin_parametres_modeles_importer_show', { 'id': modeleImport.id }) }}">{{ modeleImport.id }}</a></td>
+                <td>{{ modeleImport.path }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('admin_parametres_modeles_importer_show', { 'id': modeleImport.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('admin_parametres_modeles_importer_edit', { 'id': modeleImport.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('admin_parametres_modeles_importer_new') }}">Create a new modeleImport</a>
+        </li>
+    </ul>
+{% endblock %}

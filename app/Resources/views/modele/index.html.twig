@@ -19,6 +19,7 @@
     <label class="btn btn-outline-secondary"><a href="{{ path('modele_export') }}">EXPORTER</a></label>
     {% if is_granted('ROLE_ENREGISTREMENT') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_modele_new') }}">CREER</a></label>
+        <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_modeles_importer_new') }}">IMPORTER</a></label>
     {% endif %}
 {% endblock %}
 {% block body -%}
