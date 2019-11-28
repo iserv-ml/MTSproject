@@ -13,7 +13,7 @@
 {% endblock %}
 {% block pagetitle -%}LISTE DES QUITTANCES : {{ profil }}{% endblock %}
 {% block actions %}
-    {% if is_granted('ROLE_CAISSIER') %}
+    {% if profil != 'ADMIN' and  is_granted('ROLE_CAISSIER') %}
         {% if centre.etat %}
             {% if caisse.ouvert %}
                 <label class="btn btn-success">LA CAISSE EST OUVERTE</label>
@@ -66,7 +66,7 @@
             width:700,
             buttons: {
                 "Valider": function() {
-                    $(location).attr('href', '{{ path('admin_parametres_caisse_ouvrir', { 'id': caisse.id }) }}')
+                    $(location).attr('href', '{{ path('admin_parametres_caisse_ouvrir', { 'id': idCaisse }) }}')
                 },
                 Annuler: function() {
                     $( this ).dialog( "close" );
@@ -74,7 +74,7 @@
             }
         };
         $('#ouverture-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
-        $('#ouverture-modal').load('{{ path('caisse_ouverture_confirmer', { 'id': caisse.id }) }}').dialog(options).dialog('open');
+        $('#ouverture-modal').load('{{ path('caisse_ouverture_confirmer', { 'id': idCaisse }) }}').dialog(options).dialog('open');
     }
     
     function fermer(){
@@ -84,7 +84,7 @@
             width:700,
             buttons: {
                 "Valider": function() {
-                    $(location).attr('href', '{{ path('admin_parametres_caisse_fermer', { 'id': caisse.id }) }}')
+                    $(location).attr('href', '{{ path('admin_parametres_caisse_fermer', { 'id': idCaisse }) }}')
                 },
                 Annuler: function() {
                     $( this ).dialog( "close" );
@@ -92,7 +92,7 @@
             }
         };
         $('#ouverture-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
-        $('#ouverture-modal').load('{{ path('caisse_fermeture_confirmer', { 'id': caisse.id }) }}').dialog(options).dialog('open');
+        $('#ouverture-modal').load('{{ path('caisse_fermeture_confirmer', { 'id': idCaisse }) }}').dialog(options).dialog('open');
     }
     
     function loadDynamicContentModal(id){
@@ -116,8 +116,7 @@
     $(document).ready(function() {
 
         $('#liste_clients').DataTable({
-            "columnDefs": [
-           
+            "columnDefs": [           
             { "orderable": false, "targets": 3 }
         ],
         "processing": true,

@@ -1,11 +1,14 @@
 <div>
     <span style="font-weight: bolder">MTS Bamako</span>
+    <span style="float:right">Montant visite : {{ quittance.montantvisite }}</span>
 </div>
 <div>
     <span style="font-weight: bolder">Date de contr&ocirc;le : {% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</span>
+    <span style="float:right">Jours de retard : {{ quittance.retard }}</span>
 </div>
 <div>
     <span style="font-weight: bolder">N&deg; de quittance : {{ quittance.numero }}</span>
+    <span style="float:right">Montant p&eacute;nalit&eacute; : {{ quittance.penalite }}</span>
 </div>
 <div>
     <span style="font-weight: bolder">N&deg; Immatriculation : {{ visite.vehicule.immatriculation }}</span>
@@ -18,7 +21,8 @@
         <tr>
             <td>Bilan de la visite technique</td>
             <td>D&eacute;tails</td>
-            <td>R&eacute;sultats</td>
+            <td>Valeur controle</td>
+            <td>R&eacute;sultat</td>
         </tr>
         {% if visite.resultats %}
             {% for resultat in visite.resultats %}
@@ -26,6 +30,7 @@
                     <td>{{ resultat.controle.libelle }}</td>
                     <td>{{ resultat.controle.detail }}</td>
                     <td>{{ resultat.commentaire }}</td>
+                    <td>{% if resultat.succes %}SUCCES{% else %}ECHEC{% endif %}</td>
                 </tr>
             {% endfor %}
         {% endif %}

@@ -16,7 +16,10 @@ class ControleType extends AbstractType
         $builder
                 ->add('libelle')
                 ->add('code')
-                ->add('type', 'choice',['choices' => ['' => 'Choisir un type', 'MESURE' => 'MESURE', 'VISUEL' => 'VISUEL' ]])
+                ->add('type', 'choice',['choices' => ['' => 'Choisir un type', 'VALEUR MAHA' => 'VALEUR MAHA', 'INTERVALE MAHA' => 'INTERVALE MAHA', 'VISUEL' => 'VISUEL' ]])
+                ->add('unite')
+                ->add('minimum')
+                ->add('maximum')
                 ->add('detail')
                 ->add('actif')
                 ->add('categorie');

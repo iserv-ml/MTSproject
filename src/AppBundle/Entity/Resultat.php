@@ -209,7 +209,7 @@ class Resultat
     public function generer($visite, $resultatMaha){
         $this->visite = $visite;
         $this->controle = $resultatMaha->getControle();
-        $this->commentaire = $resultatMaha->getLibelle();
+        $this->commentaire = $resultatMaha->getCode();
         $this->succes = $resultatMaha->getReussite();
     }
 }

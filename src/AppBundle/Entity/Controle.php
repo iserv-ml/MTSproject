@@ -74,6 +74,30 @@ class Controle
     private $type;
     
     /**
+     * @var string $unite
+     *
+     * @ORM\Column(name="unite", type="string", length=255, nullable=false)
+     * @Assert\NotBlank
+     */
+    private $unite;
+    
+    /**
+     * @var integer $minimum
+     *
+     * @ORM\Column(name="minimum", type="integer", nullable=false)
+     * @Assert\NotBlank
+     */
+    private $minimum;
+    
+    /**
+     * @var integer $maximum
+     *
+     * @ORM\Column(name="maximum", type="integer", nullable=false)
+     * @Assert\NotBlank
+     */
+    private $maximum;
+    
+    /**
     * @ORM\ManyToOne(targetEntity="CategorieControle", inversedBy="controles", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="categorie_id", referencedColumnName="id")
     * @Assert\NotBlank
@@ -219,6 +243,30 @@ class Controle
         $this->type = $type;
     }
     
+    function getUnite() {
+        return $this->unite;
+    }
+
+    function getMinimum() {
+        return $this->minimum;
+    }
+
+    function getMaximum() {
+        return $this->maximum;
+    }
+
+    function setUnite($unite) {
+        $this->unite = $unite;
+    }
+
+    function setMinimum($minimum) {
+        $this->minimum = $minimum;
+    }
+
+    function setMaximum($maximum) {
+        $this->maximum = $maximum;
+    }
+    
     //BEHAVIOR
     /**
      * @var string $creePar
@@ -313,6 +361,8 @@ class Controle
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->minimum = 0;
+        $this->maximum = 0;
     }
 
 }

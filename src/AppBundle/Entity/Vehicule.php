@@ -881,7 +881,7 @@ class Vehicule
     }
     
     private function getDateMiseCirculationFormatCrc(){
-        return date("dmY", strtotime($this->getDateMiseCirculation()));
+        return date("Ydm", strtotime($this->getDateMiseCirculation()));
     }
 
 }

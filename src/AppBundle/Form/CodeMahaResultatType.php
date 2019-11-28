@@ -15,7 +15,7 @@ class CodeMahaResultatType extends AbstractType
     {
         $builder
                 ->add('libelle')
-                ->add('code')
+                ->add('code', 'text', array('label'=>'Valeur'))
                 ->add('detail')
                 ->add('actif')
                 ->add('reussite')

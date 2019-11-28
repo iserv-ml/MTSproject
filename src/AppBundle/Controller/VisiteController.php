@@ -30,14 +30,20 @@ class VisiteController extends Controller
         $affectation = $em->getRepository('AppBundle:Affectation')->derniereAffectation($user->getId());
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
-        if(!$centre || !$affectation || $affectation === -1){
+        if(!$centre || (!$admin && (!$affectation || $affectation === -1))){
             $this->get('session')->getFlashBag()->add('error', "Vous n'êtes affecté à aucune caisse. Contacter l'administrateur.");
             return $this->redirectToRoute('homepage');
         }
-        
-        $caisse = $affectation->getCaisse();
-        $profil = $admin ? "ADMIN" : "CAISSE N° ".$caisse->getNumero();
-        return $this->render('visite/quittance.html.twig', array('profil'=>$profil, 'caisse'=>$caisse, 'centre'=>$centre,));
+        if(!$admin){
+            $caisse = $affectation->getCaisse();
+            $profil = "CAISSE N° ".$caisse->getNumero(); 
+            $idCaisse = $caisse->getId();
+        }else{
+            $profil = "ADMIN"; 
+            $caisse = null;
+            $idCaisse = 0;
+        }
+            return $this->render('visite/quittance.html.twig', array('profil'=>$profil, 'caisse'=>$caisse, 'centre'=>$centre, 'idCaisse'=>$idCaisse,));
     }
     
     /**
@@ -300,8 +306,8 @@ class VisiteController extends Controller
         }
         if($admin){
             $rResult = $em->getRepository('AppBundle:Visite')->findQuittancesAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, 0);
-            $iTotal = $em->getRepository('AppBundle:Visite')->countQuittanceRows($affectation->getCaisse()->getId());  
-            $iTotalFiltre = $em->getRepository('AppBundle:Visite')->countQuittanceRowsFiltre($affectation->getCaisse()->getId(), $searchTerm);
+            $iTotal = $em->getRepository('AppBundle:Visite')->countQuittanceRows(0);  
+            $iTotalFiltre = $em->getRepository('AppBundle:Visite')->countQuittanceRowsFiltre(0, $searchTerm);
         }else{
             $rResult = $em->getRepository('AppBundle:Visite')->findQuittancesAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, $affectation->getCaisse()->getId());
             $iTotal = $em->getRepository('AppBundle:Visite')->countQuittanceRows($affectation->getCaisse()->getId()); 
