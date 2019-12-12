@@ -4,9 +4,9 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * CodeMahaResultat
@@ -41,12 +41,33 @@ class CodeMahaResultat
     private $libelle;
     
     /**
-     * @var string $code
+     * @var string $type
      *
-     * @ORM\Column(name="code", type="string", length=255, nullable=false)
+     * @ORM\Column(name="type", type="string", length=255, nullable=false)
      * @Assert\NotBlank
      */
-    private $code;
+    private $type;
+    
+    /**
+     * @var string $valeur
+     *
+     * @ORM\Column(name="valeur", type="string", length=255, nullable=true)
+     */
+    private $valeur;
+    
+    /**
+     * @var integer $minimum
+     *
+     * @ORM\Column(name="minimum", type="float", nullable=true)
+     */
+    private $minimum;
+    
+    /**
+     * @var integer $maximum
+     *
+     * @ORM\Column(name="maximum", type="float", nullable=true)
+     */
+    private $maximum;
     
     /**
      * @var string $detail
@@ -104,14 +125,6 @@ class CodeMahaResultat
     function setLibelle($libelle) {
         $this->libelle = $libelle;
     }
-    
-    function getCode() {
-        return $this->code;
-    }
-
-    function setCode($code) {
-        $this->code = $code;
-    }
 
     function getDetail() {
         return $this->detail;
@@ -150,6 +163,38 @@ class CodeMahaResultat
 
     function setReussite($reussite) {
         $this->reussite = $reussite;
+    }
+    
+    function getType() {
+        return $this->type;
+    }
+
+    function getValeur() {
+        return $this->valeur;
+    }
+
+    function getMinimum() {
+        return $this->minimum;
+    }
+
+    function getMaximum() {
+        return $this->maximum;
+    }
+
+    function setType($type) {
+        $this->type = $type;
+    }
+
+    function setValeur($valeur) {
+        $this->valeur = $valeur;
+    }
+
+    function setMinimum($minimum) {
+        $this->minimum = $minimum;
+    }
+
+    function setMaximum($maximum) {
+        $this->maximum = $maximum;
     }
     
     //BEHAVIOR
@@ -246,6 +291,18 @@ class CodeMahaResultat
     public function __construct()
     {
         $this->users = new ArrayCollection();
+    }
+    
+    /**
+     * @Assert\Callback
+     */
+    public function validate(ExecutionContextInterface $context, $payload = null)
+    {
+        if($this->getMinimum() != null && $this->getMinimum()  >= $this->getMaximum()){
+             $context->buildViolation('Le max doit être supérieur au min')
+                ->atPath('max')
+                ->addViolation();
+        }
     }
 
 }

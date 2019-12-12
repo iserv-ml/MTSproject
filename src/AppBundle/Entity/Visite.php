@@ -445,13 +445,40 @@ class Visite
     }
     
     public function genererFichierMaha(){
-        $path = $this->getChaine()->getPiste()->getRepertoire().$this->getVehicule()->getImmatriculation().'.CG';
+        $path = $this->getChaine()->getPiste()->getRepertoire()."CG".DIRECTORY_SEPARATOR.$this->getVehicule()->getImmatriculation().'.CG';
         $contenu = $this->getVehicule()->genererFichierCg();
         try{
             \file_put_contents($path, $contenu);
             return 'Quittance encaissée.';
         } catch (\Exception $exeption){
             return 'Impossible de créer le fichier';
+        }
+    }
+    
+    public function lireFichierResultatMaha(){
+        $path = $this->getChaine()->getPiste()->getRepertoire()."RES".DIRECTORY_SEPARATOR.$this->getVehicule()->getImmatriculation().'.F';
+        try{
+            $contenu = fopen($path, 'r');
+        } catch (\Exception $exeption){
+            echo $exeption->getMessage();
+            return null;
+        }
+        return $contenu;
+    }
+    
+    public function lireLigneMaha($ligne){
+        try{
+            return \explode ("=", $ligne);
+        } catch (\Exception $exeption){
+            return null;
+        }
+    }
+    
+    public function traiterLigneMAha(Controle $controle, $resultat){
+        if($controle != null){
+            
+        }else{
+            return null;
         }
     }
 

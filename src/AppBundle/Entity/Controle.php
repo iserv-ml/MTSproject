@@ -7,13 +7,14 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
  * Controle
  *
  * @ORM\Table(name="controle")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\ControleRepository")
- * @UniqueEntity("code")
+ * @UniqueEntity(fields={"code", "genre"}, errorPath="code", message="Ce code existe déjà pour ce type de véhicule.")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class Controle
@@ -82,27 +83,18 @@ class Controle
     private $unite;
     
     /**
-     * @var integer $minimum
-     *
-     * @ORM\Column(name="minimum", type="integer", nullable=false)
-     * @Assert\NotBlank
-     */
-    private $minimum;
-    
-    /**
-     * @var integer $maximum
-     *
-     * @ORM\Column(name="maximum", type="integer", nullable=false)
-     * @Assert\NotBlank
-     */
-    private $maximum;
-    
-    /**
     * @ORM\ManyToOne(targetEntity="CategorieControle", inversedBy="controles", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="categorie_id", referencedColumnName="id")
     * @Assert\NotBlank
     */
     protected $categorie;
+    
+    /**
+    * @ORM\ManyToOne(targetEntity="Genre", inversedBy="controles", cascade={"persist","refresh"})
+    * @ORM\JoinColumn(name="genre_id", referencedColumnName="id")
+    * @Assert\NotBlank
+    */
+    protected $genre;
     
     //Debut relation Controle a plusieurs CodeMahaResultat
     /**
@@ -247,24 +239,16 @@ class Controle
         return $this->unite;
     }
 
-    function getMinimum() {
-        return $this->minimum;
-    }
-
-    function getMaximum() {
-        return $this->maximum;
-    }
-
     function setUnite($unite) {
         $this->unite = $unite;
     }
-
-    function setMinimum($minimum) {
-        $this->minimum = $minimum;
+    
+    function getGenre() {
+        return $this->genre;
     }
 
-    function setMaximum($maximum) {
-        $this->maximum = $maximum;
+    function setGenre($genre) {
+        $this->genre = $genre;
     }
     
     //BEHAVIOR
@@ -364,5 +348,4 @@ class Controle
         $this->minimum = 0;
         $this->maximum = 0;
     }
-
 }

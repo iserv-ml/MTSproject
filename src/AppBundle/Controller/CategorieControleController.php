@@ -177,7 +177,7 @@ class CategorieControleController extends Controller
         $col = $request->get('order')[0]['column'];
         $dir = $request->get('order')[0]['dir'];
         $em = $this->getDoctrine()->getManager();
-	$aColumns = array( 'r.libelle', 'r.code');
+	$aColumns = array( 'r.libelle');
         $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
         $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
         $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
@@ -190,7 +190,7 @@ class CategorieControleController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['libelle'],$aRow['code'], $action);
+            $output['aaData'][] = array($aRow['libelle'],$action);
 	}
 	return new Response(json_encode( $output ));    
     }
@@ -235,13 +235,11 @@ class CategorieControleController extends Controller
         $phpExcelObject->setActiveSheetIndex(0);
         $col = 0;
         $objWorksheet = $phpExcelObject->getActiveSheet();
-        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("LIBELLE");$col++;
-        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("CODE");
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("LIBELLE");
         $ligne =2;
         foreach($entities as $entity){
             $col=0;
-            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getLibelle());$col++;
-            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getCode());$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getLibelle());
             $ligne++;
         }
     }

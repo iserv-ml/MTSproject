@@ -197,19 +197,15 @@ class Resultat
         return true;
     }
     
-    public function __toString(){
-        return $this->chassis;
-    }
-    
     public function __construct()
     {
         //$this->users = new ArrayCollection();
     }
 
-    public function generer($visite, $resultatMaha){
+    public function generer($visite, $resultatMaha, $valeur){
         $this->visite = $visite;
         $this->controle = $resultatMaha->getControle();
-        $this->commentaire = $resultatMaha->getCode();
+        $this->commentaire = $valeur;
         $this->succes = $resultatMaha->getReussite();
     }
 }

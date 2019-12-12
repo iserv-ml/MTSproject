@@ -25,3 +25,41 @@
         <input type="submit" value="Enregistrer" />
     {{ form_end(form) }}
 {% endblock %}
+{% block javascripts -%}
+    <script>
+        function activerMinMax(activer){
+            if(activer) {
+                $( "#appbundle_codemaharesultat_minimum" ).prop("disabled", false);
+                $( "#appbundle_codemaharesultat_maximum" ).prop("disabled", false);
+                $( "#appbundle_codemaharesultat_valeur" ).prop("disabled", true);
+            }else{
+                $( "#appbundle_codemaharesultat_minimum" ).prop("disabled", true);
+                $( "#appbundle_codemaharesultat_maximum" ).prop("disabled", true);
+                $( "#appbundle_codemaharesultat_valeur" ).prop("disabled", false);
+            }
+        }
+        $( function() {
+            switch($( "#appbundle_codemaharesultat_type" ).val()){
+                    case "VALEUR" : activerMinMax(false);break;
+                    case "INTERVALLE" : activerMinMax(true);break;
+                    default : 
+                        $( "#appbundle_codemaharesultat_minimum" ).prop("disabled", true);
+                        $( "#appbundle_codemaharesultat_maximum" ).prop("disabled", true);
+                        $( "#appbundle_codemaharesultat_valeur" ).prop("disabled", true);break;
+                }
+            $( "#appbundle_codemaharesultat_type" ).change(function() {
+                var type = $( "#appbundle_codemaharesultat_type" ).val();
+                switch(type){
+                    case "VALEUR" : activerMinMax(false);break;
+                    case "INTERVALLE" : activerMinMax(true);break;
+                    default : 
+                        $( "#appbundle_codemaharesultat_minimum" ).prop("disabled", true);
+                        $( "#appbundle_codemaharesultat_maximum" ).prop("disabled", true);
+                        $( "#appbundle_codemaharesultat_valeur" ).prop("disabled", true);break;
+                }
+            
+            });
+        });
+         
+    </script>
+{% endblock %}

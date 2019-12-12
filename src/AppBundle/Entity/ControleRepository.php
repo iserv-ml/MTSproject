@@ -16,8 +16,8 @@ class ControleRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.libelle, r.code, r.detail, r.actif, r.type FROM AppBundle:Controle r '
-                    . ' WHERE r.libelle like :search or r.code like :search'
+                'SELECT r.id, r.libelle, r.code, r.detail, r.actif, r.type, c.libelle as categorie FROM AppBundle:Controle r LEFT JOIN r.categorie c'
+                    . ' WHERE r.libelle like :search or r.code like :search or c.libelle like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setFirstResult($start)
@@ -38,14 +38,14 @@ class ControleRepository extends EntityRepository
         return  $qb->getQuery()->getSingleScalarResult();
     }
     
-     public function trouverParLibelle($libelle) {
-       try{ 
-         $result = $this->getEntityManager()
+    public function trouverParLibelle($libelle) {
+        try{ 
+            $result = $this->getEntityManager()
             ->createQuery(
                 'SELECT r FROM AppBundle:Controle r WHERE r.libelle = :libelle'
             )->setParameter("libelle",$libelle)
             ->getSingleResult();
-       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
             $result = null;
         }
         catch (\Doctrine\ORM\NoResultException $ex){
@@ -53,12 +53,37 @@ class ControleRepository extends EntityRepository
         }
         
         return $result; 
-    }    
+    }   
+    
+    public function trouverParCodeGenre($code, $genre) {
+        try{ 
+            $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Controle r LEFT JOIN r.genre g WHERE r.code = :code AND g.code = :genre '
+            )->setParameter("code",$code)->setParameter("genre",$genre)
+            ->getSingleResult();
+        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
+        return $result; 
+    }
     
     public function trouverActif() {
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r FROM AppBundle:Controle r WHERE r.actif = 1');
+        return $qb->getResult();
+    }
+    
+    public function trouverVisuelActif($genre) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Controle r LEFT JOIN r.genre g WHERE r.actif = 1 and r.type = :type and g.code = :genre')
+                 ->setParameter("type", "VISUEL")->setParameter("genre", $genre);
         return $qb->getResult();
     }
 }

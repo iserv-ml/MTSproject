@@ -38,9 +38,29 @@
                 <td>{{ codeMahaResultat.libelle }}</td>
             </tr>
             <tr>
-                <th>Code</th>
-                <td>{{ codeMahaResultat.code }}</td>
+                <th>Type</th>
+                <td>{{ codeMahaResultat.type }}</td>
             </tr>
+            {% if codeMahaResultat.type == "VALEUR" %}
+                <tr>
+                    <th>Code</th>
+                    <td>{{ codeMahaResultat.valeur }}</td>
+                </tr>
+            {% elseif codeMahaResultat.type == "INTERVALLE" %}
+                <tr>
+                    <th>Minimum</th>
+                    <td>{{ codeMahaResultat.minimum }}</td>
+                </tr>
+                <tr>
+                    <th>Mximum</th>
+                    <td>{{ codeMahaResultat.maximum }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <th>Erreur</th>
+                    <td>Type de résultat inchérent!!</td>
+                </tr>
+            {% endif %}
             <tr>
                 <th>Detail</th>
                 <td>{{ codeMahaResultat.detail }}</td>

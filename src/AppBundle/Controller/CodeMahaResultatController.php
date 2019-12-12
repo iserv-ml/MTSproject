@@ -177,7 +177,7 @@ class CodeMahaResultatController extends Controller
         $col = $request->get('order')[0]['column'];
         $dir = $request->get('order')[0]['dir'];
         $em = $this->getDoctrine()->getManager();
-	$aColumns = array( 'c.libelle','r.libelle', 'r.code', 'r.actif');
+	$aColumns = array( 'c.code','r.libelle');
         $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
         $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
         $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
@@ -191,7 +191,8 @@ class CodeMahaResultatController extends Controller
 	{
             $action = $this->genererAction($aRow['id']);
             $actif = $aRow['reussite'] ? 'SUCCES' : 'ECHEC';
-            $output['aaData'][] = array($aRow['controle'],$aRow['libelle'],$aRow['code'],$actif, $action);
+            $interpretation = ($aRow['type'] == "INTERVALLE") ? "MIN : ".$aRow['minimum']." MAX : ".$aRow['maximum'] : $aRow['valeur'];
+            $output['aaData'][] = array($aRow['controle'],$aRow['libelle'],$interpretation, $actif, $action);
 	}
 	return new Response(json_encode( $output ));    
     }

@@ -16,8 +16,8 @@ class CodeMahaResultatRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, c.libelle as controle, r.libelle, r.code, r.detail, r.actif, r.reussite FROM AppBundle:CodeMahaResultat r LEFT JOIN r.controle c '
-                    . ' WHERE r.libelle like :search or r.code like :search'
+                'SELECT r.id, r.type, c.code as controle, r.libelle, r.valeur, r.detail, r.actif, r.reussite, r.minimum, r.maximum FROM AppBundle:CodeMahaResultat r LEFT JOIN r.controle c '
+                    . ' WHERE r.libelle like :search or c.code like :search '
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setFirstResult($start)
@@ -34,7 +34,7 @@ class CodeMahaResultatRepository extends EntityRepository
     
     public function countRowsFiltre($search) {
         $qb = $this->createQueryBuilder('r');
-        $qb->select('count(r.id)')->where('r.libelle like :search or r.code like :search')->setParameter('search', '%'.$search.'%');
+        $qb->select('count(r.id)')->leftJoin('r.controle', 'c')->where('r.libelle like :search or c.code like :search')->setParameter('search', '%'.$search.'%');
         return  $qb->getQuery()->getSingleScalarResult();
     }
     
@@ -73,8 +73,25 @@ class CodeMahaResultatRepository extends EntityRepository
        try{ 
          $result = $this->getEntityManager()
             ->createQuery(
-                'SELECT r FROM AppBundle:CodeMahaResultat r LEFT JOIN r.controle c WHERE r.code = :resultat AND c.code = :controle'
+                'SELECT r FROM AppBundle:CodeMahaResultat r LEFT JOIN r.controle c WHERE r.valeur = :resultat AND c.id = :controle'
             )->setParameter("resultat",$resultat)
+            ->setParameter("controle",$controle)
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        return $result; 
+    }
+    
+    public function trouverParControleIntervalle($controle, $resultat) {
+       try{ 
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:CodeMahaResultat r LEFT JOIN r.controle c WHERE r.minimum <= :resultat AND r.maximum >= :resultat  AND c.id = :controle'
+            )->setParameter("resultat", floatval($resultat))
             ->setParameter("controle",$controle)
             ->getSingleResult();
        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {

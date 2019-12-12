@@ -14,12 +14,15 @@ class CodeMahaResultatType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+                ->add('controle')
                 ->add('libelle')
-                ->add('code', 'text', array('label'=>'Valeur'))
+                ->add('type', 'choice',['choices' => ['' => 'Choisir un type', 'VALEUR' => 'VALEUR', 'INTERVALLE' => 'INTERVALLE' ]])
+                ->add('valeur')
+                ->add('minimum')
+                ->add('maximum')
                 ->add('detail')
                 ->add('actif')
-                ->add('reussite')
-                ->add('controle');
+                ->add('reussite');
     }
     
     /**

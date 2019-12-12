@@ -18,7 +18,7 @@
 {% block pagetitle -%}MODIFIER UN CODE{% endblock %}
 {% block actions %} 
     <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_codemaharesultat_index') }}">RETOUR A LA LISTE</a></label>
-    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_codemaharesultat_index') }}">CREER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_codemaharesultat_new') }}">CREER</a></label>
     <label class="btn btn-outline-secondary">
         {{ form_start(delete_form) }}
             <input type="submit" value="SUPPRIMER" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">

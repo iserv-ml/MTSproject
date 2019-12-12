@@ -38,7 +38,6 @@ class ControleController extends Controller
         $controle = new Controle();
         $form = $this->createForm('AppBundle\Form\ControleType', $controle);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($controle);
@@ -177,7 +176,7 @@ class ControleController extends Controller
         $col = $request->get('order')[0]['column'];
         $dir = $request->get('order')[0]['dir'];
         $em = $this->getDoctrine()->getManager();
-	$aColumns = array( 'r.libelle', 'r.code', 'r.detail', 'r.actif');
+	$aColumns = array( 'c.libelle','r.libelle', 'r.code', 'r.detail', 'r.actif');
         $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
         $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
         $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
@@ -191,7 +190,7 @@ class ControleController extends Controller
 	{
             $actif = $aRow['actif'] == 1 ? "Actif" : "Inactif";
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['libelle'],$aRow['code'],$aRow['type'],$actif, $action);
+            $output['aaData'][] = array($aRow['categorie'],$aRow['libelle'],$aRow['code'],$aRow['type'],$actif, $action);
 	}
 	return new Response(json_encode( $output ));    
     }

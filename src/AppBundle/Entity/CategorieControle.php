@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="categoriecontrole")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\CategorieControleRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @UniqueEntity("code")
+ * @UniqueEntity("libelle")
  */
 class CategorieControle
 {
@@ -40,14 +40,6 @@ class CategorieControle
      * @Assert\NotBlank
      */
     private $libelle;
-    
-    /**
-     * @var string $code
-     *
-     * @ORM\Column(name="code", type="string", length=255, nullable=false)
-     * @Assert\NotBlank
-     */
-    private $code;
     
     //Debut relation CategorieControle a plusieurs controle
     /**
@@ -108,18 +100,9 @@ class CategorieControle
         return $this->libelle;
     }
 
-    function getCode() {
-        return $this->code;
-    }
-
     function setLibelle($libelle) {
         $this->libelle = $libelle;
     }
-
-    function setCode($code) {
-        $this->code = $code;
-    }
-
         
     //BEHAVIOR
     /**

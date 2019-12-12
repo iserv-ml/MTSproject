@@ -16,8 +16,8 @@ class CategorieControleRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.libelle, r.code FROM AppBundle:CategorieControle r '
-                    . ' WHERE r.libelle like :search or r.code like :search'
+                'SELECT r.id, r.libelle FROM AppBundle:CategorieControle r '
+                    . ' WHERE r.libelle like :search '
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setFirstResult($start)
@@ -34,7 +34,7 @@ class CategorieControleRepository extends EntityRepository
      
      public function countRowsFiltre($search) {
         $qb = $this->createQueryBuilder('r');
-        $qb->select('count(r.id)')->where('r.libelle like :search or r.code like :search')->setParameter('search', '%'.$search.'%');
+        $qb->select('count(r.id)')->where('r.libelle like :search')->setParameter('search', '%'.$search.'%');
         return  $qb->getQuery()->getSingleScalarResult();
     }
     

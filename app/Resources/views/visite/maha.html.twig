@@ -30,32 +30,6 @@
                     <th>Type</th>
                     <td>{% if visite.revisite %}REVISITE{%else%}NORMALE{%endif%}</td>
                 </tr>
-                <tr>
-                    <th colspan="2" style="text-align: center">Resultats Maha</th>
-                </tr>
-                {% for resultat in visite.resultats %}
-                <tr>
-                    <th>{{ resultat.controle.libelle }}</th>
-                    <td>{{ resultat.commentaire }}</td>
-                </tr>
-            {% endfor %}
-            <tr>
-                    <th colspan="2" style="text-align: center">Controles visuels</th>
-                </tr>
-                {% for controle in controles %}
-                    <tr>
-                        <th>{{ controle.libelle }}</th>
-                        <td>
-                            <select id='{{ controle.code }}' name='{{ controle.code }}' required >
-                                <option value="">Choisir</option>
-                                {% for code in controle.codeMahaResultats %}<option value='{{ code.valeur }}'>{{ code.libelle }}</option>{% endfor %}
-                            </select>
-                        </td>
-                    </tr>
-                {% endfor %}
-                <tr>
-                    <td colspan ='2'><input type='submit' name='controleur' /></td>
-                </tr>
             </tbody>
         </table>
     </form>

@@ -451,7 +451,7 @@ class VisiteController extends Controller
         $action = "";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CONTROLLEUR')){
             if($statut == 1){
-                $action .= " <a title='Controller' class='btn btn-success' href='".$this->generateUrl('visite_controleur', array('id'=> $id ))."'><i class='fa fa-config' ></i> Controler</a>";
+                $action .= " <a title='Controller' class='btn btn-success' href='".$this->generateUrl('visite_maha', array('id'=> $id ))."'><i class='fa fa-config' ></i> Controler</a>";
             }elseif($statut > 1){
                 $action .= " <a title='Détail' class='btn btn-success' href='".$this->generateUrl('visite_show', array('id'=> $id ))."'><i class='fa fa-plus' ></i> Voir le rapport</a>";
             }
@@ -512,6 +512,62 @@ class VisiteController extends Controller
     }
     
     /**
+     * Récupération des résultats MAHA.
+     *
+     * @Route("/controleur/maha", name="visite_maha")
+     * @Method({"GET", "POST"})
+     */
+    public function mahaAction(Request $request)
+    {
+        //$id = $request->get('id');echo $id;exit;
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_controle');
+        }
+        $visite = $em->getRepository('AppBundle:Visite')->find($request->get('id'));
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $affectation = $em->getRepository('AppBundle:AffectationPiste')->derniereAffectation($user->getId());
+        $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
+        if(!$visite || $visite->getStatut() == 0 || (!$admin && $visite->getChaine()->getPiste()->getId()!= $affectation->getPiste()->getId())){
+            throw $this->createAccessDeniedException("Cette opération n'est pas autorisée");
+        }
+        $contenu = $visite->lireFichierResultatMaha();
+        if($contenu != null){
+            while(!feof($contenu)) {
+                $valeurs = $visite->lireLigneMaha(fgets($contenu));
+                if($valeurs != null){
+                    $controle = $em->getRepository('AppBundle:Controle')->trouverParCodeGenre($valeurs[0], $visite->getVehicule()->getTypeVehicule()->getGenre()->getCode());
+                    if($controle != null){
+                        switch ($controle->getType()){
+                            case "MESURE - VALEUR" : $codeResultat = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleResultat($controle->getId(), $valeurs[1]);break;
+                            case "MESURE - INTERVALLE" : $codeResultat = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleIntervalle($controle->getId(), $valeurs[1]);break;
+                        }
+                        if($codeResultat != null){
+                            $resultat = new \AppBundle\Entity\Resultat();
+                            $resultat->generer($visite, $codeResultat, $valeurs[1]);
+                            $em->persist($resultat);
+                        }
+                    }else{
+                        //$this->get('session')->getFlashBag()->add('error', "Le fichier est corrompu!");break;
+                    }
+                }else{
+                    continue;
+                }
+            }
+            $em->flush();
+            return $this->redirectToRoute('visite_controleur', array('id' => $visite->getId()));
+        }else{
+            $this->get('session')->getFlashBag()->add('error', "Le fichier de résultat maha nexiste pas!");
+        }
+        return $this->render('visite/maha.html.twig', array(
+            'visite' => $visite,
+        ));
+        
+    }
+    
+    /**
      * Formulaire de visit technique manuelle.
      *
      * @Route("/controleur/formulaire", name="visite_controleur")
@@ -533,7 +589,7 @@ class VisiteController extends Controller
         if(!$visite || $visite->getStatut() == 0 || (!$admin && $visite->getChaine()->getPiste()->getId()!= $affectation->getPiste()->getId())){
             throw $this->createAccessDeniedException("Cette opération n'est pas autorisée");
         }
-        $controles = $em->getRepository('AppBundle:Controle')->trouverActif();
+        $controles = $em->getRepository('AppBundle:Controle')->trouverVisuelActif($visite->getVehicule()->getTypeVehicule()->getGenre()->getCode());
         if($request->get('controleur')){
             if($visite->getStatut() != 1 ){
                 throw $this->createAccessDeniedException("Cette opération n'est pas autorisée");

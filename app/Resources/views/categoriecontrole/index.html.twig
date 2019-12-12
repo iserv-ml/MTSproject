@@ -29,7 +29,6 @@
             <thead>
                 <tr>
                     <th>Libellé</th>
-                    <th>Code</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -39,7 +38,6 @@
             <tfoot>
                 <tr>
                     <th>Libellé</th>
-                    <th>Code</th>
                     <th>Actions</th>
                 </tr>
             </tfoot>
@@ -54,8 +52,7 @@
         $('#liste_clients').DataTable({
             "columnDefs": [
             { "name": "libelle",   "targets": 0 },
-            { "name": "code",   "targets": 1 },
-            { "orderable": false, "targets": 2 }
+            { "orderable": false, "targets": 1 }
         ],
         "processing": true,
         "serverSide": true,

@@ -14,15 +14,14 @@ class ControleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+                ->add('genre')
+                ->add('categorie')
                 ->add('libelle')
                 ->add('code')
-                ->add('type', 'choice',['choices' => ['' => 'Choisir un type', 'VALEUR MAHA' => 'VALEUR MAHA', 'INTERVALE MAHA' => 'INTERVALE MAHA', 'VISUEL' => 'VISUEL' ]])
+                ->add('type', 'choice',['choices' => ['' => 'Choisir un type', 'MESURE - INTERVALLE' => 'MESURE - INTERVALLE', 'MESURE - VALEUR' => 'MESURE - VALEUR', 'VISUEL' => 'VISUEL', 'DATE' => 'DATE' ]])
                 ->add('unite')
-                ->add('minimum')
-                ->add('maximum')
                 ->add('detail')
-                ->add('actif')
-                ->add('categorie');
+                ->add('actif');
     }
     
     /**

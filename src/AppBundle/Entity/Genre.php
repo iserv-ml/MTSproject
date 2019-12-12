@@ -146,6 +146,43 @@ class Genre
         $this->chaines = $chaines;
     }
     //Fin relation genre a plusieurs chaines
+    
+    //Debut relation Genre a plusieurs controle
+    /**
+    * @ORM\OneToMany(targetEntity="Controle", mappedBy="genre", cascade={"persist"})
+    */
+    protected $controles;
+    
+    /**
+    * Add controle
+    *
+    * @param AppBundle\Entity\Controle $controle
+    */
+    public function addControle(\AppBundle\Entity\Controle $controle)
+    {
+        $this->controles[] = $controle;
+    }
+
+    /**
+     * Get controles
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getControles()
+    {
+        return $this->controles;
+    }
+
+    /**
+     * Set controles
+     *
+     * @param \Doctrine\Common\Collections\Collection $controles
+     */
+    public function setControles(\Doctrine\Common\Collections\Collection $controles)
+    {
+        $this->controles = $controles;
+    }
+    //Fin relation Categorie a plusieurs controles
 
     /**
      * Get id
