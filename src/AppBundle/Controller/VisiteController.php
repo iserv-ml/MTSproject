@@ -536,13 +536,16 @@ class VisiteController extends Controller
         $contenu = $visite->lireFichierResultatMaha();
         if($contenu != null){
             while(!feof($contenu)) {
-                $valeurs = $visite->lireLigneMaha(fgets($contenu));
+                $ligne = fgets($contenu);
+                if(strpos($ligne, 'CRC') !== false ) break;
+                $valeurs = $visite->lireLigneMaha($ligne);
                 if($valeurs != null){
                     $controle = $em->getRepository('AppBundle:Controle')->trouverParCodeGenre($valeurs[0], $visite->getVehicule()->getTypeVehicule()->getGenre()->getCode());
                     if($controle != null){
                         switch ($controle->getType()){
                             case "MESURE - VALEUR" : $codeResultat = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleResultat($controle->getId(), $valeurs[1]);break;
                             case "MESURE - INTERVALLE" : $codeResultat = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleIntervalle($controle->getId(), $valeurs[1]);break;
+                            default :$codeResultat = null;
                         }
                         if($codeResultat != null){
                             $resultat = new \AppBundle\Entity\Resultat();
