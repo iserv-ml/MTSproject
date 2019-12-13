@@ -847,7 +847,7 @@ class Vehicule
         $contenu .= '0200='.$this->genererCrc($this->getImmatriculation())."\r\n";
         $contenu .= '0201='.$this->genererCrc($this->getKilometrage())."\r\n";
         $contenu .= '0202='.$this->genererCrc($this->getChassis())."\r\n";
-        $contenu .= '0203='.$this->genererCrc($this->getDateMiseCirculation())."\r\n";
+        $contenu .= '0203='.$this->genererCrc($this->getDateMiseCirculationFormatCrc())."\r\n";
         $contenu .= '0204='.$this->genererCrc($this->getEnergie())."\r\n";
         $contenu .= '0205='.$this->genererCrc($this->getAlimentation())."\r\n";//alimentation du véhicule. Correspond à quoi sur nos CG?
         $contenu .= '0206='.$this->genererCrc($this->getPotCatalytique())."\r\n";//présence d'un pot catalytique
