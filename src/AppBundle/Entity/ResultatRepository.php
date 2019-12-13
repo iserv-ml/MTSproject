@@ -38,14 +38,14 @@ class ResultatRepository extends EntityRepository
         return  $qb->getQuery()->getSingleScalarResult();
     }
     
-     public function trouverParLibelle($libelle) {
-       try{ 
-         $result = $this->getEntityManager()
+    public function trouverParLibelle($libelle) {
+        try{ 
+            $result = $this->getEntityManager()
             ->createQuery(
                 'SELECT r FROM AppBundle:Resultat r WHERE r.date = :libelle'
             )->setParameter("libelle",$libelle)
             ->getSingleResult();
-       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
             $result = null;
         }
         catch (\Doctrine\ORM\NoResultException $ex){
@@ -53,5 +53,21 @@ class ResultatRepository extends EntityRepository
         }
         
         return $result; 
-    }    
+    }
+    
+    public function viderPourVisite($visite){
+        $result = $this->getEntityManager()
+            ->createQuery(
+                'DELETE r FROM AppBundle:Resultat r LEFT JOIN r.visite v WHERE v.id = :visite'
+            )->setParameter("visite",$visite)->execute();
+    }
+    
+    public function trouverResultatVisite($visite) {
+        $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Resultat r LEFT JOIN r.visite v WHERE v.id = :visite'
+            )->setParameter("visite",$visite)
+            ->getResult();
+        return $result; 
+    }
 }

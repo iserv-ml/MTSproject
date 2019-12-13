@@ -601,20 +601,23 @@ class VisiteController extends Controller
             $date = new \DateTime();
             foreach($controles as $controle){
                 if($request->get($controle->getCode())!=null){
-                    $resultatMaha = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleResultat($controle->getCode(), $request->get($controle->getCode()));
+                    $resultatMaha = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleResultat($controle->getId(), $request->get($controle->getCode()));
                     if($resultatMaha == null){
                         throw $this->createAccessDeniedException("Cette opération n'est pas autorisée null");
                     }else{
                         $resultat = new \AppBundle\Entity\Resultat();
-                        $resultat->generer($visite, $resultatMaha);
+                        $resultat->generer($visite, $resultatMaha, $resultatMaha->getValeur());
                         $em->persist($resultat);
                         $em->flush();
-                        if(!$resultatMaha->getReussite()){
-                            $succes = false;
-                        }
                     }
                 }else{
                     throw $this->createAccessDeniedException("Cette opération n'est pas autorisée");
+                }
+            }
+            $resultats = $em->getRepository('AppBundle:Resultat')->trouverResultatVisite($visite->getId());
+            foreach ($resultats as $resultat){
+                if(!$resultat->getSucces()){
+                    $succes = false;
                 }
             }
             if($succes){
