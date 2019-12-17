@@ -4,7 +4,7 @@
     <td>N&deg; {{ visite.numeroCertificat }}</td>
     </tr>
     <tr>
-        <td colspan="2">Logo MTS</td>
+        <td colspan="2"><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></td>
     </tr>
     <tr>
         <td>Nom : {{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</td>
@@ -24,5 +24,25 @@
     </tr>
     <tr>
         <td colspan="2">Cachet MTS : </td>
+    </tr>
+</table>
+    
+<table width="600px">
+    <tr>
+    <td><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></td>
+    <td>N&deg; {{ visite.numeroCertificat }}</td>
+    </tr>
+    <tr>
+        <td colspan="2">CONTROLE TECHNIQUE</td>
+    </tr>
+    <tr>
+        <td colspan="2">Date limite de validit&eacute;</td>
+    </tr>
+
+    <tr>
+        <td colspan="2">{{ visite.vehicule.immatriculation}}</td>
+    </tr>
+    <tr>
+        <td colspan="2">{{ visite.date|date('Y-m-d') }}</td>
     </tr>
 </table>

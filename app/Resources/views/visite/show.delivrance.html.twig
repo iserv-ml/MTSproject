@@ -19,10 +19,7 @@
         <label class="btn btn-outline-secondary"><a href="{{ path('visite_delivrance') }}">LISTE DELIVRANCE</a></label>
         <label class="btn btn-outline-secondary"><a href="{{ path('rapport_imprimer', { 'id': visite.id }) }}">IMPRIMER LE RAPPORT</a></label>
         {% if visite.statut == 2 or visite.statut == 4 %}
-            <label class="btn btn-outline-secondary"><a href="{{ path('certificat_imprimer_1', { 'id': visite.id }) }}">VOLET 1</a></label>
-        {% endif %}
-        {% if visite.statut == 2 or visite.statut == 4 %}
-            <label class="btn btn-outline-secondary"><a href="{{ path('certificat_imprimer_2', { 'id': visite.id }) }}">VOLET 2</a></label>
+            <label class="btn btn-outline-secondary"><a href="{{ path('certificat_imprimer_1', { 'id': visite.id }) }}">CERTIFICAT</a></label>
         {% endif %}
     {% endif %}
 {% endblock %}

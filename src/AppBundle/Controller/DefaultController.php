@@ -85,7 +85,8 @@ class DefaultController extends Controller
                     'visite'  => $visite, 'quittance' => $quittance,
                 )
             ),
-            $chemin
+            $chemin,
+            array('encoding' => 'utf-8',)
         );
         
         $response = new BinaryFileResponse($chemin);
@@ -127,7 +128,8 @@ class DefaultController extends Controller
                         'visite'  => $visite,
                     )
                 ),
-                $chemin
+                $chemin,
+                array('encoding' => 'utf-8',)
             );
         }     
         

@@ -318,7 +318,8 @@ class QuittanceController extends Controller
                     'quittance'  => $quittance
                 )
             ),
-            $chemin
+            $chemin,
+            array('encoding' => 'utf-8',)
         );
         
         $response = new BinaryFileResponse($chemin);
