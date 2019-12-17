@@ -1,17 +1,17 @@
 <div>
-    <span style="font-weight: bolder">MTS Bamako</span>
-    <span style="float:right">Montant visite : {{ quittance.montantvisite }}</span>
+    <span style="font-weight: bolder"><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></span>
 </div>
 <div>
     <span style="font-weight: bolder">Date de contr&ocirc;le : {% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</span>
-    <span style="float:right">Jours de retard : {{ quittance.retard }}</span>
+    <span style="float:right">Montant visite : {{ quittance.montantvisite }}</span>
 </div>
 <div>
     <span style="font-weight: bolder">N&deg; de quittance : {{ quittance.numero }}</span>
-    <span style="float:right">Montant p&eacute;nalit&eacute; : {{ quittance.penalite }}</span>
+    <span style="float:right">Jours de retard : {{ quittance.retard }}</span>
 </div>
 <div>
     <span style="font-weight: bolder">N&deg; Immatriculation : {{ visite.vehicule.immatriculation }}</span>
+    <span style="float:right">Montant p&eacute;nalit&eacute; : {{ quittance.penalite }}</span>
 </div>
 <div style='margin-bottom:15px'>
     <span style="font-weight: bolder">N&deg; de chassis : {{ visite.vehicule.chassis }}</span>
