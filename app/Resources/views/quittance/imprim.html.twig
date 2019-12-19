@@ -1,5 +1,5 @@
 <div style="margin:10px">
-    <span style="font-weight: bolder">N&deg; {{ quittance.numero }}</span>
+    <span style="font-weight: bolder">N&deg; {{ quittance.numero }} - {%if quittance.rembourse %}REMBOURSEE{% elseif quittance.paye %}PAYEE{% else %}NON PAYEE{% endif %}</span>
     <span style="margin-left:400px; font-weight:bolder;font-size:30px">QUITTANCE</span>
     <span style="margin-left:50px; font-weight: bolder">NIF 86100089D</span>
 </div>

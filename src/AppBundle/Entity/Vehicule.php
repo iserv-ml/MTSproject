@@ -394,7 +394,6 @@ class Vehicule
         $date = new \DateTime();
         $date->add(new \DateInterval('P32D'));
         $dateProchaineVisite = $this->prochaineVisite();
-        $ecart = \date_diff($date,$dateProchaineVisite, true);
         return $date >= $dateProchaineVisite;
     }
     

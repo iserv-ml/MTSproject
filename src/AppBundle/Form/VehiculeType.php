@@ -14,11 +14,11 @@ class VehiculeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('proprietaireAjax', 'text', array('label'  => 'Propriétaire', 'required'  => true, "mapped" => false))
+                ->add('proprietaireAjax', 'text', array('label'  => 'Propriétaire (recherche)', 'required'  => true, "mapped" => false))
                 ->add('proprietaireId', 'hidden', array('required'  => true, "mapped" => false))
                 ->add('immatriculation')
                 ->add('chassis')
-                ->add('modeleAjax', 'text', array('label'  => 'Modèle', 'required'  => true, "mapped" => false))
+                ->add('modeleAjax', 'text', array('label'  => 'Modèle recherche)', 'required'  => true, "mapped" => false))
                 ->add('modeleId', 'hidden', array('required'  => true, "mapped" => false))
                 ->add('typeChassis')
                 ->add('typeVehicule')
@@ -27,7 +27,7 @@ class VehiculeType extends AbstractType
                 //->add('usageAjax', 'text', array('label'  => 'Usage', 'required'  => true, "mapped" => false))
                 //->add('usageId', 'hidden', array('required'  => true, "mapped" => false))
                 //->add('genre', 'text', array('label'  => 'Genre', 'required'  => false, "mapped" => false))
-                ->add('ptac')
+                ->add('ptac', 'number', array('label' => 'Ptac (KG)', 'required'  => true))
                 ->add('place')
                 ->add('puissance')
                 ->add('dateMiseCirculation')
