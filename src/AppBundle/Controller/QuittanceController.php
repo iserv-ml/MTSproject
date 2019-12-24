@@ -304,6 +304,12 @@ class QuittanceController extends Controller
         if(!$quittance){
             throw $this->createNotFoundException("La quittance demandée n'est pas disponible.");
         }
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_controle');
+        }
         $numero = $quittance->getNumero();
         $chemin = __DIR__.'/../../../web/quittances/quittance_'.$numero.'.pdf';
         if (file_exists($chemin)) {
@@ -315,7 +321,7 @@ class QuittanceController extends Controller
             $this->renderView(
                 'quittance/imprim.html.twig',
                 array(
-                    'quittance'  => $quittance
+                    'quittance'  => $quittance, 'libelle' => $centre->getLibelle()
                 )
             ),
             $chemin,

@@ -11,7 +11,7 @@
 </div>
 <div>
     <span style="font-weight: bolder">N&deg; Immatriculation : {{ visite.vehicule.immatriculation }}</span>
-    <span style="float:right">Montant p&eacute;nalit&eacute; : {{ quittance.penalite }}</span>
+    <span style="float:right;background: #000;color:#fff;padding:10px">Montant p&eacute;nalit&eacute; : {{ quittance.penalite }}</span>
 </div>
 <div style='margin-bottom:15px'>
     <span style="font-weight: bolder">N&deg; de chassis : {{ visite.vehicule.chassis }}</span>
@@ -29,7 +29,7 @@
                 <tr>
                     <td>{{ resultat.controle.libelle }}</td>
                     <td>{{ resultat.controle.detail }}</td>
-                    <td>{{ resultat.commentaire }}</td>
+                    <td>{{ resultat.commentaire }} ({{ resultat.controle.unite }}) </td>
                     <td>{% if resultat.succes %}SUCCES{% else %}ECHEC{% endif %}</td>
                 </tr>
             {% endfor %}
@@ -37,6 +37,9 @@
      </tbody>
 </table>
 <div style='margin-top:15px'>
+     Controle effctué par {{ visite.chaine.piste.getAffectationActive.agent.nomComplet }}
+</div>
+<div style='margin-top:25px'>
     <span>RESULTAT DU CONTROLE VALABLE POUR LA CIRCULATION DU VEHICULE PENDANT {{ visite.vehicule.typeVehicule.delai }} JOURS SANS CERTIFICAT DE VISITE TECHNIQUE</span>
 </div>
             

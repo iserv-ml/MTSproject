@@ -452,6 +452,9 @@ class VisiteController extends Controller
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CONTROLLEUR')){
             if($statut == 1){
                 $action .= " <a title='Controller' class='btn btn-success' href='".$this->generateUrl('visite_maha', array('id'=> $id ))."'><i class='fa fa-config' ></i> Controler</a>";
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
+                    $action .= " <a title='Annuler' class='btn btn-success' href='".$this->generateUrl('visite_maha_annuler', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-cancel' ></i> Annuler</a>";
+                }
             }elseif($statut > 1){
                 $action .= " <a title='Détail' class='btn btn-success' href='".$this->generateUrl('visite_show', array('id'=> $id ))."'><i class='fa fa-plus' ></i> Voir le rapport</a>";
             }
@@ -568,6 +571,17 @@ class VisiteController extends Controller
             'visite' => $visite,
         ));
         
+    }
+    
+    /**
+     * Annuler une visite.
+     *
+     * @Route("/visite/annuler", name="visite_maha_annuler")
+     * @Method({"GET", "POST"})
+     */
+    public function visiteannulerAction(Request $request)
+    {
+        echo "process à définir";
     }
     
     /**

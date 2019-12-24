@@ -1,7 +1,8 @@
 <div style="margin:10px">
     <span style="font-weight: bolder">N&deg; {{ quittance.numero }} - {%if quittance.rembourse %}REMBOURSEE{% elseif quittance.paye %}PAYEE{% else %}NON PAYEE{% endif %}</span>
-    <span style="margin-left:400px; font-weight:bolder;font-size:30px">QUITTANCE</span>
+    <span style="margin-left:200px; font-weight:bolder;font-size:30px">QUITTANCE</span>
     <span style="margin-left:50px; font-weight: bolder">NIF 86100089D</span>
+    <span style="float:right"><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></span>
 </div>
 <div>
     
@@ -10,7 +11,7 @@
      <tbody>
          <tr>
              <td colspan="7" style="border:none; padding:5px">
-                 <span style="font-weight: bold">CVT :</span>
+                 <span style="font-weight: bold">CVT : {{libelle}}</span>
                 <span style="margin-left:500px; font-weight:bold;">Type/Marque : {{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}</span>
              </td>
          </tr>

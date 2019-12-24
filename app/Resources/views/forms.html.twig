@@ -20,7 +20,7 @@
         {% if type == 'hidden' %}
             <input   type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
         {% else %}
-                <input   type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/>
+            <input   type="{{ type }}" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}/><span class="{{id}}"></span>
         {% endif %}
     {% else %}
             <div class="file-input-wrapper">
