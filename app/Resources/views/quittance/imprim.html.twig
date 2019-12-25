@@ -2,7 +2,7 @@
     <span style="font-weight: bolder">N&deg; {{ quittance.numero }} - {%if quittance.rembourse %}REMBOURSEE{% elseif quittance.paye %}PAYEE{% else %}NON PAYEE{% endif %}</span>
     <span style="margin-left:200px; font-weight:bolder;font-size:30px">QUITTANCE</span>
     <span style="margin-left:50px; font-weight: bolder">NIF 86100089D</span>
-    <span style="float:right"><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></span>
+    <span style="float:right"><img src="{{ rootDir ~ '/web' ~ asset('images/mts.jpg') }}" />{{ rootDir ~ '/web' ~ asset('images/mts.jpg') }}</span>
 </div>
 <div>
     

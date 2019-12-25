@@ -321,7 +321,7 @@ class QuittanceController extends Controller
             $this->renderView(
                 'quittance/imprim.html.twig',
                 array(
-                    'quittance'  => $quittance, 'libelle' => $centre->getLibelle()
+                    'quittance'  => $quittance, 'libelle' => $centre->getLibelle(),'rootDir' => $this->get('kernel')->getRootDir().'/..'
                 )
             ),
             $chemin,
