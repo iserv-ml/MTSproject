@@ -315,13 +315,12 @@ class QuittanceController extends Controller
         if (file_exists($chemin)) {
             unlink($chemin);
         }
-        
 
         $this->get('knp_snappy.pdf')->generateFromHtml(
             $this->renderView(
                 'quittance/imprim.html.twig',
                 array(
-                    'quittance'  => $quittance, 'libelle' => $centre->getLibelle(),'rootDir' => $this->get('kernel')->getRootDir().'/..'
+                    'quittance'  => $quittance, 'libelle' => $centre->getLibelle()
                 )
             ),
             $chemin,
