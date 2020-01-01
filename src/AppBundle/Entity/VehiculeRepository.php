@@ -38,20 +38,32 @@ class VehiculeRepository extends EntityRepository
         return  $qb->getQuery()->getSingleScalarResult();
     }
     
-     public function trouverParLibelle($libelle) {
-       try{ 
-         $result = $this->getEntityManager()
+    public function trouverParLibelle($libelle) {
+        try{ 
+            $result = $this->getEntityManager()
             ->createQuery(
                 'SELECT r FROM AppBundle:Modele r WHERE r.chassis = :libelle'
             )->setParameter("libelle",$libelle)
             ->getSingleResult();
-       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
             $result = null;
         }
         catch (\Doctrine\ORM\NoResultException $ex){
             $result = null;
         }
-        
         return $result; 
-    }    
+    } 
+    
+    public function trouverParImmatriculation($immatriculation) {
+        try{ 
+            $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Vehicule r WHERE r.immatriculation = :immatriculation'
+            )->setParameter("immatriculation",$immatriculation)
+            ->getOneOrNullResult();
+        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        return $result; 
+    }
 }

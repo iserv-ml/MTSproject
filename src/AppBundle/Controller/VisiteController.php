@@ -151,7 +151,7 @@ class VisiteController extends Controller
                 case 3 : $visiteParent = $derniereVisite;break;
             }
         }else{
-            $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La date de la prochaine visite n'est pas arrivée.");
+            $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La prochaine visite est prévue pour le ".$vehicule->getDateProchaineVisite().".");
             return $this->redirectToRoute('vehicule_index');
         }        
         $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives();
@@ -715,5 +715,57 @@ class VisiteController extends Controller
         }else{
             throw $this->createNotFoundException("Aucune chaine active. Merci de contacter l'administrateur.");
         }
+    }
+    
+    /**
+     * Aiguiller un vehicule sur la meme piste qu'un autre.
+     *
+     * @Route("/grouper", name="grouper")
+     * @Method({"GET", "POST"})
+     */
+    public function grouperAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', "Le centre n'est pas encore ouvert.");
+            return $this->render('vehicule/index.html.twig', array('centre' => $centre,));
+        }
+        $vehiculeInitial = $em->getRepository('AppBundle:Vehicule')->find($request->get('id'));
+        $vehiculeAjoute = $em->getRepository('AppBundle:Vehicule')->trouverParImmatriculation($request->get('carteGrise'));
+        if(!$vehiculeInitial){
+            throw $this->createNotFoundException("Ooops... Une erreur s'est produite.");
+        }
+        $visite = $em->getRepository('AppBundle:Visite')->derniereVisite($vehiculeInitial->getId());
+        if(!$vehiculeAjoute){
+            $this->get('session')->getFlashBag()->add('error', "Le véhicule ".$request->get('carteGrise')." n'existe pas. Il faut l'enregistrer.");
+            return $this->render('visite/visite.html.twig', array(
+            'visite' => $visite,
+        ));
+        }else{
+            if($vehiculeAjoute->visiteArrive()){
+                $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($vehiculeAjoute->getId());
+                switch(\AppBundle\Utilities\Utilities::evaluerDemandeVisite($derniereVisite)){
+                    case 1: 
+                        $this->get('session')->getFlashBag()->add('notice', 'Visite déjà en cours.');
+                        return $this->render('visite/visite.html.twig', array('visite' => $derniereVisite,));
+                    case 0: case 2: $visiteParent = null; break;
+                    case 3 : $visiteParent = $derniereVisite;break;
+                }
+            }else{
+                $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La prochaine visite est prévue pour le ".$vehicule->getDateProchaineVisite().".");
+                return $this->redirectToRoute('vehicule_index');
+            }
+            $visiteGroupe = new Visite();
+            $visiteGroupe->aiguiller($vehiculeAjoute, 0, $visite->getChaine(), $visiteParent, $centre);
+            $em->persist($visiteGroupe);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', $vehiculeAjoute->getImmatriculation().' aiguillé sur la piste '.$visiteGroupe->getChaine()->getPiste()->getNumero());
+        }
+        
+        return $this->render('visite/visite.html.twig', array(
+            'visite' => $visiteGroupe,
+        ));
     }
 }

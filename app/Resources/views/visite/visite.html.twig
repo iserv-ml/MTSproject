@@ -12,6 +12,7 @@
 {% endblock %}
 {% block pagetitle -%}VOIR L'AIGUILLAGE D'UN VEHICULE{% endblock %}
 {% block actions %}
+    <form method="POST" action="{{ path('grouper')}}">{% if visite.statut == 0 %}<label class="btn btn-outline-secondary"><input name="carteGrise" type="text" value="" placeholder="CARTE GRISE"/><input type="submit" value="GROUPER UN VEHICULE"/><input type="hidden" value="{{visite.vehicule.id}}" name="id" /></label>{% endif %}</form>
     <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_index') }}">RETOUR A LA LISTE</a></label>
 {% endblock %}
 {% block body %}
