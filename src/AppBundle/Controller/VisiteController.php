@@ -187,10 +187,12 @@ class VisiteController extends Controller
         }else{
             $date2 = null;
         }
+        $em = $this->getDoctrine()->getManager();
+        $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($visite->getId());
         return $this->render('visite/show.html.twig', array(
             'visite' => $visite,
             'delete_form' => $deleteForm->createView(),
-            'dateRevisite' => $date2,
+            'dateRevisite' => $date2, 'quittance'=>$quittance,
         ));
     }
     
@@ -211,10 +213,12 @@ class VisiteController extends Controller
         }else{
             $date2 = null;
         }
+        $em = $this->getDoctrine()->getManager();
+        $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($visite->getId());
         return $this->render('visite/show.delivrance.html.twig', array(
             'visite' => $visite,
             'delete_form' => $deleteForm->createView(),
-            'dateRevisite' => $date2,
+            'dateRevisite' => $date2, 'quittance' => $quittance,
         ));
     }
 

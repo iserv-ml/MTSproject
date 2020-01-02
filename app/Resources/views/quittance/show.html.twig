@@ -15,7 +15,7 @@
 {% block pagetitle -%}VOIR UNE QUITTANCE{% endblock %}
 {% block actions %}
     <label class="btn btn-outline-secondary"><a href="{{ path('visite_quittance') }}">LISTER</a></label>
-    <label class="btn btn-outline-secondary"><a target="_blank" href="{{ path('quittance_imprim', { 'id': quittance.id }) }}">IMPRIMER</a></label>
+    <label class="btn btn-outline-secondary"><a  href="#" target="_blank" onclick="printDiv('quittance')">IMPRIMER</a></label>
     <label class="btn btn-outline-secondary">
         {% if quittance.paye %}<a href="#" title="Rembourser" onclick="rembourser()">REMBOURSER</a>
         {% else %}<a onclick="return confirm('Veuiller confirmer l\'encaissement de la quittance N° {{quittance.numero}}');" href="{{ path('caisse_quittance_encaisser', { 'id': quittance.id }) }}">ENCAISSER</a>
@@ -23,62 +23,71 @@
     </label>
 {% endblock %}
 {% block body %}
-    <table class="table table-hover">
-        <tbody>
+    <div id='quittance'>
+    <div style="margin:10px">
+    <span style="font-weight: bolder">N&deg; {{ quittance.numero }} - {%if quittance.rembourse %}REMBOURSEE{% elseif quittance.paye %}PAYEE{% else %}NON PAYEE{% endif %}</span>
+    <span style="margin-left:200px; font-weight:bolder;font-size:30px">QUITTANCE</span>
+    <span style="margin-left:50px; font-weight: bolder">NIF 86100089D</span>
+    <span style="float:right"><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></span>
+</div>
+<div>
+    
+</div>
+<table border="1" style="width:1050px;" cellpadding="0" cellspacing="0">
+     <tbody>
+         <tr>
+             <td colspan="7" style="border:none; padding:5px">
+                 <span style="font-weight: bold">CVT : {{libelle}}</span>
+                <span style="margin-left:500px; font-weight:bold;">Type/Marque : {{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}</span>
+             </td>
+         </tr>
             <tr>
-                <th>Numéro</th>
-                <td>{{ quittance.numero }}</td>
+                <td colspan="7" style="border:none; padding:5px">
+                    <span style="font-weight: bold">Date : {% if quittance.dateCreation %}{{ quittance.dateCreation|date('Y-m-d') }}{% endif %}</span>
+                    <span style="margin-left:500px; font-weight:bold;">Immatriculation : {{ quittance.visite.vehicule.immatriculation }}</span>
+                </td>
             </tr>
             <tr>
-                <th>Véhicule</th>
-                <td>{{ quittance.visite.vehicule.immatriculation }}</td>
+                <th>Quantit&eacute;</th>
+                <th>Prix Unitaire</th>
+                <th>Prix total</th>
+                <th>TVA 18%</th>
+                <th>Droit de timbre</th>
+                <th>Total TTC</th>
+                <th>Caissier</th>
             </tr>
-            <tr>
-                <th>Type</th>
-                <td>{% if quittance.visite.revisite %}REVISITE{% else %}NORMALE{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Retard</th>
-                <td>{{ quittance.retard|number_format(0, ',', ' ') }} Jours</td>
-            </tr>
-            <tr>
-                <th>Pénalité</th>
-                <td>{{ quittance.penalite|number_format(0, ',', ' ') }}</td>
-            </tr>
-            <tr>
-                <th>Montant visite</th>
+            <tr style="text-align: center">
+                <td>1</td>
                 <td>{{ quittance.montantVisite|number_format(0, ',', ' ') }}</td>
-            </tr>
-            <tr>
-                <th>ETAT</th>
-                <td>{% if quittance.paye %}PAYEE{% else %}OUVERTE{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Caisse</th>
-                <td>{{ quittance.visite.chaine.caisse.numero }}</td>
-            </tr>
-            <tr>
-                <th>Créé par</th>
+                <td>{{ quittance.montantVisite|number_format(0, ',', ' ') }}</td>
+                <td>{{ quittance.tva|number_format(0, ',', ' ') }}</td>
+                <td>{{ quittance.timbre|number_format(0, ',', ' ')}}</td>
+                <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil')  }}</td>
                 <td>{{ quittance.creePar }}</td>
             </tr>
-            <tr>
-                <th>Modifié par</th>
-                <td>{{ quittance.modifierPar }}</td>
-            </tr>
-            <tr>
-                <th>Date de création</th>
-                <td>{% if quittance.dateCreation %}{{ quittance.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Date de dernière modification</th>
-                <td>{% if quittance.dateModification %}{{ quittance.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-        </tbody>
-    </table>
+     </tbody>
+</table>
+    </div>        
     <div id="remboursement-modal" title="REMBOURSEMENT"></div>
 {% endblock %}
 {% block javascripts -%}
     <script type="text/javascript">
+        function printDiv(DivIdToPrint) 
+{
+
+  var divToPrint=document.getElementById(DivIdToPrint);
+
+  var newWin=window.open('','Print-Window');
+
+  newWin.document.open();
+
+  newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
+
+  newWin.document.close();
+
+  setTimeout(function(){newWin.close();},10);
+
+}
         function rembourser(){
             var options = {
                 modal: true,

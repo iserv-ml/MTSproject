@@ -17,9 +17,9 @@
 {% block actions %}
     {% if is_granted('ROLE_DELIVRANCE') %}
         <label class="btn btn-outline-secondary"><a href="{{ path('visite_delivrance') }}">LISTE DELIVRANCE</a></label>
-        <label class="btn btn-outline-secondary"><a href="{{ path('rapport_imprimer', { 'id': visite.id }) }}">IMPRIMER LE RAPPORT</a></label>
+        <label class="btn btn-outline-secondary"><a  href="#" target="_blank"onclick="printDiv('rapport')">IMPRIMER</a></label>
         {% if visite.statut == 2 or visite.statut == 4 %}
-            <label class="btn btn-outline-secondary"><a href="{{ path('certificat_imprimer_1', { 'id': visite.id }) }}">CERTIFICAT</a></label>
+            <label class="btn btn-outline-secondary"><a target="_blank" onclick="printDiv('certificat')" href="#">CERTIFICAT</a></label>
         {% endif %}
     {% endif %}
 {% endblock %}
@@ -38,53 +38,154 @@
                     {% endif %}
                 </td>
             </tr>
-            <tr>
-                <th>Numero certificat</th>
-                <td>{{ visite.numeroCertificat }}</td>
-            </tr>
-            <tr>
-                <th>Date</th>
-                <td>{% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Date validite</th>
-                <td>{% if visite.dateValidite %}{{ visite.dateValidite|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Type de visite</th>
-                <td>{% if visite.revisite %}Revisite{% else %}Normale{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Créé par</th>
-                <td>{{ visite.creePar }}</td>
-            </tr>
-            <tr>
-                <th>Modifié par</th>
-                <td>{{ visite.modifierPar }}</td>
-            </tr>
-            <tr>
-                <th>Date de création</th>
-                <td>{% if visite.dateCreation %}{{ visite.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Date de dernière modification</th>
-                <td>{% if visite.dateModification %}{{ visite.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
-            </tr>
         </tbody>
     </table>
-    {% if visite.resultats %}
-    <table class="table table-hover">
-        <tbody>
-            <tr>
-                <th colspan = "2" align="center">RESULTATS</th>
-            </tr>
+    <div id='rapport'>
+                    <div>
+    <span style="font-weight: bolder"><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></span>
+</div>
+<div>
+    <span style="font-weight: bolder">Date de contr&ocirc;le : {% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</span>
+    <span style="float:right">Montant visite : {{ quittance.montantvisite }}</span>
+</div>
+<div>
+    <span style="font-weight: bolder">N&deg; de quittance : {{ quittance.numero }}</span>
+    <span style="float:right">Jours de retard : {{ quittance.retard }}</span>
+</div>
+<div>
+    <span style="font-weight: bolder">N&deg; Immatriculation : {{ visite.vehicule.immatriculation }}</span>
+    <span style="float:right;background: #000;color:#fff;padding:10px">Montant p&eacute;nalit&eacute; : {{ quittance.penalite }}</span>
+</div>
+<div style='margin-bottom:15px'>
+    <span style="font-weight: bolder">N&deg; de chassis : {{ visite.vehicule.chassis }}</span>
+</div>
+<table border="1" style="width:1050px;" cellpadding="0" cellspacing="0">
+    <tbody>
+        <tr>
+            <td>Bilan de la visite technique</td>
+            <td>D&eacute;tails</td>
+            <td>Valeur controle</td>
+            <td>R&eacute;sultat</td>
+        </tr>
+        {% if visite.resultats %}
             {% for resultat in visite.resultats %}
                 <tr>
-                    <th>{{ resultat.controle.libelle }}</th>
-                    <td>{{ resultat.commentaire }}</td>
+                    <td>{{ resultat.controle.libelle }}</td>
+                    <td>{{ resultat.controle.detail }}</td>
+                    <td>{{ resultat.commentaire }} ({{ resultat.controle.unite }}) </td>
+                    <td>{% if resultat.succes %}SUCCES{% else %}ECHEC{% endif %}</td>
                 </tr>
             {% endfor %}
-        </tbody>
-    </table>
         {% endif %}
+     </tbody>
+</table>
+<div style='margin-top:15px'>
+     Controle effctué par {{ visite.chaine.piste.getAffectationActive.agent.nomComplet }}
+</div>
+<div style='margin-top:25px'>
+    <span>RESULTAT DU CONTROLE VALABLE POUR LA CIRCULATION DU VEHICULE PENDANT {{ visite.vehicule.typeVehicule.delai }} JOURS SANS CERTIFICAT DE VISITE TECHNIQUE</span>
+</div>
+            
+                </div>
+<div id="certificat">
+    <table width="600px">
+    <tr>
+    <td>CERTIFICAT DE VISITE TECHNIQUE</td>
+    <td>N&deg; {{ visite.numeroCertificat }}</td>
+    </tr>
+    <tr>
+        <td colspan="2"><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></td>
+    </tr>
+    <tr>
+        <td>Nom : {{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</td>
+        <td>Date de validit&eacute; : {{ visite.date|date('Y-m-d') }}</td>
+    </tr>
+    <tr>
+        <td>Adresse : {{ visite.vehicule.proprietaire.adresse }}</td>
+        <td>Date de la visite : {{ visite.dateValidite|date('Y-m-d') }}</td>
+    </tr>
+    <tr>
+        <td>Immatriculation : {{ visite.vehicule.immatriculation }}</td>
+        <td>1ere mise en circulation : {{ visite.vehicule.dateMiseCirculation|date('Y-m-d') }}</td>
+    </tr>
+    <tr>
+        <td>N&deg; S&eacute;rie : {{ visite.vehicule.typeChassis }}</td>
+        <td>Marque/Type : {{ visite.vehicule.modele.marque.libelle }}/{{ visite.vehicule.modele.libelle }}</td>
+    </tr>
+    <tr>
+        <td colspan="2">Cachet MTS : </td>
+    </tr>
+</table>
+    
+    <table width="600px">
+    <tr>
+    <td>CERTIFICAT DE VISITE TECHNIQUE</td>
+    <td>N&deg; {{ visite.numeroCertificat }}</td>
+    </tr>
+    <tr>
+        <td colspan="2"><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></td>
+    </tr>
+    <tr>
+        <td>Nom : {{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</td>
+        <td>Date de validit&eacute; : {{ visite.date|date('Y-m-d') }}</td>
+    </tr>
+    <tr>
+        <td>Adresse : {{ visite.vehicule.proprietaire.adresse }}</td>
+        <td>Date de la visite : {{ visite.dateValidite|date('Y-m-d') }}</td>
+    </tr>
+    <tr>
+        <td>Immatriculation : {{ visite.vehicule.immatriculation }}</td>
+        <td>1ere mise en circulation : {{ visite.vehicule.dateMiseCirculation|date('Y-m-d') }}</td>
+    </tr>
+    <tr>
+        <td>N&deg; S&eacute;rie : {{ visite.vehicule.typeChassis }}</td>
+        <td>Marque/Type : {{ visite.vehicule.modele.marque.libelle }}/{{ visite.vehicule.modele.libelle }}</td>
+    </tr>
+    <tr>
+        <td colspan="2">Cachet MTS : </td>
+    </tr>
+</table>
+    
+<table width="600px">
+    <tr>
+    <td><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></td>
+    <td>N&deg; {{ visite.numeroCertificat }}</td>
+    </tr>
+    <tr>
+        <td colspan="2">CONTROLE TECHNIQUE</td>
+    </tr>
+    <tr>
+        <td colspan="2">Date limite de validit&eacute;</td>
+    </tr>
+
+    <tr>
+        <td colspan="2">{{ visite.vehicule.immatriculation}}</td>
+    </tr>
+    <tr>
+        <td colspan="2">{{ visite.date|date('Y-m-d') }}</td>
+    </tr>
+</table>
+</div>
+    
+{% endblock %}
+
+{% block javascripts -%}
+<script type="text/javascript">
+        function printDiv(DivIdToPrint) 
+{
+
+  var divToPrint=document.getElementById(DivIdToPrint);
+
+  var newWin=window.open('','Print-Window');
+
+  newWin.document.open();
+
+  newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
+
+  newWin.document.close();
+
+  setTimeout(function(){newWin.close();},10);
+
+}
+</script>
 {% endblock %}

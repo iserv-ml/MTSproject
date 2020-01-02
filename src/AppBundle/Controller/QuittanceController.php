@@ -63,11 +63,18 @@ class QuittanceController extends Controller
      */
     public function showAction(Quittance $quittance)
     {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_controle');
+        }
         $deleteForm = $this->createDeleteForm($quittance);
 
         return $this->render('quittance/show.html.twig', array(
             'quittance' => $quittance,
             'delete_form' => $deleteForm->createView(),
+            'libelle' => $centre->getLibelle(),
         ));
     }
 
