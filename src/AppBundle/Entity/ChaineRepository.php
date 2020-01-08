@@ -72,9 +72,14 @@ class ChaineRepository extends EntityRepository
         return $result; 
     }
     
-    public function chainesActives() {
+    public function chainesActives($type) {
+        switch($type){
+            case 0 : case 1 : break;
+            default : $type = 0;
+        }
         $qb = $this->getEntityManager()
-            ->createQuery('SELECT r FROM AppBundle:Chaine r WHERE r.actif = 1 ');
+            ->createQuery('SELECT r FROM AppBundle:Chaine r WHERE r.actif = 1 AND r.surrendezvous = :type ')
+            ->setParameter('type', $type);
         return $qb->getResult();
     }
     
