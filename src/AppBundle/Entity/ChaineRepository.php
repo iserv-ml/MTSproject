@@ -78,7 +78,7 @@ class ChaineRepository extends EntityRepository
             default : $type = 0;
         }
         $qb = $this->getEntityManager()
-            ->createQuery('SELECT r FROM AppBundle:Chaine r WHERE r.actif = 1 AND r.surrendezvous = :type ')
+            ->createQuery('SELECT r FROM AppBundle:Chaine r WHERE r.actif = 1 AND r.surRendezVous = :type ')
             ->setParameter('type', $type);
         return $qb->getResult();
     }
