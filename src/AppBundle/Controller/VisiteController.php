@@ -154,7 +154,7 @@ class VisiteController extends Controller
             $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La prochaine visite est prévue pour le ".$vehicule->getDateProchaineVisite().".");
             return $this->redirectToRoute('vehicule_index');
         }        
-        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives($request->get('id'));
+        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives($request->get('type'));
         $chaineOptimale = \AppBundle\Utilities\Utilities::trouverChaineOptimale($chaines, $em);
         if($chaineOptimale != null){
             $visite = new Visite();
