@@ -87,25 +87,26 @@
 </div>
             
                 </div>
-<div id="certificat">
+<div id="certificat" style="size: A4; margin: 0;background-image:url('{{ asset('images/certificat.jpg') }}');background-size:210mm 297mm;width:210mm;font-size:11px;overflow:hidden">
+    
     <div style="width:11.5cm; height: 7cm;overflow: hidden;">
-        <span style="float:right">{{ visite.numeroCertificat }}</span>
-        <div style="margin-top:1.5cm;margin-left:1.3cm"><div style="display: inline-block;width: 7.5cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('Y-m-d') }}</span></div>
-        <div style="margin-top:1mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.5cm">{{ visite.vehicule.proprietaire.adresse }}</div><span>{{ visite.dateValidite|date('Y-m-d') }}</span></div>
-        <div style="margin-top:5mm;margin-left:2.5cm"><div style="display: inline-block;width: 6.5cm">{{ visite.vehicule.immatriculation }}</div><span>{{ visite.vehicule.dateMiseCirculation|date('Y-m-d') }}</span></div>
-        <div style="margin-top:1mm;margin-left:1.8cm">{{ visite.vehicule.typeChassis }}</div>
+        <div style="margin-top:3mm;margin-left: 8.5cm">{{ visite.numeroCertificat }}</div>
+        <div style="margin-top:1.7cm;margin-left:1.3cm"><div style="display: inline-block;width: 7.5cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('Y-m-d') }}</span></div>
+        <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.proprietaire.adresse }}</div><span>{{ visite.dateValidite|date('Y-m-d') }}</span></div>
+        <div style="margin-top:6mm;margin-left:2.5cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.immatriculation }}</div><span>{{ visite.vehicule.dateMiseCirculation|date('Y-m-d') }}</span></div>
+        <div style="margin-top:0mm;margin-left:1.8cm">{{ visite.vehicule.typeChassis }}</div>
+    </div>
+   <div style="width:11.5cm; height: 7cm;overflow: hidden;">
+        <div style="margin-top:3mm;margin-left: 8.5cm">{{ visite.numeroCertificat }}</div>
+        <div style="margin-top:1.7cm;margin-left:1.3cm"><div style="display: inline-block;width: 7.5cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('Y-m-d') }}</span></div>
+        <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.proprietaire.adresse }}</div><span>{{ visite.dateValidite|date('Y-m-d') }}</span></div>
+        <div style="margin-top:6mm;margin-left:2.5cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.immatriculation }}</div><span>{{ visite.vehicule.dateMiseCirculation|date('Y-m-d') }}</span></div>
+        <div style="margin-top:0mm;margin-left:1.8cm">{{ visite.vehicule.typeChassis }}</div>
     </div>
     <div style="width:11.5cm; height: 7cm;overflow: hidden;">
-        <span style="float:right">{{ visite.numeroCertificat }}</span>
-        <div style="margin-top:1.5cm;margin-left:1.3cm"><div style="display: inline-block;width: 7.5cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('Y-m-d') }}</span></div>
-        <div style="margin-top:1mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.5cm">{{ visite.vehicule.proprietaire.adresse }}</div><span>{{ visite.dateValidite|date('Y-m-d') }}</span></div>
-        <div style="margin-top:5mm;margin-left:2.5cm"><div style="display: inline-block;width: 6.5cm">{{ visite.vehicule.immatriculation }}</div><span>{{ visite.vehicule.dateMiseCirculation|date('Y-m-d') }}</span></div>
-        <div style="margin-top:1mm;margin-left:1.8cm">{{ visite.vehicule.typeChassis }}</div>
-    </div>
-    <div style="width:11.5cm; height: 7cm;overflow: hidden;">
-        <div style="margin-top:1.5cm;margin-left:6cm">{{ visite.numeroCertificat }}</div>
+        <div style="margin-top:1.3cm;margin-left:5.5cm">{{ visite.numeroCertificat }}</div>
         <div style="margin-top:1.5cm;text-align: center">{{ visite.vehicule.immatriculation}}</div>
-        <div style="margin-top:1.5cm;text-align: center">{{ visite.dateValidite|date('Y-m-d') }}</div>
+        <div style="margin-top:0.5cm;text-align: center">{{ visite.dateValidite|date('Y-m-d') }}</div>
     </div>
 </div>
     
@@ -122,10 +123,10 @@
 
   newWin.document.open();
 
-  newWin.document.write('<html><body onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
+  newWin.document.write('<html><body style="size: A4; margin: 0;width:210mm;font-size:11px;overflow:hidden" onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
 
   newWin.document.close();
-
+  newWin.close();
   
 
 }
