@@ -23,28 +23,28 @@
     </label>
 {% endblock %}
 {% block body %}
-    <div id='quittance'>
-    <div style="margin:10px">
+    <div id='quittance' style="size: A4;margin:0;width:200mm;overflow:hidden;">
+    <div style="margin:0">
     <span style="font-weight: bolder">N&deg; {{ quittance.numero }} - {%if quittance.rembourse %}REMBOURSEE{% elseif quittance.paye %}PAYEE{% else %}NON PAYEE{% endif %}</span>
-    <span style="margin-left:200px; font-weight:bolder;font-size:30px">QUITTANCE</span>
-    <span style="margin-left:50px; font-weight: bolder">NIF 86100089D</span>
+    <span style="margin-left:100px; font-weight:bolder;font-size:20px">QUITTANCE</span>
+    <span style="margin-left:25px; font-weight: bolder">NIF 86100089D</span>
     <span style="float:right"><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></span>
 </div>
 <div>
     
 </div>
-<table border="1" style="width:1050px;" cellpadding="0" cellspacing="0">
+<table border="1" style="width:100%;" cellpadding="0" cellspacing="0">
      <tbody>
          <tr>
              <td colspan="7" style="border:none; padding:5px">
                  <span style="font-weight: bold">CVT : {{libelle}}</span>
-                <span style="margin-left:500px; font-weight:bold;">Type/Marque : {{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}</span>
+                <span style="margin-left:280px; font-weight:bold;">Type/Marque : {{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}</span>
              </td>
          </tr>
             <tr>
                 <td colspan="7" style="border:none; padding:5px">
                     <span style="font-weight: bold">Date : {% if quittance.dateCreation %}{{ quittance.dateCreation|date('Y-m-d') }}{% endif %}</span>
-                    <span style="margin-left:500px; font-weight:bold;">Immatriculation : {{ quittance.visite.vehicule.immatriculation }}</span>
+                    <span style="margin-left:280px; font-weight:bold;">Immatriculation : {{ quittance.visite.vehicule.immatriculation }}</span>
                 </td>
             </tr>
             <tr>
@@ -81,7 +81,7 @@
 
   newWin.document.open();
 
-  newWin.document.write('<html><body style="width:1050px;" onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
+  newWin.document.write('<html><body style="size: A4;margin:0;width:200mm;margin-top:300px;-webkit-transform: rotate(-90deg);-moz-transform:rotate(-90deg);filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);" onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
 
   newWin.document.close();
 

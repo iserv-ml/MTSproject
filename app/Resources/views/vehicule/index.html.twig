@@ -12,8 +12,9 @@
 {% block pagetitle -%}AIGUILLAGE DES VEHICULES{% endblock %}
 
 {% block actions %}
-    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_new') }}">ENREGISTRER UN NOUVEAU VEHICULE</a></label>
-    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_export') }}">EXPORTER LA LISTE DES VEHICULES</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_new') }}">ENREGISTRER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_export') }}">EXPORTER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_vehicules_importer_new') }}">IMPORTER</a></label>
 {% endblock %}
 {% block body -%}
     {% if centre.etat %} 

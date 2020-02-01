@@ -111,15 +111,21 @@ class QuittanceController extends Controller
      */
     public function encaisserAction(Quittance $quittance)
     {
+        $em = $this->getDoctrine()->getManager();
         if(!$quittance->getVisite()->getChaine()->getCaisse()->getOuvert()){
             $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!');
             return $this->redirectToRoute('visite_quittance');
+        }
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_controle');
         }
         if ($quittance->getPaye()) {
             $this->get('session')->getFlashBag()->add('notice', 'Cette quittance a déjà été encaissé.');
         }else{
             $visite = $quittance->getVisite();
-            $em = $this->getDoctrine()->getManager();
+            
             $quittance->encaisser();
             $caisse = $visite->getChaine()->getCaisse();
             $caisse->encaisser($quittance->getMontantVisite(), $quittance->getVisite()->getRevisite());
@@ -142,6 +148,7 @@ class QuittanceController extends Controller
         }
         return $this->render('quittance/show.html.twig', array(
             'quittance' => $quittance,
+            'libelle' => $centre->getLibelle(),
         ));
     }
     
@@ -157,17 +164,23 @@ class QuittanceController extends Controller
             $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!');
             return $this->redirectToRoute('visite_quittance');
         }
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_controle');
+        }
         $today = new \DateTime();
         if($quittance->getPaye() && $quittance->getDateEncaissement()->format('Y-m-d') < $today->format('Y-m-d')){
             $this->get('session')->getFlashBag()->add('error', "Le client doit passer à la caisse principale pour se faire rembourser!");
         }else{
-            $em = $this->getDoctrine()->getManager();
             $quittance->rembourser();
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'La quittance a été remboursée.');
         }
         return $this->render('quittance/show.html.twig', array(
             'quittance' => $quittance,
+            'libelle' => $centre->getLibelle(),
         ));
     }
     
@@ -207,6 +220,11 @@ class QuittanceController extends Controller
     public function quittancetAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_controle');
+        }
         $visite = $em->getRepository('AppBundle:Visite')->find($request->get('id'));
         if(!$visite->getChaine()->getCaisse()->getOuvert()){
             $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!.');
@@ -217,6 +235,7 @@ class QuittanceController extends Controller
             $this->get('session')->getFlashBag()->add('notice', 'La quittance existe déjà.');
             return $this->render('quittance/show.html.twig', array(
             'quittance' => $quittance,
+                'libelle' => $centre->getLibelle(),
             ));
         }
         $quittance = new Quittance();
@@ -248,6 +267,11 @@ class QuittanceController extends Controller
             $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!.');
             return $this->redirectToRoute('visite_quittance');
         }
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_controle');
+        }
         $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($request->get('id'));
         if(!$quittance){
             $quittance = new Quittance();
@@ -260,6 +284,7 @@ class QuittanceController extends Controller
         }
         return $this->render('quittance/confirmer.html.twig', array(
             'quittance' => $quittance,
+            'libelle' => $centre->getLibelle(),
         ));
     }
 
