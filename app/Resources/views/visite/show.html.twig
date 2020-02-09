@@ -17,13 +17,7 @@
 {% block actions %}
     {% if is_granted('ROLE_CONTROLLEUR') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('visite_controle') }}">LISTE DES CONTROLES</a></label>
-        <label class="btn btn-outline-secondary"><a  href="#" target="_blank"onclick="printDiv('rapport')">IMPRIMER</a></label>
-        {% if visite.statut == 2 or visite.statut == 4 %}
-            <label class="btn btn-outline-secondary"><a href="{{ path('certificat_imprimer_1', { 'id': visite.id }) }}">VOLET 1</a></label>
-        {% endif %}
-        {% if visite.statut == 2 or visite.statut == 4 %}
-            <label class="btn btn-outline-secondary"><a href="{{ path('certificat_imprimer_2', { 'id': visite.id }) }}">VOLET 2</a></label>
-        {% endif %}
+        <label class="btn btn-outline-secondary"><a  href="#" target="_blank" onclick="printDiv('rapport')" title="Imprimer le rapport">RAPPORT</a></label>
     {% endif %}
 {% endblock %}
 {% block body %}
@@ -88,6 +82,9 @@
 </div>
 <div style='margin-top:25px'>
     <span>RESULTAT DU CONTROLE VALABLE POUR LA CIRCULATION DU VEHICULE PENDANT {{ visite.vehicule.typeVehicule.delai }} JOURS SANS CERTIFICAT DE VISITE TECHNIQUE</span>
+</div>
+<div>
+    <span>FRAIS A PAYER POUR LA REVISITE REVISITE : {{ visite.vehicule.typeVehicule.montantRevisite|number_format(0, ',', ' ') }} FCFA</span>
 </div>
             
                 </div>

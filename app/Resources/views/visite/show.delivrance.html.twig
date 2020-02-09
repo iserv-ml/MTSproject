@@ -17,9 +17,9 @@
 {% block actions %}
     {% if is_granted('ROLE_DELIVRANCE') %}
         <label class="btn btn-outline-secondary"><a href="{{ path('visite_delivrance') }}">LISTE DELIVRANCE</a></label>
-        <label class="btn btn-outline-secondary"><a onclick="printRapport('rapport')"  href="#">IMPRIMER</a></label>
+        <label class="btn btn-outline-secondary"><a onclick="printRapport('rapport')"  href="#" title="Imprimer le rapport">RAPPORT</a></label>
         {% if visite.statut == 2 or visite.statut == 4 %}
-            <label class="btn btn-outline-secondary"><a onclick="printDiv('certificat')" href="#">CERTIFICAT</a></label>
+            <label class="btn btn-outline-secondary"><a onclick="printDiv('certificat')" href="#" title="Imprimer le certificat">CERTIFICAT</a></label>
         {% endif %}
     {% endif %}
 {% endblock %}
@@ -46,7 +46,7 @@
 </div>
 <div>
     <span style="font-weight: bolder">Date de contr&ocirc;le : {% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</span>
-    <span style="float:right">Montant visite : {{ quittance.montantvisite }}</span>
+    <span style="float:right">Montant visite : {{ quittance.montantvisite|number_format(0, ',', ' ') }}</span>
 </div>
 <div>
     <span style="font-weight: bolder">N&deg; de quittance : {{ quittance.numero }}</span>
@@ -54,7 +54,7 @@
 </div>
 <div>
     <span style="font-weight: bolder">N&deg; Immatriculation : {{ visite.vehicule.immatriculation }}</span>
-    <span style="float:right;background: #000;color:#fff;padding:10px">Montant p&eacute;nalit&eacute; : {{ quittance.penalite }}</span>
+    <span style="float:right;background: #000;color:#fff;padding:10px">Montant p&eacute;nalit&eacute; : {{ quittance.penalite|number_format(0, ',', ' ') }}</span>
 </div>
 <div style='margin-bottom:15px'>
     <span style="font-weight: bolder">N&deg; de chassis : {{ visite.vehicule.chassis }}</span>
@@ -83,7 +83,10 @@
      Controle effctué par {{ visite.chaine.piste.getAffectationActive.agent.nomComplet }}
 </div>
 <div style='margin-top:25px'>
-    <span>RESULTAT DU CONTROLE VALABLE POUR LA CIRCULATION DU VEHICULE PENDANT {{ visite.vehicule.typeVehicule.delai }} JOURS SANS CERTIFICAT DE VISITE TECHNIQUE</span>
+    <span>RESULTAT DU CONTROLE VALABLE POUR LA CIRCULATION DU VEHICULE PENDANT {{ visite.vehicule.typeVehicule.delai }} JOURS SANS CERTIFICAT DE VISITE TECHNIQUE.</span>
+</div>
+<div>
+    <span>FRAIS A PAYER POUR LA REVISITE REVISITE : {{ visite.vehicule.typeVehicule.montantRevisite|number_format(0, ',', ' ') }} FCFA</span>
 </div>
             
                 </div>
@@ -106,8 +109,8 @@
     </div>
     <div style="width:11.5cm; height: 7cm;overflow: hidden;">
         <div style="margin-top:1.2cm;margin-left:5.6cm">{{ visite.numeroCertificat }}</div>
-        <div style="margin-top:1.5cm;text-align: center;font-weight: bold;font-size: 12px">{{ visite.vehicule.immatriculation}}</div>
-        <div style="margin-top:0cm;text-align: center;font-weight: bold;font-size:30px">{{ visite.dateValidite|date('d-m-y') }}</div>
+        <div style="margin-top:1.5cm;text-align: center;font-size: 20px">{{ visite.vehicule.immatriculation}}</div>
+        <div style="margin-top:0cm;text-align: center;font-weight: bold;font-size:30px">{{ visite.dateValidite|date('d-m-Y') }}</div>
     </div>
 </div>
 {% endif %}   

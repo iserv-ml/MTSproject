@@ -47,7 +47,7 @@ class VehiculeImportController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($vehiculeImport);
             $em->flush();
-
+            $this->importer($vehiculeImport->getAbsolutePath());
             return $this->redirectToRoute('vehiculeimport_show', array('id' => $vehiculeImport->getId()));
         }
 
@@ -132,5 +132,39 @@ class VehiculeImportController extends Controller
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+    
+    private function importer($path){
+        try {
+            $marquet = null;
+            $modelet = null;
+            $em = $this->getDoctrine()->getManager();
+            $objPHPExcel = \PHPExcel_IOFactory::load($path);
+            $worksheet = $objPHPExcel->getSheet(0); 
+            $highestRow         = $worksheet->getHighestRow(); // e.g. 10
+            for ($row = 2; $row <= $highestRow; ++ $row) {
+                $colonne = 0;
+                $marquet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $modelet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $modele = $em->getRepository('AppBundle:Modele')->trouverParLibelle($modelet);
+                if($modele != null) {continue;}
+                $marque = $em->getRepository('AppBundle:Marque')->trouverParLibelle($marquet);
+                if($marque == null){
+                    $marque = new \AppBundle\Entity\Marque();
+                    $marque->setCode($marquet);
+                    $marque->setLibelle($marquet);
+                    $em->persist($marque);
+                }
+                $modele = new \AppBundle\Entity\Modele();
+                $modele->setCode($modelet);
+                $modele->setLibelle($modelet);
+                $modele->setMarque($marque);
+                $em->persist($modele);       
+            }
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Chargement terminé');
+        } catch(Exception $e) {
+            $this->get('session')->getFlashBag()->add('notice', $e->getMessage());
+        }
     }
 }
