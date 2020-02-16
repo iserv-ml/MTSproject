@@ -18,7 +18,7 @@ class VehiculeType extends AbstractType
                 ->add('proprietaireId', 'hidden', array('required'  => true, "mapped" => false))
                 ->add('immatriculation')
                 ->add('chassis')
-                ->add('modeleAjax', 'text', array('label'  => 'Modèle)', 'required'  => true, "mapped" => false))
+                ->add('modeleAjax', 'text', array('label'  => 'Modèle', 'required'  => true, "mapped" => false))
                 ->add('modeleId', 'hidden', array('required'  => true, "mapped" => false))
                 ->add('typeChassis')
                 ->add('typeVehicule')

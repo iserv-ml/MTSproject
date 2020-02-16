@@ -110,4 +110,23 @@ class TypeVehiculeRepository extends EntityRepository
         
         return $result; 
     }
+    
+    public function trouverLibelle($genre, $usage, $carrosserie) {
+       try{ 
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:TypeVehicule r LEFT JOIN r.genre g LEFT JOIN r.usage u LEFT JOIN r.carrosserie c WHERE g.code = :genre AND u.code = :usage AND c.code = :carrosserie '
+            )->setParameter("genre",$genre)
+            ->setParameter("usage",$usage)
+            ->setParameter("carrosserie",$carrosserie)
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
+        return $result; 
+    }
 }

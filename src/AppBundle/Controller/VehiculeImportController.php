@@ -5,7 +5,9 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\VehiculeImport;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\Vehicule;
 
 /**
  * Vehiculeimport controller.
@@ -48,7 +50,7 @@ class VehiculeImportController extends Controller
             $em->persist($vehiculeImport);
             $em->flush();
             $this->importer($vehiculeImport->getAbsolutePath());
-            return $this->redirectToRoute('vehiculeimport_show', array('id' => $vehiculeImport->getId()));
+            return $this->redirectToRoute('vehicule_index');
         }
 
         return $this->render('vehiculeimport/new.html.twig', array(
@@ -135,36 +137,102 @@ class VehiculeImportController extends Controller
     }
     
     private function importer($path){
-        try {
-            $marquet = null;
+        try {    
+            
+            $immatricultion = null;
+            $chassis = null;
             $modelet = null;
+            $genre = null;
+            $carrosserie = null;
+            $usage = null;
+            $typeChassis = null;
+            //Comment gérer typeVehicule?
+            $ptac = null;
+            $place = null;
+            $puissance = null;
+            $dateMiseCirculation = null;
+            $carteGrise = null;
+            $dateCarteGrise = null;
+            $kilometrage = null;
+            $couleur = null;
+            $typeImmatriculation = null;
+            $typeImmatriculationt = null;
+            $dateValidite = null;
+            $energie = null;
+            $pv = null;
+            $cu = null;
+            $puissanceReelle = null;
+            $capacite = null;
+            $moteur = null;
+            $immatricultionPrecedent = null;
+            $dateImmatricultionPrecedent = null;
+            $typeCarteGrise = null;
+            $alimentation = null;
+            $potCatalityque = null;
+            $dateProchaineVisite = null;
             $em = $this->getDoctrine()->getManager();
             $objPHPExcel = \PHPExcel_IOFactory::load($path);
             $worksheet = $objPHPExcel->getSheet(0); 
             $highestRow         = $worksheet->getHighestRow(); // e.g. 10
             for ($row = 2; $row <= $highestRow; ++ $row) {
                 $colonne = 0;
-                $marquet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $immatricultion = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $chassis = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $modelet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $modele = $em->getRepository('AppBundle:Modele')->trouverParLibelle($modelet);
-                if($modele != null) {continue;}
-                $marque = $em->getRepository('AppBundle:Marque')->trouverParLibelle($marquet);
-                if($marque == null){
-                    $marque = new \AppBundle\Entity\Marque();
-                    $marque->setCode($marquet);
-                    $marque->setLibelle($marquet);
-                    $em->persist($marque);
+                if($modele == null) {
+                    continue;  
                 }
-                $modele = new \AppBundle\Entity\Modele();
-                $modele->setCode($modelet);
-                $modele->setLibelle($modelet);
-                $modele->setMarque($marque);
-                $em->persist($modele);       
+                $genre = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $carrosserie = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $usage = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $typeVehicule = $em->getRepository('AppBundle:TypeVehicule')->trouverLibelle($genre, $usage, $carrosserie);
+                if($typeVehicule == null) {
+                    continue;  
+                }
+                $typeChassis = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                //Comment gérer typeVehicule?
+                $ptac = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $place = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $puissance = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $dateMiseCirculation = \trim($worksheet->getCellByColumnAndRow($colonne, $row)->getValue());$colonne++;
+                if($dateMiseCirculation != null && $dateMiseCirculation != "" && !$this->verifierFormatDate($dateMiseCirculation)){
+                    continue;
+                }
+                $carteGrise = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $dateCarteGrise = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $kilometrage = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $couleur = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $typeImmatriculationt = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $typeImmatriculation = $em->getRepository('AppBundle:TypeImmatriculation')->trouverParLibelle($typeImmatriculationt);
+                $dateValidite = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $energie = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $pv = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $cu = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $puissanceReelle = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $capacite = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $moteur = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $immatricultionPrecedent = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $dateImmatricultionPrecedent = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $typeCarteGrise = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $alimentation = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $potCatalityque = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $dateProchaineVisite = \trim($worksheet->getCellByColumnAndRow($colonne, $row)->getValue());$colonne++;
+                if($dateProchaineVisite != null && $dateProchaineVisite != "" && !$this->verifierFormatDate($dateProchaineVisite)){
+                    continue;
+                }
+                $vehicule = new Vehicule();
+                $vehicule->initialiser($immatricultion, $chassis, $modele, $typeVehicule, $typeChassis, $ptac, $place, $puissance, $dateMiseCirculation, $carteGrise, $dateCarteGrise, $kilometrage, $couleur, $typeImmatriculation, $dateValidite, $energie, $pv, $cu, $puissanceReelle, $capacite, $moteur, $immatricultionPrecedent, $dateImmatricultionPrecedent, $alimentation, $potCatalityque,$dateProchaineVisite);
+                $em->persist($vehicule);
             }
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Chargement terminé');
         } catch(Exception $e) {
             $this->get('session')->getFlashBag()->add('notice', $e->getMessage());
         }
+    }
+    
+    private function verifierFormatDate($date){
+        return (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$date));
     }
 }

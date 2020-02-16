@@ -882,5 +882,36 @@ class Vehicule
     private function getDateMiseCirculationFormatCrc(){
         return date("dmY", strtotime($this->getDateMiseCirculation()));
     }
+    
+    public function initialiser($immatricultion, $chassis, $modele, $typeVehicule, $typeChassis, $ptac, $place, $puissance, 
+            $dateMiseCirculation, $carteGrise, $dateCarteGrise, $kilometrage, $couleur, $typeImmatriculation,
+            $dateValidite, $energie, $pv, $cu, $puissanceReelle, $capacite, $moteur, $immatricultionPrecedent, $dateImmatricultionPrecedent, $alimentation, $potCatalityque, $dateProchaineVisite){
+        $this->immatriculation = $immatricultion;
+        $this->chassis = $chassis;
+        $this->modele = $modele;
+        $this->typeVehicule = $typeVehicule;
+        $this->typeChassis = $typeChassis;
+        $this->ptac = $ptac;
+        $this->place = $place;
+        $this->puissance = $puissance;
+        $this->dateMiseCirculation = $dateMiseCirculation;
+        $this->carteGrise = $carteGrise;
+        $this->dateCarteGrise = $dateCarteGrise;
+        $this->kilometrage = $kilometrage;
+        $this->couleur = $couleur;
+        $this->typeImmatriculation = $typeImmatriculation;
+        $this->dateValidite = $dateValidite;
+        $this->energie = $energie;
+        $this->pv = $pv;
+        $this->cu = $cu;
+        $this->puissanceReelle = $puissanceReelle;
+        $this->capacite = $capacite;
+        $this->moteur = $moteur;
+        $this->immatriculationPrecedent = $immatricultionPrecedent;
+        $this->dateImmatriculationPrecedent = $dateImmatricultionPrecedent;
+        $this->alimentation = $alimentation;
+        $this->potCatalytique = $potCatalityque;
+        $this->dateProchaineVisite = $dateProchaineVisite;
+    }
 
 }
