@@ -31,6 +31,7 @@ class VehiculeType extends AbstractType
                 ->add('place')
                 ->add('puissance')
                 ->add('dateMiseCirculation')
+                ->add('dateProchaineVisite')
                 ->add('carteGrise')
                 ->add('dateCarteGrise') 
                 ->add('kilometrage')

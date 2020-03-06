@@ -30,6 +30,7 @@
         $( "#appbundle_vehicule_dateCarteGrise" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
         $( "#appbundle_vehicule_dateMiseCirculation" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
         $( "#appbundle_vehicule_dateValidite" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
+        $( "#appbundle_vehicule_dateProchaineVisite" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
         $( "#appbundle_vehicule_dateImmatriculationPrecedent" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
         {% if vehicule.proprietaire %}
             $("#appbundle_vehicule_proprietaireId" ).val("{{- vehicule.proprietaire.id -}}");
