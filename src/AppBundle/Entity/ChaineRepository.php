@@ -72,7 +72,7 @@ class ChaineRepository extends EntityRepository
         return $result; 
     }
     
-    public function chainesActives($type) {
+    public function chainesActives($type=0) {
         switch($type){
             case 0 : case 1 : break;
             default : $type = 0;
