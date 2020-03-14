@@ -92,8 +92,7 @@ class Centre
     /**
      * @var integer $carteVierge
      *
-     * @ORM\Column(name="carte_vierge", type="integer", nullable=false)
-     * @Assert\NotBlank
+     * @ORM\Column(name="carte_vierge", type="integer", nullable=true)
      */
     private $carteVierge;
     

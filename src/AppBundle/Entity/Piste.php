@@ -152,6 +152,27 @@ class Piste
         }
         return $affectations;
     }
+    
+    public function chaineActiveOuAffectation(){
+        return ($this->affectationActive() || $this->chaineActive());
+    }
+    public function chaineActive(){
+        foreach($this->chaines as $chaine){
+            if($chaine->getActif()){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public function affectationActive(){
+        foreach($this->affectations as $affectation){
+            if($affectation->getActif()){
+                return true;;
+            }
+        }
+        return false;
+    }
 
     /**
      * Set affectations

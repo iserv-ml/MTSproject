@@ -17,7 +17,7 @@ class AffectationPisteType extends AbstractType
         $builder
                 ->add('agent', 'entity', array('class' => 'AppBundle:Utilisateur',
                     'query_builder' => function (UtilisateurRepository $er) {
-                        return $er->createQueryBuilder('u')->leftJoin('u.groupe', 'g')->where('g.name=:groupe')->orderBy('u.username', 'ASC')->setParameter('groupe', 'CONTROLLEUR');
+                        return $er->createQueryBuilder('u')->leftJoin('u.groupe', 'g')->where('g.name like :groupe')->orderBy('u.username', 'ASC')->setParameter('groupe', 'CONTROLLEUR');
                     },
                     'choice_label' => 'nomComplet',))
                 ->add('piste');

@@ -83,11 +83,16 @@ class PisteController extends Controller
         if (!$piste) {
             throw $this->createNotFoundException("La piste demandée n'est pas disponible.");
         }
+        
         $deleteForm = $this->createDeleteForm($piste);
         $editForm = $this->createForm('AppBundle\Form\PisteType', $piste);
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+            if(!$piste->getActif() && $piste->chaineActiveOuAffectation()){
+                $this->get('session')->getFlashBag()->add('notice', 'Impossible de désactiver cette piste. Vérifier les chaines et les affectations actives');
+                return $this->redirectToRoute('admin_parametres_piste_edit', array('id' => $piste->getId()));
+            }
             $this->getDoctrine()->getManager()->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
             return $this->redirectToRoute('admin_parametres_piste_edit', array('id' => $piste->getId()));

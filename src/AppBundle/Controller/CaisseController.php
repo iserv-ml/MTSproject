@@ -334,7 +334,7 @@ class CaisseController extends Controller
             $this->get('session')->getFlashBag()->add('notice', 'La caisse est déjà ouverte.');
         }
         
-        return $this->render('visite/quittance.html.twig', array('profil'=>'CAISSE N° '.$caisse->getNumero(), 'caisse'=>$caisse, 'centre'=>$centre,));
+        return $this->render('visite/quittance.html.twig', array('profil'=>'CAISSE N° '.$caisse->getNumero(), 'caisse'=>$caisse, 'centre'=>$centre, 'idCaisse'=>$caisse->getId()));
     }
     
     /**
@@ -357,6 +357,6 @@ class CaisseController extends Controller
         }else{
             $this->get('session')->getFlashBag()->add('notice', 'La caisse est déjà fermée.');
         }
-        return $this->render('visite/quittance.html.twig', array('profil'=>'CAISSE N° '.$caisse->getNumero(), 'caisse'=>$caisse, 'centre'=>$centre,));
+        return $this->render('visite/quittance.html.twig', array('profil'=>'CAISSE N° '.$caisse->getNumero(), 'caisse'=>$caisse, 'centre'=>$centre, 'idCaisse'=>$caisse->getId()));
     }
 }
