@@ -379,6 +379,9 @@ class Quittance
     }
     
     public function remboursableOu(){
+        if($this->getVisite()->getStatut() == 5){
+            return -2;
+        }
         if($this->visiteDejaFaite()){
             return -1;
         }
@@ -405,4 +408,7 @@ class Quittance
         return $datePaiement->format('Y-m-d') == $today->format('Y-m-d') ? 1 : 2;
     }
 
+    public function getTtc(){
+        return \round($this->getMontantVisite()+$this->getTva(),PHP_ROUND_HALF_UP)+$this->getTimbre();
+    }
 }

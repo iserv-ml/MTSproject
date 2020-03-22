@@ -84,76 +84,29 @@ class StatistiqueController extends Controller
      * Finds and displays a proprietaire entity.
      *
      * @Route("/{id}", name="centre_gestion_statistiques_caisse_etat")
-     * @Method("GET")
+     * @Method({"GET", "POST"})
      */
-    public function etatAction(Caisse $caisse)
+    public function etatAction(Caisse $caisse, Request $request)
     {
         if (!$caisse) {
             throw $this->createNotFoundException("La caisse demandée n'est pas disponible.");
         }
         $em = $this->getDoctrine()->getManager();
-        $usages = $em->getRepository('AppBundle:Usage')->findAll();
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $types = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeVehiculeDistinct($debut, $fin, $caisse->getNumero());
         $resultat = array();
         $i = 0;
         $nv = 0;
         $nr = 0;
         $mv = 0;
         $mr = 0;
-        foreach($usages as $usage){
+        if(count($types)>0){
+        foreach($types[0] as $usage){
             $ligne = array();
-            $ligne[0] = $usage->getLibelle();
-            $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($usage->getLibelle(), \date('d-m-Y'), $caisse->getNumero());
-            if($etat && count($etat)>0){
-                $ligne[1] = \intval($etat[0][1]);
-                $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
-                $ligne[3] = \intval($etat[0][3]);//$visites['mVisite'];
-                $ligne[4] = \intval($etat[0][4]);//$visites['mVisite'];
-                $ligne[5] = \intval($etat[0][3])+\intval($etat[0][4]);//$visites['mVisite']+$visites['mRevisite'];
-            }else{
-                $ligne[1] = 0;
-                $ligne[2] = 0;
-                $ligne[3] = 0;
-                $ligne[4] = 0;
-                $ligne[5] = 0;
-            }
-            $resultat[] = $ligne;
-            $nv += $ligne[1];
-            $nr += $ligne[2];
-            $mv += $ligne[3];
-            $mr += $ligne[4];
-        } 
-        $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $mv+$mr];
-       return $this->render('statistique/caisse/etat.html.twig', array(
-            'resultats' => $resultat,'caisse' => $caisse,
-        ));
-    }
-    
-    /**
-     * Finds and displays a proprietaire entity.
-     *
-     * @Route("/caisse/etat", name="centre_gestion_statistiques_caissier_etat")
-     * @Method("GET")
-     */
-    public function caissierAction()
-    {
-        $user = $this->container->get('security.context')->getToken()->getUser();
-        $em = $this->getDoctrine()->getManager();
-        $affectation = $em->getRepository('AppBundle:Affectation')->derniereAffectation($user->getId());
-        if (!$affectation) {
-            $this->get('session')->getFlashBag()->add('error', "Vous n'êtes affecté à aucune caisse. Contacter l'administrateur.");
-            return $this->redirectToRoute('homepage');
-        }
-        $usages = $em->getRepository('AppBundle:Usage')->findAll();
-        $resultat = array();
-        $i = 0;
-        $nv = 0;
-        $nr = 0;
-        $mv = 0;
-        $mr = 0;
-        foreach($usages as $usage){
-            $ligne = array();
-            $ligne[0] = $usage->getLibelle();
-            $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($usage->getLibelle(), \date('d-m-Y'), $affectation->getCaisse()->getNumero());
+            $ligne[0] = $usage;
+            $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($usage, $debut, $fin, $caisse->getNumero());
             if($etat && count($etat)>0){
                 $ligne[1] = \intval($etat[0][1]);
                 $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
@@ -173,9 +126,66 @@ class StatistiqueController extends Controller
             $mv += $ligne[3];
             $mr += $ligne[4];
         } 
+        } 
+        $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $mv+$mr];
+       return $this->render('statistique/caisse/etat.html.twig', array(
+            'resultats' => $resultat,'caisse' => $caisse,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
+        ));
+    }
+    
+    /**
+     * Finds and displays a proprietaire entity.
+     *
+     * @Route("/caisse/etat", name="centre_gestion_statistiques_caissier_etat")
+     * @Method({"GET", "POST"})
+     */
+    public function caissierAction(Request $request)
+    {
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $affectation = $em->getRepository('AppBundle:Affectation')->derniereAffectation($user->getId());
+        if (!$affectation) {
+            $this->get('session')->getFlashBag()->add('error', "Vous n'êtes affecté à aucune caisse. Contacter l'administrateur.");
+            return $this->redirectToRoute('homepage');
+        }
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $types = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeVehiculeDistinct($debut, $fin, $affectation->getCaisse()->getNumero());
+        $resultat = array();
+        $i = 0;
+        $nv = 0;
+        $nr = 0;
+        $mv = 0;
+        $mr = 0;
+        if(count($types)>0){
+        foreach($types[0] as $usage){
+            $ligne = array();
+            $ligne[0] = $usage;
+            $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($usage, $debut, $fin, $affectation->getCaisse()->getNumero());
+            if($etat && count($etat)>0){
+                $ligne[1] = \intval($etat[0][1]);
+                $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
+                $ligne[3] = \intval($etat[0][3]);//$visites['mVisite'];
+                $ligne[4] = \intval($etat[0][4]);//$visites['mVisite'];
+                $ligne[5] = \intval($etat[0][3])+\intval($etat[0][4]);//$visites['mVisite']+$visites['mRevisite'];
+            }else{
+                $ligne[1] = 0;
+                $ligne[2] = 0;
+                $ligne[3] = 0;
+                $ligne[4] = 0;
+                $ligne[5] = 0;
+            }
+            $resultat[] = $ligne;
+        $nv += $ligne[1];
+            $nr += $ligne[2];
+            $mv += $ligne[3];
+            $mr += $ligne[4];
+        } 
+        }
         $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $mv+$mr]; 
        return $this->render('statistique/caisse/caissier.html.twig', array(
-            'resultats' => $resultat,'caisse' => $affectation->getCaisse(),
+            'resultats' => $resultat,'caisse' => $affectation->getCaisse(), 'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
         ));
     }
     

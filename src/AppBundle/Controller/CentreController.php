@@ -332,6 +332,7 @@ class CentreController extends Controller
             return $this->redirectToRoute('caisse_quittance_index');
         }
         switch($quittance->remboursableOu()){
+            case -2: $this->get('session')->getFlashBag()->add('error', "La quittance a déjà été remboursée");break;
             case -1: $this->get('session')->getFlashBag()->add('error', "La visite a déjà été effectuée");break;
             case 0: $this->get('session')->getFlashBag()->add('error', "Cette quittance n'a pas été encaissée!");break;
             case 1: $this->get('session')->getFlashBag()->add('error', "Le client doit passer à la caisse N°".$quittance->getVisite()->getChaine()->getCaisse()->getNumero()." pour se faire rembourser!");break;
@@ -345,7 +346,7 @@ class CentreController extends Controller
                     }
                 break;
         }
-        return $this->render('caisse_quittance_index');
+        return $this->redirectToRoute('caisse_quittance_index');
     }
     
     /**

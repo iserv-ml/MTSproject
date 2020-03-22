@@ -488,7 +488,7 @@ class Vehicule
     }
 
     function setImmatriculation($immatriculation) {
-        $this->immatriculation = $immatriculation;
+        $this->immatriculation = \strtoupper($immatriculation);
     }
     function getTypeVehicule() {
         return $this->typeVehicule;

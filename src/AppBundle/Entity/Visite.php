@@ -466,6 +466,17 @@ class Visite
         return $contenu;
     }
     
+    public function fermerFichierResultatMaha($contenu){
+        $path = $this->getChaine()->getPiste()->getRepertoire()."RES".DIRECTORY_SEPARATOR.$this->getVehicule()->getImmatriculation();
+        try{
+            fclose($contenu);
+            rename($path.'.F', $path.'_TRAITE.F');
+        } catch (\Exception $exeption){
+            echo $exeption->getMessage();
+            return null;
+        }
+    }
+    
     public function lireLigneMaha($ligne){
         try{
             return \explode ("=", $ligne);

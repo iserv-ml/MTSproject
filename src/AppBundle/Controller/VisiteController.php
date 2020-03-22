@@ -332,7 +332,7 @@ class VisiteController extends Controller
         $action = "";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CAISSIER')){
             if($quittance != null){
-                $action .= "<a title='Quittance' class='btn btn-success' href='".$this->generateUrl('caisse_quittance_show', array('id'=> $quittance->getId() ))."'><i class='fa fa-credit-card' ></i> Voir</a>";
+                $action .= "<a title='Quittance' class='btn btn-success' href='".$this->generateUrl('caisse_quittance_show', array('id'=> $quittance->getId()))."'><i class='fa fa-credit-card' ></i> Voir</a>";
             }else{
                 $action .= "<a onclick='loadDynamicContentModal(".$id.")' title='Quittance' class='btn btn-success' href='#'><i class='fa fa-credit-card' ></i> Générer</a>";
             }
@@ -567,6 +567,7 @@ class VisiteController extends Controller
                 }
             }
             $em->flush();
+            $visite->fermerFichierResultatMaha($contenu);
             return $this->redirectToRoute('visite_controleur', array('id' => $visite->getId()));
         }else{
             $this->get('session')->getFlashBag()->add('error', "Le fichier de résultat maha nexiste pas!");
@@ -644,7 +645,8 @@ class VisiteController extends Controller
                 $date = new \DateTime($date1);
                 $date->add(new \DateInterval('P'.$visite->getVehicule()->getTypeVehicule()->getValidite().'M')); // P1D means a period of 1 day
                 $visite->setDateValidite($date);
-                $visite->setNumeroCertificat('BKO'.\time());
+                $visite->setNumeroCertificat($centre->getCode().\time());
+                $centre->decrementerCarteVierge();
                 $visite->getVehicule()->setDateProchaineVisite($date->format('Y-m-d'));
                 $visite->getVehicule()->setCompteurRevisite(0);
             }else{
@@ -665,6 +667,7 @@ class VisiteController extends Controller
                 'controles' => $controles,
                 'visite' => $visite,
                 'dateRevisite' => $date2,
+                'quittance' => $visite->getQuittance()
             ));
         }
         return $this->render('visite/controle.html.twig', array(

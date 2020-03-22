@@ -26,13 +26,19 @@ class EtatJournalierRepository extends EntityRepository
         return $arrayAss;
     }
     
-    public function etatJournalier($usage, $date, $caisse) {
+    public function etatJournalier($usage, $debut, $fin, $caisse) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.usage, SUM(r.nbvisite), SUM(r.nbrevisite), SUM(r.montantVisite), SUM(r.montantRevisite) FROM AppBundle:EtatJournalier r '
-                    . ' WHERE r.usage = :usage AND r.date = :date AND r.caisse = :caisse'
-                    . ' ')
-            ->setParameter('usage', $usage)->setParameter('date', $date)->setParameter('caisse', $caisse);
+                'SELECT r.typeVehicule, SUM(r.nbvisite), SUM(r.nbrevisite), SUM(r.montantVisite), SUM(r.montantRevisite) FROM AppBundle:EtatJournalier r '
+                    . ' WHERE r.typeVehicule = :usage AND r.dateCreation BETWEEN :debut AND :fin AND r.caisse = :caisse GROUP BY r.typeVehicule ')
+            ->setParameter('usage', $usage)->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('caisse', $caisse);
+        $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+        return $arrayAss;
+    }
+    
+    public function recupererTypeVehiculeDistinct($debut, $fin, $caisse) {
+        $qb = $this->getEntityManager()
+            ->createQuery('SELECT DISTINCT r.typeVehicule FROM AppBundle:EtatJournalier r WHERE r.dateCreation BETWEEN :debut AND :fin AND r.caisse = :caisse')->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('caisse', $caisse);
         $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
         return $arrayAss;
     }

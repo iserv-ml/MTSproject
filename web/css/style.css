@@ -15233,3 +15233,7 @@ a.selected {
 
 .ui-autocomplete-loading { background:#8ad4ee !important }
 .btn-djib{background: aqua}
+
+.hidden {
+  display:none;
+}

@@ -17,9 +17,9 @@
 {% block actions %}
     {% if is_granted('ROLE_DELIVRANCE') %}
         <label class="btn btn-outline-secondary"><a href="{{ path('visite_delivrance') }}">LISTE DELIVRANCE</a></label>
-        <label class="btn btn-outline-secondary"><a onclick="printRapport('rapport')"  href="#" title="Imprimer le rapport">RAPPORT</a></label>
+        <label class="btn btn-outline-secondary"><a onclick="imprimerRapport()"  href="#" title="Imprimer le rapport">RAPPORT</a></label>
         {% if visite.statut == 2 or visite.statut == 4 %}
-            <label class="btn btn-outline-secondary"><a onclick="printDiv('certificat')" href="#" title="Imprimer le certificat">CERTIFICAT</a></label>
+            <label class="btn btn-outline-secondary"><a onclick="imprimerCertificat()" href="#" title="Imprimer le certificat">CERTIFICAT</a></label>
         {% endif %}
     {% endif %}
 {% endblock %}
@@ -40,13 +40,13 @@
             </tr>
         </tbody>
     </table>
-    <div id='rapport'>
+   <div id='rapport'>
                     <div>
     <span style="font-weight: bolder"><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></span>
 </div>
 <div>
     <span style="font-weight: bolder">Date de contr&ocirc;le : {% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</span>
-    <span style="float:right">Montant visite : {{ quittance.montantvisite|number_format(0, ',', ' ') }}</span>
+    <span style="float:right">Montant visite : {{ ((quittance.montantvisite*1.18)|round(0, 'ceil')+120)|number_format(0, ',', ' ') }}</span>
 </div>
 <div>
     <span style="font-weight: bolder">N&deg; de quittance : {{ quittance.numero }}</span>
@@ -54,7 +54,7 @@
 </div>
 <div>
     <span style="font-weight: bolder">N&deg; Immatriculation : {{ visite.vehicule.immatriculation }}</span>
-    <span style="float:right;background: #000;color:#fff;padding:10px">Montant p&eacute;nalit&eacute; : {{ quittance.penalite|number_format(0, ',', ' ') }}</span>
+    <span style="float:right;background: #000;color:#fff;padding:10px">Montant p&eacute;nalit&eacute; : {{ ((quittance.penalite)|round(0, 'ceil'))|number_format(0, ',', ' ') }}</span>
 </div>
 <div style='margin-bottom:15px'>
     <span style="font-weight: bolder">N&deg; de chassis : {{ visite.vehicule.chassis }}</span>
@@ -83,7 +83,7 @@
      Controle effctué par {{ visite.chaine.piste.getAffectationActive.agent.nomComplet }}
 </div>
 <div style='margin-top:25px'>
-    <span>RESULTAT DU CONTROLE VALABLE POUR LA CIRCULATION DU VEHICULE PENDANT {{ visite.vehicule.typeVehicule.delai }} JOURS SANS CERTIFICAT DE VISITE TECHNIQUE.</span>
+    <span>RESULTAT DU CONTROLE VALABLE POUR LA CIRCULATION DU VEHICULE PENDANT {{ visite.vehicule.typeVehicule.delai }} JOURS SANS CERTIFICAT DE VISITE TECHNIQUE</span>
 </div>
 <div>
     <span>FRAIS A PAYER POUR LA REVISITE REVISITE : {{ visite.vehicule.typeVehicule.montantRevisite|number_format(0, ',', ' ') }} FCFA</span>
@@ -95,16 +95,16 @@
     
     <div style="width:11.5cm; height: 7cm;overflow: hidden;">
         <div style="margin-top:2mm;margin-left: 8.6cm">{{ visite.numeroCertificat }}</div>
-        <div style="margin-top:1.7cm;margin-left:1.4cm"><div style="display: inline-block;width: 7.6cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('d-m-y') }}</span></div>
+        <div style="margin-top:1.8cm;margin-left:1.4cm"><div style="display: inline-block;width: 7.6cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('d-m-y') }}</span></div>
         <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.9cm">{{ visite.vehicule.proprietaire.adresse }}</div><span>{{ visite.dateValidite|date('d-m-y') }}</span></div>
-        <div style="margin-top:8mm;margin-left:2.5cm"><div style="display: inline-block;width: 7.1cm">{{ visite.vehicule.immatriculation }}</div><span>{{ visite.vehicule.dateMiseCirculation|date('d-m-y') }}</span></div>
+        <div style="margin-top:6mm;margin-left:2.5cm"><div style="display: inline-block;width: 7.1cm">{{ visite.vehicule.immatriculation }}</div><span>{{ visite.vehicule.dateMiseCirculation|date('d-m-y') }}</span></div>
         <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.typeChassis }}</div><span>{{ visite.vehicule.modele.marque.libelle }} {{ visite.vehicule.modele.libelle }}</span></div>
     </div>
    <div style="width:11.5cm; height: 7cm;overflow: hidden;">
         <div style="margin-top:2mm;margin-left: 8.6cm">{{ visite.numeroCertificat }}</div>
-        <div style="margin-top:1.7cm;margin-left:1.4cm"><div style="display: inline-block;width: 7.6cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('d-m-y') }}</span></div>
+        <div style="margin-top:1.8cm;margin-left:1.4cm"><div style="display: inline-block;width: 7.6cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('d-m-y') }}</span></div>
         <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.9cm">{{ visite.vehicule.proprietaire.adresse }}</div><span>{{ visite.dateValidite|date('d-m-y') }}</span></div>
-        <div style="margin-top:8mm;margin-left:2.5cm"><div style="display: inline-block;width: 7.1cm">{{ visite.vehicule.immatriculation }}</div><span>{{ visite.vehicule.dateMiseCirculation|date('d-m-y') }}</span></div>
+        <div style="margin-top:6mm;margin-left:2.5cm"><div style="display: inline-block;width: 7.1cm">{{ visite.vehicule.immatriculation }}</div><span>{{ visite.vehicule.dateMiseCirculation|date('d-m-y') }}</span></div>
         <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.typeChassis }}</div><span>{{ visite.vehicule.modele.marque.libelle }} {{ visite.vehicule.modele.libelle }}</span></div>
     </div>
     <div style="width:11.5cm; height: 7cm;overflow: hidden;">
@@ -113,7 +113,82 @@
         <div style="margin-top:0cm;text-align: center;font-weight: bold;font-size:30px">{{ visite.dateValidite|date('d-m-Y') }}</div>
     </div>
 </div>
-{% endif %}   
+        <div id="printDivCertificat" class="hidden">
+            <div id="" style="size: A4; margin: 0;width:210mm;font-size:11px;overflow:hidden;margin-left:4.5cm;margin-top:-0.2cm">
+    
+    <div style="width:11.5cm; height: 7cm;overflow: hidden;">
+        <div style="margin-top:2mm;margin-left: 8.6cm">{{ visite.numeroCertificat }}</div>
+        <div style="margin-top:1.8cm;margin-left:1.4cm"><div style="display: inline-block;width: 7.6cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('d-m-y') }}</span></div>
+        <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.9cm">{{ visite.vehicule.proprietaire.adresse }}</div><span>{{ visite.dateValidite|date('d-m-y') }}</span></div>
+        <div style="margin-top:6mm;margin-left:2.5cm"><div style="display: inline-block;width: 7.1cm">{{ visite.vehicule.immatriculation }}</div><span>{{ visite.vehicule.dateMiseCirculation|date('d-m-y') }}</span></div>
+        <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.typeChassis }}</div><span>{{ visite.vehicule.modele.marque.libelle }} {{ visite.vehicule.modele.libelle }}</span></div>
+    </div>
+   <div style="width:11.5cm; height: 7cm;overflow: hidden;">
+        <div style="margin-top:2mm;margin-left: 8.6cm">{{ visite.numeroCertificat }}</div>
+        <div style="margin-top:1.8cm;margin-left:1.4cm"><div style="display: inline-block;width: 7.6cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('d-m-y') }}</span></div>
+        <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.9cm">{{ visite.vehicule.proprietaire.adresse }}</div><span>{{ visite.dateValidite|date('d-m-y') }}</span></div>
+        <div style="margin-top:6mm;margin-left:2.5cm"><div style="display: inline-block;width: 7.1cm">{{ visite.vehicule.immatriculation }}</div><span>{{ visite.vehicule.dateMiseCirculation|date('d-m-y') }}</span></div>
+        <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.typeChassis }}</div><span>{{ visite.vehicule.modele.marque.libelle }} {{ visite.vehicule.modele.libelle }}</span></div>
+    </div>
+    <div style="width:11.5cm; height: 7cm;overflow: hidden;">
+        <div style="margin-top:1.2cm;margin-left:5.6cm">{{ visite.numeroCertificat }}</div>
+        <div style="margin-top:1.5cm;text-align: center;font-size: 20px">{{ visite.vehicule.immatriculation}}</div>
+        <div style="margin-top:0cm;text-align: center;font-weight: bold;font-size:30px">{{ visite.dateValidite|date('d-m-Y') }}</div>
+    </div>
+</div>
+        </div>
+{% endif %}  
+<div class="hidden" id="printDivRapport">
+        <div style="width:200mm">
+            <div>
+                <span style="font-weight: bolder"><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></span>
+            </div>
+            <div>
+                <span style="font-weight: bolder">Date de contr&ocirc;le : {% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</span>
+                <span style="float:right">Montant visite : {{ ((quittance.montantvisite*1.18)|round(0, 'ceil')+120)|number_format(0, ',', ' ') }}</span>
+            </div>
+            <div>
+                <span style="font-weight: bolder">N&deg; de quittance : {{ quittance.numero }}</span>
+                <span style="float:right">Jours de retard : {{ quittance.retard }}</span>
+            </div>
+            <div>
+                <span style="font-weight: bolder">N&deg; Immatriculation : {{ visite.vehicule.immatriculation }}</span>
+                <span style="float:right;background: #000;color:#fff;padding:10px">Montant p&eacute;nalit&eacute; : {{ ((quittance.penalite)|round(0, 'ceil'))|number_format(0, ',', ' ') }}</span>
+            </div>
+            <div style='margin-bottom:15px'>
+                <span style="font-weight: bolder">N&deg; de chassis : {{ visite.vehicule.chassis }}</span>
+            </div>
+            <table border="1" style="width:200mm;" cellpadding="0" cellspacing="0">
+                <tbody>
+                    <tr>
+                        <td>Bilan de la visite technique</td>
+                        <td>D&eacute;tails</td>
+                        <td>Valeur controle</td>
+                        <td>R&eacute;sultat</td>
+                    </tr>
+                    {% if visite.resultats %}
+                        {% for resultat in visite.resultats %}
+                            <tr>
+                                <td>{{ resultat.controle.libelle }}</td>
+                                <td>{{ resultat.controle.detail }}</td>
+                                <td>{{ resultat.commentaire }} ({{ resultat.controle.unite }}) </td>
+                                <td>{% if resultat.succes %}SUCCES{% else %}ECHEC{% endif %}</td>
+                            </tr>
+                        {% endfor %}
+                    {% endif %}
+                 </tbody>
+            </table>
+            <div style='margin-top:15px'>
+                 Controle effctué par {{ visite.chaine.piste.getAffectationActive.agent.nomComplet }}
+            </div>
+            <div style='margin-top:25px'>
+                <span>RESULTAT DU CONTROLE VALABLE POUR LA CIRCULATION DU VEHICULE PENDANT {{ visite.vehicule.typeVehicule.delai }} JOURS SANS CERTIFICAT DE VISITE TECHNIQUE</span>
+            </div>
+            <div>
+                <span>FRAIS A PAYER POUR LA REVISITE REVISITE : {{ visite.vehicule.typeVehicule.montantRevisite|number_format(0, ',', ' ') }} FCFA</span>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts -%}
@@ -150,6 +225,25 @@
  
 
 }
+    function imprimerRapport(){
+        var printContents = document.getElementById('printDivRapport').innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.style.backgroundColor = "white"
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.style.backgroundColor = "rgb(228, 229, 230)";
+        document.body.innerHTML = originalContents;
+    }
+    
+    function imprimerCertificat(){
+        var printContents = document.getElementById('printDivCertificat').innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.style.backgroundColor = "white"
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.style.backgroundColor = "rgb(228, 229, 230)";
+        document.body.innerHTML = originalContents;
+    }
 </script>
 
 

@@ -1,23 +1,23 @@
 {% extends '::base.html.twig' %}
 {% block menu -%}
-{% embed  '::visite/menu.html.twig' %}
+{% embed  '::centre/menu.html.twig' %}
 {% block menu_quittance_actif %}active{% endblock %}
 {% endembed %}
 {% endblock %}
-{% block menu_caisse_actif %}active{% endblock %}
+{% block menu_gestion_actif %}active{% endblock %}
 {% block ariane -%}
     <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
-          <li class="breadcrumb-item"><a href="{{ path('visite_quittance') }}">Quittance</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('caisse_quittance_index') }}">Quittances</a></li>
           <li class="breadcrumb-item">Détail de la Quittance</li>
     </ol>
 {% endblock %}
 {% block pagetitle -%}VOIR UNE QUITTANCE{% endblock %}
 {% block actions %}
-    <label class="btn btn-outline-secondary"><a href="{{ path('visite_quittance') }}">LISTER</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('caisse_quittance_index') }}">LISTER</a></label>
     <label class="btn btn-outline-secondary"><a  href="#" onclick="imprimer()">IMPRIMER</a></label>
     <label class="btn btn-outline-secondary">
-        {% if quittance.paye %}<a href="#" title="Rembourser" onclick="rembourser()">REMBOURSER</a>
+        {% if quittance.paye %}<a href="#" title="Rembourser" onclick="rembourser({{ quittance.id }})">REMBOURSER</a>
         {% else %}<a onclick="return confirm('Veuiller confirmer l\'encaissement de la quittance N° {{quittance.numero}}');" href="{{ path('caisse_quittance_encaisser', { 'id': quittance.id }) }}">ENCAISSER</a>
         {% endif %}
     </label>
@@ -67,7 +67,7 @@
             </tr>
      </tbody>
 </table>
-    </div>
+    </div>   
     <div id="printDiv" class="hidden">
     <div style="size: A4;margin:0;width:200mm;margin-top:300px;-webkit-transform: rotate(-90deg);-moz-transform:rotate(-90deg);filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);">
         <div style="margin:0">
@@ -115,18 +115,24 @@
     </table>
     </div>
     </div>
-            
     <div id="remboursement-modal" title="REMBOURSEMENT"></div>
 {% endblock %}
 {% block javascripts -%}
     <script type="text/javascript">
-        function printDiv(DivIdToPrint){
-            var divToPrint=document.getElementById(DivIdToPrint);
-            var newWin=window.open('','Print-Window');
-            newWin.document.open();
-            newWin.document.write('<html><body style="size: A4;margin:0;width:200mm;margin-top:300px;-webkit-transform: rotate(-90deg);-moz-transform:rotate(-90deg);filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);" onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
-            newWin.document.close();
-        }
+        function printDiv(DivIdToPrint) 
+{
+
+  var divToPrint=document.getElementById(DivIdToPrint);
+
+  var newWin=window.open('','Print-Window');
+
+  newWin.document.open();
+
+  newWin.document.write('<html><body style="size: A4;margin:0;width:200mm;margin-top:300px;-webkit-transform: rotate(-90deg);-moz-transform:rotate(-90deg);filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);" onload="window.print()">'+divToPrint.innerHTML+'</body></html>');
+
+  newWin.document.close();
+
+}
         function imprimer(){
             var printContents = document.getElementById('printDiv').innerHTML;
             var originalContents = document.body.innerHTML;
@@ -136,14 +142,15 @@
             document.body.style.backgroundColor = "rgb(228, 229, 230)";
             document.body.innerHTML = originalContents;
         }
-        function rembourser(){
+        
+        function rembourser(id){
             var options = {
                 modal: true,
                 height:500,
                 width:700,
                 buttons: {
                     "Rembourser": function() {
-                        $(location).attr('href', '{{ path('quittance_rembourser', { 'id': quittance.id }) }}')
+                        $(location).attr('href', '{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/admin/gestion/centre/'+id+'/rembourser/principal')
                     },
                     Annuler: function() {
                         $( this ).dialog( "close" );
@@ -151,7 +158,7 @@
                 }
             };
             $('#remboursement-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
-            $('#remboursement-modal').load('{{ path('quittance_remboursement_confirmer', { 'id': quittance.id }) }}').dialog(options).dialog('open');
+            $('#remboursement-modal').load('{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/admin/gestion/centre/'+id+'/rembourser/principal/confirmer').dialog(options).dialog('open');
         }
     </script>
     

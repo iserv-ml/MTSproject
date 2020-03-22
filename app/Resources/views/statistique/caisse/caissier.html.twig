@@ -12,13 +12,35 @@
     </ol>
 {% endblock %}
 {% block menu_gestion_actif %}active{% endblock %}
-{% block pagetitle -%}CAISSE {{ caisse.numero }}{% endblock %}
+{% block pagetitle -%}ETAT JOURNALIER DE LA CAISSE {{ caisse.numero }}{% endblock %}
 {% block actions %}
+    <label class="btn btn-outline-secondary pointer-event"><a  href="#" id="doPrint" onclick="imprimer()">IMPRIMER</a></label>
+    {#<label class="btn btn-warning pointer-event"> 
+        <form method='POST' action='{{ path('centre_gestion_statistiques_caissier_etat') }}'>
+            Du <input type="text" id="debut" name="debut" value="{{ debut }}" /> 
+            Au <input type="text" id="fin" name="fin" value="{{ fin }}" />
+            <input type="submit" value="Actualiser"/>
+        </form>
+    </label>#}
 {% endblock %}
 {% block body -%}
     <div class="table-responsive">
-        <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+        <table border="1" style="width:100%; text-align: center" id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
             <thead>
+                <tr>
+                    <th style="text-align:left">
+                        <img src="{{ asset('images/logocertificat.PNG', absolute=true) }}" />
+                    </th>
+                     <th  style="text-align:left;vertical-align: middle">
+                        DATE : {{ debut }}
+                    </th>
+                    <th  style="text-align:left;vertical-align: middle">
+                        CAISSE N° : {{ caisse.numero }}
+                    </th>
+                    <th colspan="3" style="text-align:left;vertical-align: middle">
+                        CAISSIER : {{ caisse.getAffectationActive.agent.nomComplet }}
+                    </th>
+                </tr>
                 <tr>
                     <th>Catégories</th>
                     <th>Nombre de visites</th>
@@ -32,21 +54,83 @@
                 {% for resultat in resultats %}
                     <tr>
                         <td>{{ resultat[0] }}</td>
-                        <td>{{ resultat[1] }}</td>
-                        <td>{{ resultat[2] }}</td>
-                        <td>{{ resultat[3] }}</td>
-                        <td>{{ resultat[4] }}</td>
-                        <td>{{ resultat[5] }}</td>
+                        <td>{{ resultat[1]|number_format(0, ',', ' ') }}</td>
+                        <td>{{ resultat[2]|number_format(0, ',', ' ') }}</td>
+                        <td>{{ resultat[3]|number_format(0, ',', ' ') }}</td>
+                        <td>{{ resultat[4]|number_format(0, ',', ' ') }}</td>
+                        <td>{{ resultat[5]|number_format(0, ',', ' ') }}</td>
                     </tr>
                 {% endfor %}
             
             </tbody>
-            
+            <tfoot>
+                <tr><th colspan="6" style="text-align:right;border-bottom: none">Signature et cachet du caissier</th></tr>
+            </tfoot>
         </table>
+    </div>
+    <div class="hidden" id="printDiv">
+        <div class="table-responsive"  style="width:200mm">
+            <table border="1" style="width:100%; text-align: center" id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+            <thead>
+                <tr>
+                    <th style="text-align:left">
+                        <img src="{{ asset('images/logocertificat.PNG', absolute=true) }}" />
+                    </th>
+                     <th  style="text-align:left;vertical-align: middle">
+                        DATE : {{ debut }}
+                    </th>
+                    <th  style="text-align:left;vertical-align: middle">
+                        CAISSE N° : {{ caisse.numero }}
+                    </th>
+                    <th colspan="3" style="text-align:left;vertical-align: middle">
+                        CAISSIER : {{ caisse.getAffectationActive.agent.nomComplet }}
+                    </th>
+                </tr>
+                <tr>
+                    <th>Catégories</th>
+                    <th>Nombre de visites</th>
+                    <th>Nombre de revisites</th>
+                    <th>Montant des visites</th>
+                    <th>Montant des revisites</th>
+                    <th>Chiffre d'affaire</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resultat in resultats %}
+                    <tr>
+                        <td>{{ resultat[0] }}</td>
+                        <td>{{ resultat[1]|number_format(0, ',', ' ') }}</td>
+                        <td>{{ resultat[2]|number_format(0, ',', ' ') }}</td>
+                        <td>{{ resultat[3]|number_format(0, ',', ' ') }}</td>
+                        <td>{{ resultat[4]|number_format(0, ',', ' ') }}</td>
+                        <td>{{ resultat[5]|number_format(0, ',', ' ') }}</td>
+                    </tr>
+                {% endfor %}
+            
+            </tbody>
+            <tfoot>
+                <tr><th colspan="6" style="text-align:right;border-bottom: none">Signature et cachet du caissier</th></tr>
+            </tfoot>
+        </table>
+        </div>
     </div>
 {% endblock %}
 {% block javascripts -%}
     <script type="text/javascript">
-        
+        $( function() {
+            $( "#debut" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "+0Y", dateFormat: 'dd-mm-yy' });
+            $( "#fin" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "+0Y", dateFormat: 'dd-mm-yy' });
+           
+        });
+        function imprimer(){
+            var printContents = document.getElementById('printDiv').innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.style.backgroundColor = "white"
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.style.backgroundColor = "rgb(228, 229, 230)"
+            document.body.innerHTML = originalContents;
+        }
+
     </script>
 {% endblock %}

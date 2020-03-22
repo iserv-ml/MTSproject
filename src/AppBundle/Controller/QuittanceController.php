@@ -75,6 +75,31 @@ class QuittanceController extends Controller
             'quittance' => $quittance,
             'delete_form' => $deleteForm->createView(),
             'libelle' => $centre->getLibelle(),
+            'type' => 0,
+        ));
+    }
+    
+    /**
+     * Finds and displays a quittance entity.
+     *
+     * @Route("/principal/{id}", name="caisse_quittance_show_principal")
+     * @Method("GET")
+     */
+    public function showprincipalAction(Quittance $quittance)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_controle');
+        }
+        $deleteForm = $this->createDeleteForm($quittance);
+
+        return $this->render('quittance/show.principal.html.twig', array(
+            'quittance' => $quittance,
+            'delete_form' => $deleteForm->createView(),
+            'libelle' => $centre->getLibelle(),
+            'type' => 1,
         ));
     }
 
@@ -132,10 +157,10 @@ class QuittanceController extends Controller
             if($visite->getRevisite()){
                 $montantVisite = 0;
                 $nbVisite = 0;
-                $montantRevisite = $quittance->getMontantVisite();
+                $montantRevisite = $quittance->getTtc();
                 $nbRevisite = 1;
             }else{
-                $montantVisite = $quittance->getMontantVisite();
+                $montantVisite = $quittance->getTtc();
                 $nbVisite = 1;
                 $montantRevisite = 0;
                 $nbRevisite = 0;
@@ -246,6 +271,7 @@ class QuittanceController extends Controller
         $penalite = $em->getRepository('AppBundle:Penalite')->trouverParNbJours($retard);
         $quittance->generer($montant, $penalite, $retard);
         $em->persist($quittance);
+        $visite->setQuittance($quittance);
         $em->flush();
         $this->get('session')->getFlashBag()->add('notice', 'Quittance générée avec succès.');
         return $this->render('quittance/show.html.twig', array(
@@ -398,9 +424,15 @@ class QuittanceController extends Controller
     private function genererAction($id, $statut){
         if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
             switch($statut){
-                case 0 : case 1 : $action = " <a title='Rembourser' onclick='rembourser(".$id.")' class='btn btn-info' href='#'><i class='fa fa-edit' ></i></a>";break;
-                case 2 : case 3 : case 4: $action = "Déjà contrôlé";break;
-                case 5 : $action = "Déjà annulée";
+                case 0 : case 1 : 
+                    $action = " <a title='Rembourser' onclick='rembourser(".$id.")' class='btn btn-info' href='#'><i class='fa fa-edit' ></i></a>";
+                    $action .= "<br/><a title='Quittance' class='btn btn-success' href='".$this->generateUrl('caisse_quittance_show_principal', array('id'=> $id))."'><i class='fa fa-credit-card' ></i> Voir</a>";
+                    break;
+                case 2 : case 3 : case 4: 
+                    $action = "Déjà contrôlé";
+                    $action .= "<br/><a title='Quittance' class='btn btn-success' href='".$this->generateUrl('caisse_quittance_show_principal', array('id'=> $id))."'><i class='fa fa-credit-card' ></i> Voir</a>";
+                    break;
+                case 5 : $action = "Déjà annulée";$action .= "<br/><a title='Quittance' class='btn btn-success' href='".$this->generateUrl('caisse_quittance_show_principal', array('id'=> $id))."'><i class='fa fa-credit-card' ></i> Voir</a>";
             }
         }
         return $action;
