@@ -716,6 +716,7 @@ class VisiteController extends Controller
             $em->persist($visite);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Aiguillage effectué.');
+            $visite->genererFichierMaha();
             return $this->render('visite/visite.html.twig', array(
                 'visite' => $visite,
                 ));

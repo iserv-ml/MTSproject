@@ -432,7 +432,7 @@ class Visite
         $this->setVehicule($vehicule);
         $this->setStatut($statut);
         $this->setChaine($chaine);
-        $numero = "BAMAKO".\time();
+        $numero = $centre->getCode().\time();
         $this->setNumeroCertificat($numero);
         $this->setDate(new \DateTime());
         if($visiteParent != null){

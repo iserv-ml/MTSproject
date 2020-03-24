@@ -94,7 +94,10 @@ class StatistiqueController extends Controller
         $em = $this->getDoctrine()->getManager();
         $date = new \DateTime("now");
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->add(new \DateInterval('P1D'));
+        $fin->setTime(0, 0);
         $types = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeVehiculeDistinct($debut, $fin, $caisse->getNumero());
         $resultat = array();
         $i = 0;
@@ -103,10 +106,10 @@ class StatistiqueController extends Controller
         $mv = 0;
         $mr = 0;
         if(count($types)>0){
-        foreach($types[0] as $usage){
+        foreach($types as $usage){
             $ligne = array();
-            $ligne[0] = $usage;
-            $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($usage, $debut, $fin, $caisse->getNumero());
+            $ligne[0] = $usage['typeVehicule'];
+            $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($usage['typeVehicule'], $debut, $fin, $caisse->getNumero());
             if($etat && count($etat)>0){
                 $ligne[1] = \intval($etat[0][1]);
                 $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
@@ -127,6 +130,7 @@ class StatistiqueController extends Controller
             $mr += $ligne[4];
         } 
         } 
+        $fin->sub (new \DateInterval('P1D'));
         $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $mv+$mr];
        return $this->render('statistique/caisse/etat.html.twig', array(
             'resultats' => $resultat,'caisse' => $caisse,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
@@ -150,7 +154,10 @@ class StatistiqueController extends Controller
         }
         $date = new \DateTime("now");
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->add(new \DateInterval('P1D'));
+        $fin->setTime(0, 0);
         $types = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeVehiculeDistinct($debut, $fin, $affectation->getCaisse()->getNumero());
         $resultat = array();
         $i = 0;
@@ -159,10 +166,10 @@ class StatistiqueController extends Controller
         $mv = 0;
         $mr = 0;
         if(count($types)>0){
-        foreach($types[0] as $usage){
+        foreach($types as $usage){
             $ligne = array();
-            $ligne[0] = $usage;
-            $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($usage, $debut, $fin, $affectation->getCaisse()->getNumero());
+            $ligne[0] = $usage['typeVehicule'];
+            $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($usage['typeVehicule'], $debut, $fin, $affectation->getCaisse()->getNumero());
             if($etat && count($etat)>0){
                 $ligne[1] = \intval($etat[0][1]);
                 $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
@@ -183,6 +190,7 @@ class StatistiqueController extends Controller
             $mr += $ligne[4];
         } 
         }
+        $fin->sub (new \DateInterval('P1D'));
         $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $mv+$mr]; 
        return $this->render('statistique/caisse/caissier.html.twig', array(
             'resultats' => $resultat,'caisse' => $affectation->getCaisse(), 'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),

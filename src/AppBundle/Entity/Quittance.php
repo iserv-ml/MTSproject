@@ -409,6 +409,6 @@ class Quittance
     }
 
     public function getTtc(){
-        return \round($this->getMontantVisite()+$this->getTva(),PHP_ROUND_HALF_UP)+$this->getTimbre();
+        return \round($this->getMontantVisite()+$this->getTva(),0,PHP_ROUND_HALF_UP)+$this->getTimbre();
     }
 }

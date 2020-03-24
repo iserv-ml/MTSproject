@@ -85,7 +85,7 @@ class ChaineRepository extends EntityRepository
     
     public function chainesActivesOuvertes() {
         $qb = $this->getEntityManager()
-            ->createQuery('SELECT r FROM AppBundle:Chaine r LEFT JOIN caisse c WHERE r.actif = 1 and c.ouvert =1 ');
+            ->createQuery('SELECT r FROM AppBundle:Chaine r LEFT JOIN r.caisse c WHERE r.actif = 1 and c.ouvert =1 ');
         return $qb->getResult();
     }
 }

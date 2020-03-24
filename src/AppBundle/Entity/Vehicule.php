@@ -88,7 +88,7 @@ class Vehicule
      * @var string $dateProchaineVisite
      *
      * @ORM\Column(name="date_prochaine_visite", type="string", nullable=true)
-     * 
+     * @Assert\Regex("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/")
      */
     private $dateProchaineVisite;
     
@@ -178,7 +178,7 @@ class Vehicule
      *
      * @ORM\Column(name="date_mise_circulation", type="string", nullable=false)
      * @Assert\NotBlank
-     * 
+     * @Assert\Regex("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/")
      */
     private $dateMiseCirculation;
     
@@ -391,10 +391,11 @@ class Vehicule
     }
     
     public function visiteArrive(){
-        $date = new \DateTime();
+        /*$date = new \DateTime();
         $date->add(new \DateInterval('P32D'));
         $dateProchaineVisite = $this->prochaineVisite();
-        return $date >= $dateProchaineVisite;
+        return $date >= $dateProchaineVisite;*/
+        return true;
     }
     
     function datePremiereVisite(){
