@@ -200,6 +200,19 @@ class QuittanceController extends Controller
             $this->get('session')->getFlashBag()->add('error', "Le client doit passer à la caisse principale pour se faire rembourser!");
         }else{
             $quittance->rembourser();
+            if($quittance->getVisite()->getRevisite()){
+                $montantVisite = 0;
+                $nbVisite = 0;
+                $montantRevisite = -$quittance->getTtc();
+                $nbRevisite = -1;
+            }else{
+                $montantVisite = -$quittance->getTtc();
+                $nbVisite = -1;
+                $montantRevisite = 0;
+                $nbRevisite = 0;
+            }
+            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero());
+            $em->persist($etat);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'La quittance a été remboursée.');
         }
