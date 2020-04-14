@@ -196,7 +196,10 @@ class QuittanceController extends Controller
             return $this->redirectToRoute('visite_controle');
         }
         $today = new \DateTime();
-        if($quittance->getPaye() && $quittance->getDateEncaissement()->format('Y-m-d') < $today->format('Y-m-d')){
+        if($quittance->getRembourse()){
+            $this->get('session')->getFlashBag()->add('error', "Cette quittance a déjà été remboursée!");
+        }
+        else if($quittance->getPaye() && $quittance->getDateEncaissement()->format('Y-m-d') < $today->format('Y-m-d')){
             $this->get('session')->getFlashBag()->add('error', "Le client doit passer à la caisse principale pour se faire rembourser!");
         }else{
             $quittance->rembourser();
@@ -288,7 +291,7 @@ class QuittanceController extends Controller
         $em->flush();
         $this->get('session')->getFlashBag()->add('notice', 'Quittance générée avec succès.');
         return $this->render('quittance/show.html.twig', array(
-            'quittance' => $quittance,
+            'quittance' => $quittance, 'libelle' => $centre->getLibelle(),
         ));
     }
     

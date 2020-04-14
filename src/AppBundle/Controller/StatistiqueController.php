@@ -39,6 +39,33 @@ class StatistiqueController extends Controller
     }
     
     /**
+     * Accueil sats avancées.
+     *
+     * @Route("/detail", name="admin_gestion_centre_statistique_detail_index")
+     * @Method({"GET", "POST"})
+     */
+    public function detailindexAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if (!$centre) {
+            throw $this->createNotFoundException("Opération interdite!");
+        }
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->add(new \DateInterval('P1D'));
+        $fin->setTime(0, 0);
+        $quittances = $em->getRepository('AppBundle:Quittance')->recupererEncaisserParPeriode($debut, $fin); 
+        $fin->sub (new \DateInterval('P1D'));
+
+        return $this->render('statistique/detail/index.html.twig', array(
+            'quittances' => $quittances,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
+        ));
+    }
+    
+    /**
      * Lists all Caisse entities.
      *
      * @Route("/admin/gestion/centre/statistique/caisse/liste", name="caissepouretatajax")

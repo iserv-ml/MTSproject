@@ -26,6 +26,7 @@
     <div id='quittance' style="size: A4;margin:0;width:200mm;overflow:hidden;">
     <div style="margin:0">
     <span style="font-weight: bolder">N&deg; {{ quittance.numero }} - {%if quittance.rembourse %}REMBOURSEE{% elseif quittance.paye %}PAYEE{% else %}NON PAYEE{% endif %}</span>
+    <br/><span style="font-weight: bolder">Chassis : {{ quittance.visite.vehicule.chassis }}</span>
     <span style="margin-left:100px; font-weight:bolder;font-size:20px">QUITTANCE</span>
     <span style="margin-left:25px; font-weight: bolder">NIF 86100089D</span>
     <span style="float:right"><img src="{{ asset('images/mts.jpg', absolute=true) }}" /></span>

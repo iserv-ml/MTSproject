@@ -64,5 +64,5 @@ class EtatJournalierRepository extends EntityRepository
         }
         
         return $result; 
-    }    
+    }   
 }
