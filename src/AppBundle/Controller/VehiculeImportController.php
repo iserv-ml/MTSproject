@@ -58,6 +58,32 @@ class VehiculeImportController extends Controller
             'form' => $form->createView(),
         ));
     }
+    
+    /**
+     * Mettre à jour les dates.
+     *
+     * @Route("/date", name="admin_parametres_vehicules_importer_date")
+     * @Method({"GET", "POST"})
+     */
+    public function dateAction(Request $request)
+    {
+        $vehiculeImport = new Vehiculeimport();
+        $form = $this->createForm('AppBundle\Form\VehiculeImportType', $vehiculeImport);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($vehiculeImport);
+            $em->flush();
+            $this->importerDates($vehiculeImport->getAbsolutePath());
+            return $this->redirectToRoute('vehicule_index');
+        }
+
+        return $this->render('vehiculeimport/new.html.twig', array(
+            'vehiculeImport' => $vehiculeImport,
+            'form' => $form->createView(),
+        ));
+    }
 
     /**
      * Finds and displays a vehiculeImport entity.
@@ -136,12 +162,13 @@ class VehiculeImportController extends Controller
         ;
     }
     
-    private function importer($path){
+    private function importerAncien($path){
         try {    
             
             $immatricultion = null;
             $chassis = null;
             $modelet = null;
+            $marquet = null;
             $genre = null;
             $carrosserie = null;
             $usage = null;
@@ -179,9 +206,23 @@ class VehiculeImportController extends Controller
                 $immatricultion = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $chassis = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $modelet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $marquet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $modele = $em->getRepository('AppBundle:Modele')->trouverParLibelle($modelet);
+                $marque = $em->getRepository('AppBundle:Marque')->trouverParLibelle($marquet);
+                if($marque == null){
+                    $marque = new \AppBundle\Entity\Marque();
+                    $marque->setCode($marquet);
+                    $marque->setLibelle($marquet);
+                    $marque->setAncienneBase(true);
+                    $em->persist($marque);
+                }
                 if($modele == null) {
-                    continue;  
+                    $modele = new \AppBundle\Entity\Modele();
+                    $modele->setCode($modelet);
+                    $modele->setLibelle($modelet);
+                    $modele->setMarque($marque);
+                    $modele->setAncienneBase(true);
+                    $em->persist($modele);  
                 }
                 $genre = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $carrosserie = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
@@ -196,6 +237,7 @@ class VehiculeImportController extends Controller
                 $place = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $puissance = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $dateMiseCirculation = \trim($worksheet->getCellByColumnAndRow($colonne, $row)->getValue());$colonne++;
+                echo(\date('Y-m-d', $dateMiseCirculation));exit;
                 if($dateMiseCirculation != null && $dateMiseCirculation != "" && !$this->verifierFormatDate($dateMiseCirculation)){
                     continue;
                 }
@@ -234,5 +276,85 @@ class VehiculeImportController extends Controller
     
     private function verifierFormatDate($date){
         return (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/",$date));
+    }
+    
+    private function importer($path){
+        try {    
+            
+            $immatricultion = null;
+            $chassis = null;
+            $modelet = null;
+            $typeChassis = null;
+            //Comment gérer typeVehicule?
+            $ptac = null;
+            $place = null;
+            $puissance = null;
+            $kilometrage = null;
+            $couleur = null;
+            $puissanceReelle = null;
+            $immatricultionPrecedent = null;
+            $em = $this->getDoctrine()->getManager();
+            $objPHPExcel = \PHPExcel_IOFactory::load($path);
+            $worksheet = $objPHPExcel->getSheet(0); 
+            $highestRow         = $worksheet->getHighestRow(); // e.g. 10
+            for ($row = 2; $row <= $highestRow; ++ $row) {
+                $colonne = 0;
+                $immatricultion = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $chassis = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $modelet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $modele = $em->getRepository('AppBundle:Modele')->trouverParLibelle($modelet);
+                $genre = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $carrosserie = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $usage = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $typeVehicule = $em->getRepository('AppBundle:TypeVehicule')->trouverLibelle($genre, $usage, $carrosserie);
+                $typeChassis = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $ptac = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $place = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $puissance = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $dmc = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $dcg = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $kilometrage = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $couleur = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $puissanceReelle = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $immatricultionPrecedent = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $dpv = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $idOttosysProprio = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $prorietaire = $em->getRepository('AppBundle:Proprietaire')->trouverParIdOttosy($idOttosysProprio);
+                $vehicule = new Vehicule();
+                $vehicule->initialiserSimple($immatricultion, $chassis,  $typeChassis, $ptac, $place, $puissance, $kilometrage, $couleur, $puissanceReelle, $immatricultionPrecedent, $modele, $typeVehicule, $dmc, $dcg, $dpv, $prorietaire);
+                $em->persist($vehicule);
+            }
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Chargement terminé');
+        } catch(Exception $e) {
+            $this->get('session')->getFlashBag()->add('notice', $e->getMessage());
+        }
+    }
+    
+    private function importerDates($path){
+        try {    
+            $immatricultion = null;
+            $dmc = null;
+            $dcg = null;
+            $em = $this->getDoctrine()->getManager();
+            $objPHPExcel = \PHPExcel_IOFactory::load($path);
+            $worksheet = $objPHPExcel->getSheet(0); 
+            $highestRow         = $worksheet->getHighestRow(); // e.g. 10
+            for ($row = 2; $row <= $highestRow; ++ $row) {
+                $colonne = 0;
+                $immatricultion = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $dmc = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $dcg = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $vehicule = $em->getRepository('AppBundle:Vehicule')->trouverParImmatriculation($immatricultion);
+                if($vehicule != null){   
+                    $vehicule->setDateMiseCirculation($dmc);
+                    $vehicule->setDateCarteGrise($dcg);
+                }
+            }
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Mise à jour terminée');
+        } catch(Exception $e) {
+            $this->get('session')->getFlashBag()->add('notice', $e->getMessage());
+        }
     }
 }

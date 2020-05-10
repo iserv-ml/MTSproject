@@ -57,6 +57,32 @@ class ModeleImportController extends Controller
         ));
     }
     
+    /**
+     * Creates a new modeleImport entity.
+     *
+     * @Route("/new", name="admin_parametres_modeles_importer_ottosys")
+     * @Method({"GET", "POST"})
+     */
+    public function ottosysAction(Request $request)
+    {
+        $modeleImport = new Modeleimport();
+        $form = $this->createForm('AppBundle\Form\ModeleImportType', $modeleImport);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($modeleImport);
+            $em->flush();
+            $this->importerOtossy($modeleImport->getAbsolutePath());
+            return $this->redirectToRoute('admin_parametres_modele_index');
+        }
+
+        return $this->render('modeleimport/new.html.twig', array(
+            'modeleImport' => $modeleImport,
+            'form' => $form->createView(),
+        ));
+    }
+    
     private function importer($path){
         try {
             $marquet = null;
@@ -166,5 +192,41 @@ class ModeleImportController extends Controller
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+    
+    private function importerOtossy($path){
+        try {
+            $marquet = null;
+            $modelet = null;
+            $em = $this->getDoctrine()->getManager();
+            $objPHPExcel = \PHPExcel_IOFactory::load($path);
+            $worksheet = $objPHPExcel->getSheet(0); 
+            $highestRow         = $worksheet->getHighestRow(); // e.g. 10
+            for ($row = 2; $row <= $highestRow; ++ $row) {
+                $colonne = 0;
+                $marquet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $modelet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $modele = $em->getRepository('AppBundle:Modele')->trouverParLibelle($modelet);
+                if($modele != null) {continue;}
+                $marque = $em->getRepository('AppBundle:Marque')->trouverParLibelle($marquet);
+                if($marque == null){
+                    $marque = new \AppBundle\Entity\Marque();
+                    $marque->setCode($marquet);
+                    $marque->setLibelle($marquet);
+                    $marque->setAncienneBase(true);
+                    $em->persist($marque);
+                }
+                $modele = new \AppBundle\Entity\Modele();
+                $modele->setCode($modelet);
+                $modele->setLibelle($modelet);
+                $modele->setMarque($marque);
+                $modele->setAncienneBase(true);
+                $em->persist($modele);       
+            }
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Chargement terminé');
+        } catch(Exception $e) {
+            $this->get('session')->getFlashBag()->add('notice', $e->getMessage());
+        }
     }
 }

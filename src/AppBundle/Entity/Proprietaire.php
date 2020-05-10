@@ -43,6 +43,14 @@ class Proprietaire
     private $numpiece;
     
     /**
+     * @var string $idOttosys
+     *
+     * @ORM\Column(name="id_ottosy", type="string", length=255, nullable=true)
+     * 
+     */
+    private $idOttosys;
+    
+    /**
      * @var string $nom
      *
      * @ORM\Column(name="nom", type="string", length=255, nullable=false)
@@ -53,8 +61,7 @@ class Proprietaire
     /**
      * @var string $prenom
      *
-     * @ORM\Column(name="prenom", type="string", length=255, nullable=false)
-     * @Assert\NotBlank
+     * @ORM\Column(name="prenom", type="string", length=255, nullable=true)
      */
     private $prenom;
     
@@ -350,6 +357,14 @@ class Proprietaire
 
     function setPersonneMorale($personneMorale) {
         $this->personneMorale = $personneMorale;
+    }
+    
+    function getIdOttosys() {
+        return $this->idOttosys;
+    }
+
+    function setIdOttosys($idOttosys) {
+        $this->idOttosys = $idOttosys;
     }
 
 }

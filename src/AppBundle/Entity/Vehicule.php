@@ -914,5 +914,26 @@ class Vehicule
         $this->potCatalytique = $potCatalityque;
         $this->dateProchaineVisite = $dateProchaineVisite;
     }
+    
+    public function initialiserSimple($immatricultion, $chassis,  $typeChassis, $ptac, $place, $puissance, $kilometrage, $couleur, $puissanceReelle, $immatricultionPrecedent, $modele, $typeVehicule, $dmc, $dcg, $dpv, $prorietaire){
+        $this->immatriculation = $immatricultion;
+        $this->chassis = $chassis;
+        $this->typeChassis = $typeChassis;
+        $this->ptac = $ptac;
+        $this->place = $place;
+        $this->puissance = $puissance;
+        $this->kilometrage = $kilometrage;
+        $this->couleur = $couleur;
+        $this->puissanceReelle = $puissanceReelle;
+        $this->immatriculationPrecedent = $immatricultionPrecedent;
+        $this->alimentation = 0;
+        $this->potCatalytique = 0;
+        $this->modele = $modele;
+        $this->typeVehicule = $typeVehicule;
+        $this->dateMiseCirculation = $dmc;
+        $this->dateCarteGrise = $dcg;
+        $this->dateProchaineVisite = $dpv;
+        $this->proprietaire = $prorietaire;
+    }
 
 }

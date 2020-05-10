@@ -20,6 +20,7 @@
     <label class="btn btn-outline-secondary"><a href="{{ path('typevehicule_export') }}">EXPORTER</a></label>
     {% if is_granted('ROLE_SUPERVISEUR') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_typevehicule_new') }}">CREER</a></label>
+        <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_typevehicule_importer_new') }}">IMPORTER</a></label>
     {% endif %}
 {% endblock %}
 {% block body -%}

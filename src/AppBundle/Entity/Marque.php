@@ -48,6 +48,14 @@ class Marque
      * @Assert\NotBlank
      */
     private $code;
+    
+    /**
+     * @var boolean $ancienneBase
+     *
+     * @ORM\Column(name="anciennebase", type="boolean", nullable=false)
+     * 
+     */
+    private $ancienneBase;
    
    //Debut relation Marque a plusieurs modèle
     /**
@@ -120,6 +128,13 @@ class Marque
         $this->code = $code;
     }
 
+    function getAncienneBase() {
+        return $this->ancienneBase;
+    }
+
+    function setAncienneBase($ancienneBase) {
+        $this->ancienneBase = $ancienneBase;
+    }
         
     //BEHAVIOR
     /**
@@ -215,6 +230,7 @@ class Marque
     public function __construct()
     {
         $this->modeles = new ArrayCollection();
+        $this->ancienneBase = false;
     }
     //fin behavior
 

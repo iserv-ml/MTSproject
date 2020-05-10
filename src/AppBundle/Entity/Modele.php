@@ -50,6 +50,14 @@ class Modele
     private $code;
     
     /**
+     * @var boolean $ancienneBase
+     *
+     * @ORM\Column(name="anciennebase", type="boolean", nullable=false)
+     * 
+     */
+    private $ancienneBase;
+    
+    /**
     * @ORM\ManyToOne(targetEntity="Marque", inversedBy="modeles", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="marque_id", referencedColumnName="id")
     * @Assert\NotBlank
@@ -134,7 +142,14 @@ class Modele
     function setMarque($marque) {
         $this->marque = $marque;
     }
+    
+    function getAncienneBase() {
+        return $this->ancienneBase;
+    }
 
+    function setAncienneBase($ancienneBase) {
+        $this->ancienneBase = $ancienneBase;
+    }
     
     //BEHAVIOR
     /**
@@ -230,6 +245,7 @@ class Modele
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->ancienneBase = false;
     }
 
 }

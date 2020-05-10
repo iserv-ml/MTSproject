@@ -58,7 +58,7 @@ class ModeleRepository extends EntityRepository
     public function findAjax($search, $maxRows) {
          $result = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.libelle as modele, m.libelle as marque FROM AppBundle:Modele r LEFT JOIN r.marque m WHERE r.libelle LIKE :libelle OR m.libelle like :libelle order by m.libelle'
+                'SELECT r.id, r.libelle as modele, m.libelle as marque FROM AppBundle:Modele r LEFT JOIN r.marque m WHERE r.ancienneBase = false AND r.libelle LIKE :libelle OR m.libelle like :libelle order by m.libelle'
             )->setParameter("libelle","%".$search."%")
                  ->setMaxResults($maxRows)
             ->getResult();

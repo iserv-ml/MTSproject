@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Typevehiculeimport</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ typeVehiculeImport.id }}</td>
+            </tr>
+            <tr>
+                <th>Path</th>
+                <td>{{ typeVehiculeImport.path }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('admin_parametres_typevehicule_importer_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('admin_parametres_typevehicule_importer_edit', { 'id': typeVehiculeImport.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}
