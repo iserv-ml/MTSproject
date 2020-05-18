@@ -9,7 +9,7 @@
                     <tr><th>Genre</th></tr>
                     <tr><td>{{ quittance.visite.vehicule.typeVehicule.genre.libelle }}</td></tr>
                     <tr><th>Marque</th></tr>
-                    <tr><td>{{ quittance.visite.vehicule.modele.marque.libelle }}</td></tr>
+                    <tr><td>{%if quittance.visite.vehicule.modele%}{{ quittance.visite.vehicule.modele.marque.libelle }}{%endif%}</td></tr>
                     <tr><th>Carrosserie</th></tr>
                     <tr><td>{{ quittance.visite.vehicule.typeVehicule.carrosserie.libelle }}</td></tr>
                     <tr><th>Usage</th></tr>

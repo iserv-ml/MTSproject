@@ -38,7 +38,7 @@ class ModeleRepository extends EntityRepository
         return  $qb->getQuery()->getSingleScalarResult();
     }
     
-     public function trouverParLibelle($libelle) {
+    public function trouverParLibelle($libelle) {
        try{ 
          $result = $this->getEntityManager()
             ->createQuery(
@@ -65,5 +65,21 @@ class ModeleRepository extends EntityRepository
          if(count($result)==0)
              $result[] = ["id"=>0, "marque"=>"Aucun résultat", "modele"=>""];
         return $result; 
-    }  
+    } 
+    public function trouverParModeleMarque($modele, $marque) {
+       try{ 
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Modele r LEFT JOIN r.marque m WHERE r.libelle = :modele AND m.libelle = :marque'
+            )->setParameter("modele",$modele)->setParameter("marque",$marque)
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
+        return $result; 
+    } 
 }

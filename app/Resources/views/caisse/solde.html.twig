@@ -19,6 +19,7 @@
     {% endif %}
 {% endblock %}
 {% block body %}
+    Solde du centre avant ouverture des caisses: {{ centre.solde|number_format(0, ',', ' ') }}
     {{ form_start(edit_form) }}
         {{ form_widget(edit_form) }}
         <input type="submit" value="Enregistrer" />

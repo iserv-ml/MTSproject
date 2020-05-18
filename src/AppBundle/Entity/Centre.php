@@ -372,11 +372,14 @@ class Centre
     }
     
     public function ouvertureCaisse(Caisse $caisse){
-        $caisse->setOuvert(true);
-        $sortie = new \AppBundle\Entity\SortieCaisse();
-        $this->solde = $sortie->ouvertureCaisse($caisse->getSoldeInitial(), $this->getSolde(),"SORTIE", "Ouverture de la caisse N°".$caisse->getNumero());
-        $sortie->setCentre($this);
-        return $sortie;
+        if($this->solde >= $caisse->getSoldeInitial()){
+            $caisse->setOuvert(true);
+            $sortie = new \AppBundle\Entity\SortieCaisse();
+            $this->solde = $sortie->ouvertureCaisse($caisse->getSoldeInitial(), $this->getSolde(),"SORTIE", "Ouverture de la caisse N°".$caisse->getNumero());
+            $sortie->setCentre($this);
+            return $sortie;
+        }
+        return null;
     }
     
     public function decaisser($montant){

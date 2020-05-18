@@ -24,7 +24,11 @@ class SortieCaisseController extends Controller
      */
     public function indexAction()
     {
-        return $this->render('sortiecaisse/index.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        return $this->render('sortiecaisse/index.html.twig', array(
+            'centre' => $centre,
+        ));
     }
 
     /**
@@ -194,7 +198,7 @@ class SortieCaisseController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['type'], $aRow['description'], $aRow['montant'], $aRow['dateCreation'], $action);
+            $output['aaData'][] = array($aRow['type'], $aRow['description'], \number_format($aRow['montant'], 0, ',', ' '), $aRow['dateCreation'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }

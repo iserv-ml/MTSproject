@@ -60,7 +60,7 @@ class ModeleImportController extends Controller
     /**
      * Creates a new modeleImport entity.
      *
-     * @Route("/new", name="admin_parametres_modeles_importer_ottosys")
+     * @Route("/new/ottosys", name="admin_parametres_modeles_importer_ottosys")
      * @Method({"GET", "POST"})
      */
     public function ottosysAction(Request $request)

@@ -11,7 +11,7 @@
     </ol>
 {% endblock %}
 {% block menu_gestion_actif %}active{% endblock %}
-{% block pagetitle -%}OPERATIONS DE COFFRE{% endblock %}
+{% block pagetitle -%}OPERATIONS DE COFFRE (SOLDE : {{ centre.solde|number_format(0, ',', ' ') }}){% endblock %}
 {% block actions %}
     {% if is_granted('ROLE_SUPERVISEUR') %}
         <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_centre_sorties_new') }}">CREER</a></label>

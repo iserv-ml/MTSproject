@@ -121,14 +121,24 @@ class CaisseController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
+            if($centre->getSolde() >= $caisse->getSoldeInitial()){
+                $em->flush();
+                $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
+            }else{
+                $this->get('session')->getFlashBag()->add('error', 'Le solde du centre est insuffisant!');
+                return $this->render('caisse/solde.html.twig', array(
+                    'caisse' => $caisse,
+                    'edit_form' => $editForm->createView(),
+                    'centre' => $centre,
+                ));
+            }
             return $this->redirectToRoute('admin_gestion_centre_ouverture');
         }
 
         return $this->render('caisse/solde.html.twig', array(
             'caisse' => $caisse,
             'edit_form' => $editForm->createView(),
+            'centre' => $centre,
         ));
     }
 
@@ -327,9 +337,13 @@ class CaisseController extends Controller
         }
         if(!$caisse->getOuvert()){
             $sortie = $centre->ouvertureCaisse($caisse);
-            $em->persist($sortie);
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('notice', 'La caisse est maintenant ouverte.');
+            if($sortie != null){
+                $em->persist($sortie);
+                $em->flush();
+                $this->get('session')->getFlashBag()->add('notice', 'La caisse est maintenant ouverte.');
+            }else{
+                $this->get('session')->getFlashBag()->add('error', "Impossible d'ouvrir la caisse. Demandez au chef de centre de vérifier le solde.");
+            }
         }else{
             $this->get('session')->getFlashBag()->add('notice', 'La caisse est déjà ouverte.');
         }
