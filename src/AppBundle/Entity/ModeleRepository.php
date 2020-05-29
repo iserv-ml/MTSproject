@@ -82,4 +82,38 @@ class ModeleRepository extends EntityRepository
         
         return $result; 
     } 
+    
+    public function trouverParModeleMarqueid($modele, $marqueid) {
+       try{ 
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Modele r LEFT JOIN r.marque m WHERE r.libelle = :modele AND m.id = :marque'
+            )->setParameter("modele",$modele)->setParameter("marque",$marqueid)
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
+        return $result; 
+    }
+    
+    public function trouverParId($modele) {
+       try{ 
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Modele r WHERE r.id = :modele'
+            )->setParameter("modele",$modele)
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
+        return $result; 
+    }
 }

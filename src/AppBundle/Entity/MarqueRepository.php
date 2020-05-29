@@ -40,12 +40,29 @@ class MarqueRepository extends EntityRepository
         return  $qb->getQuery()->getSingleScalarResult();
     }
     
-     public function trouverParLibelle($libelle) {
+    public function trouverParLibelle($libelle) {
        try{ 
          $result = $this->getEntityManager()
             ->createQuery(
                 'SELECT r FROM AppBundle:Marque r WHERE r.libelle = :libelle'
             )->setParameter("libelle",$libelle)
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
+        return $result; 
+    }
+    
+    public function trouverParId($id) {
+       try{ 
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Marque r WHERE r.id = :id'
+            )->setParameter("id",$id)
             ->getSingleResult();
        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
             $result = null;

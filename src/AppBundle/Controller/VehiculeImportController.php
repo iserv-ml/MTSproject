@@ -284,7 +284,7 @@ class VehiculeImportController extends Controller
             $immatricultion = null;
             $chassis = null;
             $modelet = null;
-            $marquet = null;
+            //$marquet = null;
             $typeChassis = null;
             //Comment gérer typeVehicule?
             $ptac = null;
@@ -303,12 +303,12 @@ class VehiculeImportController extends Controller
                 $immatricultion = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $chassis = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $modelet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
-                $marquet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
-                $modele = $em->getRepository('AppBundle:Modele')->trouverParModeleMarque($modelet,$marquet);
-                $genre = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
-                $carrosserie = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
-                $usage = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
-                $typeVehicule = $em->getRepository('AppBundle:TypeVehicule')->trouverLibelle($genre, $usage, $carrosserie);
+                //$marquet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $modele = $em->getRepository('AppBundle:Modele')->trouverParId($modelet);
+                $type = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                //$carrosserie = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                //$usage = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
+                $typeVehicule = $em->getRepository('AppBundle:TypeVehicule')->trouverParId($type);
                 $typeChassis = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $ptac = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $place = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;

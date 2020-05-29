@@ -129,4 +129,21 @@ class TypeVehiculeRepository extends EntityRepository
         
         return $result; 
     }
+    
+    public function trouverParId($type) {
+       try{ 
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:TypeVehicule r WHERE r.id = :type '
+            )->setParameter("type",\intval($type))
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
+        return $result; 
+    }
 }

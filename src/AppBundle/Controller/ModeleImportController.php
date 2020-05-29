@@ -206,24 +206,18 @@ class ModeleImportController extends Controller
                 $colonne = 0;
                 $marquet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
                 $modelet = $worksheet->getCellByColumnAndRow($colonne, $row)->getValue();$colonne++;
-                $modele = $em->getRepository('AppBundle:Modele')->trouverParLibelle($modelet);
+                $modele = $em->getRepository('AppBundle:Modele')->trouverParModeleMarqueid($modelet, $marquet);
                 if($modele != null) {continue;}
-                $marque = $em->getRepository('AppBundle:Marque')->trouverParLibelle($marquet);
-                if($marque == null){
-                    $marque = new \AppBundle\Entity\Marque();
-                    $marque->setCode($marquet);
-                    $marque->setLibelle($marquet);
-                    $marque->setAncienneBase(true);
-                    $em->persist($marque);
-                }
+                $marque = $em->getRepository('AppBundle:Marque')->trouverParId($marquet);
                 $modele = new \AppBundle\Entity\Modele();
                 $modele->setCode($modelet);
                 $modele->setLibelle($modelet);
                 $modele->setMarque($marque);
                 $modele->setAncienneBase(true);
-                $em->persist($modele);       
+                $em->persist($modele);    
+                $em->flush();
             }
-            $em->flush();
+            
             $this->get('session')->getFlashBag()->add('notice', 'Chargement terminé');
         } catch(Exception $e) {
             $this->get('session')->getFlashBag()->add('notice', $e->getMessage());
