@@ -132,7 +132,7 @@ class VisiteRepository extends EntityRepository
         $controle = ($piste == 0) ? 'pi.id > :piste ' : 'pi.id = :piste ';
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, v.immatriculation, v.chassis, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste FROM AppBundle:Visite r LEFT JOIN r.vehicule v LEFT JOIN v.proprietaire p LEFT JOIN r.chaine c LEFT JOIN c.piste pi '
+                'SELECT r.id, v.immatriculation, v.typeChassis, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste FROM AppBundle:Visite r LEFT JOIN r.vehicule v LEFT JOIN v.proprietaire p LEFT JOIN r.chaine c LEFT JOIN c.piste pi '
                     . ' WHERE r.statut IN (1,2,3,4) AND v.immatriculation like :search AND '.$controle
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')

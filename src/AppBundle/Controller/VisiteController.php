@@ -446,7 +446,7 @@ class VisiteController extends Controller
             }else if($aRow['statut'] == 4){
                 $etat = "DELIVRE";
             }
-            $output['aaData'][] = array($aRow['immatriculation'],$aRow['chassis'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['piste'], $action);
+            $output['aaData'][] = array($aRow['immatriculation'],$aRow['typeChassis'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['piste'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
@@ -503,7 +503,7 @@ class VisiteController extends Controller
                 case 5 : $etat = "ANNULEE";break;
             }
             
-            $output['aaData'][] = array($aRow['immatriculation'],$aRow['chassis'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['caisse'].'/'.$aRow['piste'], $action);
+            $output['aaData'][] = array($aRow['immatriculation'],$aRow['typeChassis'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['caisse'].'/'.$aRow['piste'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
