@@ -17,7 +17,7 @@
 {% block pagetitle -%}LISTE DES MARQUES DE VEHICULE{% endblock %}
 {% block actions %}
     <label class="btn btn-outline-secondary"><a href="{{ path('marque_export') }}">EXPORTER</a></label>
-    {% if is_granted('ROLE_SUPERVISEUR') %} 
+    {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_marque_new') }}">CREER</a></label>
     {% endif %}
 {% endblock %}

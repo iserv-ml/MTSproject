@@ -18,7 +18,7 @@
 
 {% block actions %}
     <label class="btn btn-outline-secondary"><a href="{{ path('chaine_export') }}">EXPORTER</a></label>
-    {% if is_granted('ROLE_SUPERVISEUR') %} 
+    {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_chaine_new') }}">CREER</a></label>
     {% endif %}
 {% endblock %}

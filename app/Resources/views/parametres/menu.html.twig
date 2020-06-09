@@ -32,6 +32,7 @@
         </li>
     </ul>
 </li>
+{% if is_granted('ROLE_SUPERVISEUR') %}
 <li class="nav-item nav-dropdown {% block menu_tarifs_open %}{% endblock %}">
     <a class="nav-link nav-dropdown-toggle" href="#">
         <i class="nav-icon fa fa-money"></i> Tarifs</a>
@@ -68,6 +69,7 @@
         </li> #}
     </ul>
 </li>
+{% endif %}  
 <li class="nav-item nav-dropdown {% block menu_centre_open %}{% endblock %}">
     <a class="nav-link nav-dropdown-toggle" href="#">
         <i class="nav-icon fa fa-home"></i> Centre</a>
@@ -86,6 +88,7 @@
         </li>
     </ul>
 </li>
+{% if is_granted('ROLE_SUPERVISEUR') %}
 <li class="nav-item nav-dropdown {% block menu_user_open %}{% endblock %}">
     <a class="nav-link nav-dropdown-toggle" href="#">
         <i class="nav-icon fa fa-male"></i> Utilisateurs</a>
@@ -101,4 +104,4 @@
         </li>
     </ul>
 </li>
-        
+{% endif %}       

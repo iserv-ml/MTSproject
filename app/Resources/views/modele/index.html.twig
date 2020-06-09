@@ -17,7 +17,7 @@
 {% block pagetitle -%}LISTE DES MODELES{% endblock %}
 {% block actions %}
     <label class="btn btn-outline-secondary"><a href="{{ path('modele_export') }}">EXPORTER</a></label>
-    {% if is_granted('ROLE_ENREGISTREMENT') %} 
+    {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_modele_new') }}">CREER</a></label>
         <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_modeles_importer_new') }}">IMPORTER</a></label>
         <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_modeles_importer_ottosys') }}">IMPORTER OTTOSYS</a></label>

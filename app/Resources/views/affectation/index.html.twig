@@ -41,13 +41,20 @@
                             <td>Active</td>
                             <td>{% if caisse.derniereAffectation %}{{caisse.derniereAffectation.agent.nomComplet }}{% endif %}</td>
                             <td>{% if caisse.derniereAffectation %}{{caisse.derniereAffectation.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
-                            <td>{% if caisse.derniereAffectation %}<a class='btn btn-success' title="Détail" href="{{ path('admin_gestion_affectation_show', {'id':caisse.derniereAffectation.id}) }}"><i class='fa fa-search-plus'></i></a>{% endif %}</td>
+                            <td>{% if caisse.derniereAffectation %}
+                                    <a class='btn btn-success' title="Détail" href="{{ path('admin_gestion_affectation_show', {'id':caisse.derniereAffectation.id}) }}"><i class='fa fa-search-plus'></i></a>
+                                    <a class='btn btn-warning' title="Vider" href="{{ path('admin_gestion_affectation_vider', {'id':caisse.derniereAffectation.id}) }}" onclick='return confirm("Confirmer le retrait du caissier?")'><i class='fa fa-ban'></i></a>
+                                {% endif %}
+                        </td>
                         {% else %}
                             <td>Inactive</td>
                             {% if caisse.derniereAffectation %}
                             <td></td>
                             <td></td>
-                            <td><a class='btn btn-success' title="Détail" href="{{ path('admin_gestion_affectation_show', {'id':caisse.derniereAffectation.id}) }}"><i class='fa fa-search-plus'></i></a></td>
+                            <td>
+                                <a class='btn btn-success' title="Détail" href="{{ path('admin_gestion_affectation_show', {'id':caisse.derniereAffectation.id}) }}"><i class='fa fa-search-plus'></i></a>
+                                <a class='btn btn-edit' title="Vider" href="{{ path('admin_gestion_affectation_vider', {'id':caisse.derniereAffectation.id}) }}" onclick='return confirm(\"Confirmer le retrait du caissier?\")'><i class='fa fa-search-plus'></i></a>
+                            </td>
                             {%endif %}
                         {% endif%}
                         

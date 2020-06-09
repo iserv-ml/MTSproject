@@ -181,6 +181,9 @@ class AffectationController extends Controller
     
     private function genererAction($id){
         $action = "<a title='Détail' class='btn btn-success' href='".$this->generateUrl('admin_gestion_affectation_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_CAISSIER_PRINCIPAL')){
+            $action .= "<a title='Vider' class='btn btn-success' href='".$this->generateUrl('admin_gestion_affectation_vider', array('id'=> $id ))."' onclick='return confirm(\"Confirmer le retrait du caissier?\")'><i class='fa fa-search-plus'></i></a>";
+        }
         return $action;
     }
     
@@ -232,5 +235,24 @@ class AffectationController extends Controller
             $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($fin);$col++;
             $ligne++;
         }
+    }
+    
+    /**
+     * Finds and displays a affectation entity.
+     *
+     * @Route("/{id}/vider", name="admin_gestion_affectation_vider")
+     * @Method("GET")
+     */
+    public function viderAction(Affectation $affectation)
+    {
+        if (!$affectation) {
+            throw $this->createNotFoundException("L'affectation demandée n'est pas disponible.");
+        }
+        $em = $this->getDoctrine()->getManager();
+        $affectation->setActif(false);
+        $this->getDoctrine()->getManager()->flush();
+        $this->get('session')->getFlashBag()->add('notice', 'Le caissier a été retiré de la caisse.');
+        $caisses = $em->getRepository('AppBundle:Caisse')->findAll();
+        return $this->render('affectation/index.html.twig', array('caisses'=>$caisses));
     }
 }

@@ -183,7 +183,10 @@ class AffectationPisteController extends Controller
     }
     
     private function genererAction($id){
-        $action = "<a title='Détail' class='btn btn-success' href='".$this->generateUrl('admin_gestion_affectationpiste_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a>";
+        $action = "<a title='Détail' class='btn btn-success' href='".$this->generateUrl('admin_gestion_affectationpiste_show', array('id'=> $id ))."'><i class='fa fa-search-plus'></i></a> ";
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_CAISSIER_PRINCIPAL')){
+            $action .= "<a title='Vider' class='btn btn-warning' href='".$this->generateUrl('admin_gestion_affectationpiste_vider', array('id'=> $id ))."' onclick='return confirm(\"Confirmer le retrait des controlleur?\")'><i class='fa fa-ban'></i></a>";
+        }
         return $action;
     }
     
@@ -235,5 +238,26 @@ class AffectationPisteController extends Controller
             $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($tmp);$col++;
             $ligne++;
         }
+    }
+    
+    /**
+     * Finds and displays a affectation entity.
+     *
+     * @Route("/{id}/vider", name="admin_gestion_affectationpiste_vider")
+     * @Method("GET")
+     */
+    public function viderAction(\AppBundle\Entity\Piste $piste)
+    {
+        if (!$piste) {
+            throw $this->createNotFoundException("L'affectation demandée n'est pas disponible.");
+        }
+        $em = $this->getDoctrine()->getManager();
+        $affectations = $em->getRepository('AppBundle:AffectationPiste')->affectationsActives($piste->getId());
+        foreach($affectations as $affectation){
+            $affectation->setActif(false);
+        }
+        $this->getDoctrine()->getManager()->flush();
+        $this->get('session')->getFlashBag()->add('notice', 'Les controlleurs ont été retirés de la piste.');
+        return $this->render('affectationpiste/index.html.twig');
     }
 }

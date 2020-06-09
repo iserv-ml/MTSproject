@@ -44,7 +44,7 @@ class CentreController extends Controller
     public function ouvertureconfirmerAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives();
+        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives(1);
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         if(!$centre){
             throw $this->createNotFoundException("Cette opération est interdite!");
@@ -63,7 +63,7 @@ class CentreController extends Controller
     public function fermetureconfirmerAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives();
+        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives(1);
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         if(!$centre){
             throw $this->createNotFoundException("Cette opération est interdite!");
@@ -82,7 +82,7 @@ class CentreController extends Controller
     public function ouvertureAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives();
+        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives(1);
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         if(!$centre){
             throw $this->createNotFoundException("Cette opération est interdite!");
@@ -192,7 +192,7 @@ class CentreController extends Controller
         if ($editForm->isSubmitted() && $editForm->isValid()) {
             $this->getDoctrine()->getManager()->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
-            $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives();
+            $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives(1);
             return $this->redirectToRoute('admin_gestion_centre_ouverture', array(
                 'centre' => $centre,
                 'chaines' => $chaines,
@@ -250,7 +250,7 @@ class CentreController extends Controller
     public function ouvrirAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives();
+        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives(1);
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         if(!$centre){
             throw $this->createNotFoundException("Cette opération est interdite!");
@@ -279,7 +279,7 @@ class CentreController extends Controller
     public function fermerAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives();
+        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives(1);
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         if(!$centre){
             throw $this->createNotFoundException("Cette opération est interdite!");
