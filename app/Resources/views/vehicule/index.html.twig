@@ -58,6 +58,22 @@
            
             { "orderable": false, "targets": 4 }
         ],
+        initComplete : function() {
+        var input = $('.dataTables_filter input').unbind(),
+            self = this.api(),
+            $searchButton = $('<button>')
+                       .text('Rechercher')
+                       .click(function() {
+                          self.search(input.val()).draw();
+                       }),
+            $clearButton = $('<button>')
+                       .text('Vider')
+                       .click(function() {
+                          input.val('');
+                          $searchButton.click(); 
+                       }) 
+        $('.dataTables_filter').append($searchButton, $clearButton);
+    } ,
         "processing": true,
         "serverSide": true,
         "ajax": {
@@ -66,8 +82,9 @@
         "paging" : true,
         "info" : true, 
         "searching": true,
+        
         "responsive": true,
-        "pageLength": 50,
+        "pageLength": 100,
         "order": [[1, 'asc']],
        language: {
         processing:     "Traitement en cours...",

@@ -17,9 +17,22 @@ class VehiculeRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.id, r.chassis, r.carteGrise, m.libelle as modele, ma.libelle as marque, r.immatriculation, p.nom, p.prenom, p.telephone FROM AppBundle:Vehicule r LEFT JOIN r.modele m LEFT JOIN m.marque ma LEFT JOIN r.proprietaire p '
-                    . ' WHERE r.chassis like :search or r.carteGrise like :search or r.immatriculation like :search or p.telephone like :search or CONCAT(p.nom,:sep,p.prenom) like :search or CONCAT(p.prenom,:sep,p.nom) like :search'
+                    . ' WHERE r.immatriculation like :search '
                     . ' ORDER BY '.$sCol.' '.$sdir)
-            ->setParameter('search', '%'.$search.'%')->setParameter('sep', ' ')
+            ->setParameter('search', '%'.$search.'%')
+            ->setFirstResult($start)
+            ->setMaxResults($end);
+        $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+        return $arrayAss;
+    }
+    
+     public function rcherherVehicule($start, $end, $sCol, $sdir, $search) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.id, r.chassis, r.carteGrise, m.libelle as modele, ma.libelle as marque, r.immatriculation, p.nom, p.prenom, p.telephone FROM AppBundle:Vehicule r LEFT JOIN r.modele m LEFT JOIN m.marque ma LEFT JOIN r.proprietaire p '
+                    . ' WHERE r.chassis = :search or r.carteGrise = :search or r.immatriculation = :search or p.telephone = :search '
+                    . ' ORDER BY '.$sCol.' '.$sdir)
+            ->setParameter('search', '$search')
             ->setFirstResult($start)
             ->setMaxResults($end);
         $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
