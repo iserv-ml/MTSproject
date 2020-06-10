@@ -79,4 +79,17 @@ class VehiculeRepository extends EntityRepository
         }
         return $result; 
     }
+    
+    public function trouverParImmatriculationSimilaire($immatriculation) {
+        try{ 
+            $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Vehicule r WHERE r.immatriculation like :immatriculation'
+            )->setParameter("immatriculation","%".$immatriculation."%")
+            ->getResult();
+        }catch (\Exception $ex) {
+            $result = null;
+        }
+        return $result; 
+    }
 }

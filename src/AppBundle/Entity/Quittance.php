@@ -105,7 +105,7 @@ class Quittance
     private $dateEncaissement;
     
     /**
-    * @ORM\OneToOne(targetEntity="Visite", inversedBy="quittance", cascade={"persist","refresh"})
+    * @ORM\OneToOne(targetEntity="Visite", mappedBy="quittance", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="visite_id", referencedColumnName="id")
     * 
     */
@@ -341,7 +341,7 @@ class Quittance
         $this->setTva($montant*18/100);
         $this->setTimbre($this->getVisite()->getVehicule()->getTypeVehicule()->getTimbre());
         if($penalite){
-            $this->setPenalite($montant*$penalite->getPourcentage()/100);
+            $this->setPenalite(\ceil($this->getTtc()*$penalite->getPourcentage()/100));
         }else{
             $this->setPenalite(0);
         }

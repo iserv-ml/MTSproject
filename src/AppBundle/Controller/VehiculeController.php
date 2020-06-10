@@ -20,14 +20,16 @@ class VehiculeController extends Controller
      * Lists all vehicule entities.
      *
      * @Route("/", name="vehicule_index")
-     * @Method("GET")
+     * @Method({"GET", "POST"})
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        $immatriculation = $request->get('immatriculation', '');
+        $vehicules = ($immatriculation != '') ? $em->getRepository('AppBundle:Vehicule')->trouverParImmatriculationSimilaire($immatriculation) : null;
         return $this->render('vehicule/index.html.twig', array(
-            'centre' => $centre,
+            'centre' => $centre, 'vehicules'=>$vehicules, 'immatriculation'=>$immatriculation
         ));
     }
 

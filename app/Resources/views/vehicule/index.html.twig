@@ -16,6 +16,7 @@
     <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_export') }}">EXPORTER</a></label>
     <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_vehicules_importer_new') }}">IMPORTER</a></label>
     <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_vehicules_importer_date') }}">DATES</a></label>
+    
 {% endblock %}
 {% block body -%}
     {% if centre.etat %} 
@@ -24,6 +25,14 @@
         <label class="btn btn-warning pointer-event">LE CENTRE EST FERME. ATTENDEZ SON OUVERTURE POUR POUVOIR AIGUILLER</label>
     {% endif %}
 <div class="table-responsive">
+    <label class="btn btn-warning pointer-event"> 
+        <form method='POST' action='{{ path('vehicule_index') }}'>
+            Immatriculation <input type="text" id="immatriculation" name="immatriculation" value="{{ immatriculation }}" /> 
+            
+            <input type="submit" value="Rechercher"/>
+        </form>
+    </label>
+    {% if vehicules is not null%}
     <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
         <thead>
             <tr>
@@ -35,7 +44,24 @@
             </tr>
         </thead>
         <tbody>
-        
+            {% for vehicule in vehicules %}
+                <tr>
+                    <td>{{ vehicule.immatriculation }} </td>
+                    <td>{{ vehicule.chassis }} </td>
+                    <td>{{ vehicule.modele.libelle }} </td>
+                    <td>{{ vehicule.modele.marque.libelle }} </td>
+                    <td>
+                        <a title='Détail' class='btn btn-success' href="{{ path('vehicule_show', {'id':vehicule.id}) }}" ><i class='fa fa-search-plus'></i></a>
+                        <a title='Modifier' class='btn btn-info' href="{{ path('vehicule_edit', {'id':vehicule.id}) }}" ><i class='fa fa-edit' ></i></a>
+                        <a title='Supprimer' class='btn btn-danger' href="{{ path('vehicule_delete_a', {'id':vehicule.id}) }}"  onclick='return confirm("Confirmer la suppression?")'><i class='fa fa-trash-o'> </i></a><br/><br/>
+                        <a title='Aiguiller normal' class='btn btn-warning' href="{{ path('aiguiller', {'id':vehicule.id, 'type':0}) }}" ><i class='fa fa-compass'> </i></a>
+                        <a title='Aiguiller spécial' class='btn btn-djib' href="{{ path('aiguiller', {'id':vehicule.id, 'type':1}) }}" ><i class='fa fa-star-o'> </i></a>
+                        {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
+                            <a title='Contre visite' class='btn btn-warning' href="{{ path('contrevisite', {'id':vehicule.id}) }}"  ><i class='fa fa-check'> </i></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
         <tfoot>
             <tr>
@@ -48,72 +74,14 @@
         </tfoot>
         </thead>
     </table>
+    {% endif %}
+</div>
 {% endblock %}
 {% block javascripts -%}
-<script type="text/javascript">
-    $(document).ready(function() {
-
-        $('#liste_clients').DataTable({
-            "columnDefs": [
-           
-            { "orderable": false, "targets": 4 }
-        ],
-        initComplete : function() {
-        var input = $('.dataTables_filter input').unbind(),
-            self = this.api(),
-            $searchButton = $('<button>')
-                       .text('Rechercher')
-                       .click(function() {
-                          self.search(input.val()).draw();
-                       }),
-            $clearButton = $('<button>')
-                       .text('Vider')
-                       .click(function() {
-                          input.val('');
-                          $searchButton.click(); 
-                       }) 
-        $('.dataTables_filter').append($searchButton, $clearButton);
-    } ,
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "{{ path('vehiculeajax') }}",
-        },
-        "paging" : true,
-        "info" : true, 
-        "searching": true,
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#immatriculation").focus();
+        } );
         
-        "responsive": true,
-        "pageLength": 10,
-        "order": [[1, 'asc']],
-       language: {
-        processing:     "Traitement en cours...",
-        search:         "Rechercher&nbsp;:",
-        lengthMenu:    "Afficher _MENU_ &eacute;l&eacute;ments",
-        info:           "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
-        infoEmpty:      "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
-        infoFiltered:   "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
-        infoPostFix:    "",
-        loadingRecords: "Chargement en cours...",
-        zeroRecords:    "Aucun &eacute;l&eacute;ment &agrave; afficher",
-        emptyTable:     "Aucune donnée disponible dans le tableau",
-        paginate: {
-            first:      "Premier",
-            previous:   "Pr&eacute;c&eacute;dent",
-            next:       "Suivant",
-            last:       "Dernier"
-        },
-        aria: {
-            sortAscending:  ": activer pour trier la colonne par ordre croissant",
-            sortDescending: ": activer pour trier la colonne par ordre décroissant"
-        }
-    }
-    });
-    
-    
-     
-		
-		        
-                   } );    
-        </script>
+    </script>
 {% endblock %}
