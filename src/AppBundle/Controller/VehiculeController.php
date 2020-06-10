@@ -211,7 +211,7 @@ class VehiculeController extends Controller
         $em = $this->getDoctrine()->getManager();
 	$aColumns = array( 'r.immatriculation', 'r.chassis', 'ma.libelle', 'p.nom');
         $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
-        $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
+        $end = ($request->get('length') != NULL && intval($request->get('length')) > 10) ? intval($request->get('length')) : 10;
         $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
         $sdir = ($dir =='asc') ? 'asc' : 'desc';
         $searchTerm = ($search != '') ? $search : NULL;
