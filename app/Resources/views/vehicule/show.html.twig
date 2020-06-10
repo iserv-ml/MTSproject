@@ -19,6 +19,7 @@
             <input type="submit" value="SUPPRIMER" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
         {{ form_end(delete_form) }}
     </label>
+        <label class="btn btn-outline-secondary"><a href="{{ path('aiguiller', { 'id': vehicule.id, 'type' : 0  } ) }}">Aiguiller</a></label>
 {% endblock %}
 {% block body %}
     <table class="table table-hover">

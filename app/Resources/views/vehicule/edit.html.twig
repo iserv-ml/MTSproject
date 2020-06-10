@@ -18,6 +18,8 @@
             <input type="submit" value="Supprimer" onclick="return confirm('Etes-vous sûr de vouloir supprimer?');">
         {{ form_end(delete_form) }}
     </label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_index') }}">Retour à la liste</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('aiguiller', { 'id': vehicule.id, 'type' : 0  } ) }}">Aiguiller</a></label>
 {% endblock %}
 {% block body %}
     {{ form_start(edit_form) }}
