@@ -26,7 +26,7 @@ class VehiculeController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
-        $immatriculation = $request->get('immatriculation', '');
+        $immatriculation = \trim($request->get('immatriculation', ''));
         $vehicules = (\strlen($immatriculation) > 3) ? $em->getRepository('AppBundle:Vehicule')->trouverParImmatriculationSimilaire($immatriculation) : null;
         return $this->render('vehicule/index.html.twig', array(
             'centre' => $centre, 'vehicules'=>$vehicules, 'immatriculation'=>$immatriculation
