@@ -326,5 +326,10 @@ class TypeVehicule
     {
         //$this->users = new ArrayCollection();
     }
+    
+    public function getRevisiteTtc(){
+        $tva = $this->getMontantRevisite()*18/100;
+        return $this->getMontantRevisite()+$tva+$this->getTimbre();
+    }
 
 }

@@ -86,7 +86,7 @@
     <span>RESULTAT DU CONTROLE VALABLE POUR LA CIRCULATION DU VEHICULE PENDANT {{ visite.vehicule.typeVehicule.delai }} JOURS SANS CERTIFICAT DE VISITE TECHNIQUE</span>
 </div>
 <div>
-    <span>FRAIS A PAYER POUR LA REVISITE REVISITE : {{ visite.vehicule.typeVehicule.montantRevisite|number_format(0, ',', ' ') }} FCFA</span>
+    <span>FRAIS A PAYER POUR LA REVISITE REVISITE : {{ visite.vehicule.typeVehicule.getRevisiteTtc|round(0, 'ceil')|number_format(0, ',', ' ') }} FCFA</span>
 </div>
             
                 </div>
@@ -185,7 +185,7 @@
                 <span>RESULTAT DU CONTROLE VALABLE POUR LA CIRCULATION DU VEHICULE PENDANT {{ visite.vehicule.typeVehicule.delai }} JOURS SANS CERTIFICAT DE VISITE TECHNIQUE</span>
             </div>
             <div>
-                <span>FRAIS A PAYER POUR LA REVISITE REVISITE : {{ visite.vehicule.typeVehicule.montantRevisite|number_format(0, ',', ' ') }} FCFA</span>
+                <span>FRAIS A PAYER POUR LA REVISITE REVISITE : {{ visite.vehicule.typeVehicule.getRevisiteTtc|round(0, 'ceil')|number_format(0, ',', ' ') }} FCFA</span>
             </div>
         </div>
     </div>
