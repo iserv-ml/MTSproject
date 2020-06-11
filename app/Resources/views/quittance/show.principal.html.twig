@@ -15,7 +15,9 @@
 {% block pagetitle -%}VOIR UNE QUITTANCE{% endblock %}
 {% block actions %}
     <label class="btn btn-outline-secondary"><a href="{{ path('caisse_quittance_index') }}">LISTER</a></label>
-    <label class="btn btn-outline-secondary"><a  href="#" onclick="imprimer()">IMPRIMER</a></label>
+    {% if quittance.paye %}
+        <label class="btn btn-outline-secondary"><a  href="#" onclick="imprimer()">IMPRIMER</a></label>
+    {% endif %}
     <label class="btn btn-outline-secondary">
         {% if quittance.paye %}<a href="#" title="Rembourser" onclick="rembourser({{ quittance.id }})">REMBOURSER</a>
         {% else %}<a onclick="return confirm('Veuiller confirmer l\'encaissement de la quittance N° {{quittance.numero}}');" href="{{ path('caisse_quittance_encaisser', { 'id': quittance.id }) }}">ENCAISSER</a>
