@@ -711,8 +711,7 @@ class VisiteController extends Controller
         if($chaineOptimale != null){
             $visite = new Visite();
             $visite->setContreVisite(true);
-            $visite->setStatut(1);
-            $visite->aiguiller($vehicule, 0, $chaineOptimale, null, $centre);
+            $visite->aiguiller($vehicule, 1, $chaineOptimale, null, $centre);
             $em->persist($visite);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Aiguillage effectué.');
