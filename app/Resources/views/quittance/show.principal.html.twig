@@ -38,10 +38,10 @@
 <table border="1" style="width:100%;" cellpadding="0" cellspacing="0">
      <tbody>
          <tr>
-             <td colspan="7" style="border:none; padding:5px">
-                 <span style="font-weight: bold">CVT : {{libelle}}</span>
-                <span style="margin-left:280px; font-weight:bold;">Type/Marque : {%if quittance.visite.vehicule.modele%}{{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}{%endif%}</span>
-             </td>
+            <td colspan="7" style="border:none; padding:5px">
+                <span style="font-weight: bold">CVT : {{libelle}}</span> <span style="font-weight: bold">| Caisse : {{quittance.visite.chaine.caisse.numero}} | Piste : {{quittance.visite.chaine.piste.numero}}</span>
+                <span style="margin-left:80px; font-weight:bold;">Type/Marque : {%if quittance.visite.vehicule.modele%}{{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}{%endif%}</span>
+            </td>
          </tr>
             <tr>
                 <td colspan="7" style="border:none; padding:5px">
@@ -84,10 +84,10 @@
     <table border="1" style="width:100%;" cellpadding="0" cellspacing="0">
          <tbody>
              <tr>
-                 <td colspan="7" style="border:none; padding:5px">
-                     <span style="font-weight: bold">CVT : {{libelle}}</span>
-                    <span style="margin-left:280px; font-weight:bold;">Type/Marque : {%if quittance.visite.vehicule.modele%}{{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}{%endif%}</span>
-                 </td>
+                <td colspan="7" style="border:none; padding:5px">
+                    <span style="font-weight: bold">CVT : {{libelle}}</span> <span style="font-weight: bold">| Caisse : {{quittance.visite.chaine.caisse.numero}} | Piste : {{quittance.visite.chaine.piste.numero}}</span>
+                    <span style="margin-left:80px; font-weight:bold;">Type/Marque : {%if quittance.visite.vehicule.modele%}{{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}{%endif%}</span>
+                </td>
              </tr>
                 <tr>
                     <td colspan="7" style="border:none; padding:5px">
