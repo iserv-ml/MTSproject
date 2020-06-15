@@ -348,4 +348,20 @@ class Controle
         $this->minimum = 0;
         $this->maximum = 0;
     }
+    
+    public function tousLesResultatsOrdonnesParSucces(){
+        $tableau = array();
+        $tmp = array();
+        if($this->resultats != null && count($this->resultats) > 0){
+            foreach($this->resultats as $resultat){
+                if($resultat->getReussite()){
+                    $tableau[] = $resultat;
+                }else{
+                    $tmp[] = $resultat;
+                }
+            }
+        }
+        $result = array_merge( $tableau, $tmp );
+        return $result;
+    }
 }

@@ -456,7 +456,7 @@ class VisiteController extends Controller
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CONTROLLEUR')){
             if($statut == 1){
                 $action .= " <a title='Controller' class='btn btn-success' href='".$this->generateUrl('visite_maha', array('id'=> $id ))."'><i class='fa fa-config' ></i> Controler</a>";
-                if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
+                if ($this->get('security.authorization_checker')->isGranted('ROLE_CAISSIER_PRINCIPAL')){
                     $action .= " <a title='Annuler' class='btn btn-success' href='".$this->generateUrl('visite_maha_annuler', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-cancel' ></i> Annuler</a>";
                 }
             }elseif($statut > 1){
@@ -540,41 +540,47 @@ class VisiteController extends Controller
         if(!$visite || $visite->getStatut() == 0 || (!$admin && $visite->getChaine()->getPiste()->getId()!= $affectation->getPiste()->getId())){
             throw $this->createAccessDeniedException("Cette opération n'est pas autorisée");
         }
-        $contenu = $visite->lireFichierResultatMaha();
-        if($contenu != null){
-            while(!feof($contenu)) {
-                $ligne = fgets($contenu);
-                if(strpos($ligne, 'CRC') !== false ) break;
-                $valeurs = $visite->lireLigneMaha($ligne);
-                if($valeurs != null){
-                    $controle = $em->getRepository('AppBundle:Controle')->trouverParCodeGenre($valeurs[0], $visite->getVehicule()->getTypeVehicule()->getGenre()->getCode());
-                    if($controle != null){
-                        switch ($controle->getType()){
-                            case "MESURE - VALEUR" : $codeResultat = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleResultat($controle->getId(), $valeurs[1]);break;
-                            case "MESURE - INTERVALLE" : $codeResultat = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleIntervalle($controle->getId(), $valeurs[1]);break;
-                            default :$codeResultat = null;
-                        }
-                        if($codeResultat != null){
-                            $resultat = new \AppBundle\Entity\Resultat();
-                            $resultat->generer($visite, $codeResultat, $valeurs[1]);
-                            $em->persist($resultat);
-                        }
-                    }else{
-                        //$this->get('session')->getFlashBag()->add('error', "Le fichier est corrompu!");break;
-                    }
-                }else{
-                    continue;
-                }
-            }
-            $em->flush();
-            $visite->fermerFichierResultatMaha($contenu);
+        if($visite->getRevisite() && $visite->getVisiteParent() != null && $visite->getVisiteParent()->getSuccesMaha()){
+            
             return $this->redirectToRoute('visite_controleur', array('id' => $visite->getId()));
         }else{
-            $this->get('session')->getFlashBag()->add('error', "Le fichier de résultat maha nexiste pas!");
+            $contenu = $visite->lireFichierResultatMaha();
+            if($contenu != null){
+                while(!feof($contenu)) {
+                    $ligne = fgets($contenu);
+                    if(strpos($ligne, 'CRC') !== false ) break;
+                    $valeurs = $visite->lireLigneMaha($ligne);
+                    if($valeurs != null){
+                        $controle = $em->getRepository('AppBundle:Controle')->trouverParCodeGenre($valeurs[0], $visite->getVehicule()->getTypeVehicule()->getGenre()->getCode());
+                        if($controle != null){
+                            switch ($controle->getType()){
+                                case "MESURE - VALEUR" : $codeResultat = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleResultat($controle->getId(), $valeurs[1]);break;
+                                case "MESURE - INTERVALLE" : $codeResultat = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleIntervalle($controle->getId(), $valeurs[1]);break;
+                                default :$codeResultat = null;
+                            }
+                            if($codeResultat != null){
+                                $resultat = new \AppBundle\Entity\Resultat();
+                                $resultat->generer($visite, $codeResultat, $valeurs[1]);
+                                $em->persist($resultat);
+                            }
+                        }else{
+                            //$this->get('session')->getFlashBag()->add('error', "Le fichier est corrompu!");break;
+                        }
+                    }else{
+                        continue;
+                    }
+                }
+                $em->flush();
+                $visite->fermerFichierResultatMaha($contenu);
+                return $this->redirectToRoute('visite_controleur', array('id' => $visite->getId()));
+            }else{
+                $this->get('session')->getFlashBag()->add('error', "Le fichier de résultat maha nexiste pas!");
+            }
+            return $this->render('visite/maha.html.twig', array(
+                'visite' => $visite,
+            ));
         }
-        return $this->render('visite/maha.html.twig', array(
-            'visite' => $visite,
-        ));
+        
         
     }
     
@@ -617,6 +623,7 @@ class VisiteController extends Controller
                 throw $this->createAccessDeniedException("Cette opération n'est pas autorisée");
             }
             $succes = true;
+            $succesMaha = true;
             $date = new \DateTime();
             foreach($controles as $controle){
                 if($request->get($controle->getCode())!=null){
@@ -637,6 +644,9 @@ class VisiteController extends Controller
             foreach ($resultats as $resultat){
                 if(!$resultat->getSucces()){
                     $succes = false;
+                    if($resultat->getControle()->getType() == "MESURE - VALEUR" || $resultat->getControle()->getType() == "MESURE - INTERVALLE"){
+                        $succesMaha = false;
+                    }
                 }
             }
             if($succes){
@@ -653,6 +663,7 @@ class VisiteController extends Controller
                 $visite->setStatut(3);
                 $visite->getVehicule()->incrementerCompteurRevisite();
             }
+            $visite->setSuccesMaha($succesMaha);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Controle terminé. Merci de consulter le résultat');
             if($visite->getStatut()==3){

@@ -85,6 +85,14 @@ class Visite
     private $revisite;
     
     /**
+     * @var boolean $succesMaha
+     *
+     * @ORM\Column(name="succes_maha", type="boolean", nullable=true)
+     * 
+     */
+    private $succesMaha;
+    
+    /**
      * @var boolean $contreVisite
      *
      * @ORM\Column(name="contre_visite", type="boolean", nullable=true)
@@ -328,7 +336,14 @@ class Visite
     function setQuittance($quittance) {
         $this->quittance = $quittance;
     }
+    
+    function getSuccesMaha() {
+        return ($this->succesMaha != null ) ? $this->succesMaha : false;
+    }
 
+    function setSuccesMaha($succesMaha) {
+        $this->succesMaha = $succesMaha;
+    }
         
     //BEHAVIOR
     /**
