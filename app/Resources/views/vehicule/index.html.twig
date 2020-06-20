@@ -60,7 +60,8 @@
                                 <a title='Aiguiller normal' class='btn btn-warning' href="{{ path('aiguiller', {'id':vehicule.id, 'type':0}) }}" ><i class='fa fa-compass'> </i></a>
                                 <a title='Aiguiller spécial' class='btn btn-djib' href="{{ path('aiguiller', {'id':vehicule.id, 'type':1}) }}" ><i class='fa fa-star-o'> </i></a>
                                 {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
-                                    <a title='Contre visite' class='btn btn-warning' href="{{ path('contrevisite', {'id':vehicule.id}) }}"  ><i class='fa fa-check'> </i></a>
+                                    <a title='Contre visite' class='btn btn-warning' href="{{ path('contrevisite', {'id':vehicule.id}) }}"  ><i class='fa fa-check'> </i></a> 
+                                    <a title='Contre visite visuelle' class='btn btn-outline-dark' href="{{ path('contrevisitevisuelle', {'id':vehicule.id}) }}"  ><i class='fa fa-eye'> </i></a>
                                 {% endif %}
                             </td>
                         </tr>

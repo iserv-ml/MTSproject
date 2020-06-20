@@ -435,27 +435,35 @@ class VisiteController extends Controller
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
-            $action = ($centre->getEtat())?$this->genererPisteAction($aRow['id'], $aRow['statut']) : "Centre fermé";
-            $revisite = $aRow['revisite'] == 1 ? "REVISITE" : "NORMALE";
+            $action = ($centre->getEtat())?$this->genererPisteAction($aRow['id'], $aRow['statut'], $aRow['contreVisiteVisuelle']) : "Centre fermé";
+            if($aRow['contreVisite']){
+                $revisite = $aRow['contreVisiteVisuelle'] == 1 ? "Contre visite visuelle" : "Contre visite";
+            }else{
+                $revisite = $aRow['revisite'] == 1 ? "Revisite" : "Normale";
+            }
             if($aRow['statut'] == 1){
-                $etat = "A CONTROLER";
+                $etat = "A controller";
             }else if($aRow['statut'] == 2){
-                $etat = "SUCCESS";
+                $etat = "Succès";
             }else if($aRow['statut'] == 3){
-                $etat = "ECHEC";
+                $etat = "Echec";
             }else if($aRow['statut'] == 4){
-                $etat = "DELIVRE";
+                $etat = "Délivré";
             }
             $output['aaData'][] = array($aRow['immatriculation'],$aRow['typeChassis'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['piste'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
     
-    private function genererPisteAction($id, $statut){
+    private function genererPisteAction($id, $statut, $visuelle){
         $action = "";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CONTROLLEUR')){
             if($statut == 1){
-                $action .= " <a title='Controller' class='btn btn-success' href='".$this->generateUrl('visite_maha', array('id'=> $id ))."'><i class='fa fa-config' ></i> Controler</a>";
+                if($visuelle == 1){
+                    $action .= " <a title='Controller' class='btn btn-success' href='".$this->generateUrl('visite_controleur', array('id'=> $id ))."'><i class='fa fa-config' ></i> Controler</a>";
+                }else{
+                    $action .= " <a title='Controller' class='btn btn-success' href='".$this->generateUrl('visite_maha', array('id'=> $id ))."'><i class='fa fa-config' ></i> Controler</a>";
+                }  
                 if ($this->get('security.authorization_checker')->isGranted('ROLE_CAISSIER_PRINCIPAL')){
                     $action .= " <a title='Annuler' class='btn btn-success' href='".$this->generateUrl('visite_maha_annuler', array('id'=> $id ))."' onclick='return confirm(\"Confirmer la suppression?\")'><i class='fa fa-cancel' ></i> Annuler</a>";
                 }
@@ -654,6 +662,7 @@ class VisiteController extends Controller
                 $date1 = $visite->getDate()->format('Y-m-d');
                 $date = new \DateTime($date1);
                 $date->add(new \DateInterval('P'.$visite->getVehicule()->getTypeVehicule()->getValidite().'M')); // P1D means a period of 1 day
+                $date->sub(new \DateInterval('P1D'));
                 $visite->setDateValidite($date);
                 $visite->setNumeroCertificat($centre->getCode().\time());
                 $centre->decrementerCarteVierge();
@@ -664,6 +673,8 @@ class VisiteController extends Controller
                 $visite->getVehicule()->incrementerCompteurRevisite();
             }
             $visite->setSuccesMaha($succesMaha);
+            $user = $this->container->get('security.context')->getToken()->getUser();
+            $visite->setControlleur($user->getNomComplet());
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Controle terminé. Merci de consulter le résultat');
             if($visite->getStatut()==3){
@@ -717,22 +728,24 @@ class VisiteController extends Controller
             $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La date de la prochaine visite n'est pas arrivée.");
             return $this->redirectToRoute('vehicule_index');
         }
-        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActivesOuvertes();
-        $chaineOptimale = \AppBundle\Utilities\Utilities::trouverChaineOptimale($chaines, $em);
-        if($chaineOptimale != null){
-            $visite = new Visite();
-            $visite->setContreVisite(true);
-            $visite->aiguiller($vehicule, 1, $chaineOptimale, null, $centre);
-            $em->persist($visite);
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('notice', 'Aiguillage effectué.');
-            $visite->genererFichierMaha();
-            return $this->render('visite/visite.html.twig', array(
-                'visite' => $visite,
-                ));
-        }else{
-            throw $this->createNotFoundException("Aucune chaine active. Merci de contacter l'administrateur.");
+        if($derniereVisite == null){
+            $this->get('session')->getFlashBag()->add('error', "Il faut d'abord une visite avant de pouvoir faire une contre visite!");
+            return $this->redirectToRoute('vehicule_index');
         }
+        $chaine = $derniereVisite->getChaine();
+        $visite = new Visite();
+        $quittance = new \AppBundle\Entity\Quittance();
+        $visite->initialiserContreVisite(false, $quittance);
+        $quittance->setVisite($visite);
+        $visite->aiguiller($vehicule, 1, $chaine, null, $centre);
+        $em->persist($visite);
+        $em->persist($quittance);
+        $em->flush();
+        $this->get('session')->getFlashBag()->add('notice', 'Contre visite créée.');
+        $visite->genererFichierMaha();
+        return $this->render('visite/visite.html.twig', array(
+            'visite' => $visite,
+        ));
     }
     
     /**
@@ -785,5 +798,54 @@ class VisiteController extends Controller
         return $this->render('visite/visite.html.twig', array(
             'visite' => $visiteGroupe,
         ));
+    }
+    
+    /**
+     * Creates a new visite entity.
+     *
+     * @Route("/contrevisitevisuelle/creer", name="contrevisitevisuelle")
+     * @Method({"GET", "POST"})
+     */
+    public function contrevisitevisuelleAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', "Le centre n'est pas encore ouvert.");
+            return $this->render('vehicule/index.html.twig', array('centre' => $centre,));
+        }
+        $vehicule = $em->getRepository('AppBundle:Vehicule')->find($request->get('id'));
+        if(!$vehicule){
+            throw $this->createNotFoundException("Ooops... Une erreur s'est produite.");
+        }  
+        if($vehicule->visiteArrive()){
+            $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($vehicule->getId());
+            switch(\AppBundle\Utilities\Utilities::evaluerDemandeVisite($derniereVisite)){
+                case 1:  
+                    $this->get('session')->getFlashBag()->add('notice', 'Visite déjà en cours.');
+                    return $this->render('visite/visite.html.twig', array('visite' => $derniereVisite,));
+            }
+        }else{
+            $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La date de la prochaine visite n'est pas arrivée.");
+            return $this->redirectToRoute('vehicule_index');
+        }
+        if($derniereVisite == null){
+            $this->get('session')->getFlashBag()->add('error', "Il faut d'abord une visite avant de pouvoir faire une contre visite!");
+            return $this->redirectToRoute('vehicule_index');
+        }
+        $chaine = $derniereVisite->getChaine();
+        $visite = new Visite();
+        $quittance = new \AppBundle\Entity\Quittance();
+        $visite->initialiserContreVisite(true, $quittance);
+        $quittance->setVisite($visite);
+        $visite->aiguiller($vehicule, 1, $chaine, null, $centre);
+        $em->persist($visite);
+        $em->persist($quittance);
+        $em->flush();
+        $this->get('session')->getFlashBag()->add('notice', 'Contre visite créée.');
+        return $this->render('visite/visite.html.twig', array(
+            'visite' => $visite,
+        ));
+        
     }
 }

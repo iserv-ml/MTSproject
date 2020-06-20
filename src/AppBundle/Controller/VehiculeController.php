@@ -238,8 +238,9 @@ class VehiculeController extends Controller
                 $action .= " <a title='Aiguiller spécial' class='btn btn-djib' href='".$this->generateUrl('aiguiller', array('id'=> $id, 'type'=>1 ))."' ><i class='fa fa-star-o'> </i></a>";
         }
         
-        if ($this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR')){
-            $action .= " <a title='Contre visite' class='btn btn-warning' href='".$this->generateUrl('contrevisite', array('id'=> $id ))."' ><i class='fa fa-check'> </i></a>";
+        if ($this->get('security.authorization_checker')->isGranted('ROLE_CAISSIER_PRINCIPAL')){
+            $action .= " <a title='Contre visite' class='btn btn-warning' href='".$this->generateUrl('contrevisite', array('id'=> $id ))."' ><i class='fa fa-check'> </i></a><br/>";
+            $action .= " <a title='Contre visite visuelle' class='btn btn-warning' href='".$this->generateUrl('contrevisitevisuelle', array('id'=> $id ))."' ><i class='fa fa-check'> </i></a>";
         }
         return $action;
     }

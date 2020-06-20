@@ -44,7 +44,7 @@
 </div>
 <div>
     <span style="font-weight: bolder">Date de contr&ocirc;le : {% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</span>
-    <span style="float:right">Montant visite : {{ ((quittance.montantvisite*1.18)|round(0, 'ceil')+120)|number_format(0, ',', ' ') }}</span>
+    <span style="float:right">Montant visite :{% if  {{ ((quittance.montantvisite*1.18)|round(0, 'ceil')+120)|number_format(0, ',', ' ') }}</span>
 </div>
 <div>
     <span style="font-weight: bolder">N&deg; de quittance : {{ quittance.numero }}</span>

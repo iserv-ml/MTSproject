@@ -59,6 +59,14 @@ class Visite
     private $numeroCertificat;
     
     /**
+     * @var string $controlleur
+     *
+     * @ORM\Column(name="controlleur", type="string", length=255, nullable=true)
+     * 
+     */
+    private $controlleur;
+    
+    /**
      * @var datetime $date
      *
      * @ORM\Column(name="date", type="datetime", nullable=true)
@@ -99,6 +107,14 @@ class Visite
      * 
      */
     private $contreVisite;
+    
+    /**
+     * @var boolean $contreVisiteVisuelle
+     *
+     * @ORM\Column(name="contre_visite_visuelle", type="boolean", nullable=true)
+     * 
+     */
+    private $contreVisiteVisuelle;
     
     /**
     * @ORM\ManyToOne(targetEntity="Visite", inversedBy="revisites", cascade={"persist","refresh"})
@@ -251,6 +267,14 @@ class Visite
 
     function getNumeroCertificat() {
         return $this->numeroCertificat;
+    }
+    
+    function getControlleur() {
+        return $this->controlleur;
+    }
+
+    function setControlleur($controlleur) {
+        $this->controlleur = $controlleur;
     }
     
     function getContreVisite() {
@@ -506,6 +530,21 @@ class Visite
         }else{
             return null;
         }
+    }
+    
+    function getContreVisiteVisuelle() {
+        return $this->contreVisiteVisuelle;
+    }
+
+    function setContreVisiteVisuelle($contreVisiteVisuelle) {
+        $this->contreVisiteVisuelle = $contreVisiteVisuelle;
+    }
+    
+    public function initialiserContreVisite($visuelle, $quittance){
+        $this->setContreVisite(true);
+        $this->setContreVisiteVisuelle($visuelle);
+        $quittance->initialiserContreVisite();
+        $this->setQuittance($quittance);
     }
 
 }

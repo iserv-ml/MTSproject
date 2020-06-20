@@ -411,4 +411,16 @@ class Quittance
     public function getTtc(){
         return \ceil($this->getMontantVisite()+$this->getTva()+$this->getTimbre());
     }
+    
+    public function initialiserContreVisite(){
+        $this->setMontantVisite(0);
+        $this->setNumero("Contre Visite_".\time());
+        $this->setPaye(1);
+        $this->setPenalite(0);
+        $this->setRembourse(0);
+        $this->setRetard(0);
+        $this->setTimbre(0);
+        $this->setTva(0);
+        $this->setDateEncaissement(new \DateTime());
+    }
 }

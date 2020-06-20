@@ -40,7 +40,15 @@
             </tr>
             <tr>
                 <th>TYPE</th>
-                <td>{% if visite.contreVisite %} Contre visite {% elseif visite.revisite %}Revisite{% else %}Normale{% endif %}</td>
+                <td>
+                    {% if visite.contreVisite %}
+                        Contre visite{% if visite.contreVisiteVisuelle %} visuelle{% endif %}
+                    {% elseif visite.revisite %}
+                        Revisite
+                    {% else %}
+                        Normale
+                    {% endif %}
+                </td>
             </tr>
         </tbody>
     </table>
