@@ -12,11 +12,14 @@
 {% block pagetitle -%}AIGUILLAGE DES VEHICULES{% endblock %}
 
 {% block actions %}
-    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_new') }}">ENREGISTRER</a></label>
-    <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_export') }}">EXPORTER</a></label>
-    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_vehicules_importer_new') }}">IMPORTER</a></label>
-    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_vehicules_importer_date') }}">DATES</a></label>
-    
+    {% if is_granted('ROLE_ENREGISTREMENT') %}
+        <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_new') }}">ENREGISTRER</a></label>
+    {% endif %}
+    {% if is_granted('ROLE_SUPERVISEUR') %}
+        <label class="btn btn-outline-secondary"><a href="{{ path('vehicule_export') }}">EXPORTER</a></label>
+        <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_vehicules_importer_new') }}">IMPORTER</a></label>
+        <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_vehicules_importer_date') }}">DATES</a></label>
+    {% endif %}
 {% endblock %}
 {% block body -%}
     {% if centre.etat %} 
@@ -56,7 +59,9 @@
                             <td>
                                 <a title='Détail' class='btn btn-success' href="{{ path('vehicule_show', {'id':vehicule.id}) }}" ><i class='fa fa-search-plus'></i></a>
                                 <a title='Modifier' class='btn btn-info' href="{{ path('vehicule_edit', {'id':vehicule.id}) }}" ><i class='fa fa-edit' ></i></a>
-                                <a title='Supprimer' class='btn btn-danger' href="{{ path('vehicule_delete_a', {'id':vehicule.id}) }}"  onclick='return confirm("Confirmer la suppression?")'><i class='fa fa-trash-o'> </i></a><br/><br/>
+                                {% if is_granted('ROLE_ENREGISTREMENT') %}
+                                    <a title='Supprimer' class='btn btn-danger' href="{{ path('vehicule_delete_a', {'id':vehicule.id}) }}"  onclick='return confirm("Confirmer la suppression?")'><i class='fa fa-trash-o'> </i></a><br/><br/>
+                                {% endif %}
                                 <a title='Aiguiller normal' class='btn btn-warning' href="{{ path('aiguiller', {'id':vehicule.id, 'type':0}) }}" ><i class='fa fa-compass'> </i></a>
                                 <a title='Aiguiller spécial' class='btn btn-djib' href="{{ path('aiguiller', {'id':vehicule.id, 'type':1}) }}" ><i class='fa fa-star-o'> </i></a>
                                 {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
