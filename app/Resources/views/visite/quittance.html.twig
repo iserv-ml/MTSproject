@@ -30,6 +30,57 @@
 
 {% block body -%}
 <div class="table-responsive">
+    <label class="btn btn-warning pointer-event"> 
+        <form method='POST' action='{{ path('visite_quittance') }}'>
+            Immatriculation <input type="text" id="immatriculation" name="immatriculation" value="{{ immatriculation }}" /> 
+            
+            <input type="submit" value="Rechercher"/>
+        </form>
+    </label>
+    {% if vehicules is not null%}
+        {% if vehicules is empty %}
+            Aucun véhicule trouvé. Merci de vérifier l'immatriculation ou procéder à l'enregistrement!
+        {% else %}
+            <table id="vehicules" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+                <thead>
+                    <tr>
+                        <th>Immatriculation</th>
+                        <th>Chassis</th>
+                        <th>Modèle</th>
+                        <th>Propriétaire</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for vehicule in vehicules %}
+                        <tr>
+                            <td>{{ vehicule.immatriculation }} </td>
+                            <td>{{ vehicule.chassis }} </td>
+                            <td>{{ vehicule.modele.marque.libelle }} {{ vehicule.modele.libelle }}</td>
+                            <td>{{ vehicule.proprietaire.getNomComplet }} </td>
+                            <td>
+                                <a title='Aiguiller normal' class='btn btn-warning' href="{{ path('aiguillerCaissier', {'id':vehicule.id, 'type':0, 'caisse': idCaisse}) }}" ><i class='fa fa-compass'> </i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Immatriculation</th>
+                        <th>Chassis</th>
+                        <th>Modèle</th>
+                        <th>Propriétaire</th>
+                        <th>Actions</th>
+                    </tr>
+                </tfoot>
+                </thead>
+            </table>
+        {% endif %}
+    {% else %}
+        Saisir au mois 4 charactères pour lancer la recherche!
+    {% endif %}
+</div>
+<div class="table-responsive">
     <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
         <thead>
             <tr>

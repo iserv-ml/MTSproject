@@ -21,9 +21,9 @@ class VisiteController extends Controller
      * Lists all visite entities.
      *
      * @Route("/quittance", name="visite_quittance")
-     * @Method("GET")
+     * @Method({"GET", "POST"})
      */
-    public function quittanceAction()
+    public function quittanceAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
@@ -43,7 +43,9 @@ class VisiteController extends Controller
             $caisse = null;
             $idCaisse = 0;
         }
-            return $this->render('visite/quittance.html.twig', array('profil'=>$profil, 'caisse'=>$caisse, 'centre'=>$centre, 'idCaisse'=>$idCaisse,));
+        $immatriculation = \trim($request->get('immatriculation', ''));
+        $vehicules = (\strlen($immatriculation) > 3) ? $em->getRepository('AppBundle:Vehicule')->trouverParImmatriculationSimilaire($immatriculation) : null;
+        return $this->render('visite/quittance.html.twig', array('profil'=>$profil, 'caisse'=>$caisse, 'centre'=>$centre, 'idCaisse'=>$idCaisse, 'vehicules'=>$vehicules, 'immatriculation'=>$immatriculation));
     }
     
     /**
@@ -323,7 +325,7 @@ class VisiteController extends Controller
             $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($aRow['id']);
             $action = $aRow['ouvert'] ? $this->genererAction($aRow['id'], $quittance) : "Caisse Fermée";
             $revisite = $aRow['revisite'] == 1 ? "REVISITE" : "NORMALE";
-            $output['aaData'][] = array($aRow['immatriculation'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$aRow['caisse'], $action);
+            $output['aaData'][] = array(\strtoupper($aRow['immatriculation']),$aRow['nom'].' '.$aRow['prenom'],$revisite,$aRow['caisse'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
@@ -450,7 +452,7 @@ class VisiteController extends Controller
             }else if($aRow['statut'] == 4){
                 $etat = "Délivré";
             }
-            $output['aaData'][] = array($aRow['immatriculation'],$aRow['typeChassis'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['piste'], $action);
+            $output['aaData'][] = array(\strtoupper($aRow['immatriculation']),$aRow['typeChassis'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['piste'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
@@ -511,7 +513,7 @@ class VisiteController extends Controller
                 case 5 : $etat = "ANNULEE";break;
             }
             
-            $output['aaData'][] = array($aRow['immatriculation'],$aRow['typeChassis'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['caisse'].'/'.$aRow['piste'], $action);
+            $output['aaData'][] = array(\strtoupper($aRow['immatriculation']),$aRow['typeChassis'],$aRow['nom'].' '.$aRow['prenom'],$revisite,$etat,$aRow['caisse'].'/'.$aRow['piste'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
@@ -847,5 +849,55 @@ class VisiteController extends Controller
             'visite' => $visite,
         ));
         
+    }
+    
+    /**
+     * Creates a new visite entity.
+     *
+     * @Route("/aiguiller/caissier", name="aiguillerCaissier")
+     * @Method({"GET", "POST"})
+     */
+    public function aiguillerCaissierAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', "Le centre n'est pas encore ouvert.");
+            return $this->render('vehicule/index.html.twig', array('centre' => $centre,));
+        }
+        $vehicule = $em->getRepository('AppBundle:Vehicule')->find($request->get('id'));
+        if(!$vehicule){
+            throw $this->createNotFoundException("Ooops... Une erreur s'est produite.");
+        }
+        $visite = null;
+        if($vehicule->visiteArrive()){
+            $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($vehicule->getId());
+            switch(\AppBundle\Utilities\Utilities::evaluerDemandeVisite($derniereVisite)){
+                case 1: 
+                    $chaines = $em->getRepository('AppBundle:Chaine')->chainesActivesCaisse($request->get('caisse'), $request->get('type'));
+                    $chaineOptimale = \AppBundle\Utilities\Utilities::trouverChaineOptimale($chaines, $em);
+                    $derniereVisite->setChaine($chaineOptimale);
+                    $em->flush();
+                    $this->get('session')->getFlashBag()->add('notice', 'La visite à été redirigée vers votre caisse!');
+                    return $this->redirectToRoute('visite_quittance');
+                case 0: case 2: $visiteParent = null; break;
+                case 3 : $visiteParent = $derniereVisite;break;
+            }
+        }else{
+            $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La prochaine visite est prévue pour le ".$vehicule->getDateProchaineVisite().".");
+            return $this->redirectToRoute('visite_quittance');
+        }  
+        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActivesCaisse($request->get('caisse'), $request->get('type'));
+        $chaineOptimale = \AppBundle\Utilities\Utilities::trouverChaineOptimale($chaines, $em);
+        if($chaineOptimale != null){
+            $visite = new Visite();
+            $visite->aiguiller($vehicule, 0, $chaineOptimale, $visiteParent, $centre);
+            $em->persist($visite);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Aiguillage effectué.');
+            return $this->redirectToRoute('visite_quittance');
+        }else{
+            throw $this->createNotFoundException("Aucune chaine active. Merci de contacter l'administrateur.");
+        }
     }
 }
