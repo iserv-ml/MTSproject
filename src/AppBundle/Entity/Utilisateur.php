@@ -121,7 +121,7 @@ class Utilisateur extends BaseUser
     
     
     public function getNomComplet(){
-        return $this->nom." ".$this->prenom." (".$this->username.")";
+        return $this->nom." ".$this->prenom;
     }
 
     public function estSupprimable(){
@@ -210,4 +210,41 @@ class Utilisateur extends BaseUser
     }
     //Fin relation caisse a plusieurs affectations
 
+    
+    //Debut relation Utilisateur a plusieurs quittances
+    /**
+    * @ORM\OneToMany(targetEntity="Quittance", mappedBy="caissier", cascade={"persist"})
+    */
+    protected $quittances;
+    
+    /**
+    * Add quittance
+    *
+    * @param AppBundle\Entity\Quittance $quittance
+    */
+    public function addQuittance(\AppBundle\Entity\Quittance $quittance)
+    {
+        $this->quittances[] = $quittance;
+    }
+
+    /**
+     * Get quittances
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getQuittances()
+    {
+        return $this->quittances;
+    }
+
+    /**
+     * Set quittances
+     *
+     * @param \Doctrine\Common\Collections\Collection $quittances
+     */
+    public function setQuittances(\Doctrine\Common\Collections\Collection $quittances)
+    {
+        $this->quittances = $quittances;
+    }
+    //Fin relation utilisateur a plusieurs quittances
 }

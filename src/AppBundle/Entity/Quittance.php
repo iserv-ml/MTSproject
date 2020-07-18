@@ -198,7 +198,15 @@ class Quittance
      * @var string $creePar
      *
      * @Gedmo\Blameable(on="create")
-     * @ORM\Column(type="string")
+     * @ORM\ManyToOne(targetEntity="Utilisateur", inversedBy="quittances", cascade={"persist","refresh"})
+     * @ORM\JoinColumn(name="utilisateur_id", referencedColumnName="id")
+     */
+    private $caissier;
+    
+    /**
+     * @var string $creePar
+     *
+     * @ORM\Column(type="string",  nullable=true)
      */
     private $creePar;
 
@@ -423,4 +431,14 @@ class Quittance
         $this->setTva(0);
         $this->setDateEncaissement(new \DateTime());
     }
+    
+    function getCaissier() {
+        return $this->caissier;
+    }
+
+    function setCaissier($caissier) {
+        $this->caissier = $caissier;
+    }
+
+
 }
