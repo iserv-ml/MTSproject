@@ -477,6 +477,9 @@ class Visite
         if($visiteParent != null){
             $this->setRevisite(1);
             $this->setVisiteParent($visiteParent);
+            if($visiteParent->getSuccesMaha()){
+                $this->setContreVisiteVisuelle(true);
+            }
         }else{
             $this->setRevisite(0);
         }

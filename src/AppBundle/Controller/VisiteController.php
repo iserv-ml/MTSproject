@@ -437,7 +437,7 @@ class VisiteController extends Controller
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
-            $action = ($centre->getEtat())?$this->genererPisteAction($aRow['id'], $aRow['statut'], $aRow['contreVisiteVisuelle']) : "Centre fermé";
+            $action = ($centre->getEtat())?$this->genererPisteAction($aRow['id'], $aRow['statut'], $aRow['contreVisiteVisuelle'], $aRow['vehicule']) : "Centre fermé";
             if($aRow['contreVisite']){
                 $revisite = $aRow['contreVisiteVisuelle'] == 1 ? "Contre visite visuelle" : "Contre visite";
             }else{
@@ -457,7 +457,7 @@ class VisiteController extends Controller
 	return new Response(json_encode( $output ));    
     }
     
-    private function genererPisteAction($id, $statut, $visuelle){
+    private function genererPisteAction($id, $statut, $visuelle, $vehicule){
         $action = "";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CONTROLLEUR')){
             if($statut == 1){
@@ -471,7 +471,7 @@ class VisiteController extends Controller
                 }
             }elseif($statut > 1){
                 $action .= " <a title='Détail' class='btn btn-success' href='".$this->generateUrl('visite_show', array('id'=> $id ))."'><i class='fa fa-plus' ></i> Voir le rapport</a>";
-                $action .= " <a title='Contre visite' class='btn btn-warning' href='".$this->generateUrl('contrevisite', array('id'=> $id ))."' ><i class='fa fa-check'> </i></a><br/>";
+                $action .= " <a title='Contre visite' class='btn btn-warning' href='".$this->generateUrl('contrevisite', array('id'=> $vehicule ))."' ><i class='fa fa-check'> </i></a><br/>";
             }
             
         }
@@ -675,6 +675,7 @@ class VisiteController extends Controller
             }else{
                 $visite->setStatut(3);
                 $visite->getVehicule()->incrementerCompteurRevisite();
+                $visite->setSuccesMaha($succesMaha);
             }
             $visite->setSuccesMaha($succesMaha);
             $user = $this->container->get('security.context')->getToken()->getUser();

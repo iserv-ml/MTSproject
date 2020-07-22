@@ -165,7 +165,7 @@ class QuittanceController extends Controller
                 $montantRevisite = 0;
                 $nbRevisite = 0;
             }
-            $message = $visite->genererFichierMaha();
+            $message = $visite->getContreVisiteVisuelle() ? "Quittance encaissée." : $visite->genererFichierMaha();
             $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero());
             $this->get('session')->getFlashBag()->add('notice', $message);
             $em->persist($etat);
