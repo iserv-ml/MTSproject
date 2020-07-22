@@ -471,7 +471,9 @@ class VisiteController extends Controller
                 }
             }elseif($statut > 1){
                 $action .= " <a title='Détail' class='btn btn-success' href='".$this->generateUrl('visite_show', array('id'=> $id ))."'><i class='fa fa-plus' ></i> Voir le rapport</a>";
+                $action .= " <a title='Contre visite' class='btn btn-warning' href='".$this->generateUrl('contrevisite', array('id'=> $id ))."' ><i class='fa fa-check'> </i></a><br/>";
             }
+            
         }
         return $action;
     }

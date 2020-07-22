@@ -18,6 +18,7 @@
     {% if is_granted('ROLE_CONTROLLEUR') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('visite_controle') }}">LISTE DES CONTROLES</a></label>
         <label class="btn btn-outline-secondary"><a  href="#" onclick="imprimer()" title="Imprimer le rapport">RAPPORT</a></label>
+        <label class="btn btn-outline-secondary"><a  href="{{ path('contrevisitevisuelle', { 'id': vehicule.id }) }}" title="Contre-visite visuelle">Contre-visite visuelle</a></label>
     {% endif %}
 {% endblock %}
 {% block body %}

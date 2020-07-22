@@ -240,7 +240,6 @@ class VehiculeController extends Controller
         
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CAISSIER_PRINCIPAL')){
             $action .= " <a title='Contre visite' class='btn btn-warning' href='".$this->generateUrl('contrevisite', array('id'=> $id ))."' ><i class='fa fa-check'> </i></a><br/>";
-            $action .= " <a title='Contre visite visuelle' class='btn btn-warning' href='".$this->generateUrl('contrevisitevisuelle', array('id'=> $id ))."' ><i class='fa fa-check'> </i></a>";
         }
         return $action;
     }
