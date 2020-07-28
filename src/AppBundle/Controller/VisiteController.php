@@ -471,7 +471,6 @@ class VisiteController extends Controller
                 }
             }elseif($statut > 1){
                 $action .= " <a title='Détail' class='btn btn-success' href='".$this->generateUrl('visite_show', array('id'=> $id ))."'><i class='fa fa-plus' ></i> Voir le rapport</a>";
-                $action .= " <a title='Contre visite' class='btn btn-warning' href='".$this->generateUrl('contrevisite', array('id'=> $vehicule ))."' ><i class='fa fa-check'> </i></a><br/>";
             }
             
         }
@@ -726,12 +725,9 @@ class VisiteController extends Controller
             $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($vehicule->getId());
             switch(\AppBundle\Utilities\Utilities::evaluerDemandeVisite($derniereVisite)){
                 case 1:  
-                    $this->get('session')->getFlashBag()->add('notice', 'Visite déjà en cours.');
-                    return $this->render('visite/visite.html.twig', array('visite' => $derniereVisite,));
+                    $this->get('session')->getFlashBag()->add('notice', 'Visite déjà programée.');
+                    return $this->redirectToRoute('vehicule_index');
             }
-        }else{
-            $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La date de la prochaine visite n'est pas arrivée.");
-            return $this->redirectToRoute('vehicule_index');
         }
         if($derniereVisite == null){
             $this->get('session')->getFlashBag()->add('error', "Il faut d'abord une visite avant de pouvoir faire une contre visite!");
@@ -748,9 +744,7 @@ class VisiteController extends Controller
         $em->flush();
         $this->get('session')->getFlashBag()->add('notice', 'Contre visite créée.');
         $visite->genererFichierMaha();
-        return $this->render('visite/visite.html.twig', array(
-            'visite' => $visite,
-        ));
+        return $this->redirectToRoute('visite_maha', array('id' => $visite->getId()));
     }
     
     /**
@@ -827,12 +821,9 @@ class VisiteController extends Controller
             $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($vehicule->getId());
             switch(\AppBundle\Utilities\Utilities::evaluerDemandeVisite($derniereVisite)){
                 case 1:  
-                    $this->get('session')->getFlashBag()->add('notice', 'Visite déjà en cours.');
-                    return $this->render('visite/visite.html.twig', array('visite' => $derniereVisite,));
+                    $this->get('session')->getFlashBag()->add('notice', 'Visite déjà programmée.');
+                    return $this->redirectToRoute('vehicule_index');
             }
-        }else{
-            $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La date de la prochaine visite n'est pas arrivée.");
-            return $this->redirectToRoute('vehicule_index');
         }
         if($derniereVisite == null){
             $this->get('session')->getFlashBag()->add('error', "Il faut d'abord une visite avant de pouvoir faire une contre visite!");
@@ -848,9 +839,7 @@ class VisiteController extends Controller
         $em->persist($quittance);
         $em->flush();
         $this->get('session')->getFlashBag()->add('notice', 'Contre visite créée.');
-        return $this->render('visite/visite.html.twig', array(
-            'visite' => $visite,
-        ));
+        return $this->redirectToRoute('visite_controleur', array('id' => $visite->getId()));
         
     }
     
