@@ -69,11 +69,29 @@
         </tr>
         {% if visite.resultats %}
             {% for resultat in visite.resultats %}
+                {% if resultat.controle.type == "MESURE - VALEUR" or resultat.controle.type == "MESURE - INTERVALLE" %}
+                    <tr>
+                        <td>{{ resultat.controle.libelle }}</td>
+                        <td>{{ resultat.controle.detail }}</td>
+                        <td>{{ resultat.commentaire }} ({{ resultat.controle.unite }}) </td>
+                        <td>{% if resultat.succes %}SUCCES{% else %}ECHEC{% endif %}</td>
+                    </tr>
+                {% endif %}
                 <tr>
-                    <td>{{ resultat.controle.libelle }}</td>
-                    <td>{{ resultat.controle.detail }}</td>
-                    <td>{{ resultat.commentaire }} ({{ resultat.controle.unite }}) </td>
-                    <td>{% if resultat.succes %}SUCCES{% else %}ECHEC{% endif %}</td>
+                    <td colspan="4" align="center">--</td>
+                </tr>
+            {% endfor %}
+            {% for resultat in visite.resultats %}
+                {% if resultat.controle.type != "MESURE - VALEUR" and resultat.controle.type != "MESURE - INTERVALLE" %}
+                    <tr>
+                        <td>{{ resultat.controle.libelle }}</td>
+                        <td>{{ resultat.controle.detail }}</td>
+                        <td>{{ resultat.commentaire }} ({{ resultat.controle.unite }}) </td>
+                        <td>{% if resultat.succes %}SUCCES{% else %}ECHEC{% endif %}</td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td colspan="4" align="center">--</td>
                 </tr>
             {% endfor %}
         {% endif %}
