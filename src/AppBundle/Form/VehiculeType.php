@@ -16,13 +16,14 @@ class VehiculeType extends AbstractType
         $builder
                 ->add('proprietaireAjax', 'text', array('label'  => 'Propriétaire', 'required'  => true, "mapped" => false))
                 ->add('proprietaireId', 'hidden', array('required'  => true, "mapped" => false))
+                ->add('formatImmatriculation')
                 ->add('immatriculation')
                 ->add('chassis')
                 ->add('modeleAjax', 'text', array('label'  => 'Modèle', 'required'  => true, "mapped" => false))
                 ->add('modeleId', 'hidden', array('required'  => true, "mapped" => false))
                 ->add('typeChassis')
                 ->add('typeVehicule')
-                ->add('formatImmatriculation')
+                
                 //->add('carrosserieAjax', 'text', array('label'  => 'Carrosserie', 'required'  => true, "mapped" => false))
                 //->add('carrosserieId', 'hidden', array('required'  => true, "mapped" => false))
                 //->add('usageAjax', 'text', array('label'  => 'Usage', 'required'  => true, "mapped" => false))

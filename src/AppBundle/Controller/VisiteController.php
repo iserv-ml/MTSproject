@@ -744,7 +744,7 @@ class VisiteController extends Controller
         $em->flush();
         $this->get('session')->getFlashBag()->add('notice', 'Contre visite créée.');
         $visite->genererFichierMaha();
-        return $this->redirectToRoute('visite_maha', array('id' => $visite->getId()));
+        return $this->redirectToRoute('vehicule_index');
     }
     
     /**
