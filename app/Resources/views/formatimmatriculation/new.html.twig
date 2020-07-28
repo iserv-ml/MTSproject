@@ -1,0 +1,27 @@
+{% extends '::base.html.twig' %}
+{% block menu -%}
+{% embed  '::parametres/menu.html.twig' %}
+{% block menu_vehicules_open %}open{% endblock %}
+{% block menu_formatimmatriculations_open %}open{% endblock %}
+{% block menu_formatimmatriculations_actif %}active{% endblock %}
+{% endembed %}
+{% endblock %}
+{% block menu_parametres_actif %}active{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('parametre_index') }}">Paramètres</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('admin_parametres_formatimmatriculation_index') }}">Formats d'immatriculations</a></li>
+          <li class="breadcrumb-item">Créer</li>
+        </ol>
+{% endblock %}
+{% block pagetitle -%}CREER UN FORMAT D'IMMATRICULATION{% endblock %}
+{% block actions %} 
+    <label class="btn btn-outline-secondary"><a href="{{ path('admin_parametres_formatimmatriculation_index') }}">RETOUR A LA LISTE</a></label>
+{% endblock %}
+{% block body %}
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <input type="submit" value="Enregistrer" />
+    {{ form_end(form) }}
+{% endblock %}

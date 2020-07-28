@@ -48,6 +48,13 @@ class VehiculeController extends Controller
         $proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($request->get("proprietaireid", 0));
         $vehicule->setProprietaire($proprietaire);
         if ($form->isSubmitted() && $form->isValid()) {
+            if(! preg_match($vehicule->getFormatImmatriculation()->getRegex(), $vehicule->getImmatriculation())){
+                $form->get('immatriculation')->addError(new \Symfony\Component\Form\FormError("Le format de l'immatriculation n'est pas bon"));
+                return $this->render('vehicule/new.html.twig', array(
+            'vehicule' => $vehicule,
+            'form' => $form->createView(),
+        ));
+            }
             $field = $request->get("appbundle_vehicule");
             $proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($field['proprietaireId']);
             $modele = $em->getRepository('AppBundle:Modele')->find($field['modeleId']);

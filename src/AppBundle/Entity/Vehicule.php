@@ -319,10 +319,11 @@ class Vehicule
     protected $typeVehicule;
     
     /**
-    * @ORM\ManyToOne(targetEntity="TypeImmatriculation", inversedBy="vehicules", cascade={"persist","refresh"})
-    * @ORM\JoinColumn(name="type_immatriculation_id", referencedColumnName="id")
+    * @ORM\ManyToOne(targetEntity="FormatImmatriculation", inversedBy="vehicules", cascade={"persist","refresh"})
+    * @ORM\JoinColumn(name="format_immatriculation_id", referencedColumnName="id")
+    * @Assert\NotBlank
     */
-   protected $typeImmatriculation;
+   protected $formatImmatriculation;
 
     /**
      * Get id
@@ -495,16 +496,8 @@ class Vehicule
         return $this->typeVehicule;
     }
 
-    function getTypeImmatriculation() {
-        return $this->typeImmatriculation;
-    }
-
     function setTypeVehicule($typeVehicule) {
         $this->typeVehicule = $typeVehicule;
-    }
-
-    function setTypeImmatriculation($typeImmatriculation) {
-        $this->typeImmatriculation = $typeImmatriculation;
     }
     
     function getModeleAjax() {
@@ -885,7 +878,7 @@ class Vehicule
     }
     
     public function initialiser($immatricultion, $chassis, $modele, $typeVehicule, $typeChassis, $ptac, $place, $puissance, 
-            $dateMiseCirculation, $carteGrise, $dateCarteGrise, $kilometrage, $couleur, $typeImmatriculation,
+            $dateMiseCirculation, $carteGrise, $dateCarteGrise, $kilometrage, $couleur, $formatImmatriculation,
             $dateValidite, $energie, $pv, $cu, $puissanceReelle, $capacite, $moteur, $immatricultionPrecedent, $dateImmatricultionPrecedent, $alimentation, $potCatalityque, $dateProchaineVisite){
         $this->immatriculation = $immatricultion;
         $this->chassis = $chassis;
@@ -900,7 +893,7 @@ class Vehicule
         $this->dateCarteGrise = $dateCarteGrise;
         $this->kilometrage = $kilometrage;
         $this->couleur = $couleur;
-        $this->typeImmatriculation = $typeImmatriculation;
+        $this->formatImmatriculation = $formatImmatriculation;
         $this->dateValidite = $dateValidite;
         $this->energie = $energie;
         $this->pv = $pv;
@@ -936,4 +929,11 @@ class Vehicule
         $this->proprietaire = $prorietaire;
     }
 
+    function getFormatImmatriculation() {
+        return $this->formatImmatriculation;
+    }
+
+    function setFormatImmatriculation($formatImmatriculation) {
+        $this->formatImmatriculation = $formatImmatriculation;
+    }
 }

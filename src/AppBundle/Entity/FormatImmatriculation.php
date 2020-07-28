@@ -11,12 +11,12 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * Marque
  *
- * @ORM\Table(name="typeimmatriculation")
- * @ORM\Entity(repositoryClass="AppBundle\Entity\TypeImmatriculationRepository")
+ * @ORM\Table(name="formatImmatriculation")
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\FormatImmatriculationRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
- * @UniqueEntity("code")
+ * @UniqueEntity("presentation")
  */
-class TypeImmatriculation
+class FormatImmatriculation
 {
     /**
      * @var integer
@@ -34,57 +34,72 @@ class TypeImmatriculation
     private $version;
     
     /**
-     * @var string $description
+     * @var string $presentation
      *
-     * @ORM\Column(name="description", type="string", length=255, nullable=false)
+     * @ORM\Column(name="presentation", type="string", length=255, nullable=false)
      * @Assert\NotBlank
      */
-    private $description;
+    private $presentation;
     
     /**
-     * @var string $code
+     * @var string $regex
      *
-     * @ORM\Column(name="code", type="string", length=255, nullable=false)
+     * @ORM\Column(name="regex", type="string", length=255, nullable=false)
      * @Assert\NotBlank
      */
-    private $code;
-
-    //Debut relation TypeImmatriculation a plusieurs formats
+    private $regex;
+    
     /**
-    * @ORM\OneToMany(targetEntity="FormatImmatriculation", mappedBy="typeImmatriculation", cascade={"persist"})
+     * @var boolean $actif
+     *
+     * @ORM\Column(name="actif", type="boolean", nullable=false)
+     * 
+     */
+    private $actif;
+    
+    /**
+    * @ORM\ManyToOne(targetEntity="TypeImmatriculation", inversedBy="formats", cascade={"persist","refresh"})
+    * @ORM\JoinColumn(name="type_immatriculation_id", referencedColumnName="id")
+    * @Assert\NotBlank
     */
-    protected $formats;
+   protected $typeImmatriculation;
+    
+    //Debut relation TypeImmatriculation a plusieurs vehicules
+    /**
+    * @ORM\OneToMany(targetEntity="Vehicule", mappedBy="typeImmatriculation", cascade={"persist"})
+    */
+    protected $vehicules;
     
     /**
-    * Add format
+    * Add vehicule
     *
-    * @param AppBundle\Entity\FormatImmatriculation $format
+    * @param AppBundle\Entity\Vehicule $vehicule
     */
-    public function addVehicule(\AppBundle\Entity\FormatImmatriculation $format)
+    public function addVehicule(\AppBundle\Entity\Vehicule $vehicule)
     {
-        $this->formats[] = $format;
+        $this->vehicules[] = $vehicule;
     }
 
     /**
-     * Get formats
+     * Get vehicules
      *
      * @return \Doctrine\Common\Collections\Collection 
      */
-    public function getFormats()
+    public function getVehicules()
     {
-        return $this->formats;
+        return $this->vehicules;
     }
 
     /**
-     * Set formats
+     * Set vehicules
      *
-     * @param \Doctrine\Common\Collections\Collection $formats
+     * @param \Doctrine\Common\Collections\Collection $vehicules
      */
-    public function setFormats(\Doctrine\Common\Collections\Collection $formats)
+    public function setVehicules(\Doctrine\Common\Collections\Collection $vehicules)
     {
-        $this->formats = $formats;
+        $this->vehicules = $vehicules;
     }
-    //Fin relation typeImmatriculation a plusieurs formats
+    //Fin relation typeImmatriculation a plusieurs vehicules
     
     /**
      * Get id
@@ -104,22 +119,29 @@ class TypeImmatriculation
         $this->version = $version;
     }
     
-    function getDescription() {
-        return $this->description;
+    function getPresentation() {
+        return $this->presentation;
     }
 
-    function getCode() {
-        return $this->code;
+    function getRegex() {
+        return $this->regex;
     }
 
-    function setDescription($description) {
-        $this->description = $description;
+    function getTypeImmatriculation() {
+        return $this->typeImmatriculation;
     }
 
-    function setCode($code) {
-        $this->code = $code;
+    function setPresentation($presentation) {
+        $this->presentation = $presentation;
     }
 
+    function setRegex($regex) {
+        $this->regex = $regex;
+    }
+
+    function setTypeImmatriculation($typeImmatriculation) {
+        $this->typeImmatriculation = $typeImmatriculation;
+    }
         
     //BEHAVIOR
     /**
@@ -205,11 +227,11 @@ class TypeImmatriculation
     }
 
     public function estSupprimable(){
-        return true;
+        return $this->vehicules == null || count($this->vehicules) == 0;
     }
     
     public function __toString(){
-        return $this->code;
+        return $this->presentation;
     }
     
     public function __construct()
@@ -218,5 +240,12 @@ class TypeImmatriculation
     }
     //fin behavior
 
+    function getActif() {
+        return $this->actif;
+    }
+
+    function setActif($actif) {
+        $this->actif = $actif;
+    }
 
 }

@@ -36,7 +36,7 @@ class VehiculeType extends AbstractType
                 ->add('dateCarteGrise') 
                 ->add('kilometrage')
                 ->add('couleur')                           
-                ->add('typeImmatriculation')
+                ->add('formatImmatriculation')
                 ->add('dateValidite')
                 ->add('energie')
                 ->add('pv')
