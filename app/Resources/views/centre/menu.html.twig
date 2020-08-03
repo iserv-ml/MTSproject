@@ -28,7 +28,7 @@
             <i class="nav-icon fa fa-road"></i> Affectation aux pistes</a>
     </li>
 {% endif %}
-{% if is_granted('ROLE_SUPERVISEUR') %} 
+{% if is_granted('ROLE_CAISSIER_PRINCIPAL') %} 
     <li class="nav-item nav-dropdown {% block menu_statistiques_open %}{% endblock %}">
         <a class="nav-link nav-dropdown-toggle" href="#">
             <i class="nav-icon fa fa-bar-chart"></i> Statistiques</a>
