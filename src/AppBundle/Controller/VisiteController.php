@@ -726,12 +726,12 @@ class VisiteController extends Controller
             switch(\AppBundle\Utilities\Utilities::evaluerDemandeVisite($derniereVisite)){
                 case 1:  
                     $this->get('session')->getFlashBag()->add('notice', 'Visite déjà programée.');
-                    return $this->redirectToRoute('vehicule_index');
+                    return $this->redirectToRoute('visite_controle');
             }
         }
         if($derniereVisite == null){
             $this->get('session')->getFlashBag()->add('error', "Il faut d'abord une visite avant de pouvoir faire une contre visite!");
-            return $this->redirectToRoute('vehicule_index');
+            return $this->redirectToRoute('visite_controle');
         }
         $chaine = $derniereVisite->getChaine();
         $visite = new Visite();
@@ -744,7 +744,7 @@ class VisiteController extends Controller
         $em->flush();
         $this->get('session')->getFlashBag()->add('notice', 'Contre visite créée.');
         $visite->genererFichierMaha();
-        return $this->redirectToRoute('vehicule_index');
+        return $this->redirectToRoute('visite_controle');
     }
     
     /**
@@ -822,12 +822,12 @@ class VisiteController extends Controller
             switch(\AppBundle\Utilities\Utilities::evaluerDemandeVisite($derniereVisite)){
                 case 1:  
                     $this->get('session')->getFlashBag()->add('notice', 'Visite déjà programmée.');
-                    return $this->redirectToRoute('vehicule_index');
+                    return $this->redirectToRoute('visite_controle');
             }
         }
         if($derniereVisite == null){
             $this->get('session')->getFlashBag()->add('error', "Il faut d'abord une visite avant de pouvoir faire une contre visite!");
-            return $this->redirectToRoute('vehicule_index');
+            return $this->redirectToRoute('visite_controle');
         }
         $chaine = $derniereVisite->getChaine();
         $visite = new Visite();
