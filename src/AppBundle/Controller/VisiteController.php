@@ -892,4 +892,33 @@ class VisiteController extends Controller
             throw $this->createNotFoundException("Aucune chaine active. Merci de contacter l'administrateur.");
         }
     }
+    
+    /**
+     * Regénération du fichier CG des résultats MAHA.
+     *
+     * @Route("/controleur/cg", name="generer_cg")
+     * @Method({"GET", "POST"})
+     */
+    public function cgAction(Request $request)
+    {
+        //$id = $request->get('id');echo $id;exit;
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_controle');
+        }
+        $visite = $em->getRepository('AppBundle:Visite')->find($request->get('id'));
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $affectation = $em->getRepository('AppBundle:AffectationPiste')->derniereAffectation($user->getId());
+        $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
+        if(!$visite || $visite->getStatut() == 0 || (!$admin && $visite->getChaine()->getPiste()->getId()!= $affectation->getPiste()->getId())){
+            throw $this->createAccessDeniedException("Cette opération n'est pas autorisée");
+        }
+        $visite->genererFichierMaha();   
+        $this->get('session')->getFlashBag()->add('notice', 'Le fichier a été généré. Vous pouvez reprendre le controle.');
+        return $this->render('visite/maha.html.twig', array(
+                'visite' => $visite,
+        ));
+    }
 }

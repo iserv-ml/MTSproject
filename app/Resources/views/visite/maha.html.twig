@@ -17,6 +17,7 @@
 {% block actions %}
     <label class="btn btn-outline-secondary"><a href="{{ path('visite_controle') }}">RETOUR A LA LISTE</a></label>
     <label class="btn btn-outline-secondary"><a href="{{ path('visite_maha', { 'id': visite.id }) }}">RECUPERER LES RESULTATS MAHA</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('generer_cg', { 'id': visite.id }) }}">REGENERER LE FICHIER CG</a></label>
 {% endblock %}
 {% block body %}
      <form method='POST' action='{{ path('visite_controleur') }}?id={{ visite.id }}'>
