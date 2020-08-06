@@ -50,7 +50,6 @@
                         <th>{{ controle.libelle }}</th>
                         <td>
                             <select id='{{ controle.code }}' name='{{ controle.code }}' required >
-                                <option value="">Choisir</option>
                                 {% for code in controle.codeMahaResultats %}
                                     {% if code.reussite == true %}
                                         <option value='{{ code.valeur }}'>{{ code.libelle }}</option>
