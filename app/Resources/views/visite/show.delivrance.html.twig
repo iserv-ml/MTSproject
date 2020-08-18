@@ -236,6 +236,14 @@
     }
     
     function imprimerCertificat(){
+        $.ajax({
+            url : '{{ path('visite_certificat') }}',
+            type : 'POST', 
+            data : 'id=' + {{ visite.id }},
+            success : function(code_html, statut){ // code_html contient le HTML renvoyé
+                
+            }
+        });
         var printContents = document.getElementById('printDivCertificat').innerHTML;
         var originalContents = document.body.innerHTML;
         document.body.style.backgroundColor = "white"
@@ -244,6 +252,8 @@
         document.body.style.backgroundColor = "rgb(228, 229, 230)";
         document.body.innerHTML = originalContents;
     }
+   
+
 </script>
 
 

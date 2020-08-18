@@ -347,12 +347,20 @@ class Quittance
     public function generer($montant, $penalite, $retard){
         $this->setMontantVisite($montant);
         $this->setTva($montant*18/100);
-        $this->setTimbre($this->getVisite()->getVehicule()->getTypeVehicule()->getTimbre());
-        if($penalite){
-            $this->setPenalite(\ceil($this->getTtc()*$penalite->getPourcentage()/100));
-        }else{
+        if($montant > 0){
+            $this->setTimbre($this->getVisite()->getVehicule()->getTypeVehicule()->getTimbre());
+            if($penalite){
+                $this->setPenalite(\ceil($this->getTtc()*$penalite->getPourcentage()/100));
+            }else{
+                $this->setPenalite(0);
+            }
+        }
+            
+        else{
+            $this->setTimbre (0);
             $this->setPenalite(0);
         }
+        
         $this->retard = $retard;
         $this->rembourse = false;
         $this->setNumero('BKO'.\time());
@@ -417,7 +425,7 @@ class Quittance
     }
 
     public function getTtc(){
-        return \ceil($this->getMontantVisite()+$this->getTva()+$this->getTimbre());
+        return $this->getMontantVisite() > 0 ? \ceil($this->getMontantVisite()+$this->getTva()+$this->getTimbre()) : 0;
     }
     
     public function initialiserContreVisite(){

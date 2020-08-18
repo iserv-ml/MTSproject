@@ -19,7 +19,10 @@
         <label class="btn btn-outline-secondary"><a  href="#" onclick="imprimer()">IMPRIMER</a></label>
     {% endif %}
     <label class="btn btn-outline-secondary">
-        {% if quittance.paye %}<a href="#" title="Rembourser" onclick="rembourser()">REMBOURSER</a>
+        {% if quittance.paye %}
+            {% if quittance.visite.statut < 4 %}
+                <a href="#" title="Rembourser" onclick="rembourser()">REMBOURSER</a>
+            {% endif %}
         {% else %}<a onclick="return confirm('Veuiller confirmer l\'encaissement de la quittance N° {{quittance.numero}}');" href="{{ path('caisse_quittance_encaisser', { 'id': quittance.id }) }}">ENCAISSER</a>
         {% endif %}
     </label>

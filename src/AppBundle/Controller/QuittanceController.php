@@ -198,6 +198,10 @@ class QuittanceController extends Controller
         $today = new \DateTime();
         if($quittance->getRembourse()){
             $this->get('session')->getFlashBag()->add('error', "Cette quittance a déjà été remboursée!");
+        }else if($quittance->getVisite()->getStatut() == 4){
+           $this->get('session')->getFlashBag()->add('error', "Impossible de rembourser cette quittance car le certificat est déjà délivré!"); 
+        }else if($quittance->getVisite()->getStatut() == 5){
+           $this->get('session')->getFlashBag()->add('error', "Impossible de rembourser cette quittance car la visite est déjà annulée!"); 
         }
         else if($quittance->getPaye() && $quittance->getDateEncaissement()->format('Y-m-d') < $today->format('Y-m-d')){
             $this->get('session')->getFlashBag()->add('error', "Le client doit passer à la caisse principale pour se faire rembourser!");

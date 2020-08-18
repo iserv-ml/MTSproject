@@ -668,7 +668,7 @@ class VisiteController extends Controller
                 $date->sub(new \DateInterval('P1D'));
                 $visite->setDateValidite($date);
                 $visite->setNumeroCertificat($centre->getCode().\time());
-                $centre->decrementerCarteVierge();
+                //$centre->decrementerCarteVierge();
                 $visite->getVehicule()->setDateProchaineVisite($date->format('Y-m-d'));
                 $visite->getVehicule()->setCompteurRevisite(0);
             }else{
@@ -920,5 +920,24 @@ class VisiteController extends Controller
         return $this->render('visite/maha.html.twig', array(
                 'visite' => $visite,
         ));
+    }
+    
+    /**
+     * Imprimer le certificat
+     *
+     * @Route("/visite/imprimer", name="visite_certificat")
+     * 
+     */
+    public function certificatAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        $visite = $em->getRepository('AppBundle:Visite')->find($request->get('id'));
+        $visite->setStatut(4);
+        $centre->decrementerCarteVierge();
+        $em->flush(); 
+         return new Response(
+            'OK'
+        );
     }
 }
