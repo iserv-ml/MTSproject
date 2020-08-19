@@ -428,6 +428,15 @@ class Caisse
         }
     }
     
+    public function encaisserQuittance(Quittance $quittance){
+        $this->solde = $this->getSolde()+$quittance->getTtc();
+        if($quittance->getVisite()->getRevisite()){
+            $this->ajouterRevisite($quittance->getTtc());
+        }else{
+            $this->ajouterVisite($quittance->getTtc());
+        }
+    }
+    
     public function rembourser($montant, $revisite){
         $this->solde = $this->getSolde()-$montant;
         if($revisite){

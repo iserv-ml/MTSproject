@@ -391,7 +391,7 @@ class Quittance
     public function rembourser(){
         $this->setRembourse(true);
         $this->getVisite()->setStatut(5);
-        $this->getVisite()->getChaine()->getCaisse()->rembourser($this->getMontantVisite(),$this->getVisite()->getRevisite());        
+        $this->getVisite()->getChaine()->getCaisse()->rembourser($this->getTtc(),$this->getVisite()->getRevisite());        
     }
     
     public function remboursableOu(){

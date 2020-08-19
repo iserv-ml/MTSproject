@@ -153,7 +153,7 @@ class QuittanceController extends Controller
             
             $quittance->encaisser();
             $caisse = $visite->getChaine()->getCaisse();
-            $caisse->encaisser($quittance->getMontantVisite(), $quittance->getVisite()->getRevisite());
+            $caisse->encaisserQuittance($quittance);
             if($visite->getRevisite()){
                 $montantVisite = 0;
                 $nbVisite = 0;
