@@ -437,7 +437,7 @@ class QuittanceController extends Controller
 	{
             $action = $this->genererAction($aRow['id'], $aRow['statut']);
             $montant = $aRow['montantVisite'] > 0 ? \ceil($aRow['montantVisite']+$aRow['tva']+$aRow['timbre']) : 0;
-            $output['aaData'][] = array($aRow['immatriculation'], $aRow['nom']." ".$aRow['prenom'], $aRow['caisse'], $montant, $aRow['numero'], $action);
+            $output['aaData'][] = array($aRow['immatriculation'], $aRow['nom']." ".$aRow['prenom'], $aRow['caisse'], \number_format($montant, 0, ',', ' '), $aRow['numero'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
