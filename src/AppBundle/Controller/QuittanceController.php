@@ -436,7 +436,8 @@ class QuittanceController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id'], $aRow['statut']);
-            $output['aaData'][] = array($aRow['immatriculation'], $aRow['nom']." ".$aRow['prenom'], $aRow['caisse'], $aRow['montantVisite'], $aRow['numero'], $action);
+            $montant = $aRow['montantVisite'] > 0 ? \ceil($aRow['montantVisite']+$aRow['tva']+$aRow['timbre']) : 0;
+            $output['aaData'][] = array($aRow['immatriculation'], $aRow['nom']." ".$aRow['prenom'], $aRow['caisse'], $montant, $aRow['numero'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
