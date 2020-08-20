@@ -66,8 +66,13 @@
                 <td>{{ quittance.montantVisite|number_format(0, ',', ' ') }}</td>
                 <td>{{ quittance.montantVisite|number_format(0, ',', ' ') }}</td>
                 <td>{{ quittance.tva|number_format(0, ',', ' ') }}</td>
-                <td>{{ quittance.timbre|number_format(0, ',', ' ')}}</td>
-                <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil')|number_format(0, ',', ' ')  }}</td>
+                {% if quittance.montantVisite > 0 %}
+                    <td>{{ quittance.timbre|number_format(0, ',', ' ')}}</td>
+                    <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil')|number_format(0, ',', ' ')  }}</td>
+                {% else %}
+                    <td>0</td>
+                    <td>0</td>
+                {% endif %}
                 <td>{% if quittance.caissier is not null %}{{ quittance.caissier.nomComplet }} {% else %}   {{ quittance.creePar }} {% endif %}</td>
             </tr>
      </tbody>
@@ -112,8 +117,13 @@
                     <td>{{ quittance.montantVisite|number_format(0, ',', ' ') }}</td>
                     <td>{{ quittance.montantVisite|number_format(0, ',', ' ') }}</td>
                     <td>{{ quittance.tva|number_format(0, ',', ' ') }}</td>
-                    <td>{{ quittance.timbre|number_format(0, ',', ' ')}}</td>
-                    <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil')|number_format(0, ',', ' ')  }}</td>
+                    {% if quittance.montantVisite > 0 %}
+                        <td>{{ quittance.timbre|number_format(0, ',', ' ')}}</td>
+                        <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil')|number_format(0, ',', ' ')  }}</td>
+                    {% else %}
+                        <td>0</td>
+                        <td>0</td>
+                    {% endif %}
                     <td>{% if quittance.caissier is not null %}{{ quittance.caissier.nomComplet }} {% else %}   {{ quittance.creePar }} {% endif %}</td>
                 </tr>
          </tbody>

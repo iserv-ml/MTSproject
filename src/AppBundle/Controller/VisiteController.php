@@ -673,7 +673,8 @@ class VisiteController extends Controller
                 $visite->getVehicule()->setCompteurRevisite(0);
             }else{
                 $visite->setStatut(3);
-                $visite->getVehicule()->incrementerCompteurRevisite();
+                if(!$visite->getContreVisite() && ! $visite->getContreVisiteVisuelle() )
+                    $visite->getVehicule()->incrementerCompteurRevisite();
                 $visite->setSuccesMaha($succesMaha);
             }
             $visite->setSuccesMaha($succesMaha);
