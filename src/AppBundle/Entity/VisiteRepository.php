@@ -171,4 +171,44 @@ class VisiteRepository extends EntityRepository
             ->getResult();
         return $result; 
     }
+    
+    public function recupererEchecParPeriode($debut, $fin) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Visite r '
+                    . ' WHERE r.statut = 3 AND ( r.contreVisite IS NULL OR r.contreVisite = false) AND r.dateControle >= :debut AND r.dateControle <= :fin '
+                    )
+           ->setParameter('debut', $debut)->setParameter('fin', $fin);
+        return $qb->getResult();
+    }
+    
+    public function recupererParPeriode($debut, $fin) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Visite r '
+                    . ' WHERE r.statut IN (2,3) AND r.dateControle >= :debut AND r.dateControle <= :fin'
+                    )
+           ->setParameter('debut', $debut)->setParameter('fin', $fin);
+        return $qb->getResult();
+    }
+    public function recupererParPeriodeControlleur($debut, $fin, $controleur) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Visite r '
+                    . ' WHERE r.statut IN (2,3) AND r.dateControle >= :debut AND r.dateControle <= :fin AND r.controlleur = :controleur'
+                    )
+           ->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('controleur', $controleur);
+        return $qb->getResult();
+    }
+    
+    public function recupererControleurPeriode($debut, $fin) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT DISTINCT r.controlleur FROM AppBundle:Visite r '
+                    . ' WHERE r.statut IN (2,3) AND r.dateControle >= :debut AND r.dateControle <= :fin'
+                    )
+           ->setParameter('debut', $debut)->setParameter('fin', $fin);
+        
+        return $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+    }
 }

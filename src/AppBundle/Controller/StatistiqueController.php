@@ -224,4 +224,102 @@ class StatistiqueController extends Controller
         ));
     }
     
+    /**
+     * Visites échouées.
+     *
+     * @Route("/echec/rapport", name="admin_gestion_centre_statistique_echec_index")
+     * @Method({"GET", "POST"})
+     */
+    public function echecindexAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if (!$centre) {
+            throw $this->createNotFoundException("Opération interdite!");
+        }
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->add(new \DateInterval('P1D'));
+        $fin->setTime(0, 0);
+        $visites = $em->getRepository('AppBundle:Visite')->recupererEchecParPeriode($debut, $fin); 
+        $fin->sub (new \DateInterval('P1D'));
+        return $this->render('statistique/detail/echec.html.twig', array(
+            'visites' => $visites,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
+        ));
+    }
+    
+    /**
+     * Rapport du centre
+     *
+     * @Route("/centre/rapport", name="admin_gestion_centre_statistique_centre_index")
+     * @Method({"GET", "POST"})
+     */
+    public function centrerapportindexAction(Request $request)
+    {
+        \setlocale(LC_TIME, "fr_FR", "French");
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if (!$centre) {
+            throw $this->createNotFoundException("Opération interdite!");
+        }
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->add(new \DateInterval('P1D'));
+        $fin->setTime(0, 0);
+        $visites = $em->getRepository('AppBundle:Visite')->recupererEchecParPeriode($debut, $fin); 
+        $fin->sub (new \DateInterval('P1D'));
+        return $this->render('statistique/detail/centre.html.twig', array(
+            'visites' => $visites, 'debut' => $debut->format('M-Y'), 'mois' => \mb_strtoupper(\utf8_encode(\strftime("%B %Y", $debut->getTimestamp()))), 'fin' => $fin->format('M-Y'), 'libelle' =>$centre->getLibelle(),
+        ));
+    }
+    
+    /**
+     * Rapport controleurs.
+     *
+     * @Route("/controleur/rapport", name="admin_gestion_centre_statistique_controleur_index")
+     * @Method({"GET", "POST"})
+     */
+    public function controleurindexAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if (!$centre) {
+            throw $this->createNotFoundException("Opération interdite!");
+        }
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->add(new \DateInterval('P1D'));
+        $fin->setTime(0, 0);
+        $liste = array();
+        $controleurs = $em->getRepository('AppBundle:Visite')->recupererControleurPeriode($debut, $fin);
+        foreach($controleurs as $controleur){
+            $nbvisite = 0;
+            $nbrevisite = 0;
+            $nbrevisiteOk = 0;
+            $visites = $em->getRepository('AppBundle:Visite')->recupererParPeriodeControlleur($debut, $fin, $controleur["controlleur"]);
+            foreach($visites as $visite){
+                switch($visite->getTypeVisite()){
+                    case "Visite" : $nbvisite++;break;
+                    case "Revisite" : $nbrevisite++;
+                        if($visite->getStatut() == 2){
+                            $nbrevisiteOk++;
+                        }
+                        break;
+                }
+            }
+            if(($nbvisite + $nbrevisite)>0)
+                $liste[] = array('controleur'=>$controleur["controlleur"],'visite'=>$nbvisite, 'revisite'=>$nbrevisite, 'revisiteok'=>$nbrevisiteOk);
+        }
+        //print_r($liste);exit;
+        $fin->sub (new \DateInterval('P1D'));
+        return $this->render('statistique/detail/controleur.html.twig', array(
+            'liste' => $liste,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
+        ));
+    }
 }

@@ -21,7 +21,17 @@
         <label class="btn btn-outline-secondary"><a  href="{{ path('contrevisitevisuelle', { 'id': visite.vehicule.id }) }}" title="CONTRE-VISITE VISUELLE">Contre-visite visuelle</a></label>
     {% endif %}
     {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %} 
-        <label class="btn btn-outline-secondary"><a  href="{{ path('contrevisite', { 'id': visite.vehicule.id }) }}" title="CONTRE-VISITE COMPLETE">Contre-visite complète</a></label>
+        <label class="btn btn-outline-secondary">
+            <form method='POST' action='{{ path('contrevisite') }}'>
+                <input type="hidden" name ="id" value ="{{ visite.vehicule.id }}" />
+                <select name="piste">
+                    {% for piste in pistes %}
+                        <option value="{{ piste.id}}" {% if piste.id == visite.chaine.piste.id %}selected="selected" {% endif %}>Piste {{ piste.id}}</option>
+                    {% endfor %}
+                </select>
+                <input type="submit" value="Contre-visite complète" />
+            </form>
+        </label>
     {% endif %}
 {% endblock %}
 {% block body %}

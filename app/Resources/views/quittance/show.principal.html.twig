@@ -75,6 +75,10 @@
                 {% endif %}
                 <td>{% if quittance.caissier is not null %}{{ quittance.caissier.nomComplet }} {% else %}   {{ quittance.creePar }} {% endif %}</td>
             </tr>
+            <tr>
+                <td style="background: #000;color:#fff;padding:10px"><span >PENALITE : {% if quittance.penalite > 0 %}OUI{% else %}NON{%endif%}</span></td>
+                <td colspan="6" align="center">Valable pour {{ quittance.visite.vehicule.typeVehicule.delai }} jours</td>
+            </tr>
      </tbody>
 </table>
     </div>   
@@ -125,6 +129,10 @@
                         <td>0</td>
                     {% endif %}
                     <td>{% if quittance.caissier is not null %}{{ quittance.caissier.nomComplet }} {% else %}   {{ quittance.creePar }} {% endif %}</td>
+                </tr>
+                <tr>
+                    <td style="background: #000;color:#fff;padding:10px"><span >PENALITE : {% if quittance.penalite > 0 %}OUI{% else %}NON{%endif%}</span></td>
+                    <td colspan="6" align="center">Valable pour {{ quittance.visite.vehicule.typeVehicule.delai }} jours</td>
                 </tr>
          </tbody>
     </table>

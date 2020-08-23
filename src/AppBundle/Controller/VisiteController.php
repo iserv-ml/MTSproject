@@ -191,10 +191,12 @@ class VisiteController extends Controller
         }
         $em = $this->getDoctrine()->getManager();
         $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($visite->getId());
+        $pistes = $em->getRepository('AppBundle:Chaine')->pisteChainesActives();
         return $this->render('visite/show.html.twig', array(
             'visite' => $visite,
             'delete_form' => $deleteForm->createView(),
             'dateRevisite' => $date2, 'quittance'=>$quittance,
+            'pistes' => $pistes,
         ));
     }
     
@@ -680,6 +682,7 @@ class VisiteController extends Controller
             $visite->setSuccesMaha($succesMaha);
             $user = $this->container->get('security.context')->getToken()->getUser();
             $visite->setControlleur($user->getNomComplet());
+            $visite->setDateControle(new \DateTime());
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Controle terminé. Merci de consulter le résultat');
             if($visite->getStatut()==3){
@@ -690,11 +693,13 @@ class VisiteController extends Controller
             }else{
                 $date2 = null;
             }
+            $pistes = $em->getRepository('AppBundle:Chaine')->pisteChainesActives();
             return $this->render('visite/show.html.twig', array(
                 'controles' => $controles,
                 'visite' => $visite,
                 'dateRevisite' => $date2,
-                'quittance' => $visite->getQuittance()
+                'quittance' => $visite->getQuittance(),
+                'pistes' => $pistes,
             ));
         }
         return $this->render('visite/controle.html.twig', array(
@@ -719,6 +724,7 @@ class VisiteController extends Controller
             return $this->render('vehicule/index.html.twig', array('centre' => $centre,));
         }
         $vehicule = $em->getRepository('AppBundle:Vehicule')->find($request->get('id'));
+        $chaine = $em->getRepository('AppBundle:Chaine')->trouverChaineParPiste($request->get('piste'));
         if(!$vehicule){
             throw $this->createNotFoundException("Ooops... Une erreur s'est produite.");
         }  
@@ -733,11 +739,16 @@ class VisiteController extends Controller
         if($derniereVisite == null){
             $this->get('session')->getFlashBag()->add('error', "Il faut d'abord une visite avant de pouvoir faire une contre visite!");
             return $this->redirectToRoute('visite_controle');
+        } 
+        if($chaine == null){
+            $chaine = $derniereVisite->getChaine();
         }
-        $chaine = $derniereVisite->getChaine();
         $visite = new Visite();
         $quittance = new \AppBundle\Entity\Quittance();
         $visite->initialiserContreVisite(false, $quittance);
+        $visite->setVisiteParent($derniereVisite);
+        $derniereVisite->setContrevisiteCree(true);
+        $visite->setRevisite($derniereVisite->getRevisite());
         $quittance->setVisite($visite);
         $visite->aiguiller($vehicule, 1, $chaine, null, $centre);
         $em->persist($visite);
@@ -836,6 +847,9 @@ class VisiteController extends Controller
         $visite->initialiserContreVisite(true, $quittance);
         $quittance->setVisite($visite);
         $visite->aiguiller($vehicule, 1, $chaine, null, $centre);
+        $visite->setVisiteParent($derniereVisite);
+        $derniereVisite->setContrevisiteCree(true);
+        $visite->setRevisite($derniereVisite->getRevisite());
         $em->persist($visite);
         $em->persist($quittance);
         $em->flush();

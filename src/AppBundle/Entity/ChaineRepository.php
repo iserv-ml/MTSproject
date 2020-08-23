@@ -105,4 +105,17 @@ class ChaineRepository extends EntityRepository
             ->createQuery('SELECT r FROM AppBundle:Chaine r LEFT JOIN r.caisse c WHERE r.actif = 1 and c.ouvert =1 ');
         return $qb->getResult();
     }
+    
+    public function pisteChainesActives() {
+        $qb = $this->getEntityManager()
+            ->createQuery('SELECT p.id FROM AppBundle:Chaine r LEFT JOIN r.piste p WHERE r.actif = 1');
+        return $qb->getResult();
+    }
+    
+    public function trouverChaineParPiste($piste) {
+        $qb = $this->getEntityManager()
+            ->createQuery('SELECT r FROM AppBundle:Chaine r LEFT JOIN r.piste p WHERE r.actif = 1 and p.id = :piste')
+                ->setParameter("piste", $piste)->setMaxResults(1);
+        return $qb->getOneOrNullResult();
+    }
 }

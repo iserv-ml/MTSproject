@@ -76,6 +76,15 @@ class Visite
     private $date;
     
     /**
+     * @var datetime $dateControle
+     *
+     * @ORM\Column(name="dateControle", type="datetime", nullable=true)
+     * 
+     * 
+     */
+    private $dateControle;
+    
+    /**
      * @var datetime $dateValidite
      *
      * @ORM\Column(name="dateValidite", type="datetime", nullable=true)
@@ -115,6 +124,14 @@ class Visite
      * 
      */
     private $contreVisiteVisuelle;
+    
+    /**
+     * @var boolean $contrevisiteCree
+     *
+     * @ORM\Column(name="contre_visite_cree", type="boolean", nullable=true)
+     * 
+     */
+    private $contrevisiteCree;
     
     /**
     * @ORM\ManyToOne(targetEntity="Visite", inversedBy="revisites", cascade={"persist","refresh"})
@@ -368,6 +385,22 @@ class Visite
     function setSuccesMaha($succesMaha) {
         $this->succesMaha = $succesMaha;
     }
+    
+    function getDateControle() {
+        return $this->dateControle;
+    }
+
+    function setDateControle($dateControle) {
+        $this->dateControle = $dateControle;
+    }
+    
+    function getContrevisiteCree() {
+        return $this->contrevisiteCree;
+    }
+
+    function setContrevisiteCree($contrevisiteCree) {
+        $this->contrevisiteCree = $contrevisiteCree;
+    }
         
     //BEHAVIOR
     /**
@@ -464,6 +497,8 @@ class Visite
     {
         $this->revisites = new ArrayCollection();
         $this->contreVisite = false;
+        $this->contreVisiteVisuelle = false;
+        $this->contrevisiteCree = false;
     }
     
     public function aiguiller($vehicule, $statut, $chaine, $visiteParent, $centre)
@@ -548,6 +583,16 @@ class Visite
         $this->setContreVisiteVisuelle($visuelle);
         $quittance->initialiserContreVisite();
         $this->setQuittance($quittance);
+    }
+    
+    public function getTypeVisite(){
+        if($this->getContrevisiteCree()){
+            return "Ignoré";
+        }else if($this->getRevisite()){
+            return "Revisite";
+        }else{
+            return "Visite";
+        }
     }
 
 }
