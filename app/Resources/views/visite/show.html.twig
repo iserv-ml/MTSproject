@@ -26,7 +26,7 @@
                 <input type="hidden" name ="id" value ="{{ visite.vehicule.id }}" />
                 <select name="piste">
                     {% for piste in pistes %}
-                        <option value="{{ piste.id}}" {% if piste.id == visite.chaine.piste.id %}selected="selected" {% endif %}>Piste {{ piste.id}}</option>
+                        <option value="{{ piste.id}}" {% if piste.id == visite.chaine.piste.id %}selected="selected" {% endif %}>Piste {{ piste.numero}}</option>
                     {% endfor %}
                 </select>
                 <input type="submit" value="Contre-visite complète" />
