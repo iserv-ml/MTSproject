@@ -108,7 +108,7 @@ class ChaineRepository extends EntityRepository
     
     public function pisteChainesActives() {
         $qb = $this->getEntityManager()
-            ->createQuery('SELECT p.id FROM AppBundle:Chaine r LEFT JOIN r.piste p WHERE r.actif = 1');
+            ->createQuery('SELECT p.id, p.numero FROM AppBundle:Chaine r LEFT JOIN r.piste p WHERE r.actif = 1');
         return $qb->getResult();
     }
     
