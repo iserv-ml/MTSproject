@@ -20,7 +20,7 @@
     {% endif %}
     <label class="btn btn-outline-secondary">
         {% if quittance.paye %}
-            {% if quittance.visite.statut < 4 %}
+            {% if quittance.visite.statut < 2 %}
                 <a href="#" title="Rembourser" onclick="rembourser({{ quittance.id }})">REMBOURSER</a>
             {% endif %}
         {% else %}<a onclick="return confirm('Veuiller confirmer l\'encaissement de la quittance N° {{quittance.numero}}');" href="{{ path('caisse_quittance_encaisser', { 'id': quittance.id }) }}">ENCAISSER</a>
