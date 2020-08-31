@@ -292,6 +292,14 @@ class CentreController extends Controller
                         $caisses = false;
                         break;
                     }
+                    $files = \glob($chaine->getPiste()->getRepertoire()."CG".DIRECTORY_SEPARATOR."*");
+                    if(count($files) > 0){
+                        foreach($files as $file) { 
+                            if(\is_file($file)){  
+                                \unlink($file);
+                            }
+                        } 
+                    }
                     $sortie = $centre->encaisser($chaine->getCaisse());
                     $chaine->getCaisse()->cloturer();
                     $em->persist($sortie);
@@ -300,6 +308,7 @@ class CentreController extends Controller
             if($caisses){
                 $centre->setEtat(false);
                 $centre->setCarteViergeOuverture(0);
+                $em->getRepository('AppBundle:Visite')->annulerVisitesEnAttentes();
                 $em->flush();
                 $this->get('session')->getFlashBag()->add('notice', 'Le centre est maintenant fermé.');
             }else{

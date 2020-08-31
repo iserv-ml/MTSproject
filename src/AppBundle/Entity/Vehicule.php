@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @ORM\Entity(repositoryClass="AppBundle\Entity\VehiculeRepository")
  * @UniqueEntity("chassis")
  * @UniqueEntity("carteGrise")
+ * @UniqueEntity("immatriculation")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  */
 class Vehicule

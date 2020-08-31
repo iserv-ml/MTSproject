@@ -211,4 +211,10 @@ class VisiteRepository extends EntityRepository
         
         return $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
     }
+    
+    public function annulerVisitesEnAttentes() {
+        $qb = $this->getEntityManager()
+            ->createQuery('UPDATE AppBundle:Visite r SET r.statut = 5 WHERE r.statut < 2');
+        return  $qb->execute();
+    }
 }
