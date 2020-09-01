@@ -310,17 +310,11 @@ class Quittance
     
     public function calculerMontantRevisite($derniereVisite){
         if($this->visite){
-            $date = new \DateTime();
-            $moisEncours = \date('m', strtotime($date->format('Y-m-d')));
-            $mois = \date('m', strtotime($derniereVisite->getDate()->format('Y-m-d')));
-            if($moisEncours > $mois){
-                return $this->visite->getVehicule()->getTypeVehicule()->getMontantVisite();
-            }else{
-                switch($this->visite->getVehicule()->getCompteurRevisite()){
-                    case 0 : case 1 : case 2 : return $this->visite->getVehicule()->getTypeVehicule()->getMontantRevisite();
-                    default :return 0;
-                }
-            }        
+            switch($this->visite->getVehicule()->getCompteurRevisite()){
+                case 0 : case 1 : case 2 : return $this->visite->getVehicule()->getTypeVehicule()->getMontantRevisite();
+                case 3 : return 0;
+                default : return -9999999999999999;
+                }       
         }
     }
     
