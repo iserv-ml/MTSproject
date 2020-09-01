@@ -881,7 +881,7 @@ class VisiteController extends Controller
             $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($vehicule->getId());
             switch(\AppBundle\Utilities\Utilities::evaluerDemandeVisite($derniereVisite)){
                 case 1: 
-                    $chaines = $em->getRepository('AppBundle:Chaine')->chainesActivesCaisse($request->get('caisse'), $request->get('type'));
+                    $chaines = $em->getRepository('AppBundle:Chaine')->toutesChainesActivesCaisse($request->get('caisse'));
                     $chaineOptimale = \AppBundle\Utilities\Utilities::trouverChaineOptimale($chaines, $em);
                     $derniereVisite->setChaine($chaineOptimale);
                     $em->flush();
