@@ -59,7 +59,8 @@
                             <td>{{ vehicule.modele.marque.libelle }} {{ vehicule.modele.libelle }}</td>
                             <td>{{ vehicule.proprietaire.getNomComplet }} </td>
                             <td>
-                                <a title='Aiguiller normal' class='btn btn-warning' href="{{ path('aiguillerCaissier', {'id':vehicule.id, 'type':0, 'caisse': idCaisse}) }}" ><i class='fa fa-compass'> </i></a>
+                                <a title='Aiguiller normal' class='btn btn-warning' href="{{ path('aiguillerCaissier', {'id':vehicule.id, 'type':0, 'caisse': idCaisse}) }}" ><i class='fa fa-compass'> </i></a> |  
+                                <a title='Aiguiller spécial' class='btn btn-warning' href="{{ path('aiguillerCaissier', {'id':vehicule.id, 'type':1, 'caisse': idCaisse}) }}" ><i class='fa fa-compass'> </i></a>
                             </td>
                         </tr>
                     {% endfor %}

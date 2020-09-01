@@ -107,6 +107,24 @@ class EtatJournalier
      * 
      */
     private $carrosserie;
+    
+    /**
+     * @var string $immatriculation
+     *
+     * @ORM\Column(name="immatriculation", type="string", length=255, nullable=true)
+     * @Assert\NotBlank
+     * 
+     */
+    private $immatriculation;
+    
+    /**
+     * @var string $quittance
+     *
+     * @ORM\Column(name="quittance", type="string", length=255, nullable=true)
+     * @Assert\NotBlank
+     * 
+     */
+    private $quittance;
    
 
     /**
@@ -216,7 +234,7 @@ class EtatJournalier
         return $this->date;
     }
     
-    public function __construct($date, $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $typeVehicule, $usage, $genre, $carrosserie, $caisse)
+    public function __construct($date, $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $typeVehicule, $usage, $genre, $carrosserie, $caisse, $immatriculation = "", $quittance = "")
     {
         $this->date = $date;
         $this->montantRevisite = $montantRevisite;
@@ -228,6 +246,8 @@ class EtatJournalier
         $this->genre = $genre;
         $this->carrosserie = $carrosserie;
         $this->caisse = $caisse;
+        $this->immatriculation = $immatriculation;
+        $this->quittance = $quittance;
     }
      
     function getDate() {
@@ -308,6 +328,14 @@ class EtatJournalier
 
     function setCarrosserie($carrosserie) {
         $this->carrosserie = $carrosserie;
+    }
+    
+    function getImmatriculation() {
+        return $this->immatriculation;
+    }
+
+    function setImmatriculation($immatriculation) {
+        $this->immatriculation = $immatriculation;
     }
 
 }
