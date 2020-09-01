@@ -112,7 +112,7 @@ class EtatJournalier
      * @var string $immatriculation
      *
      * @ORM\Column(name="immatriculation", type="string", length=255, nullable=true)
-     * @Assert\NotBlank
+     * 
      * 
      */
     private $immatriculation;
@@ -121,7 +121,6 @@ class EtatJournalier
      * @var string $quittance
      *
      * @ORM\Column(name="quittance", type="string", length=255, nullable=true)
-     * @Assert\NotBlank
      * 
      */
     private $quittance;

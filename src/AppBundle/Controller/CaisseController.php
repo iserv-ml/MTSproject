@@ -328,7 +328,7 @@ class CaisseController extends Controller
      * @Route("/ouvrir/{id}", name="admin_parametres_caisse_ouvrir")
      * @Method({"GET", "POST"})
      */
-    public function ouvrirAction(Caisse $caisse)
+    public function ouvrirAction(Caisse $caisse, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
@@ -347,8 +347,10 @@ class CaisseController extends Controller
         }else{
             $this->get('session')->getFlashBag()->add('notice', 'La caisse est déjà ouverte.');
         }
-        
-        return $this->render('visite/quittance.html.twig', array('profil'=>'CAISSE N° '.$caisse->getNumero(), 'caisse'=>$caisse, 'centre'=>$centre, 'idCaisse'=>$caisse->getId()));
+        $immatriculation = \trim($request->get('immatriculation', ''));
+        $vehicules = (\strlen($immatriculation) > 3) ? $em->getRepository('AppBundle:Vehicule')->trouverParImmatriculationSimilaire($immatriculation) : null;
+        return $this->render('visite/quittance.html.twig', array('profil'=>'CAISSE N° '.$caisse->getNumero(), 'caisse'=>$caisse, 'centre'=>$centre, 'idCaisse'=>$caisse->getId(), 'immatriculation'=>
+            $immatriculation, 'vehicules'=>$vehicules ));
     }
     
     /**
