@@ -24,20 +24,6 @@ class Utilities
        }else{
            return 0;
        }
-       if(!$derniereVisite || $derniereVisite->getStatut() == 2 || $derniereVisite->getStatut() == 4){
-            //il faudra tenir compte de la date de la dernière visite
-            if($derniereVisite){
-                verifierSiDateVisite();
-            }
-            $visiteParent = null;
-        }elseif($derniereVisite->getStatut() == 3){
-            $visiteParent = $derniereVisite;
-        }else{
-            $this->get('session')->getFlashBag()->add('notice', 'Visite déjà en cours.');
-            return $this->render('visite/visite.html.twig', array(
-            'visite' => $derniereVisite,
-            ));
-        }
    }
    
     public static function trouverChaineOptimale($chaines, $em){

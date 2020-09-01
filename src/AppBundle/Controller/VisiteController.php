@@ -894,17 +894,18 @@ class VisiteController extends Controller
             $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La prochaine visite est prévue pour le ".$vehicule->getDateProchaineVisite().".");
             return $this->redirectToRoute('visite_quittance');
         }  
-        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActivesCaisse($request->get('caisse'), $request->get('type'));
+        $chaines = $em->getRepository('AppBundle:Chaine')->toutesChainesActivesCaisse($request->get('caisse'));
         $chaineOptimale = \AppBundle\Utilities\Utilities::trouverChaineOptimale($chaines, $em);
         if($chaineOptimale != null){
             $visite = new Visite();
             $visite->aiguiller($vehicule, 0, $chaineOptimale, $visiteParent, $centre);
             $em->persist($visite);
             $em->flush();
-            $this->get('session')->getFlashBag()->add('notice', 'Aiguillage effectué.');
+            $this->get('session')->getFlashBag()->add('notice', 'Aiguillage effectué sur votre caisse.');
             return $this->redirectToRoute('visite_quittance');
         }else{
-            throw $this->createNotFoundException("Aucune chaine active. Merci de contacter l'administrateur.");
+            $this->get('session')->getFlashBag()->add('error', "Aucune chaine active. Merci de contacter l'administrateur.");
+            return $this->redirectToRoute('visite_quittance');
         }
     }
     

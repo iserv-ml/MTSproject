@@ -10,6 +10,7 @@
             <tr>
                 <th>CAISSE</th>
                 <th>SOLDE INITIAL</th>
+                <th>AIGUILLAGE SUR CAISSE</th>
                 <th>CAISSIER</th>
                 <th>PISTE</th>
                 <th>CONTROLLEUR</th>
@@ -20,6 +21,7 @@
                 <tr>
                     <td>{{ chaine.caisse.numero }}</td>
                     <td>{{ chaine.caisse.soldeInitial|number_format(0, ',', ' ') }}</td>
+                    <td>{% if chaine.caisse.aiguillage %}OUI{% else %}NON{% endif %}</td>
                     <td>{% if chaine.caisse.getAffectationActive %}
                             {{ chaine.caisse.getAffectationActive.agent.username }}
                         {% endif %}

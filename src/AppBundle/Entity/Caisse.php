@@ -50,6 +50,14 @@ class Caisse
     private $actif;
     
     /**
+     * @var boolean $aiguillage
+     *
+     * @ORM\Column(name="aiguillage", type="boolean", nullable=false)
+     * 
+     */
+    private $aiguillage;
+    
+    /**
      * @var boolean $ouvert
      *
      * @ORM\Column(name="ouvert", type="boolean", nullable=true)
@@ -284,6 +292,14 @@ class Caisse
         $this->montantrevisite = $montantrevisite;
     }
     
+    function getAiguillage() {
+        return $this->aiguillage;
+    }
+
+    function setAiguillage($aiguillage) {
+        $this->aiguillage = $aiguillage;
+    }
+    
     function cloturer(){
         $this->solde = 0;
         $this->soldeInitial = 0;
@@ -415,6 +431,7 @@ class Caisse
         $this->nbvisite = 0;
         $this->montantrevisite = 0;
         $this->montantvisite = 0;
+        $this->aiguillage = false;
         
     }
     //fin behavior
