@@ -292,6 +292,7 @@ class QuittanceController extends Controller
             $montant = $quittance->getVisite()->getVehicule()->getTypeVehicule()->getMontantVisite();
             $retard = 0;
             $penalite = 0;
+            $quittance->getVisite()->getVehicule()->setCompteurRevisite(0);
         }else{
             $retard = $quittance->calculerRetard($derniereVisite);
             $penalite = $em->getRepository('AppBundle:Penalite')->trouverParNbJours($retard);
