@@ -195,7 +195,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r FROM AppBundle:Visite r '
-                    . ' WHERE r.statut IN (2,3) AND r.dateControle >= :debut AND r.dateControle <= :fin AND r.controlleur = :controleur'
+                    . ' WHERE r.statut IN (2,3,4) AND r.dateControle >= :debut AND r.dateControle <= :fin AND r.controlleur = :controleur'
                     )
            ->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('controleur', $controleur);
         return $qb->getResult();
@@ -205,7 +205,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT DISTINCT r.controlleur FROM AppBundle:Visite r '
-                    . ' WHERE r.statut IN (2,3) AND r.dateControle >= :debut AND r.dateControle <= :fin'
+                    . ' WHERE r.statut IN (2,3,4) AND r.dateControle >= :debut AND r.dateControle <= :fin'
                     )
            ->setParameter('debut', $debut)->setParameter('fin', $fin);
         
