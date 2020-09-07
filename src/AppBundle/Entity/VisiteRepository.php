@@ -133,7 +133,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.id, r.contreVisite, r.contreVisiteVisuelle, v.immatriculation, v.typeChassis, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste, v.id as vehicule FROM AppBundle:Visite r LEFT JOIN r.vehicule v LEFT JOIN v.proprietaire p LEFT JOIN r.chaine c LEFT JOIN c.piste pi '
-                    . ' WHERE r.statut = 1 AND v.immatriculation like :search AND '.$controle
+                    . ' WHERE r.statut IN (1,2, 3) AND v.immatriculation like :search AND '.$controle
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setParameter('piste', $piste)
@@ -148,7 +148,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.chaine c LEFT JOIN c.piste pi '
-                    . ' WHERE r.statut = 1 AND '.$controle)
+                    . ' WHERE r.statut IN (1,2,3) AND '.$controle)
                ->setParameter('piste', $piste);
         return  $qb->getSingleScalarResult();
     }
@@ -158,7 +158,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.chaine c LEFT JOIN c.piste pi '
-                    . ' WHERE r.statut = 1 AND v.immatriculation like :search AND '.$controle)
+                    . ' WHERE r.statut IN (1,2,3) AND v.immatriculation like :search AND '.$controle)
                ->setParameter('piste', $piste)->setParameter('search', '%'.$search.'%');
         return  $qb->getSingleScalarResult();
     }
@@ -240,7 +240,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.id, v.immatriculation, v.typeChassis, v.chassis, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste, ca.numero as caisse FROM AppBundle:Visite r LEFT JOIN r.vehicule v LEFT JOIN v.proprietaire p LEFT JOIN r.chaine c LEFT JOIN c.piste pi LEFT JOIN c.caisse ca'
-                    . ' WHERE r.statut = 2 AND v.immatriculation like :search '
+                    . ' WHERE r.statut IN (2,4) AND v.immatriculation like :search '
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setFirstResult($start)
@@ -253,7 +253,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT count(r.id) FROM AppBundle:Visite r '
-                    . ' WHERE r.statut = 2 ');
+                    . ' WHERE r.statut IN (2,4) ');
         return  $qb->getSingleScalarResult();
     }
     
@@ -261,7 +261,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.vehicule v '
-                    . ' WHERE r.statut = 2 AND v.immatriculation like :search ')
+                    . ' WHERE r.statut IN (2,4) AND v.immatriculation like :search ')
                ->setParameter('search', '%'.$search.'%');
         return  $qb->getSingleScalarResult();
     }
