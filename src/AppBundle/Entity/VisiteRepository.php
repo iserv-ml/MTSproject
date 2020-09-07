@@ -31,7 +31,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.id, v.immatriculation, r.revisite, p.nom, p.prenom, ca.numero as caisse, ca.ouvert FROM AppBundle:Visite r LEFT JOIN r.quittance q LEFT JOIN r.vehicule v LEFT JOIN v.proprietaire p LEFT JOIN r.chaine c LEFT JOIN c.caisse ca '
-                    . ' WHERE r.statut < 5 AND r.contreVisite = false AND (v.immatriculation like :search OR q.numero like :search) AND '.$controle
+                    . ' WHERE r.statut <= 1 AND r.contreVisite = false AND (v.immatriculation like :search OR q.numero like :search) AND '.$controle
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setParameter('caisse', $caisse)
@@ -58,7 +58,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.chaine c LEFT JOIN c.caisse ca '
-                    . ' WHERE r.contreVisite = false AND r.statut < 2 AND '.$controle)
+                    . ' WHERE r.statut <= 1 AND r.contreVisite = false AND r.statut < 2 AND '.$controle)
                ->setParameter('caisse', $caisse);
         return  $qb->getSingleScalarResult();
     }
@@ -68,7 +68,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.chaine c LEFT JOIN c.caisse ca LEFT JOIN r.vehicule v '
-                    . ' WHERE r.contreVisite = false AND r.statut < 2 AND v.immatriculation like :search AND '.$controle)
+                    . ' WHERE r.statut <= 1 AND r.contreVisite = false AND r.statut < 2 AND v.immatriculation like :search AND '.$controle)
                ->setParameter('caisse', $caisse)->setParameter('search', '%'.$search.'%');
         return  $qb->getSingleScalarResult();
     }
@@ -133,7 +133,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.id, r.contreVisite, r.contreVisiteVisuelle, v.immatriculation, v.typeChassis, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste, v.id as vehicule FROM AppBundle:Visite r LEFT JOIN r.vehicule v LEFT JOIN v.proprietaire p LEFT JOIN r.chaine c LEFT JOIN c.piste pi '
-                    . ' WHERE r.statut IN (1,2,3,4) AND v.immatriculation like :search AND '.$controle
+                    . ' WHERE r.statut = 1 AND v.immatriculation like :search AND '.$controle
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setParameter('piste', $piste)
@@ -148,7 +148,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.chaine c LEFT JOIN c.piste pi '
-                    . ' WHERE r.statut IN (1,2,3) AND '.$controle)
+                    . ' WHERE r.statut = 1 AND '.$controle)
                ->setParameter('piste', $piste);
         return  $qb->getSingleScalarResult();
     }
@@ -158,7 +158,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.chaine c LEFT JOIN c.piste pi '
-                    . ' WHERE r.statut IN (1,2,3) AND v.immatriculation like :search AND '.$controle)
+                    . ' WHERE r.statut = 1 AND v.immatriculation like :search AND '.$controle)
                ->setParameter('piste', $piste)->setParameter('search', '%'.$search.'%');
         return  $qb->getSingleScalarResult();
     }
@@ -234,5 +234,35 @@ class VisiteRepository extends EntityRepository
             )->setParameter("piste",$piste)
             ->getSingleScalarResult(); 
         return $result; 
+    }
+    
+    public function findDelivranceAjax($start, $end, $sCol, $sdir, $search) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.id, v.immatriculation, v.typeChassis, v.chassis, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste, ca.numero as caisse FROM AppBundle:Visite r LEFT JOIN r.vehicule v LEFT JOIN v.proprietaire p LEFT JOIN r.chaine c LEFT JOIN c.piste pi LEFT JOIN c.caisse ca'
+                    . ' WHERE r.statut = 2 AND v.immatriculation like :search '
+                    . ' ORDER BY '.$sCol.' '.$sdir)
+            ->setParameter('search', '%'.$search.'%')
+            ->setFirstResult($start)
+            ->setMaxResults($end);
+        $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+        return $arrayAss;
+    }
+    
+    public function countDelivrancesRows() {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT count(r.id) FROM AppBundle:Visite r '
+                    . ' WHERE r.statut = 2 ');
+        return  $qb->getSingleScalarResult();
+    }
+    
+    public function countDelivrancesRowsFiltre($search) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.vehicule v '
+                    . ' WHERE r.statut = 2 AND v.immatriculation like :search ')
+               ->setParameter('search', '%'.$search.'%');
+        return  $qb->getSingleScalarResult();
     }
 }

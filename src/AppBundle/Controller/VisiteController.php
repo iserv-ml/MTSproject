@@ -498,9 +498,9 @@ class VisiteController extends Controller
         $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
         $sdir = ($dir =='asc') ? 'asc' : 'desc';
         $searchTerm = ($search != '') ? $search : NULL;
-        $rResult = $em->getRepository('AppBundle:Visite')->findAllAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
-        $iTotal = $em->getRepository('AppBundle:Visite')->countRows();
-        $iTotalFiltre = $em->getRepository('AppBundle:Visite')->countRowsFiltre($searchTerm);
+        $rResult = $em->getRepository('AppBundle:Visite')->findDelivranceAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
+        $iTotal = $em->getRepository('AppBundle:Visite')->countDelivrancesRows();
+        $iTotalFiltre = $em->getRepository('AppBundle:Visite')->countDelivrancesRowsFiltre($searchTerm);
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
 	foreach ( $rResult as  $aRow )
