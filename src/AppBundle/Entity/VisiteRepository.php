@@ -214,7 +214,7 @@ class VisiteRepository extends EntityRepository
     
     public function annulerVisitesEnAttentes() {
         $qb = $this->getEntityManager()
-            ->createQuery('UPDATE AppBundle:Visite r SET r.statut = 5, r.modifier_par = "fermeture_du_centre", r.date_modification = now() WHERE r.statut = 0');
+            ->createQuery("UPDATE AppBundle:Visite r SET r.statut = 5, r.modifierPar = 'fermeture_du_centre', r.dateModification = CURRENT_TIMESTAMP() WHERE r.statut = 0");
         return  $qb->execute();
     }
     
