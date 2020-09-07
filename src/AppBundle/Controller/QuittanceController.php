@@ -536,6 +536,10 @@ class QuittanceController extends Controller
             if($visite != null && $visite->getStatut() >= 1 && $visite->getStatut()<5){
                 $this->get('session')->getFlashBag()->add('error', "Quittance déjà encaissée.");
             }else{
+                $visite = $quittance->getVisite();
+                $visite->setQuittance(null);
+                $quittance->setVisite(null);
+                $em->flush();
                 $em->remove($quittance);
                 $this->get('session')->getFlashBag()->add('notice', 'La quittance a été annulée');
             }
