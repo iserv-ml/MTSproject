@@ -510,4 +510,37 @@ class QuittanceController extends Controller
             $ligne++;
         }
     }
+    
+    /**
+     * Annuler une quittance.
+     *
+     * @Route("/annuler/{id}", name="caisse_quittance_annuler")
+     * @Method({"GET", "POST"})
+     */
+    public function annulerAction(Quittance $quittance)
+    {
+        $em = $this->getDoctrine()->getManager();
+        if(!$quittance->getVisite()->getChaine()->getCaisse()->getOuvert()){
+            $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!');
+            return $this->redirectToRoute('visite_quittance');
+        }
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_quittance');
+        }
+        if ($quittance->getPaye()) {
+            $this->get('session')->getFlashBag()->add('notice', 'Cette quittance a déjà été encaissé.');
+        }else{
+            $visite = $quittance->getVisite();
+            if($visite != null && $visite->getStatut() >= 1 && $visite->getStatut()<5){
+                $this->get('session')->getFlashBag()->add('error', "Quittance déjà encaissée.");
+            }else{
+                $em->remove($quittance);
+                $this->get('session')->getFlashBag()->add('notice', 'La quittance a été annulée');
+            }
+            $em->flush();
+        }
+        return $this->redirectToRoute('visite_quittance');
+    }
 }

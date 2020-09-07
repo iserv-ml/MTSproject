@@ -18,14 +18,20 @@
     {% if quittance.paye %}
         <label class="btn btn-outline-secondary"><a  href="#" onclick="imprimer()">IMPRIMER</a></label>
     {% endif %}
-    <label class="btn btn-outline-secondary">
-        {% if quittance.paye %}
-            {% if quittance.visite.statut < 2 %}
+    {% if quittance.paye %}
+        {% if quittance.visite.statut < 2 %}
+            <label class="btn btn-outline-secondary">
                 <a href="#" title="Rembourser" onclick="rembourser()">REMBOURSER</a>
+            </label>
             {% endif %}
-        {% else %}<a onclick="return confirm('Veuiller confirmer l\'encaissement de la quittance N° {{quittance.numero}}');" href="{{ path('caisse_quittance_encaisser', { 'id': quittance.id }) }}">ENCAISSER</a>
+        {% else %}
+            <label class="btn btn-outline-secondary">
+                <a onclick="return confirm('Veuiller confirmer l\'encaissement de la quittance N° {{quittance.numero}}');" href="{{ path('caisse_quittance_encaisser', { 'id': quittance.id }) }}">ENCAISSER</a>
+            </label>
+            <label class="btn btn-outline-secondary">
+                <a onclick="return confirm('Veuiller confirmer l\'annulation de la quittance N° {{quittance.numero}}');" href="{{ path('caisse_quittance_annuler', { 'id': quittance.id }) }}">ANNULER</a>
+            </label>
         {% endif %}
-    </label>
 {% endblock %}
 {% block body %}
     <div id='quittance' style="size: A4;margin:0;width:200mm;overflow:hidden;">

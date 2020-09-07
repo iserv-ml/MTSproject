@@ -31,7 +31,7 @@ class VisiteRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.id, v.immatriculation, r.revisite, p.nom, p.prenom, ca.numero as caisse, ca.ouvert FROM AppBundle:Visite r LEFT JOIN r.quittance q LEFT JOIN r.vehicule v LEFT JOIN v.proprietaire p LEFT JOIN r.chaine c LEFT JOIN c.caisse ca '
-                    . ' WHERE r.contreVisite = false AND (v.immatriculation like :search OR q.numero like :search) AND '.$controle
+                    . ' WHERE r.statut < 5 AND r.contreVisite = false AND (v.immatriculation like :search OR q.numero like :search) AND '.$controle
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
             ->setParameter('caisse', $caisse)
@@ -214,7 +214,25 @@ class VisiteRepository extends EntityRepository
     
     public function annulerVisitesEnAttentes() {
         $qb = $this->getEntityManager()
-            ->createQuery('UPDATE AppBundle:Visite r SET r.statut = 5 WHERE r.statut = 0');
+            ->createQuery('UPDATE AppBundle:Visite r SET r.statut = 5, r.modifier_par = "fermeture_du_centre", r.date_modification = now() WHERE r.statut = 0');
         return  $qb->execute();
+    }
+    
+    public function nbVisitesCaisse($caisse) {
+        $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.chaine c LEFT JOIN c.caisse ca WHERE ca.id = :caisse AND r.statut = 0'
+            )->setParameter("caisse",$caisse)
+            ->getSingleScalarResult(); 
+        return $result; 
+    }
+    
+    public function nbVisitesPiste($piste) {
+        $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT count(r.id) FROM AppBundle:Visite r LEFT JOIN r.chaine c LEFT JOIN c.piste ca WHERE ca.id = :piste AND r.statut = 1'
+            )->setParameter("piste",$piste)
+            ->getSingleScalarResult(); 
+        return $result; 
     }
 }

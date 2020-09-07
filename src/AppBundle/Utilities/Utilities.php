@@ -35,7 +35,7 @@ class Utilities
                 if($i == 0){
                     $chaineOptimale = $chaine;$i++;
                 }
-                $nb = $em->getRepository('AppBundle:Visite')->nbVisitesNonTerminees($chaine->getId());
+                $nb = $em->getRepository('AppBundle:Visite')->nbVisitesCaisse($chaine->getCaisse()->getId())+$em->getRepository('AppBundle:Visite')->nbVisitesPiste($chaine->getPiste()->getId());
                 if($min>$nb){
                     $min = $nb;
                     $chaineOptimale = $chaine;
