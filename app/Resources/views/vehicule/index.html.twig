@@ -55,7 +55,7 @@
                             <td>{{ vehicule.immatriculation }} </td>
                             <td>{{ vehicule.chassis }} </td>
                             <td>{{ vehicule.modele.marque.libelle }} {{ vehicule.modele.libelle }}</td>
-                            <td>{{ vehicule.proprietaire.getNomComplet }} </td>
+                            <td>{{ vehicule.proprietaire.getNomComplet }}</td>
                             <td>
                                 <a title='Détail' class='btn btn-success' href="{{ path('vehicule_show', {'id':vehicule.id}) }}" ><i class='fa fa-search-plus'></i></a>
                                 <a title='Modifier' class='btn btn-info' href="{{ path('vehicule_edit', {'id':vehicule.id}) }}" ><i class='fa fa-edit' ></i></a>

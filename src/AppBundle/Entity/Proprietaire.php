@@ -180,11 +180,11 @@ class Proprietaire
     }
 
     function getNom() {
-        return $this->nom;
+        return \trim($this->nom);
     }
 
     function getPrenom() {
-        return $this->prenom;
+        return \trim($this->prenom);
     }
 
     function getTelephone() {
@@ -192,11 +192,11 @@ class Proprietaire
     }
 
     function getAdresse() {
-        return $this->adresse;
+        return \trim($this->adresse);
     }
 
     function getEmail() {
-        return $this->email;
+        return \trim($this->email);
     }
 
     function getTypePiece() {
@@ -319,7 +319,7 @@ class Proprietaire
     }
     
     public function getNomComplet(){
-        return ($this->personneMorale == 0) ? $this->nom." ".$this->prenom : $this->nom;
+        return ($this->personneMorale == 0) ? \trim($this->nom)." ".\trim($this->prenom) : \trim($this->nom);
     }
 
     public function estSupprimable(){
