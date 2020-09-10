@@ -48,7 +48,7 @@ class VehiculeController extends Controller
         $proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($request->get("proprietaireid", 0));
         $vehicule->setProprietaire($proprietaire);
         if ($form->isSubmitted() && $form->isValid()) {
-            if(! preg_match($vehicule->getFormatImmatriculation()->getRegex(), $vehicule->getImmatriculation())){
+            if(preg_match($vehicule->getFormatImmatriculation()->getRegex(), $vehicule->getImmatriculation()) == 0){
                 $form->get('immatriculation')->addError(new \Symfony\Component\Form\FormError("Le format de l'immatriculation n'est pas bon"));
                 return $this->render('vehicule/new.html.twig', array(
             'vehicule' => $vehicule,
@@ -118,6 +118,13 @@ class VehiculeController extends Controller
         $editForm->handleRequest($request);
         $em = $this->getDoctrine()->getManager();
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+            if(preg_match($vehicule->getFormatImmatriculation()->getRegex(), $vehicule->getImmatriculation()) == 0){
+                $editForm->get('immatriculation')->addError(new \Symfony\Component\Form\FormError("Le format de l'immatriculation n'est pas bon"));
+                return $this->render('vehicule/new.html.twig', array(
+            'vehicule' => $vehicule,
+            'form' => $editForm->createView(),
+        ));
+            }
             $field = $request->get("appbundle_vehicule");
             $proprietaire = $em->getRepository('AppBundle:Proprietaire')->find($field['proprietaireId']);
             $modele = $em->getRepository('AppBundle:Modele')->find($field['modeleId']);

@@ -117,7 +117,7 @@ class Marque
     }
 
     function getCode() {
-        return $this->code;
+        return \trim($this->code);
     }
 
     function setLibelle($libelle) {

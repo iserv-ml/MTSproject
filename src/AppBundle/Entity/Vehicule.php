@@ -345,11 +345,11 @@ class Vehicule
     }
     
     function getChassis() {
-        return $this->chassis;
+        return \trim($this->chassis);
     }
 
     function getCarteGrise() {
-        return $this->carteGrise;
+        return \trim($this->carteGrise);
     }
 
     function getDateCarteGrise() {
@@ -427,7 +427,7 @@ class Vehicule
     }
 
     function getKilometrage() {
-        return $this->kilometrage;
+        return  $this->kilometrage;
     }
 
     function getCouleur() {
@@ -528,7 +528,7 @@ class Vehicule
     }
 
     function getEnergie() {
-        return $this->energie;
+        return \trim($this->energie);
     }
 
     function getPv() {
