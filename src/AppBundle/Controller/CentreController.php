@@ -293,10 +293,14 @@ class CentreController extends Controller
                         break;
                     }
                     $files = \glob($chaine->getPiste()->getRepertoire()."CG".DIRECTORY_SEPARATOR."*");
-                    if(count($files) > 0){
+                    if($files != null && count($files) > 0){
                         foreach($files as $file) { 
                             if(\is_file($file)){  
-                                \unlink($file);
+                                try{
+                                    \unlink($file);
+                                }catch(Exception $e){
+                                    
+                                }
                             }
                         } 
                     }
