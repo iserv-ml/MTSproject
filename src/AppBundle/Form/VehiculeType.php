@@ -16,7 +16,14 @@ class VehiculeType extends AbstractType
         $builder
                 ->add('proprietaireAjax', 'text', array('label'  => 'Propriétaire', 'required'  => true, "mapped" => false))
                 ->add('proprietaireId', 'hidden', array('required'  => true, "mapped" => false))
-                ->add('formatImmatriculation')
+                ->add('formatImmatriculation', 'entity', array(
+    'class' => 'AppBundle:FormatImmatriculation',
+    'query_builder' => function (\AppBundle\Entity\FormatImmatriculationRepository $er) {
+        return $er->createQueryBuilder('u')->where('u.actif = true')
+            ->orderBy('u.presentation', 'ASC');
+    },
+    'choice_label' => 'presentation',
+))
                 ->add('immatriculation')
                 ->add('chassis')
                 ->add('modeleAjax', 'text', array('label'  => 'Modèle', 'required'  => true, "mapped" => false))
