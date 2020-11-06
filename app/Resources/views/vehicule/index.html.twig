@@ -64,6 +64,9 @@
                                 {% endif %}
                                 <a title='Aiguiller normal' class='btn btn-warning' href="{{ path('aiguiller', {'id':vehicule.id, 'type':0}) }}" ><i class='fa fa-compass'> </i></a>
                                 <a title='Aiguiller spécial' class='btn btn-djib' href="{{ path('aiguiller', {'id':vehicule.id, 'type':1}) }}" ><i class='fa fa-star-o'> </i></a>
+                                {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
+                                    <a title='Visite gratuite' class='btn btn-toolbar' href="{{ path('aiguillerGratuit', {'id':vehicule.id}) }}"  ><i class='fa fa-free-code-camp'> </i></a><br/><br/>
+                                {% endif %}
                             </td>
                         </tr>
                     {% endfor %}

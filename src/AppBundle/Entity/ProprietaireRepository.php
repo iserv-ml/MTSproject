@@ -60,12 +60,12 @@ class ProprietaireRepository extends EntityRepository
     public function findAjax($search, $maxRows) {
         $result = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.nom, r.prenom, r.telephone FROM AppBundle:Proprietaire r WHERE r.nom LIKE :libelle OR r.prenom like :libelle OR r.telephone like :libelle OR CONCAT(r.nom,:sep, r.prenom) like :libelle OR CONCAT(r.prenom,:sep, r.nom) like :libelle order by r.nom'
+                'SELECT r.id, r.nom, r.prenom, r.adresse, r.telephone FROM AppBundle:Proprietaire r WHERE r.nom LIKE :libelle OR r.prenom like :libelle OR r.telephone like :libelle OR CONCAT(r.nom,:sep, r.prenom) like :libelle OR CONCAT(r.prenom,:sep, r.nom) like :libelle order by r.nom'
             )->setParameter("libelle","%".$search."%")->setParameter("sep"," ")
                  ->setMaxResults($maxRows)
             ->getResult();
         if(count($result) == 0) {
-            $result[] = ["id" => 0, "nom" => "Aucun résultat", "prenom" => "", "telephone" => ""];
+            $result[] = ["id" => 0, "nom" => "Aucun résultat", "prenom" => "", "adresse" => ""];
         }
         return $result; 
     } 

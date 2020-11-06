@@ -94,7 +94,7 @@
                         return {
                             nom :objet.nom,
                             prenom : objet.prenom,
-                            telephone : objet.telephone,
+                            adresse : objet.adresse,
                             id : objet.id
                         };
                     }));
@@ -102,14 +102,14 @@
             } );
         },
         select: function (event, ui) {
-            $( "#appbundle_vehicule_proprietaireAjax" ).val( ui.item.nom + ' ' + ui.item.prenom + ' ' + ui.item.telephone);
+            $( "#appbundle_vehicule_proprietaireAjax" ).val( ui.item.nom + ' ' + ui.item.prenom + ' ' + ui.item.adresse);
             $( "#appbundle_vehicule_proprietaireId" ).val( ui.item.id);
             return false;
         }
     }).data('ui-autocomplete')._renderItem = function (ul, item) {
         return $("<li />")
             .data("item.autocomplete", item)
-            .append("<a>" + item.nom + ' '+ item.prenom + ' ' + item.telephone + "</a>")
+            .append("<a>" + item.nom + ' '+ item.prenom + ' ' + item.adresse + "</a>")
             .appendTo(ul);
     };
     

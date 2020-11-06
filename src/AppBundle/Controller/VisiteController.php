@@ -566,16 +566,20 @@ class VisiteController extends Controller
                     if($valeurs != null){
                         $controle = $em->getRepository('AppBundle:Controle')->trouverParCodeGenre($valeurs[0], $visite->getVehicule()->getTypeVehicule()->getGenre()->getCode());
                         if($controle != null){
-                            switch ($controle->getType()){
-                                case "MESURE - VALEUR" : $codeResultat = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleResultat($controle->getId(), $valeurs[1]);break;
-                                case "MESURE - INTERVALLE" : $codeResultat = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleIntervalle($controle->getId(), $valeurs[1]);break;
-                                default :$codeResultat = null;
+                            $resultat = $em->getRepository('AppBundle:Resultat')->trouverResultatVisiteCode($visite->getId(), $controle);
+                            if($resultat == null){
+                                switch ($controle->getType()){
+                                    case "MESURE - VALEUR" : $codeResultat = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleResultat($controle->getId(), $valeurs[1]);break;
+                                    case "MESURE - INTERVALLE" : $codeResultat = $em->getRepository('AppBundle:CodeMahaResultat')->trouverParControleIntervalle($controle->getId(), $valeurs[1]);break;
+                                    default :$codeResultat = null;
+                                }
+                                if($codeResultat != null){
+                                    $resultat = new \AppBundle\Entity\Resultat();
+                                    $resultat->generer($visite, $codeResultat, $valeurs[1]);
+                                    $em->persist($resultat);
+                                }
                             }
-                            if($codeResultat != null){
-                                $resultat = new \AppBundle\Entity\Resultat();
-                                $resultat->generer($visite, $codeResultat, $valeurs[1]);
-                                $em->persist($resultat);
-                            }
+                           
                         }else{
                             //$this->get('session')->getFlashBag()->add('error', "Le fichier est corrompu!");break;
                         }
@@ -837,8 +841,8 @@ class VisiteController extends Controller
                     return $this->redirectToRoute('visite_controle');
             }
         }
-        if($derniereVisite == null){
-            $this->get('session')->getFlashBag()->add('error', "Il faut d'abord une visite avant de pouvoir faire une contre visite!");
+        if($derniereVisite == null || !$derniereVisite->getSuccesMaha()){
+            $this->get('session')->getFlashBag()->add('error', "Il faut d'abord une visite ayant réussi le test MAHA avant de pouvoir faire une contre visite visuelle!");
             return $this->redirectToRoute('visite_controle');
         }
         $chaine = $derniereVisite->getChaine();
@@ -955,5 +959,55 @@ class VisiteController extends Controller
          return new Response(
             'OK'
         );
+    }
+    
+    /**
+     * Aiguillage gratuit
+     *
+     * @Route("/aiguillerGratuit", name="aiguillerGratuit")
+     * @Method({"GET", "POST"})
+     */
+    public function aiguillerGratuitAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', "Le centre n'est pas encore ouvert.");
+            return $this->render('vehicule/index.html.twig', array('centre' => $centre,));
+        }
+        $vehicule = $em->getRepository('AppBundle:Vehicule')->find($request->get('id'));
+        if(!$vehicule){
+            throw $this->createNotFoundException("Ooops... Une erreur s'est produite.");
+        }
+        if($vehicule->visiteArrive()){
+            $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($vehicule->getId());
+            switch(\AppBundle\Utilities\Utilities::evaluerDemandeVisite($derniereVisite)){
+                case 1: 
+                    $this->get('session')->getFlashBag()->add('notice', 'Visite déjà en cours.');
+                    return $this->render('visite/visite.html.twig', array('visite' => $derniereVisite,));
+                case 0: case 2: $visiteParent = null; break;
+                case 3 : $visiteParent = $derniereVisite;break;
+            }
+        }else{
+            $this->get('session')->getFlashBag()->add('error', "Vérifier le certificat de visite technique. La prochaine visite est prévue pour le ".$vehicule->getDateProchaineVisite().".");
+            return $this->redirectToRoute('vehicule_index');
+        }        
+        $chaines = $em->getRepository('AppBundle:Chaine')->chainesActives($request->get('type'));
+        $chaineOptimale = \AppBundle\Utilities\Utilities::trouverChaineOptimale($chaines, $em);
+        if($chaineOptimale != null){
+            $visite = new Visite();
+            $quittance = new \AppBundle\Entity\Quittance();
+            $visite->initialiserVisiteGratuite($quittance);
+            $quittance->setVisite($visite);
+            $visite->aiguiller($vehicule, 1, $chaineOptimale, $visiteParent, $centre);
+            $em->persist($visite);
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Aiguillage effectué.');
+            return $this->render('visite/visite.html.twig', array(
+                'visite' => $visite,
+                ));
+        }else{
+            throw $this->createNotFoundException("Aucune chaine active. Merci de contacter l'administrateur.");
+        }
     }
 }

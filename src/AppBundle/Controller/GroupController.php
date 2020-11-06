@@ -123,7 +123,7 @@ class GroupController extends Controller
                 $this->get('session')->getFlashBag()->add('notice', 'Suppression effectuée.');
             }
         }else{
-            $this->get('session')->getFlashBag()->add('error', 'Impossible de supprimer  ce group car il est utilisée.');
+            $this->get('session')->getFlashBag()->add('error', 'Impossible de supprimer  ce groupe car il est utilisée.');
         }
 
         return $this->redirectToRoute('admin_gestion_group_index');

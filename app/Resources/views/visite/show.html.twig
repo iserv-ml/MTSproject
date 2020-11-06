@@ -18,7 +18,9 @@
     {% if is_granted('ROLE_CONTROLLEUR') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('visite_controle') }}">LISTE DES CONTROLES</a></label>
         <label class="btn btn-outline-secondary"><a  href="#" onclick="imprimer()" title="Imprimer le rapport">RAPPORT</a></label>
-        <label class="btn btn-outline-secondary"><a  href="{{ path('contrevisitevisuelle', { 'id': visite.vehicule.id }) }}" title="CONTRE-VISITE VISUELLE">Contre-visite visuelle</a></label>
+        {% if visite.succesMaha == true %} 
+            <label class="btn btn-outline-secondary"><a  href="{{ path('contrevisitevisuelle', { 'id': visite.vehicule.id }) }}" title="CONTRE-VISITE VISUELLE">Contre-visite visuelle</a></label>
+        {% endif %}
     {% endif %}
     {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %} 
         <label class="btn btn-outline-secondary">

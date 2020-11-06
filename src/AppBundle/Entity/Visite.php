@@ -585,6 +585,12 @@ class Visite
         $this->setQuittance($quittance);
     }
     
+    public function initialiserVisiteGratuite($quittance){
+        $this->setGratuite(true);
+        $quittance->initialiserGratuite();
+        $this->setQuittance($quittance);
+    }
+    
     public function getTypeVisite(){
         if($this->getContrevisiteCree()){
             return "Ignoré";

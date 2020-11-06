@@ -76,7 +76,7 @@
                 <td>{% if quittance.caissier is not null %}{{ quittance.caissier.nomComplet }} {% else %}   {{ quittance.creePar }} {% endif %}</td>
             </tr>
             <tr>
-                <td style="background: #000;color:#fff;padding:10px"><span >PENALITE : {% if quittance.penalite > 0 %}OUI{% else %}NON{%endif%}</span></td>
+                <td style="background: #000;color:#fff;padding:10px"><span >PENALITE : {{quittance.penalite|round(0, 'ceil')|number_format(0, ',', ' ')}}</td>
                 <td colspan="6" align="center">Valable pour {{ quittance.visite.vehicule.typeVehicule.delai }} jours</td>
             </tr>
      </tbody>
@@ -131,7 +131,7 @@
                     <td>{% if quittance.caissier is not null %}{{ quittance.caissier.nomComplet }} {% else %}   {{ quittance.creePar }} {% endif %}</td>
                 </tr>
                 <tr>
-                    <td style="background: #000;color:#fff;padding:10px"><span >PENALITE : {% if quittance.penalite > 0 %}OUI{% else %}NON{%endif%}</span></td>
+                    <td style="background: #000;color:#fff;padding:10px"><span >PENALITE : {{quittance.penalite|round(0, 'ceil')|number_format(0, ',', ' ')}}</span></td>
                     <td colspan="6" align="center">Valable pour {{ quittance.visite.vehicule.typeVehicule.delai }} jours</td>
                 </tr>
          </tbody>

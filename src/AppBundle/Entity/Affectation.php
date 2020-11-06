@@ -204,7 +204,7 @@ class Affectation
     
     public function __construct()
     {
-        $this->actif = 1;
+        $this->actif = true;
         $this->date = new \DateTime();
     }
 

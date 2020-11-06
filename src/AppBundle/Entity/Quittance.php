@@ -434,6 +434,18 @@ class Quittance
         $this->setDateEncaissement(new \DateTime());
     }
     
+    public function initialiserGratuite(){
+        $this->setMontantVisite(0);
+        $this->setNumero("Visite Gratuite".\time());
+        $this->setPaye(1);
+        $this->setPenalite(0);
+        $this->setRembourse(0);
+        $this->setRetard(0);
+        $this->setTimbre(0);
+        $this->setTva(0);
+        $this->setDateEncaissement(new \DateTime());
+    }
+    
     function getCaissier() {
         return $this->caissier;
     }

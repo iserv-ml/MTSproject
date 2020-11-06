@@ -827,8 +827,10 @@ class Vehicule
         $contenu .= '0204='.$this->getEnergie()."\r\n";
         $contenu .= '0205='.$this->getAlimentation()."\r\n";//alimentation du véhicule. Correspond à quoi sur nos CG?
         $contenu .= '0206='.$this->getPotCatalytique()."\r\n";//présence d'un pot catalytique
-        $contenu .= '0207='.$this->getProprietaire()->getNomComplet()."\r\n";
-        $contenu .= '0208='.$this->getProprietaire()->getAdresse()."\r\n";
+        //$contenu .= '0207='.$this->getProprietaire()->getNomComplet()."\r\n";
+        $contenu .= '0207='."\r\n";
+        //$contenu .= '0208='.$this->getProprietaire()->getAdresse()."\r\n";
+        $contenu .= '0208='."\r\n";
         $contenu .= '0209='."\r\n";
         $contenu .= '0210='."\r\n";
         $contenu .= '0211='."\r\n";
@@ -845,8 +847,10 @@ class Vehicule
         $contenu .= '0204='.$this->genererCrc($this->getEnergie())."\r\n";
         $contenu .= '0205='.$this->genererCrc($this->getAlimentation())."\r\n";//alimentation du véhicule. Correspond à quoi sur nos CG?
         $contenu .= '0206='.$this->genererCrc($this->getPotCatalytique())."\r\n";//présence d'un pot catalytique
-        $contenu .= '0207='.$this->genererCrc($this->getProprietaire()->getNomComplet())."\r\n";
-        $contenu .= '0208='.$this->genererCrc($this->getProprietaire()->getAdresse())."\r\n";
+        //$contenu .= '0207='.$this->genererCrc($this->getProprietaire()->getNomComplet())."\r\n";
+        //$contenu .= '0208='.$this->genererCrc($this->getProprietaire()->getAdresse())."\r\n";
+        $contenu .= '0207=0'."\r\n";
+        $contenu .= '0208=0'."\r\n";
         $contenu .= '0209=0'."\r\n";
         $contenu .= '0210=0'."\r\n";
         $contenu .= '0211=0'."\r\n";

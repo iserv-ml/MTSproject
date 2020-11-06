@@ -70,4 +70,20 @@ class ResultatRepository extends EntityRepository
             ->getResult();
         return $result; 
     }
+    
+    public function trouverResultatVisiteCode($visite, $controle) {
+        try{
+            $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Resultat r LEFT JOIN r.visite v LEFT JOIN r.controle c WHERE v.id = :visite AND c.code = :controle'
+            )->setParameter("visite",$visite)->setParameter("controle", $controle)
+            ->getOneOrNullResult();
+        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = 0;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        return $result; 
+    }
 }
