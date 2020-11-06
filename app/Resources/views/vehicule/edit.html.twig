@@ -34,7 +34,7 @@
         $( function() {
             //$("#appbundle_vehicule_genre" ).val("{{- vehicule.typeVehicule.genre.code -}}");
             $("#appbundle_vehicule_proprietaireId" ).val("{{- vehicule.proprietaire.id -}}");
-            $("#appbundle_vehicule_proprietaireAjax" ).val("{{- vehicule.proprietaire.nom -}} {{- vehicule.proprietaire.prenom -}} {{- vehicule.proprietaire.telephone -}}");
+            $("#appbundle_vehicule_proprietaireAjax" ).val("{{- vehicule.proprietaire.nom -}} {{- vehicule.proprietaire.prenom -}} {{- vehicule.proprietaire.adresse -}}");
             //$("#appbundle_vehicule_genre" ).prop("disabled", true);
             $("#appbundle_vehicule_dateCarteGrise" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
             $("#appbundle_vehicule_dateMiseCirculation" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
@@ -105,7 +105,7 @@
                         return {
                             nom :objet.nom,
                             prenom : objet.prenom,
-                            telephone : objet.telephone,
+                            telephone : objet.adresse,
                             id : objet.id
                         };
                     }));
@@ -113,14 +113,14 @@
             } );
         },
         select: function (event, ui) {
-            $( "#appbundle_vehicule_proprietaireAjax" ).val( ui.item.nom + ' ' + ui.item.prenom + ' ' + ui.item.telephone);
+            $( "#appbundle_vehicule_proprietaireAjax" ).val( ui.item.nom + ' ' + ui.item.prenom + ' ' + ui.item.adresse);
             $( "#appbundle_vehicule_proprietaireId" ).val( ui.item.id);
             return false;
         }
     }).data('ui-autocomplete')._renderItem = function (ul, item) {
         return $("<li />")
             .data("item.autocomplete", item)
-            .append("<a>" + item.nom + ' '+ item.prenom + ' ' + item.telephone + "</a>")
+            .append("<a>" + item.nom + ' '+ item.prenom + ' ' + item.adresse + "</a>")
             .appendTo(ul);
     };
     

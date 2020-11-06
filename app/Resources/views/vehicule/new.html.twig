@@ -34,7 +34,7 @@
         $( "#appbundle_vehicule_dateImmatriculationPrecedent" ).datepicker({changeMonth: true, changeYear: true,  defaultDate: "-10Y", dateFormat: 'yy-mm-dd' });
         {% if vehicule.proprietaire %}
             $("#appbundle_vehicule_proprietaireId" ).val("{{- vehicule.proprietaire.id -}}");
-            $("#appbundle_vehicule_proprietaireAjax" ).val("{{ vehicule.proprietaire.nom }} {{ vehicule.proprietaire.prenom }} {{ vehicule.proprietaire.telephone }}");
+            $("#appbundle_vehicule_proprietaireAjax" ).val("{{ vehicule.proprietaire.nom }} {{ vehicule.proprietaire.prenom }} {{ vehicule.proprietaire.adresse }}");
         {% endif %}
        /* $( "#appbundle_vehicule_ptac" ).change(function() {
             var ptac = $( "#appbundle_vehicule_ptac" ).val();
