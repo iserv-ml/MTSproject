@@ -964,7 +964,7 @@ class VisiteController extends Controller
     /**
      * Aiguillage gratuit
      *
-     * @Route("/aiguillerGratuit", name="aiguillerGratuit")
+     * @Route("/aiguiller/gratuit", name="aiguillerGratuit")
      * @Method({"GET", "POST"})
      */
     public function aiguillerGratuitAction(Request $request)

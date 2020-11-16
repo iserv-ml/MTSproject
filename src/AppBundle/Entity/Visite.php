@@ -110,6 +110,14 @@ class Visite
     private $succesMaha;
     
     /**
+     * @var boolean $gratuite
+     *
+     * @ORM\Column(name="gratuite", type="boolean", nullable=true)
+     * 
+     */
+    private $gratuite;
+    
+    /**
      * @var boolean $contreVisite
      *
      * @ORM\Column(name="contre_visite", type="boolean", nullable=true)
@@ -401,7 +409,15 @@ class Visite
     function setContrevisiteCree($contrevisiteCree) {
         $this->contrevisiteCree = $contrevisiteCree;
     }
-        
+    
+    function getGratuite() {
+        return $this->gratuite;
+    }
+
+    function setGratuite($gratuite) {
+        $this->gratuite = $gratuite;
+    }
+    
     //BEHAVIOR
     /**
      * @var string $creePar
