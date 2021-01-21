@@ -16,7 +16,7 @@ class FormatImmatriculationRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.regex, r.presentation, r.actif, t.code FROM AppBundle:FormatImmatriculation r LEFT JOIN r.typeImmatriculation t '
+                'SELECT r.id, r.regex, r.presentation, r.actif, r.vedette, t.code FROM AppBundle:FormatImmatriculation r LEFT JOIN r.typeImmatriculation t '
                     . ' WHERE r.regex like :search or r.presentation like :search or t.code like :search '
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
@@ -53,5 +53,22 @@ class FormatImmatriculationRepository extends EntityRepository
         }
         
         return $result; 
-    }    
+    }  
+    
+    public function vedette() {
+       try{ 
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:FormatImmatriculation r WHERE r.vedette = :vedette'
+            )->setParameter("vedette",true)
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
+        return $result; 
+    } 
 }

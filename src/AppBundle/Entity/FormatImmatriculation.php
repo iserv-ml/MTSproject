@@ -58,6 +58,14 @@ class FormatImmatriculation
     private $actif;
     
     /**
+     * @var boolean $vedette
+     *
+     * @ORM\Column(name="vedette", type="boolean", nullable=false)
+     * 
+     */
+    private $vedette;
+    
+    /**
     * @ORM\ManyToOne(targetEntity="TypeImmatriculation", inversedBy="formats", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="type_immatriculation_id", referencedColumnName="id")
     * @Assert\NotBlank
@@ -133,6 +141,14 @@ class FormatImmatriculation
 
     function setPresentation($presentation) {
         $this->presentation = $presentation;
+    }
+    
+    function getVedette() {
+        return $this->vedette;
+    }
+
+    function setVedette($vedette) {
+        $this->vedette = $vedette;
     }
 
     function setRegex($regex) {

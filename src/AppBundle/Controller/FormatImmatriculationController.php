@@ -47,6 +47,10 @@ class FormatImmatriculationController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
+            if($formatImmatriculation->getVedette()){
+                $vedette = $em->getRepository('AppBundle:FormatImmatriculation')->vedette();
+                if($vedette)$vedette->setVedette(false);
+            }
             $em->persist($formatImmatriculation);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
@@ -94,7 +98,12 @@ class FormatImmatriculationController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $em = $this->getDoctrine()->getManager();
+            if($formatImmatriculation->getVedette()){
+                $vedette = $em->getRepository('AppBundle:FormatImmatriculation')->vedette();
+                if($vedette)$vedette->setVedette(false);
+            }
+            $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
             return $this->redirectToRoute('admin_parametres_formatimmatriculation_edit', array('id' => $formatImmatriculation->getId()));
         }
@@ -197,7 +206,8 @@ class FormatImmatriculationController extends Controller
 	{
             $action = $this->genererAction($aRow['id']);
             $actif = $aRow['actif'] ? 'Actif' : 'Inactif';
-            $output['aaData'][] = array($aRow['code'],$aRow['presentation'],$aRow['regex'],$actif, $action);
+            $vedette = $aRow['vedette'] ? 'Oui' : 'Non';
+            $output['aaData'][] = array($aRow['code'],$aRow['presentation'],$aRow['regex'],$actif, $vedette, $action);
 	}
 	return new Response(json_encode( $output ));    
     }

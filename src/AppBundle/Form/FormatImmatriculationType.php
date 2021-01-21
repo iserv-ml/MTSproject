@@ -17,7 +17,8 @@ class FormatImmatriculationType extends AbstractType
                 ->add('typeImmatriculation')
                 ->add('presentation')
                 ->add('regex')
-                ->add('actif');
+                ->add('actif')
+                ->add('vedette');
     }
     
     /**
