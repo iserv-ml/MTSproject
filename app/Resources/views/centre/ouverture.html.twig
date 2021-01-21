@@ -31,7 +31,7 @@
                         <th>Cartes vierges à l'ouverture</th>
                     {% endif %}
                     <th>Cartes vierges en stock</th>
-                    <th>Solde</th>
+                    {% if is_granted('ROLE_SUPERVISEUR') %}<th>Solde</th>{% endif %}
                 </tr>
                 <tr>
                     {% if centre.etat %}

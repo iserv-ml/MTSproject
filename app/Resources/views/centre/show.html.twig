@@ -44,10 +44,12 @@
                 <th>Etat</th>
                 <td>{% if centre.etat %}Ouvert{% else %}Fermé{% endif %}</td>
             </tr>
+            {% if is_granted('ROLE_SUPERVISEUR') %}
             <tr>
                 <th>Solde</th>
                 <td>{{ centre.solde }}</td>
             </tr>
+            {% endif %}
             <tr>
                 <th>Créé par</th>
                 <td>{{ centre.creePar }}</td>

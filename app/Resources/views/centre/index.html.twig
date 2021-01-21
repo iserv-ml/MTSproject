@@ -30,7 +30,7 @@
                 <th>Libellé</th>
                 <th>Adresse</th>
                 <th>Téléphone</th>
-                <th>Solde</th>
+                {% if is_granted('ROLE_SUPER_ADMIN') %}<th>Solde</th>{% endif %}
                 <th>Cartes vierges</th>
             </tr>
         </thead>
@@ -41,7 +41,7 @@
                 <td>{{ centre.libelle }}</td>
                 <td>{{ centre.adresse }}</td>
                 <td>{{ centre.telephone }}</td>
-                <td>{{ centre.solde|number_format(0, ',', ' ') }}</td>
+                {% if is_granted('ROLE_SUPERVISEUR') %}<td>{{ centre.solde|number_format(0, ',', ' ') }}</td>{% endif %}
                 <td>{{ centre.carteVierge|number_format(0, ',', ' ') }}</td>
             </tr>
         {% endfor %}

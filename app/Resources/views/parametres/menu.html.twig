@@ -51,6 +51,8 @@
         </li>
     </ul>
 </li> 
+{% endif %} 
+{% if is_granted('ROLE_SUPER_ADMIN') %}
 <li class="nav-item nav-dropdown {% block menu_maha_open %}{% endblock %}">
     <a class="nav-link nav-dropdown-toggle" href="#">
         <i class="nav-icon fa fa-exclamation"></i> Controles</a>
@@ -102,10 +104,12 @@
                 <i class="nav-icon icon-list"></i> Agents
             </a>
         </li>
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
         <li class="nav-item {% block menu_groupe_open %}{% endblock %}">
             <a class="nav-link {% block menu_groupe_actif %}{% endblock %}" href="{{ path('admin_gestion_group_index') }}">
                <i class="nav-icon icon-list"></i> Groupes</a>
         </li>
+        {% endif %} 
     </ul>
 </li>
 {% endif %}       
