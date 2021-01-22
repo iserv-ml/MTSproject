@@ -20,7 +20,7 @@ class VehiculeType extends AbstractType
     'class' => 'AppBundle:FormatImmatriculation',
     'query_builder' => function (\AppBundle\Entity\FormatImmatriculationRepository $er) {
         return $er->createQueryBuilder('u')->where('u.actif = true')
-            ->orderBy('u.presentation', 'ASC');
+            ->orderBy('u.vedette', 'DESC');
     },
     'choice_label' => 'presentation',
 ))
