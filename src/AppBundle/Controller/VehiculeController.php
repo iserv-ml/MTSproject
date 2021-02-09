@@ -314,7 +314,7 @@ class VehiculeController extends Controller
      */
     public function proprietairesAjaxAction(Request $request){   
         $search = $request->get('search', '');
-        $maxRows = $request->get('maxRows', 15);
+        $maxRows = $request->get('maxRows', 100);
         $em = $this->getDoctrine()->getManager();
         $modeles = $em->getRepository('AppBundle:Proprietaire')->findAjax($search, $maxRows);
         return new Response(json_encode($modeles));

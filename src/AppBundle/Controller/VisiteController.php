@@ -160,10 +160,10 @@ class VisiteController extends Controller
         $chaineOptimale = \AppBundle\Utilities\Utilities::trouverChaineOptimale($chaines, $em);
         if($chaineOptimale != null){
             $visite = new Visite();
-            $visite->aiguiller($vehicule, 0, $chaineOptimale, $visiteParent, $centre);
+            $retour = $visite->aiguiller($vehicule, 0, $chaineOptimale, $visiteParent, $centre);
             $em->persist($visite);
             $em->flush();
-            $this->get('session')->getFlashBag()->add('notice', 'Aiguillage effectué.');
+            $this->get('session')->getFlashBag()->add('notice', $retour);
             return $this->render('visite/visite.html.twig', array(
                 'visite' => $visite,
                 ));
