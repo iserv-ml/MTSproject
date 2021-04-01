@@ -102,6 +102,14 @@ class Centre
      * @ORM\Column(name="carte_vierge_ouverture", type="integer", nullable=true)
      */
     private $carteViergeOuverture;
+    
+    /**
+     * @var float $anaser
+     *
+     * @ORM\Column(name="anaser", type="float", nullable=true)
+     * 
+     */
+    private $anaser;
    
    //Debut relation Centre a plusieurs visites
     /**
@@ -400,6 +408,14 @@ class Centre
     
     public function estOuvert(){
         return $this->getEtat();
+    }
+    
+    function getAnaser() {
+        return $this->anaser;
+    }
+
+    function setAnaser($anaser) {
+        $this->anaser = $anaser;
     }
 
 }

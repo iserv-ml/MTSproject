@@ -247,6 +247,22 @@ class Vehicule
     private $potCatalytique;
     
     /**
+     * @var boolean $synchro
+     *
+     * @ORM\Column(name="synchro", type="boolean", nullable=true)
+     * 
+     */
+    private $synchro;
+    
+    /**
+     * @var datetime $dateSynchro
+     *
+     * @ORM\Column(name="date_synchro", type="datetime", length=255, nullable=true)
+     * 
+     */
+    private $dateSynchro;
+    
+    /**
     * @ORM\ManyToOne(targetEntity="Modele", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="modele_id", referencedColumnName="id")
     * 
@@ -610,6 +626,22 @@ class Vehicule
     function setTypeCarteGrise($typeCarteGrise) {
         $this->typeCarteGrise = $typeCarteGrise;
     }
+    
+    function getSynchro() {
+        return $this->synchro;
+    }
+
+    function setSynchro($synchro) {
+        $this->synchro = $synchro;
+    }
+    
+    function getDateSynchro() {
+        return $this->dateSynchro;
+    }
+
+    function setDateSynchro($dateSynchro) {
+        $this->dateSynchro = $dateSynchro;
+    }
             
     //BEHAVIOR
     /**
@@ -704,7 +736,7 @@ class Vehicule
     
     public function __construct()
     {
-        //$this->users = new ArrayCollection();
+        $this->synchro = false;
     }
     
     //TRAITEMENT PIECE D'IDENTITE

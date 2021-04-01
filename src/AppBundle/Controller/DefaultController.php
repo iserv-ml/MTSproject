@@ -177,4 +177,16 @@ class DefaultController extends Controller
         $response->setContentDisposition(ResponseHeaderBag::DISPOSITION_ATTACHMENT);
         return $response;
     }
+    
+    /**
+     * @Route("/centraliser/nouveau", name="centraliser_nouveau")
+    */
+    public function exporterNouveauAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $vehicules = $em->getRepository('AppBundle:Vehicule')->recupererNouveauPourCentraliser();
+        foreach($vehicules as $vehicule){
+            
+        }
+    }
 }

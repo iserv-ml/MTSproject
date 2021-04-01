@@ -76,6 +76,7 @@ class QuittanceController extends Controller
             'delete_form' => $deleteForm->createView(),
             'libelle' => $centre->getLibelle(),
             'type' => 0,
+            'anaser' => $centre->getAnaser(),
         ));
     }
     
@@ -100,6 +101,7 @@ class QuittanceController extends Controller
             'delete_form' => $deleteForm->createView(),
             'libelle' => $centre->getLibelle(),
             'type' => 1,
+            'anaser' => $centre->getAnaser(),
         ));
     }
 
@@ -174,6 +176,7 @@ class QuittanceController extends Controller
         return $this->render('quittance/show.html.twig', array(
             'quittance' => $quittance,
             'libelle' => $centre->getLibelle(),
+             'anaser' => $centre->getAnaser(),
         ));
     }
     
@@ -185,6 +188,7 @@ class QuittanceController extends Controller
      */
     public function rembourserAction(Quittance $quittance)
     {
+        
         if(!$quittance->getVisite()->getChaine()->getCaisse()->getOuvert()){
             $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!');
             return $this->redirectToRoute('visite_quittance');
@@ -226,6 +230,7 @@ class QuittanceController extends Controller
         return $this->render('quittance/show.html.twig', array(
             'quittance' => $quittance,
             'libelle' => $centre->getLibelle(),
+             'anaser' => $centre->getAnaser(),
         ));
     }
     
@@ -237,6 +242,12 @@ class QuittanceController extends Controller
      */
     public function rembourserconfirmerAction(Quittance $quittance)
     {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre->getEtat()){
+            $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
+            return $this->redirectToRoute('visite_controle');
+        }
         if(!$quittance->getVisite()->getChaine()->getCaisse()->getOuvert()){
             $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!');
             return $this->redirectToRoute('visite_quittance');
@@ -253,6 +264,7 @@ class QuittanceController extends Controller
             'quittance' => $quittance,
             'style' => $style,
             'message' => $message,
+            'anaser' => $centre->getAnaser(),
         ));
     }
     
@@ -297,13 +309,15 @@ class QuittanceController extends Controller
             $retard = $quittance->calculerRetard($derniereVisite);
             $penalite = $em->getRepository('AppBundle:Penalite')->trouverParNbJours($retard);
         }
+        if($montant > 0)
+            {$montant += $centre->getAnaser();}
         $quittance->generer($montant, $penalite, $retard);
         $em->persist($quittance);
         $visite->setQuittance($quittance);
         $em->flush();
         $this->get('session')->getFlashBag()->add('notice', 'Quittance générée avec succès.');
         return $this->render('quittance/show.html.twig', array(
-            'quittance' => $quittance, 'libelle' => $centre->getLibelle(),
+            'quittance' => $quittance, 'libelle' => $centre->getLibelle(), 'anaser' => $centre->getAnaser(),
         ));
     }
     
@@ -332,6 +346,7 @@ class QuittanceController extends Controller
             $quittance->setVisite($visite);
             $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($visite->getVehicule()->getId(), $visite->getId());
             $montant = $quittance->calculerMontant($derniereVisite);
+            if($montant>0){$montant += $centre->getAnaser();}
             $retard = $quittance->calculerRetard($derniereVisite);
             $penalite = $em->getRepository('AppBundle:Penalite')->trouverParNbJours($retard);
             $quittance->generer($montant, $penalite, $retard);
@@ -339,6 +354,7 @@ class QuittanceController extends Controller
         return $this->render('quittance/confirmer.html.twig', array(
             'quittance' => $quittance,
             'libelle' => $centre->getLibelle(),
+            'anaser' => $centre->getAnaser(),
         ));
     }
 
@@ -406,7 +422,7 @@ class QuittanceController extends Controller
             $this->renderView(
                 'quittance/imprim.html.twig',
                 array(
-                    'quittance'  => $quittance, 'libelle' => $centre->getLibelle()
+                    'quittance'  => $quittance, 'libelle' => $centre->getLibelle(),'anaser' => $centre->getAnaser()
                 )
             ),
             $chemin,

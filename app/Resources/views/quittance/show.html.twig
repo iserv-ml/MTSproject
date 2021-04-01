@@ -48,13 +48,13 @@
 <table border="1" style="width:100%;" cellpadding="0" cellspacing="0">
      <tbody>
          <tr>
-             <td colspan="7" style="border:none; padding:5px">
+             <td colspan="8" style="border:none; padding:5px">
                 <span style="font-weight: bold">CVT : {{libelle}}</span> <span style="font-weight: bold">| Caisse : {{quittance.visite.chaine.caisse.numero}} | Piste : {{quittance.visite.chaine.piste.numero}}</span>
                 <span style="margin-left:80px; font-weight:bold;">Type/Marque : {%if quittance.visite.vehicule.modele%}{{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}{%endif%}</span>
              </td>
          </tr>
             <tr>
-                <td colspan="7" style="border:none; padding:5px">
+                <td colspan="8" style="border:none; padding:5px">
                     <span style="font-weight: bold">Date : {% if quittance.dateCreation %}{{ quittance.dateCreation|date('Y-m-d') }}{% endif %}</span>
                     <span style="margin-left:280px; font-weight:bold;">Immatriculation : {{ quittance.visite.vehicule.immatriculation }}</span>
                 </td>
@@ -65,6 +65,7 @@
                 <th>Prix total</th>
                 <th>TVA 18%</th>
                 <th>Droit de timbre</th>
+                <th>Redevance ANASER</th>
                 <th>Total TTC</th>
                 <th>Caissier</th>
             </tr>
@@ -75,7 +76,8 @@
                 <td>{{ quittance.tva|number_format(0, ',', ' ') }}</td>
                 {% if quittance.montantVisite > 0 %}
                     <td>{{ quittance.timbre|number_format(0, ',', ' ')}}</td>
-                    <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil')|number_format(0, ',', ' ')  }}</td>
+                    <td>{{ anaser|number_format(0, ',', ' ')}}</td>
+                    <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre+anaser)|round(0, 'ceil')|number_format(0, ',', ' ')  }}</td>
                 {% else %}
                     <td>0</td>
                 <td>0</td>
@@ -84,7 +86,7 @@
             </tr>
             <tr>
                 <td style="background: #000;color:#fff;padding:10px"><span >PENALITE : {{quittance.penalite|round(0, 'ceil')|number_format(0, ',', ' ')}} </span></td>
-                <td colspan="6" align="center">Valable pour {{ quittance.visite.vehicule.typeVehicule.delai }} jours</td>
+                <td colspan="7" align="center">Valable pour {{ quittance.visite.vehicule.typeVehicule.delai }} jours</td>
             </tr>
      </tbody>
 </table>
@@ -103,13 +105,13 @@
     <table border="1" style="width:100%;" cellpadding="0" cellspacing="0">
          <tbody>
              <tr>
-                <td colspan="7" style="border:none; padding:5px">
+                <td colspan="8" style="border:none; padding:5px">
                     <span style="font-weight: bold">CVT : {{libelle}}</span> <span style="font-weight: bold">| Caisse : {{quittance.visite.chaine.caisse.numero}} | Piste : {{quittance.visite.chaine.piste.numero}}</span>
                     <span style="margin-left:80px; font-weight:bold;">Type/Marque : {%if quittance.visite.vehicule.modele%}{{ quittance.visite.vehicule.modele.libelle}}/{{quittance.visite.vehicule.modele.marque.libelle }}{%endif%}</span>
                 </td>
              </tr>
                 <tr>
-                    <td colspan="7" style="border:none; padding:5px">
+                    <td colspan="8" style="border:none; padding:5px">
                         <span style="font-weight: bold">Date : {% if quittance.dateCreation %}{{ quittance.dateCreation|date('Y-m-d') }}{% endif %}</span>
                         <span style="margin-left:280px; font-weight:bold;">Immatriculation : {{ quittance.visite.vehicule.immatriculation }}</span>
                     </td>
@@ -120,6 +122,7 @@
                     <th>Prix total</th>
                     <th>TVA 18%</th>
                     <th>Droit de timbre</th>
+                    <th>Redevance ANASER</th>
                     <th>Total TTC</th>
                     <th>Caissier</th>
                 </tr>
@@ -130,7 +133,8 @@
                     <td>{{ quittance.tva|number_format(0, ',', ' ') }}</td>
                     {% if quittance.montantVisite > 0 %}
                     <td>{{ quittance.timbre|number_format(0, ',', ' ')}}</td>
-                    <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil')|number_format(0, ',', ' ')  }}</td>
+                    <td>{{ anaser|number_format(0, ',', ' ')}}</td>
+                    <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre+anaser)|round(0, 'ceil')|number_format(0, ',', ' ')  }}</td>
                     {% else %}
                         <td>0</td>
                         <td>0</td>
@@ -139,7 +143,7 @@
                 </tr>
                 <tr>
                     <td style="background: #000;color:#fff;padding:10px"><span >PENALITE : {{quittance.penalite|round(0, 'ceil')|number_format(0, ',', ' ')}}</span></td>
-                    <td colspan="6" align="center">Valable pour {{ quittance.visite.vehicule.typeVehicule.delai }} jours</td>
+                    <td colspan="7" align="center">Valable pour {{ quittance.visite.vehicule.typeVehicule.delai }} jours</td>
                 </tr>
          </tbody>
     </table>

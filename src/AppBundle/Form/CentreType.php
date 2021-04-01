@@ -19,6 +19,7 @@ class CentreType extends AbstractType
                 ->add('description')
                 ->add('adresse')
                 ->add('telephone')
+                ->add('anaser')
                 ->add('carteVierge');
     }
     
