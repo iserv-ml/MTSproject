@@ -76,8 +76,8 @@
                 <td>{{ quittance.tva|number_format(0, ',', ' ') }}</td>
                 {% if quittance.montantVisite > 0 %}
                     <td>{{ quittance.timbre|number_format(0, ',', ' ')}}</td>
-                    <td>{{ anaser|number_format(0, ',', ' ')}}</td>
-                    <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre+anaser)|round(0, 'ceil')|number_format(0, ',', ' ')  }}</td>
+                    <td>{{ quittance.anaser|number_format(0, ',', ' ')}}</td>
+                    <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre+quittance.anaser)|round(0, 'ceil')|number_format(0, ',', ' ')  }}</td>
                 {% else %}
                     <td>0</td>
                 <td>0</td>
@@ -133,8 +133,8 @@
                     <td>{{ quittance.tva|number_format(0, ',', ' ') }}</td>
                     {% if quittance.montantVisite > 0 %}
                     <td>{{ quittance.timbre|number_format(0, ',', ' ')}}</td>
-                    <td>{{ anaser|number_format(0, ',', ' ')}}</td>
-                    <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre+anaser)|round(0, 'ceil')|number_format(0, ',', ' ')  }}</td>
+                    <td>{{ quittance.anaser|number_format(0, ',', ' ')}}</td>
+                    <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre+quittance.anaser)|round(0, 'ceil')|number_format(0, ',', ' ')  }}</td>
                     {% else %}
                         <td>0</td>
                         <td>0</td>

@@ -66,6 +66,14 @@ class Quittance
     private $montantVisite;
     
     /**
+     * @var float $anaser
+     *
+     * @ORM\Column(name="anaser", type="float", nullable=false)
+     * 
+     */
+    private $anaser;
+    
+    /**
      * @var float $tva
      *
      * @ORM\Column(name="tva", type="float", nullable=false)
@@ -338,11 +346,12 @@ class Quittance
         return ($ecart && $ecart->days > 0) ? $ecart->days : 0;
     }
     
-    public function generer($montant, $penalite, $retard){
+    public function generer($montant, $penalite, $retard, $anaser, $codeCentre){
         $this->setMontantVisite($montant);
         $this->setTva($montant*18/100);
         if($montant > 0){
             $this->setTimbre($this->getVisite()->getVehicule()->getTypeVehicule()->getTimbre());
+            $this->setAnaser($anaser);
             if($penalite){
                 $this->setPenalite(\ceil($this->getTtc()*$penalite->getPourcentage()/100));
             }else{
@@ -353,11 +362,12 @@ class Quittance
         else{
             $this->setTimbre (0);
             $this->setPenalite(0);
+            $this->setAnaser(0);
         }
         
         $this->retard = $retard;
         $this->rembourse = false;
-        $this->setNumero('BKO'.\time());
+        $this->setNumero($codeCentre.\time());
     }
     
     function getTva() {
@@ -374,6 +384,14 @@ class Quittance
 
     function setTimbre($timbre) {
         $this->timbre = $timbre;
+    }
+    
+    function getAnaser() {
+        return $this->anaser;
+    }
+
+    function setAnaser($anaser) {
+        $this->anaser = $anaser;
     }
     
     public function encaisser(){

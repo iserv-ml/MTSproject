@@ -48,7 +48,7 @@
                     </tr>
                     <tr>
                         <th>Redevance ANASER</th>
-                        <td>{{ anaser|number_format(0, ',', ' ') }}</td>
+                        <td>{{ quittance.anaser|number_format(0, ',', ' ') }}</td>
                     </tr>
                     <tr>
                         <th>Droit de visite</th>
@@ -56,7 +56,7 @@
                     </tr>
                     <tr>
                         <th>Total TTC</th>
-                        <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre+quittance.penalite+anaser)|round(0, 'ceil')  }}</td>
+                        <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre+quittance.penalite+quittance.anaser)|round(0, 'ceil')  }}</td>
                     </tr>
                 </table>
             </div>
