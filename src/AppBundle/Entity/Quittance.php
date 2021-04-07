@@ -351,7 +351,9 @@ class Quittance
         $this->setTva($montant*18/100);
         if($montant > 0){
             $this->setTimbre($this->getVisite()->getVehicule()->getTypeVehicule()->getTimbre());
-            $this->setAnaser($anaser);
+            if(!$this->getVisite()->getRevisite()){
+                $this->setAnaser($anaser);
+            }
             if($penalite){
                 $this->setPenalite(\ceil($this->getTtc()*$penalite->getPourcentage()/100));
             }else{
@@ -403,7 +405,7 @@ class Quittance
     public function rembourser(){
         $this->setRembourse(true);
         $this->getVisite()->setStatut(5);
-        $this->getVisite()->getChaine()->getCaisse()->rembourser($this->getTtc(),$this->getVisite()->getRevisite());        
+        $this->getVisite()->getChaine()->getCaisse()->rembourser($this->getTtc(),$this->getVisite()->getRevisite(), $this->getAnaser());        
     }
     
     public function remboursableOu(){
@@ -437,7 +439,7 @@ class Quittance
     }
 
     public function getTtc(){
-        return $this->getMontantVisite() > 0 ? \ceil($this->getMontantVisite()+$this->getTva()+$this->getTimbre()) : 0;
+        return $this->getMontantVisite() > 0 ? \ceil($this->getMontantVisite()+$this->getTva()+$this->getTimbre()+$this->getAnaser()) : 0;
     }
     
     public function initialiserContreVisite(){

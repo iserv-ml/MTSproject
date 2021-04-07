@@ -59,7 +59,7 @@
                         <td>{{ quittance.visite.vehicule.immatriculation }}</td>
                         <td>{{ quittance.numero }}</td>
                         <td>{% if quittance.visite.revisite %}REVISITE{% else %} VISITE {% endif %}</td>
-                        <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil')|number_format(0, ',', ' ') }}</td>
+                        <td>{{ quittance.ttc|number_format(0, ',', ' ') }}</td>
                         <td>{{ quittance.creePar }}</td>
                         <td>{% if quittance.dateEncaissement %}{{ quittance.dateEncaissement|date('Y-m-d h:m:s') }}{% endif %}</td>
                     </tr>

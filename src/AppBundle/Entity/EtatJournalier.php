@@ -54,6 +54,14 @@ class EtatJournalier
     private $montantRevisite;
     
     /**
+     * @var float $anaser
+     *
+     * @ORM\Column(name="anaser", type="float", nullable=false)
+     * 
+     */
+    private $anaser;
+    
+    /**
      * @var integer $nbvisite
      *
      * @ORM\Column(name="nbvisite", type="integer", nullable=false)
@@ -233,7 +241,7 @@ class EtatJournalier
         return $this->date;
     }
     
-    public function __construct($date, $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $typeVehicule, $usage, $genre, $carrosserie, $caisse, $immatriculation = "", $quittance = "")
+    public function __construct($date, $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $typeVehicule, $usage, $genre, $carrosserie, $caisse, $immatriculation = "", $quittance = "", $anaser = 0)
     {
         $this->date = $date;
         $this->montantRevisite = $montantRevisite;
@@ -247,6 +255,7 @@ class EtatJournalier
         $this->caisse = $caisse;
         $this->immatriculation = $immatriculation;
         $this->quittance = $quittance;
+        $this->anaser = $anaser;
     }
      
     function getDate() {

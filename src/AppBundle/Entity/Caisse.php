@@ -74,6 +74,14 @@ class Caisse
     private $solde;
     
     /**
+     * @var float $anaser
+     *
+     * @ORM\Column(name="anaser", type="float", nullable=false)
+     * 
+     */
+    private $anaser;
+    
+    /**
      * @var float $soldeInitial
      *
      * @ORM\Column(name="solde_initial", type="float", nullable=true)
@@ -244,12 +252,21 @@ class Caisse
     function setSolde($solde) {
         $this->solde = $solde;
     }
+    
     function getSoldeInitial() {
         return $this->soldeInitial;
     }
 
     function setSoldeInitial($soldeInitial) {
         $this->soldeInitial = $soldeInitial;
+    }
+    
+    function getAnaser() {
+        return $this->anaser? $this->anaser : 0;
+    }
+
+    function setAnaser($anaser) {
+        $this->anaser = $anaser;
     }
     
     function getOuvert() {
@@ -302,6 +319,7 @@ class Caisse
     
     function cloturer(){
         $this->solde = 0;
+        $this->anaser = 0;
         $this->soldeInitial = 0;
         $this->nbvisite = 0;
         $this->nbrevisite = 0;
@@ -447,6 +465,7 @@ class Caisse
     
     public function encaisserQuittance(Quittance $quittance){
         $this->solde = $this->getSolde()+$quittance->getTtc();
+        $this->anaser = $this->getAnaser()+$quittance->getAnaser();
         if($quittance->getVisite()->getRevisite()){
             $this->ajouterRevisite($quittance->getTtc());
         }else{
@@ -454,8 +473,9 @@ class Caisse
         }
     }
     
-    public function rembourser($montant, $revisite){
+    public function rembourser($montant, $revisite, $anaser){
         $this->solde = $this->getSolde()-$montant;
+        $this->anaser = $this->getSolde()-$anaser;
         if($revisite){
             $this->retirerRevisite($montant);
         }else{

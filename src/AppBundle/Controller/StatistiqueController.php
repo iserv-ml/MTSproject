@@ -132,6 +132,7 @@ class StatistiqueController extends Controller
         $nr = 0;
         $mv = 0;
         $mr = 0;
+        $anaser = 0;
         if(count($types)>0){
         foreach($types as $usage){
             $ligne = array();
@@ -142,23 +143,26 @@ class StatistiqueController extends Controller
                 $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
                 $ligne[3] = \intval($etat[0][3]);//$visites['mVisite'];
                 $ligne[4] = \intval($etat[0][4]);//$visites['mVisite'];
-                $ligne[5] = \intval($etat[0][3])+\intval($etat[0][4]);//$visites['mVisite']+$visites['mRevisite'];
+                $ligne[5] = \intval($etat[0][5]);//$visites['anaser'];
+                $ligne[6] = \intval($etat[0][3])+\intval($etat[0][4])+\intval($etat[0][5]);//$visites['mVisite']+$visites['mRevisite'];
             }else{
                 $ligne[1] = 0;
                 $ligne[2] = 0;
                 $ligne[3] = 0;
                 $ligne[4] = 0;
                 $ligne[5] = 0;
+                $ligne[6] = 0;
             }
             $resultat[] = $ligne;
         $nv += $ligne[1];
             $nr += $ligne[2];
             $mv += $ligne[3];
             $mr += $ligne[4];
+            $anaser += $ligne[5];
         } 
         } 
         $fin->sub (new \DateInterval('P1D'));
-        $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $mv+$mr];
+        $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser];
        return $this->render('statistique/caisse/etat.html.twig', array(
             'resultats' => $resultat,'caisse' => $caisse,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
         ));
@@ -192,6 +196,7 @@ class StatistiqueController extends Controller
         $nr = 0;
         $mv = 0;
         $mr = 0;
+        $anaser = 0;
         if(count($types)>0){
         foreach($types as $usage){
             $ligne = array();
@@ -202,23 +207,26 @@ class StatistiqueController extends Controller
                 $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
                 $ligne[3] = \intval($etat[0][3]);//$visites['mVisite'];
                 $ligne[4] = \intval($etat[0][4]);//$visites['mVisite'];
-                $ligne[5] = \intval($etat[0][3])+\intval($etat[0][4]);//$visites['mVisite']+$visites['mRevisite'];
+                $ligne[5] = \intval($etat[0][5]);//$visites['anaser'];
+                $ligne[6] = \intval($etat[0][3])+\intval($etat[0][4])+\intval($etat[0][5]);//$visites['mVisite']+$visites['mRevisite']+$visites['anaser'];
             }else{
                 $ligne[1] = 0;
                 $ligne[2] = 0;
                 $ligne[3] = 0;
                 $ligne[4] = 0;
                 $ligne[5] = 0;
+                $ligne[6] = 0;
             }
             $resultat[] = $ligne;
         $nv += $ligne[1];
             $nr += $ligne[2];
             $mv += $ligne[3];
             $mr += $ligne[4];
+            $anaser += $ligne[5];
         } 
         }
         $fin->sub (new \DateInterval('P1D'));
-        $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $mv+$mr]; 
+        $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser]; 
        return $this->render('statistique/caisse/caissier.html.twig', array(
             'resultats' => $resultat,'caisse' => $affectation->getCaisse(), 'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
         ));

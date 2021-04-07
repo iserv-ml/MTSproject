@@ -167,7 +167,7 @@ class QuittanceController extends Controller
                 $nbRevisite = 0;
             }
             $message = $visite->getContreVisiteVisuelle() ? "Quittance encaissée." : $visite->genererFichierMaha();
-            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero());
+            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $quittance->getAnaser());
             $this->get('session')->getFlashBag()->add('notice', $message);
             $em->persist($etat);
             $em->flush();
@@ -220,7 +220,8 @@ class QuittanceController extends Controller
                 $montantRevisite = 0;
                 $nbRevisite = 0;
             }
-            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero());
+            $anaser = -$quittance->getAnaser();
+            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $anaser);
             $em->persist($etat);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'La quittance a été remboursée.');
@@ -452,7 +453,7 @@ class QuittanceController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id'], $aRow['statut']);
-            $montant = $aRow['montantVisite'] > 0 ? \ceil($aRow['montantVisite']+$aRow['tva']+$aRow['timbre']) : 0;
+            $montant = $aRow['montantVisite'] > 0 ? \ceil($aRow['montantVisite']+$aRow['tva']+$aRow['timbre']+$aRow['anaser']) : 0;
             $output['aaData'][] = array($aRow['immatriculation'], $aRow['nom']." ".$aRow['prenom'], $aRow['caisse'], \number_format($montant, 0, ',', ' '), $aRow['numero'], $action);
 	}
 	return new Response(json_encode( $output ));    
@@ -513,7 +514,7 @@ class QuittanceController extends Controller
         foreach($entities as $entity){
             $col=0;
             $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getType());$col++;
-            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getMontant());$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getTtc());$col++;
             $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity->getDateCreation());
             $ligne++;
         }
