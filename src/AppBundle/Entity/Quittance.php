@@ -349,6 +349,7 @@ class Quittance
     public function generer($montant, $penalite, $retard, $anaser, $codeCentre){
         $this->setMontantVisite($montant);
         $this->setTva($montant*18/100);
+        $this->setAnaser(0);
         if($montant > 0){
             $this->setTimbre($this->getVisite()->getVehicule()->getTypeVehicule()->getTimbre());
             if(!$this->getVisite()->getRevisite()){
