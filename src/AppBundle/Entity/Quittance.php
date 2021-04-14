@@ -297,14 +297,14 @@ class Quittance
     }
     
     public function __toString(){
-        return $this->libelle;
+        return $this->numero;
     }
     
     public function __construct()
     {
         $this->montantVisite = 0;
         $this->paye = 0;
-        $$this->anaser = 0;
+        $this->anaser = 0;
         //$this->users = new ArrayCollection();
     }
     
