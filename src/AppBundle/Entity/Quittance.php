@@ -304,6 +304,7 @@ class Quittance
     {
         $this->montantVisite = 0;
         $this->paye = 0;
+        $$this->anaser = 0;
         //$this->users = new ArrayCollection();
     }
     
@@ -390,11 +391,11 @@ class Quittance
     }
     
     function getAnaser() {
-        return $this->anaser;
+        return ($this->anaser != null) ? $this->anaser : 0;
     }
 
     function setAnaser($anaser) {
-        $this->anaser = $anaser;
+        $this->anaser = ($anaser != null) ? $anaser : 0;
     }
     
     public function encaisser(){
@@ -453,6 +454,7 @@ class Quittance
         $this->setTimbre(0);
         $this->setTva(0);
         $this->setDateEncaissement(new \DateTime());
+        $this->setAnaser(0);
     }
     
     public function initialiserGratuite(){
@@ -465,6 +467,7 @@ class Quittance
         $this->setTimbre(0);
         $this->setTva(0);
         $this->setDateEncaissement(new \DateTime());
+        $this->setAnaser(0);
     }
     
     function getCaissier() {
