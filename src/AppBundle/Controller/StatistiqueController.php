@@ -226,7 +226,7 @@ class StatistiqueController extends Controller
         } 
         }
         $fin->sub (new \DateInterval('P1D'));
-        $resultat[] = ['TOTAL', $nv, $nr, $mv-$anaser, $mr, $anaser, $mv+$mr]; 
+        $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr]; 
        return $this->render('statistique/caisse/caissier.html.twig', array(
             'resultats' => $resultat,'caisse' => $affectation->getCaisse(), 'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
         ));
