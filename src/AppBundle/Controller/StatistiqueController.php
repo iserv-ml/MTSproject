@@ -205,10 +205,10 @@ class StatistiqueController extends Controller
             if($etat && count($etat)>0){
                 $ligne[1] = \intval($etat[0][1]);
                 $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
-                $ligne[3] = \intval($etat[0][3]);//$visites['mVisite'];
+                $ligne[3] = \intval($etat[0][3])-\intval($etat[0][5]);//$visites['mVisite'];
                 $ligne[4] = \intval($etat[0][4]);//$visites['mVisite'];
                 $ligne[5] = \intval($etat[0][5]);//$visites['anaser'];
-                $ligne[6] = \intval($etat[0][3])+\intval($etat[0][4])+\intval($etat[0][5]);//$visites['mVisite']+$visites['mRevisite']+$visites['anaser'];
+                $ligne[6] = \intval($etat[0][3])+\intval($etat[0][4]);//$visites['mVisite']+$visites['mRevisite']+$visites['anaser'];
             }else{
                 $ligne[1] = 0;
                 $ligne[2] = 0;
@@ -226,7 +226,7 @@ class StatistiqueController extends Controller
         } 
         }
         $fin->sub (new \DateInterval('P1D'));
-        $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr]; 
+        $resultat[] = ['TOTAL', $nv, $nr, $mv-$anaser, $mr, $anaser, $mv+$mr]; 
        return $this->render('statistique/caisse/caissier.html.twig', array(
             'resultats' => $resultat,'caisse' => $affectation->getCaisse(), 'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
         ));
