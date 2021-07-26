@@ -537,17 +537,25 @@ class Visite
     
     private function evaluerDelaiRevisite($visiteParent){
         $date = new \DateTime();
-        $ecart = \date_diff($date,$this->getDateControle(), false);
-        if($ecart && $ecart->days > $this->getVehicule()->getTypeVehicule()->getDelai()){
-            $this->setRevisite(0);
-            $visiteParent->setObservations('Délai de '.$visiteParent->getVehicule()->getTypeVehicule()->getDelai().' jours dépassé avant la revisite');
-            $this->setObservations('Nouvelle visite suite au dépassement du délai de '.$visiteParent->getVehicule()->getTypeVehicule()->getDelai().' jours avant la revisite');
-            return $visiteParent->getObservations();
+        if($visiteParent->getDateControle() != null){
+            $ecart = \date_diff($date,$visiteParent->getDateControle(), false);
+            if($ecart && $ecart->days > $this->getVehicule()->getTypeVehicule()->getDelai()){
+                $this->setRevisite(0);
+                $visiteParent->setObservations('Délai de '.$visiteParent->getVehicule()->getTypeVehicule()->getDelai().' jours dépassé avant la revisite');
+                $this->setObservations('Nouvelle visite suite au dépassement du délai de '.$visiteParent->getVehicule()->getTypeVehicule()->getDelai().' jours avant la revisite');
+                return $visiteParent->getObservations();
+            }else{
+                $this->setRevisite(1);
+                $this->setVisiteParent($visiteParent);
+                if($visiteParent->getSuccesMaha()){
+                    $this->setContreVisiteVisuelle(true);
+                }
+            }
         }else{
             $this->setRevisite(1);
             $this->setVisiteParent($visiteParent);
             if($visiteParent->getSuccesMaha()){
-                $this->setContreVisiteVisuelle(true);
+                    $this->setContreVisiteVisuelle(true);
             }
         }
         return 'Aiguillage effectué.';

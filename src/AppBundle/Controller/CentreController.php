@@ -258,6 +258,17 @@ class CentreController extends Controller
         if(!$centre->getEtat()){
             $centre->setEtat(true);
             $centre->setCarteViergeOuverture($centre->getCarteVierge());
+            $visitesEnCours = $em->getRepository('AppBundle:Visite')->recupererVisitesEncours();
+            if($visitesEnCours != null and count($visitesEnCours) > 0){
+                foreach($visitesEnCours as $visite){
+                    $delai = new \DateTime();
+                    $delai->sub(new \DateInterval('P'.$visite->getVehicule()->getTypeVehicule()->getDelai().'D'));
+                    $ecart = \date_diff($visite->getQuittance()->getDateEncaissement(), $delai, false);
+                    if($ecart->days > 0){
+                        $em->getRepository('AppBundle:Visite')->annuler($visite->getId());
+                    }
+                }
+            }
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Le centre est maintenant ouvert.');
         }else{

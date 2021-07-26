@@ -218,6 +218,27 @@ class VisiteRepository extends EntityRepository
         return  $qb->execute();
     }
     
+    /**public function annulerVisitesExpirees() {
+        $qb = $this->getEntityManager()
+            ->createQuery("UPDATE AppBundle:Visite r SET r.statut = 5, r.modifierPar = 'ouverture_du_centre', r.dateModification = CURRENT_TIMESTAMP() WHERE r.statut =1 ");
+        $qb->execute();
+    }**/
+    
+    public function recupererVisitesEncours() {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Visite r '
+                    . ' WHERE r.statut = 1'
+                    );
+        return $qb->getResult();
+    }
+    
+    public function annuler($id) {
+        $qb = $this->getEntityManager()
+            ->createQuery("UPDATE AppBundle:Visite r SET r.statut = 5, r.modifierPar = 'overture_du_centre', r.dateModification = CURRENT_TIMESTAMP() WHERE r.id = :id")->setParameter('id', \intval($id));
+        return  $qb->execute();
+    }
+    
     public function nbVisitesCaisse($caisse) {
         $result = $this->getEntityManager()
             ->createQuery(
