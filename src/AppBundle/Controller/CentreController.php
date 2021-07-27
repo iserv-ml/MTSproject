@@ -263,8 +263,9 @@ class CentreController extends Controller
                 foreach($visitesEnCours as $visite){
                     $delai = new \DateTime();
                     $delai->sub(new \DateInterval('P'.$visite->getVehicule()->getTypeVehicule()->getDelai().'D'));
-                    $ecart = \date_diff($visite->getQuittance()->getDateEncaissement(), $delai, false);
-                    if($ecart->days > 0){
+                    //$ecart = \DateTime::diff($visite->getQuittance()->getDateEncaissement(), $delai, false);
+                    $ecart = $visite->getQuittance()->getDateEncaissement()->diff($delai, false);
+                    if($ecart->format('%R%a') > 0){
                         $em->getRepository('AppBundle:Visite')->annuler($visite->getId());
                     }
                 }
