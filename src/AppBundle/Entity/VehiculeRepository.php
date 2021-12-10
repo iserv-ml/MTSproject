@@ -84,9 +84,22 @@ class VehiculeRepository extends EntityRepository
         try{ 
             $result = $this->getEntityManager()
             ->createQuery(
-                'SELECT r FROM AppBundle:Vehicule r WHERE r.immatriculation like :immatriculation'
+                'SELECT r FROM AppBundle:Vehicule r WHERE r.immatriculation like :immatriculation '
             )->setParameter("immatriculation","%".$immatriculation."%")
             ->getResult();
+        }catch (\Exception $ex) {
+            $result = null;
+        }
+        return $result; 
+    }
+    
+    public function trouverParImmatriculationSimilaireAlleger($immatriculation) {
+        try{
+            $conn = $this->getEntityManager()->getConnection();
+            $sql = 'SELECT v.id, v.immatriculation, v.chassis, ma.libelle as marque, mo.libelle as modele, p.nom, p.prenom, p.personneMorale FROM vehicule v LEFT JOIN modele mo on v.modele_id = mo.id LEFT JOIN marque ma ON mo.marque_id = ma.id LEFT JOIN proprietaire p ON v.proprietaire_id = p.id WHERE v.immatriculation like :immatriculation ';
+            $stmt = $conn->prepare($sql);
+            $stmt->execute(array('immatriculation' => "%".$immatriculation."%"));
+            $result = $stmt->fetchAll();
         }catch (\Exception $ex) {
             $result = null;
         }

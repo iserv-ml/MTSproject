@@ -964,6 +964,8 @@ class Vehicule
         $this->dateCarteGrise = $dcg;
         $this->dateProchaineVisite = $dpv;
         $this->proprietaire = $prorietaire;
+        $this->synchro = null;
+        $this->dateSynchro = null;
     }
 
     function getFormatImmatriculation() {
