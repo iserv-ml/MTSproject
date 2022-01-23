@@ -23,77 +23,90 @@
 
 {% block body -%}
 <div class="table-responsive">
-    <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
-        <thead>
-            <tr>
-                <th>Immatriculation</th>
-                <th>Type Chassis</th>
-                <th>Proprietaire</th>
-                <th>TYPE</th>
-                <th>ETAT</th>
-                <th>PISTE</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        
-        </tbody>
-        <tfoot>
-            <tr>
-                <th>Immatriculation</th>
-                <th>Type Chassis</th>
-                <th>Proprietaire</th>
-                <th>TYPE</th>
-                <th>ETAT</th>
-                <th>PISTE</th>
-                <th>Actions</th>
-            </tr>
-        </tfoot>
-    </table>
+    <label class="btn btn-warning pointer-event"> 
+        <form method='POST' action='{{ path('visite_controle') }}'>
+            Immatriculation <input type="text" id="immatriculation" name="immatriculation" value="{{ immatriculation }}" /> 
+            
+            <input type="submit" value="Rechercher"/>
+        </form>
+    </label>
+    {% if visites is not null%}
+        {% if visites is empty %}
+            Aucun véhicule trouvé. Merci de vérifier l'immatriculation ou procéder à l'enregistrement!
+        {% else %}
+            <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+                <thead>
+                    <tr>
+                        <th>Immatriculation</th>
+                        <th>Type Chassis</th>
+                        <th>Proprietaire</th>
+                        <th>TYPE</th>
+                        <th>ETAT</th>
+                        <th>PISTE</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for visite in visites %}
+                        <tr>
+                            <td>{{ visite.immatriculation }} </td>
+                            <td>{{ visite.type_chassis }} </td>
+                            <td>{{ visite.nom }} {{ visite.prenom }}</td>
+                            <td>
+                                {% if visite.contre_visite == 1 %}
+                                    {% if visite.contre_visite_visuelle == 1 %}
+                                        Contre visite visuelle
+                                    {% else %}
+                                        Contre visite
+                                    {% endif %}
+                                {% else %}
+                                    {% if visite.revisite == 1 %}
+                                        Revisite
+                                    {% else %}
+                                        Normale
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if visite.statut == 1 %}
+                                    A controller
+                                {% elseif visite.statut == 2 %} 
+                                    Succès
+                                {% elseif visite.statut == 3 %}
+                                    Echec
+                                {%  endif %}
+                            </td>
+                            <td>{{ visite.piste }} </td>
+                            <td>
+                                {% if visite.statut == 1 %}
+                                    {% if visite.contre_visite_visuelle == 1 %}
+                                        <a title='Controller' class='btn btn-success' href='{{ path('visite_controleur', { 'id': visite.id }) }}'><i class='fa fa-config' ></i> Controler</a>
+                                    {% else %}
+                                        <a title='Controller' class='btn btn-success' href='{{ path('visite_maha', { 'id': visite.id }) }}'><i class='fa fa-config' ></i> Controler</a>
+                                    {%  endif %}
+                                {% else %}
+                                    <a title='Détail' class='btn btn-success' href='{{ path('visite_show', { 'id': visite.id }) }}'><i class='fa fa-plus' ></i> Voir le rapport</a>
+                                {%  endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Immatriculation</th>
+                        <th>Type Chassis</th>
+                        <th>Proprietaire</th>
+                        <th>TYPE</th>
+                        <th>ETAT</th>
+                        <th>PISTE</th>
+                        <th>Actions</th>
+                    </tr>
+                </tfoot>
+            </table>
+        {% endif %}
+    {% else %}
+        Saisir au mois 4 charactères pour lancer la recherche!
+    {% endif %}
+</div>
 {% endblock %}
-{% block javascripts -%}
-<script type="text/javascript">
-    $(document).ready(function() {
 
-        $('#liste_clients').DataTable({
-            "columnDefs": [
-           
-            { "orderable": false, "targets": 4 }
-        ],
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "{{ path('controleajax') }}",
-        },
-        "paging" : true,
-        "info" : true, 
-        "searching": true,
-        "responsive": true,
-        "pageLength": 50,
-        "order": [[0, 'asc']],
-       language: {
-        processing:     "Traitement en cours...",
-        search:         "Rechercher&nbsp;:",
-        lengthMenu:    "Afficher _MENU_ &eacute;l&eacute;ments",
-        info:           "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
-        infoEmpty:      "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
-        infoFiltered:   "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
-        infoPostFix:    "",
-        loadingRecords: "Chargement en cours...",
-        zeroRecords:    "Aucun &eacute;l&eacute;ment &agrave; afficher",
-        emptyTable:     "Aucune donnée disponible dans le tableau",
-        paginate: {
-            first:      "Premier",
-            previous:   "Pr&eacute;c&eacute;dent",
-            next:       "Suivant",
-            last:       "Dernier"
-        },
-        aria: {
-            sortAscending:  ": activer pour trier la colonne par ordre croissant",
-            sortDescending: ": activer pour trier la colonne par ordre décroissant"
-        }
-    }
-    });	        
-        });    
-    </script>
-{% endblock %}

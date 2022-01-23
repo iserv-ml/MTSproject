@@ -69,12 +69,11 @@ class VisiteController extends Controller
      * Lists all visite entities.
      *
      * @Route("/controles", name="visite_controle")
-     * @Method("GET")
+     * @Method({"GET", "POST"})
      */
-    public function visitecontroleAction()
+    public function visitecontroleAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         $user = $this->container->get('security.context')->getToken()->getUser();
         $affectation = $em->getRepository('AppBundle:AffectationPiste')->derniereAffectation($user->getId());
         $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
@@ -83,20 +82,27 @@ class VisiteController extends Controller
             return $this->redirectToRoute('homepage');
         }
         $piste = $admin ? "ADMIN" : "PISTE N° ".$affectation->getPiste()->getNumero();
-        return $this->render('visite/controles.html.twig', array('piste'=>$piste, 'centre'=>$centre->getEtat()));
+        $piste_id = $admin ? 0 :$affectation->getPiste()->getNumero();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        $immatriculation = \trim($request->get('immatriculation', ''));
+        $visites = (\strlen($immatriculation) > 3) ? $em->getRepository('AppBundle:Visite')->findControlesAjaxAlleger($immatriculation, $piste_id) : null;
+        
+        return $this->render('visite/controles.html.twig', array('piste'=>$piste, 'centre'=>$centre->getEtat(), 'visites'=>$visites, 'immatriculation'=>$immatriculation));
     }
     
     /**
      * Lists all visite entities.
      *
      * @Route("/delivrance", name="visite_delivrance")
-     * @Method("GET")
+     * @Method({"GET", "POST"})
      */
-    public function delivranceAction()
+    public function delivranceAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
-        return $this->render('visite/delivrance.html.twig', array('centre'=>$centre->getEtat()));
+        $immatriculation = \trim($request->get('immatriculation', ''));
+        $visites = (\strlen($immatriculation) > 3) ? $em->getRepository('AppBundle:Visite')->findDelivranceAjaxAlleger($immatriculation) : null;
+        return $this->render('visite/delivrance.html.twig', array('centre'=>$centre->getEtat(),'immatriculation'=>$immatriculation, 'visites'=>$visites));
     }
 
     /**
