@@ -56,7 +56,7 @@
             <tr>
                 <td colspan="7" style="border:none; padding:5px">
                     <span style="font-weight: bold">Date : {% if quittance.dateCreation %}{{ quittance.dateCreation|date('Y-m-d') }}{% endif %}</span>
-                    <span style="margin-left:280px; font-weight:bold;">Immatriculation : {{ quittance.visite.vehicule.immatriculation }}</span>
+                    <span style="margin-left:280px; font-weight:bold;">Immatriculation : {% if quittance.visite.immatriculation_v is not null %} {{ quittance.visite.immatriculation_v }} {%  else %}{{ quittance.visite.vehicule.immatriculation }}{%  endif %}</span>
                 </td>
             </tr>
             <tr>
@@ -113,7 +113,7 @@
                 <tr>
                     <td colspan="7" style="border:none; padding:5px">
                         <span style="font-weight: bold">Date : {% if quittance.dateCreation %}{{ quittance.dateCreation|date('Y-m-d') }}{% endif %}</span>
-                        <span style="margin-left:280px; font-weight:bold;">Immatriculation : {{ quittance.visite.vehicule.immatriculation }}</span>
+                        <span style="margin-left:280px; font-weight:bold;">Immatriculation : {% if quittance.visite.immatriculation_v is not null %} {{ quittance.visite.immatriculation_v }} {%  else %}{{ quittance.visite.vehicule.immatriculation }}{%  endif %}</span>
                     </td>
                 </tr>
                 <tr>

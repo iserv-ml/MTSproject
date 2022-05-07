@@ -4,6 +4,16 @@ parameters:
     #parameter_name: value
 
 services:
-    #service_name:
-    #    class: AppBundle\Directory\ClassName
-    #    arguments: ['@another_service_name', 'plain_value', '%parameter_name%']
+    extension.listener:
+        class: AppBundle\Listener\DoctrineExtensionListener
+        calls:
+            - [ setContainer, [ @service_container ] ]
+        tags:
+            # loggable
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+    gedmo.listener.loggable:
+        class: Gedmo\Loggable\LoggableListener
+        tags: 
+            - {name: doctrine.event_subscriber, connection: default}
+        calls:
+            - [setAnnotationReader, ["@annotation_reader"]]

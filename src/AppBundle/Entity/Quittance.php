@@ -15,6 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @ORM\Entity(repositoryClass="AppBundle\Entity\QuittanceRepository")
  * @UniqueEntity("numero")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @Gedmo\Loggable
  */
 class Quittance
 {
@@ -67,7 +68,7 @@ class Quittance
     
     /**
      * @var float $anaser
-     *
+     * 
      * @ORM\Column(name="anaser", type="float", nullable=false)
      * 
      */
@@ -91,7 +92,7 @@ class Quittance
     
     /**
      * @var boolean $paye
-     *
+     * @Gedmo\Versioned
      * @ORM\Column(name="paye", type="boolean", nullable=false)
      * 
      */
@@ -99,7 +100,7 @@ class Quittance
     
     /**
      * @var boolean $rembourse
-     *
+     * @Gedmo\Versioned
      * @ORM\Column(name="rembourse", type="boolean", nullable=false)
      * 
      */

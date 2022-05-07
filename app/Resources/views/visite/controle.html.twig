@@ -23,11 +23,25 @@
             <tbody>
                 <tr>
                     <th>Immatriculation</th>
-                    <td>{{ visite.vehicule.immatriculation }}</td>
+                    <td>{% if visite.immatriculation_v is not null %} {{ visite.immatriculation_v }} {%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</td>
                 </tr>
                 <tr>
-                    <th>Type Chassis</th>
-                    <td>{{ visite.vehicule.typeChassis }}</td>
+                    <th>Chassis</th>
+                    <td>{{ visite.vehicule.chassis }}</td>
+                </tr>
+                <tr>
+                    <th>Propriétaire</th>
+                    <td>{{ visite.vehicule.proprietaire.nomComplet }}</td>
+                </tr>
+                <tr>
+                    <th>Genre (Usage)</th>
+                    <td>{{ visite.vehicule.typeVehicule.genre.code }} ({{ visite.vehicule.typeVehicule.usage.libelle }})</td>
+                </tr>
+                <tr><th>Marque</th>
+                    <td>{%if visite.vehicule.modele%}{{ visite.vehicule.modele.marque.libelle }}{% endif %}</td>
+                </tr>
+                <tr><th>Carrosserie</th>
+                    <td>{{ visite.vehicule.typeVehicule.carrosserie.libelle }}</td>
                 </tr>
                 <tr>
                     <th>Type</th>

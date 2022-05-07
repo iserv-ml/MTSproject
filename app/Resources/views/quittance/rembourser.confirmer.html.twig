@@ -3,7 +3,7 @@
         <div class="col-3" style="width:200px;background: #E8E8E8;padding-top:10px">
                 <table>
                     <tr><th>Immatriculation</th></tr>
-                    <tr><td>{{ quittance.visite.vehicule.immatriculation }}</td></tr>
+                    <tr><td>{% if quittance.visite.immatriculation_v is not null %} {{ quittance.visite.immatriculation_v }} {%  else %}{{ quittance.visite.vehicule.immatriculation }}{%  endif %}</td></tr>
                     <tr><th>Chassis</th></tr>
                     <tr><td>{{ quittance.visite.vehicule.chassis }}</td></tr>
                     <tr><th>Genre</th></tr>

@@ -88,4 +88,19 @@ class AffectationRepository extends EntityRepository
         
         return $result; 
     }
+    
+    public function touteAffectationCaisse($caisse, $jour) {
+       try{ 
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Affectation r LEFT JOIN r.caisse c WHERE c.id = :caisseid AND r.date =: jour'
+            )->setParameter("caisseid",$caisse)->setParameter("jour",$jour)
+            ->getResult();
+       }
+        catch (\Exception $ex){
+            $result = null;
+        }
+        
+        return $result; 
+    }
 }

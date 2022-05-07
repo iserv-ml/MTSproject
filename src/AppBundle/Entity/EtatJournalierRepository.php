@@ -64,5 +64,18 @@ class EtatJournalierRepository extends EntityRepository
         }
         
         return $result; 
-    }   
+    }  
+    
+    public function trouverParImmatriculation($immatriculation) {
+        try{ 
+            $result = $this->getEntityManager()
+                ->createQuery(
+                    'SELECT r FROM AppBundle:EtatJournalier r WHERE r.immatriculation = :immatriculation '
+                )->setParameter("immatriculation",$immatriculation)
+                ->getResult();
+       }catch (\Exception $ex) {
+            $result = null;
+        }
+        return $result; 
+    }
 }

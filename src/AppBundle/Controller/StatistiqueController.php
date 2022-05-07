@@ -189,6 +189,7 @@ class StatistiqueController extends Controller
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
         $fin->add(new \DateInterval('P1D'));
         $fin->setTime(0, 0);
+        $caissiers = $em->getRepository('AppBundle:Affectation')->trouverParLibelle();
         $types = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeVehiculeDistinct($debut, $fin, $affectation->getCaisse()->getNumero());
         $resultat = array();
         $i = 0;
@@ -198,32 +199,32 @@ class StatistiqueController extends Controller
         $mr = 0;
         $anaser = 0;
         if(count($types)>0){
-        foreach($types as $usage){
-            $ligne = array();
-            $ligne[0] = $usage['typeVehicule'];
-            $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($usage['typeVehicule'], $debut, $fin, $affectation->getCaisse()->getNumero());
-            if($etat && count($etat)>0){
-                $ligne[1] = \intval($etat[0][1]);
-                $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
-                $ligne[3] = \intval($etat[0][3])-\intval($etat[0][5]);//$visites['mVisite'];
-                $ligne[4] = \intval($etat[0][4]);//$visites['mVisite'];
-                $ligne[5] = \intval($etat[0][5]);//$visites['anaser'];
-                $ligne[6] = \intval($etat[0][3])+\intval($etat[0][4]);//$visites['mVisite']+$visites['mRevisite']+$visites['anaser'];
-            }else{
-                $ligne[1] = 0;
-                $ligne[2] = 0;
-                $ligne[3] = 0;
-                $ligne[4] = 0;
-                $ligne[5] = 0;
-                $ligne[6] = 0;
-            }
-            $resultat[] = $ligne;
-        $nv += $ligne[1];
-            $nr += $ligne[2];
-            $mv += $ligne[3];
-            $mr += $ligne[4];
-            $anaser += $ligne[5];
-        } 
+            foreach($types as $usage){
+                $ligne = array();
+                $ligne[0] = $usage['typeVehicule'];
+                $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($usage['typeVehicule'], $debut, $fin, $affectation->getCaisse()->getNumero());
+                if($etat && count($etat)>0){
+                    $ligne[1] = \intval($etat[0][1]);
+                    $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
+                    $ligne[3] = \intval($etat[0][3])-\intval($etat[0][5]);//$visites['mVisite'];
+                    $ligne[4] = \intval($etat[0][4]);//$visites['mVisite'];
+                    $ligne[5] = \intval($etat[0][5]);//$visites['anaser'];
+                    $ligne[6] = \intval($etat[0][3])+\intval($etat[0][4]);//$visites['mVisite']+$visites['mRevisite']+$visites['anaser'];
+                }else{
+                    $ligne[1] = 0;
+                    $ligne[2] = 0;
+                    $ligne[3] = 0;
+                    $ligne[4] = 0;
+                    $ligne[5] = 0;
+                    $ligne[6] = 0;
+                }
+                $resultat[] = $ligne;
+                $nv += $ligne[1];
+                $nr += $ligne[2];
+                $mv += $ligne[3];
+                $mr += $ligne[4];
+                $anaser += $ligne[5];
+            } 
         }
         $fin->sub (new \DateInterval('P1D'));
         $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser]; 
@@ -254,6 +255,32 @@ class StatistiqueController extends Controller
         $visites = $em->getRepository('AppBundle:Visite')->recupererEchecParPeriode($debut, $fin); 
         $fin->sub (new \DateInterval('P1D'));
         return $this->render('statistique/detail/echec.html.twig', array(
+            'visites' => $visites,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
+        ));
+    }
+    
+    /**
+     * Visites Réussies.
+     *
+     * @Route("/reussite/rapport", name="admin_gestion_centre_statistique_reussite_index")
+     * @Method({"GET", "POST"})
+     */
+    public function reussiteindexAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if (!$centre) {
+            throw $this->createNotFoundException("Opération interdite!");
+        }
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->add(new \DateInterval('P1D'));
+        $fin->setTime(0, 0);
+        $visites = $em->getRepository('AppBundle:Visite')->recupererReussiteParPeriode($debut, $fin); 
+        $fin->sub (new \DateInterval('P1D'));
+        return $this->render('statistique/detail/reussite.html.twig', array(
             'visites' => $visites,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
         ));
     }

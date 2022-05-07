@@ -56,7 +56,7 @@
                     {% set nbr = nbr+1 %}
                     <tr>
                         <td>{{ quittance.visite.vehicule.typeVehicule.libelle }}</td>
-                        <td>{{ quittance.visite.vehicule.immatriculation }}</td>
+                        <td>{% if quittance.visite.immatriculation_v is not null %} {{ quittance.visite.immatriculation_v }} {%  else %}{{ quittance.visite.vehicule.immatriculation }}{%  endif %}</td>
                         <td>{{ quittance.numero }}</td>
                         <td>{% if quittance.visite.revisite %}REVISITE{% else %} VISITE {% endif %}</td>
                         <td>{{ quittance.ttc|number_format(0, ',', ' ') }}</td>
@@ -106,7 +106,7 @@
                     {% set nbr = nbr+1 %}
                     <tr>
                         <td>{{ quittance.visite.vehicule.typeVehicule.libelle }}</td>
-                        <td>{{ quittance.visite.vehicule.immatriculation }}</td>
+                        <td>{% if quittance.visite.immatriculation_v is not null %} {{ quittance.visite.immatriculation_v }} {%  else %}{{ quittance.visite.vehicule.immatriculation }}{%  endif %}</td>
                         <td>{{ quittance.numero }}</td>
                         <td>{% if quittance.visite.revisite %}REVISITE{% else %} VISITE {% endif %}</td>
                         <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil')|number_format(0, ',', ' ') }}</td>

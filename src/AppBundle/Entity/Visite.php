@@ -94,6 +94,14 @@ class Visite
     private $dateValidite;
     
     /**
+     * @var string $immatriculation_v
+     *
+     * @ORM\Column(name="immatriculation_v", type="string", length=255, nullable=true)
+     * 
+     */
+    private $immatriculation_v;
+    
+    /**
      * @var boolean $revisite
      *
      * @ORM\Column(name="revisite", type="boolean", nullable=false)
@@ -398,6 +406,14 @@ class Visite
         return $this->dateControle;
     }
 
+    public function getImmatriculation_v() {
+        return $this->immatriculation_v;
+    }
+
+    public function setImmatriculation_v($immatriculation_v) {
+        $this->immatriculation_v = $immatriculation_v;
+    }
+    
     function setDateControle($dateControle) {
         $this->dateControle = $dateControle;
     }
@@ -520,6 +536,7 @@ class Visite
     public function aiguiller($vehicule, $statut, $chaine, $visiteParent, $centre)
     {
         $this->setVehicule($vehicule);
+        $this->setImmatriculation_v($vehicule->getImmatriculation());
         $this->setStatut($statut);
         $this->setChaine($chaine);
         $numero = $centre->getCode().\time();

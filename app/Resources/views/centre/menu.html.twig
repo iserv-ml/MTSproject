@@ -46,6 +46,10 @@
                     <i class="nav-icon icon-list"></i> Visites échouées</a>
             </li>
             <li class="nav-item ">
+                <a class="nav-link {% block menu_reussite_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_statistique_reussite_index') }}">
+                    <i class="nav-icon icon-list"></i> Visites réussies</a>
+            </li>
+            <li class="nav-item ">
                 <a class="nav-link {% block menu_rapportcentre_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_statistique_centre_index') }}">
                     <i class="nav-icon icon-list"></i> Rapport centre</a>
             </li>
@@ -54,5 +58,21 @@
                     <i class="nav-icon icon-list"></i> Rapport contrôleurs</a>
             </li>
         </ul>
+    </li>
+{% endif %}
+{% if is_granted('ROLE_SUPER_ADMIN') %}
+    <li class="nav-item nav-dropdown {% block menu_historiques_open %}{% endblock %}">
+        <a class="nav-link nav-dropdown-toggle" href="#">
+            <i class="nav-icon fa fa-bar-chart"></i> Historiques</a>
+            <ul class="nav-dropdown-items">
+                <li class="nav-item ">
+                    <a class="nav-link {% block menu_historiquevehicule_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_historique_index') }}">
+                        <i class="nav-icon icon-list"></i> Véhicules</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link {% block menu_historiquequittance_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_historique_quittance') }}">
+                        <i class="nav-icon icon-list"></i> Quittance</a>
+                </li>
+            </ul>
     </li>
 {% endif %}

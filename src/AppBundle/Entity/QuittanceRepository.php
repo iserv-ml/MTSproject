@@ -16,7 +16,7 @@ class QuittanceRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.numero, r.montantVisite, r.tva, r.timbre, r.anaser, vh.immatriculation, v.statut, p.nom, p.prenom, ca.numero as caisse FROM AppBundle:Quittance r LEFT JOIN r.visite v LEFT JOIN v.vehicule vh LEFT JOIN vh.proprietaire p LEFT JOIN v.chaine c LEFT JOIN c.caisse ca'
+                'SELECT r.id, r.numero, r.montantVisite, r.tva, r.timbre, r.anaser, v.immatriculation_v, vh.immatriculation, v.statut, p.nom, p.prenom, ca.numero as caisse FROM AppBundle:Quittance r LEFT JOIN r.visite v LEFT JOIN v.vehicule vh LEFT JOIN vh.proprietaire p LEFT JOIN v.chaine c LEFT JOIN c.caisse ca'
                     . ' WHERE r.numero like :search or vh.immatriculation like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
@@ -64,4 +64,17 @@ class QuittanceRepository extends EntityRepository
            ->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('paye', true)->setParameter('rembourse', false);
         return $qb->getResult();
     }
+    
+    public function trouverParImmatriculation($immatriculation) {
+        try{ 
+            $result = $this->getEntityManager()
+                ->createQuery(
+                    'SELECT r FROM AppBundle:Quittance r LEFT JOIN r.visite v LEFT JOIN v.vehicule vh WHERE vh.immatriculation = :immatriculation '
+                )->setParameter("immatriculation",$immatriculation)
+                ->getResult();
+       }catch (\Exception $ex) {
+            $result = null;
+        }
+        return $result; 
+    } 
 }

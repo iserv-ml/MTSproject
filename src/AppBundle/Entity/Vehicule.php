@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  * @UniqueEntity("carteGrise")
  * @UniqueEntity("immatriculation")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
+ * @Gedmo\Loggable
  */
 class Vehicule
 {
@@ -38,7 +39,7 @@ class Vehicule
     
     /**
      * @var string $chassis
-     *
+     * @Gedmo\Versioned
      * @ORM\Column(name="chassis", type="string", length=255, nullable=false)
      * @Assert\NotBlank
      */
@@ -46,7 +47,7 @@ class Vehicule
     
     /**
      * @var string $carteGrise
-     *
+     * 
      * @ORM\Column(name="carte_grise", type="string", length=255, nullable=true)
      * 
      */
@@ -54,7 +55,7 @@ class Vehicule
     
     /**
      * @var string $commentaire
-     *
+     * 
      * @ORM\Column(name="commentaire", type="string", length=500, nullable=true)
      * 
      */
@@ -62,7 +63,7 @@ class Vehicule
     
     /**
      * @var string $immatriculation
-     *
+     * @Gedmo\Versioned
      * @ORM\Column(name="immatriculation", type="string", length=255, nullable=false)
      * @Assert\NotBlank
      * 
@@ -87,7 +88,7 @@ class Vehicule
     
     /**
      * @var string $dateProchaineVisite
-     *
+     * @Gedmo\Versioned
      * @ORM\Column(name="date_prochaine_visite", type="string", nullable=true)
      * @Assert\Regex("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/")
      */
@@ -144,7 +145,7 @@ class Vehicule
     
     /**
      * @var string $typeChassis
-     *
+     * @Gedmo\Versioned
      * @ORM\Column(name="type_chassis", type="string", nullable=false)
      * @Assert\NotBlank
      * 
@@ -179,6 +180,7 @@ class Vehicule
      *
      * @ORM\Column(name="date_mise_circulation", type="string", nullable=false)
      * @Assert\NotBlank
+     * @Gedmo\Versioned
      * @Assert\Regex("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/")
      */
     private $dateMiseCirculation;
@@ -332,6 +334,7 @@ class Vehicule
     * @ORM\ManyToOne(targetEntity="TypeVehicule", inversedBy="vehicules", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="type_vehicule_id", referencedColumnName="id")
     * @Assert\NotBlank
+     * @Gedmo\Versioned
     */
     protected $typeVehicule;
     

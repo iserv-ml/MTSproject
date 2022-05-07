@@ -247,4 +247,42 @@ class Utilisateur extends BaseUser
         $this->quittances = $quittances;
     }
     //Fin relation utilisateur a plusieurs quittances
+    
+    //Debut relation Utilisateur a plusieurs historiques
+    /**
+    * @ORM\OneToMany(targetEntity="Historique", mappedBy="agent", cascade={"persist"})
+    */
+    protected $historiques;
+    
+    /**
+    * Add historique
+    *
+    * @param AppBundle\Entity\Historique $historique
+    */
+    public function addHistorique(\AppBundle\Entity\Historique $historique)
+    {
+        $this->historiques[] = $historique;
+    }
+
+    /**
+     * Get historiques
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getHistoriques()
+    {
+        return $this->historiques;
+    }
+
+    /**
+     * Set historiques
+     *
+     * @param \Doctrine\Common\Collections\Collection $historiques
+     */
+    public function setHistoriques(\Doctrine\Common\Collections\Collection $historiques)
+    {
+        $this->historiques = $historiques;
+    }
+    //Fin relation utilisateur a plusieurs historiques
+    
 }
