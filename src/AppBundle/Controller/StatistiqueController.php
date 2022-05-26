@@ -189,7 +189,9 @@ class StatistiqueController extends Controller
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
         $fin->add(new \DateInterval('P1D'));
         $fin->setTime(0, 0);
-        $affectations = $em->getRepository('AppBundle:Affectation')->trouverParNumeroCaisse($affectation->getCaisse()->getNumero());
+        $caisse = $affectation->getCaisse();
+        $agent = $affectation->getAgent();
+        $operations = $em->getRepository('AppBundle:EtatJournalier')->trouverParAgentPourEtat($agent->getId());
         $resultat = array();
         foreach($affectations as $atraite){
             $username = $atraite->getAgent()->getUsername();
