@@ -38,7 +38,7 @@ class AffectationRepository extends EntityRepository
         return  $qb->getQuery()->getSingleScalarResult();
     }
     
-     public function trouverParLibelle($libelle) {
+    public function trouverParLibelle($libelle) {
        try{ 
          $result = $this->getEntityManager()
             ->createQuery(
@@ -103,4 +103,18 @@ class AffectationRepository extends EntityRepository
         
         return $result; 
     }
+    
+    public function trouverParNumeroCaisse($numero) {
+        try{ 
+            $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Affectation r LEFT JOIN r.caisse c WHERE c.numero = :numero'
+            )->setParameter("numero",$numero)
+            ->getResult();
+        }
+        catch (\Execption $ex){
+            $result = null;
+        } 
+        return $result; 
+    } 
 }

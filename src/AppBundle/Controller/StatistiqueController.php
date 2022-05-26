@@ -189,47 +189,54 @@ class StatistiqueController extends Controller
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
         $fin->add(new \DateInterval('P1D'));
         $fin->setTime(0, 0);
-        $caissiers = $em->getRepository('AppBundle:Affectation')->trouverParLibelle();
-        $types = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeVehiculeDistinct($debut, $fin, $affectation->getCaisse()->getNumero());
+        $affectations = $em->getRepository('AppBundle:Affectation')->trouverParNumeroCaisse($affectation->getCaisse()->getNumero());
         $resultat = array();
-        $i = 0;
-        $nv = 0;
-        $nr = 0;
-        $mv = 0;
-        $mr = 0;
-        $anaser = 0;
-        if(count($types)>0){
-            foreach($types as $usage){
-                $ligne = array();
-                $ligne[0] = $usage['typeVehicule'];
-                $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($usage['typeVehicule'], $debut, $fin, $affectation->getCaisse()->getNumero());
-                if($etat && count($etat)>0){
-                    $ligne[1] = \intval($etat[0][1]);
-                    $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
-                    $ligne[3] = \intval($etat[0][3])-\intval($etat[0][5]);//$visites['mVisite'];
-                    $ligne[4] = \intval($etat[0][4]);//$visites['mVisite'];
-                    $ligne[5] = \intval($etat[0][5]);//$visites['anaser'];
-                    $ligne[6] = \intval($etat[0][3])+\intval($etat[0][4]);//$visites['mVisite']+$visites['mRevisite']+$visites['anaser'];
-                }else{
-                    $ligne[1] = 0;
-                    $ligne[2] = 0;
-                    $ligne[3] = 0;
-                    $ligne[4] = 0;
-                    $ligne[5] = 0;
-                    $ligne[6] = 0;
-                }
-                $resultat[] = $ligne;
-                $nv += $ligne[1];
-                $nr += $ligne[2];
-                $mv += $ligne[3];
-                $mr += $ligne[4];
-                $anaser += $ligne[5];
-            } 
+        foreach($affectations as $atraite){
+            $username = $atraite->getAgent()->getUsername();
+            $types = $em->getRepository('AppBundle:EtatJournalier')->recupererEtatJournalier($debut, $fin, $atraite->getCaisse()->getNumero(), $username);
+            $i = 0;
+            $nv = 0;
+            $nr = 0;
+            $mv = 0;
+            $mr = 0;
+            $anaser = 0;
+            if(count($types)>0){
+                $resultat[$username]=array();
+                $resultat[$username][0] = $username;
+                $resultat[$username][2] = $atraite->getActif() ? "En cours" : $atraite->getDateModification();
+                $resultat[$username][3] = $atraite->getDate();
+                foreach($types as $usage){
+                    $ligne = array();
+                    $ligne[0] = $usage['typeVehicule'];
+                    $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalierAgent($usage['typeVehicule'], $debut, $fin, $affectation->getCaisse()->getNumero(), $username);
+                    if($etat && count($etat)>0){
+                        $ligne[1] = \intval($etat[0][1]);
+                        $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
+                        $ligne[3] = \intval($etat[0][3])-\intval($etat[0][5]);//$visites['mVisite'];
+                        $ligne[4] = \intval($etat[0][4]);//$visites['mVisite'];
+                        $ligne[5] = \intval($etat[0][5]);//$visites['anaser'];
+                        $ligne[6] = \intval($etat[0][3])+\intval($etat[0][4]);//$visites['mVisite']+$visites['mRevisite']+$visites['anaser'];
+                    }else{
+                        $ligne[1] = 0;
+                        $ligne[2] = 0;
+                        $ligne[3] = 0;
+                        $ligne[4] = 0;
+                        $ligne[5] = 0;
+                        $ligne[6] = 0;
+                    }
+                    $resultat[$username][1] = $ligne;
+                    $nv += $ligne[1];
+                    $nr += $ligne[2];
+                    $mv += $ligne[3];
+                    $mr += $ligne[4];
+                    $anaser += $ligne[5];
+                } 
+            }
         }
         $fin->sub (new \DateInterval('P1D'));
-        $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser]; 
-       return $this->render('statistique/caisse/caissier.html.twig', array(
-            'resultats' => $resultat,'caisse' => $affectation->getCaisse(), 'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
+        $total = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser]; 
+        return $this->render('statistique/caisse/caissier.html.twig', array(
+            'resultats' => $resultat,'caisse' => $affectation->getCaisse(), 'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),'total'=>$total,
         ));
     }
     

@@ -24,100 +24,131 @@
     </label>#}
 {% endblock %}
 {% block body -%}
-    <div class="table-responsive">
-        <table border="1" style="width:100%; text-align: center" id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
-            <thead>
-                <tr>
-                    <th style="text-align:left">
-                        <img src="{{ asset('images/logocertificat.PNG', absolute=true) }}" />
-                    </th>
-                     <th  style="text-align:left;vertical-align: middle">
-                        DATE : {{ debut }}
-                    </th>
-                    <th  style="text-align:left;vertical-align: middle">
-                        CAISSE N° : {{ caisse.numero }}
-                    </th>
-                    <th colspan="4" style="text-align:left;vertical-align: middle">
-                        CAISSIER : {{ caisse.getAffectationActive.agent.nomComplet }}
-                    </th>
-                </tr>
-                <tr>
-                    <th>Catégories</th>
-                    <th>Nbr visites</th>
-                    <th>Nbr revisites</th>
-                    <th>CA visites</th>
-                    <th>CA revisites</th>
-                    <th>ANASER</th>
-                    <th>CA Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for resultat in resultats %}
-                    <tr>
-                        <td>{{ resultat[0] }}</td>
-                        <td>{{ resultat[1]|number_format(0, ',', ' ') }}</td>
-                        <td>{{ resultat[2]|number_format(0, ',', ' ') }}</td>
-                        <td>{{ resultat[3]|number_format(0, ',', ' ') }}</td>
-                        <td>{{ resultat[4]|number_format(0, ',', ' ') }}</td>
-                        <td>{{ resultat[5]|number_format(0, ',', ' ') }}</td>
-                        <td>{{ resultat[6]|number_format(0, ',', ' ') }}</td>
-                    </tr>
-                {% endfor %}
-            
-            </tbody>
-            <tfoot>
-                <tr><th colspan="7" style="text-align:right;border-bottom: none">Signature et cachet du caissier</th></tr>
-            </tfoot>
-        </table>
-    </div>
-    <div class="hidden" id="printDiv">
-        <div class="table-responsive"  style="width:200mm">
+    {% for affectation in resultats %}
+        <div class="table-responsive">
             <table border="1" style="width:100%; text-align: center" id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
-            <thead>
-                <tr>
-                    <th style="text-align:left">
-                        <img src="{{ asset('images/logocertificat.PNG', absolute=true) }}" />
-                    </th>
-                     <th  style="text-align:left;vertical-align: middle">
-                        DATE : {{ debut }}
-                    </th>
-                    <th  style="text-align:left;vertical-align: middle">
-                        CAISSE N° : {{ caisse.numero }}
-                    </th>
-                    <th colspan="4" style="text-align:left;vertical-align: middle">
-                        CAISSIER : {{ caisse.getAffectationActive.agent.nomComplet }}
-                    </th>
-                </tr>
-                <tr>
-                    <th>Catégories</th>
-                    <th>Nbr visites</th>
-                    <th>Nbr revisites</th>
-                    <th>CA visites</th>
-                    <th>CA revisites</th>
-                    <th>ANASER</th>
-                    <th>CA Total</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for resultat in resultats %}
+                <thead>
                     <tr>
-                        <td>{{ resultat[0] }}</td>
-                        <td>{{ resultat[1]|number_format(0, ',', ' ') }}</td>
-                        <td>{{ resultat[2]|number_format(0, ',', ' ') }}</td>
-                        <td>{{ resultat[3]|number_format(0, ',', ' ') }}</td>
-                        <td>{{ resultat[4]|number_format(0, ',', ' ') }}</td>
-                        <td>{{ resultat[5]|number_format(0, ',', ' ') }}</td>
-                        <td>{{ resultat[6]|number_format(0, ',', ' ') }}</td>
+                        <th style="text-align:left">
+                            <img src="{{ asset('images/logocertificat.PNG', absolute=true) }}" />
+                        </th>
+                         <th  style="text-align:left;vertical-align: middle">
+                            DATE : {{ debut }}
+                        </th>
+                        <th  style="text-align:left;vertical-align: middle">
+                            CAISSE N° : {{ caisse.numero }}
+                        </th>
+                        <th colspan="4" style="text-align:left;vertical-align: middle">
+                            CAISSIER : {{ affectation[0] }}<br/>
+                            AFFECTE LE : {{ affectation[3]|date('d-m-Y H:i:s') }}<br/>
+                           {% if affectation[2] == "En cours"  %}EN COURS{%  else %}TERMINE LE :  {{ affectation[2]|date('d-m-Y H:i:s') }}{% endif %}
+                        </th>
                     </tr>
-                {% endfor %}
-            
-            </tbody>
-            <tfoot>
-                <tr><th colspan="7" style="text-align:right;border-bottom: none">Signature et cachet du caissier</th></tr>
-            </tfoot>
-        </table>
+                    <tr>
+                        <th>Catégories</th>
+                        <th>Nbr visites</th>
+                        <th>Nbr revisites</th>
+                        <th>CA visites</th>
+                        <th>CA revisites</th>
+                        <th>ANASER</th>
+                        <th>CA Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            {% for ligne in affectation[1] %}
+                            <td>
+                                {% if loop.index == 1 %}
+                                    {{ ligne }}
+                                {% else %}
+                                    {{ ligne|number_format(0, ',', ' ') }}
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                            
+                        </tr>
+                        <tr>
+                            <td>{{ total[0] }}</td>
+                            <td>{{ total[1]|number_format(0, ',', ' ') }}</td>
+                            <td>{{ total[2]|number_format(0, ',', ' ') }}</td>
+                            <td>{{ total[3]|number_format(0, ',', ' ') }}</td>
+                            <td>{{ total[4]|number_format(0, ',', ' ') }}</td>
+                            <td>{{ total[5]|number_format(0, ',', ' ') }}</td>
+                            <td>{{ total[6]|number_format(0, ',', ' ') }}</td>
+                        </tr>
+
+                </tbody>
+                <tfoot>
+                    <tr><th colspan="7" style="text-align:right;border-bottom: none">Signature et cachet du caissier</th></tr>
+                </tfoot>
+            </table>
         </div>
-    </div>
+    {% endfor %}
+    
+    
+    {% for affectation in resultats %}
+        <div class="hidden" id="printDiv">
+            <div class="table-responsive"  style="width:200mm">
+            <table border="1" style="width:100%; text-align: center" id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+                <thead>
+                    <tr>
+                        <th style="text-align:left">
+                            <img src="{{ asset('images/logocertificat.PNG', absolute=true) }}" />
+                        </th>
+                         <th  style="text-align:left;vertical-align: middle">
+                            DATE : {{ debut }}
+                        </th>
+                        <th  style="text-align:left;vertical-align: middle">
+                            CAISSE N° : {{ caisse.numero }}
+                        </th>
+                        <th colspan="4" style="text-align:left;vertical-align: middle">
+                            CAISSIER : {{ affectation[0] }}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Catégories</th>
+                        <th>Nbr visites</th>
+                        <th>Nbr revisites</th>
+                        <th>CA visites</th>
+                        <th>CA revisites</th>
+                        <th>ANASER</th>
+                        <th>CA Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                        <tr>
+                            {% for ligne in affectation[1] %}
+                            <td>
+                                {% if loop.index == 1 %}
+                                    {{ ligne }}
+                                {% else %}
+                                    {{ ligne|number_format(0, ',', ' ') }}
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                            
+                        </tr>
+                        <tr>
+                            <td>{{ total[0] }}</td>
+                            <td>{{ total[1]|number_format(0, ',', ' ') }}</td>
+                            <td>{{ total[2]|number_format(0, ',', ' ') }}</td>
+                            <td>{{ total[3]|number_format(0, ',', ' ') }}</td>
+                            <td>{{ total[4]|number_format(0, ',', ' ') }}</td>
+                            <td>{{ total[5]|number_format(0, ',', ' ') }}</td>
+                            <td>{{ total[6]|number_format(0, ',', ' ') }}</td>
+                        </tr>
+
+                </tbody>
+                <tfoot>
+                    <tr><th colspan="7" style="text-align:right;border-bottom: none">Signature et cachet du caissier</th></tr>
+                </tfoot>
+            </table>
+        </div>
+        </div>
+    {% endfor %}
+    
 {% endblock %}
 {% block javascripts -%}
     <script type="text/javascript">

@@ -78,4 +78,21 @@ class EtatJournalierRepository extends EntityRepository
         }
         return $result; 
     }
+    
+    public function recupererEtatJournalier($debut, $fin, $caisse, $agent) {
+        $qb = $this->getEntityManager()
+            ->createQuery('SELECT DISTINCT r.typeVehicule FROM AppBundle:EtatJournalier r WHERE r.dateCreation >= :debut AND r.dateCreation <= :fin AND r.caisse = :caisse AND r.creePar = :creePar')->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('caisse', $caisse)->setParameter('creePar', $agent);
+        $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+        return $arrayAss;
+    }
+    
+    public function etatJournalierAgent($usage, $debut, $fin, $caisse, $agent) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.typeVehicule, SUM(r.nbvisite), SUM(r.nbrevisite), SUM(r.montantVisite), SUM(r.montantRevisite), SUM(r.anaser) FROM AppBundle:EtatJournalier r '
+                    . ' WHERE r.typeVehicule = :usage AND r.dateCreation >= :debut AND r.dateCreation <= :fin AND r.caisse = :caisse AND r.creePar =:agent GROUP BY r.typeVehicule ')
+            ->setParameter('usage', $usage)->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('caisse', $caisse)->setParameter('agent', $agent);
+        $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+        return $arrayAss;
+    }
 }
