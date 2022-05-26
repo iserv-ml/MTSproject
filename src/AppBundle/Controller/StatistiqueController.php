@@ -189,9 +189,7 @@ class StatistiqueController extends Controller
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
         $fin->add(new \DateInterval('P1D'));
         $fin->setTime(0, 0);
-        $caisse = $affectation->getCaisse();
-        $agent = $affectation->getAgent();
-        $operations = $em->getRepository('AppBundle:EtatJournalier')->trouverParAgentPourEtat($agent->getId());
+        $affectations = $em->getRepository('AppBundle:Affectation')->trouverParNumeroCaisse($affectation->getCaisse()->getNumero());
         $resultat = array();
         foreach($affectations as $atraite){
             $username = $atraite->getAgent()->getUsername();
@@ -206,7 +204,7 @@ class StatistiqueController extends Controller
                 $resultat[$username]=array();
                 $resultat[$username][0] = $username;
                 $resultat[$username][2] = $atraite->getActif() ? "En cours" : $atraite->getDateModification();
-                $resultat[$username][3] = $atraite->getDate();
+                $resultat[$username][3] = $atraite->getDateModification();
                 foreach($types as $usage){
                     $ligne = array();
                     $ligne[0] = $usage['typeVehicule'];

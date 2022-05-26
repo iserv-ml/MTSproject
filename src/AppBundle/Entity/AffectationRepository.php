@@ -104,12 +104,12 @@ class AffectationRepository extends EntityRepository
         return $result; 
     }
     
-    public function trouverParNumeroCaisseAgent($numero, $agent) {
+    public function trouverParNumeroCaisse($numero) {
         try{ 
             $result = $this->getEntityManager()
             ->createQuery(
-                'SELECT r FROM AppBundle:Affectation r LEFT JOIN r.caisse c LEFT JOIN r.agent a WHERE c.numero = :numero AND a.id=:agent'
-            )->setParameter("numero",$numero)->setParameter("agent",$agent)
+                'SELECT r FROM AppBundle:Affectation r LEFT JOIN r.caisse c WHERE c.numero = :numero'
+            )->setParameter("numero",$numero)
             ->getResult();
         }
         catch (\Execption $ex){
