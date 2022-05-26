@@ -450,6 +450,7 @@ class Caisse
         $this->montantrevisite = 0;
         $this->montantvisite = 0;
         $this->aiguillage = false;
+        $this->anaser = 0;
         
     }
     //fin behavior
