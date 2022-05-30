@@ -184,6 +184,7 @@ class StatistiqueController extends Controller
             return $this->redirectToRoute('homepage');
         }
         $date = new \DateTime("now");
+        //$date =\DateTime::createFromFormat( 'd-m-Y', '26-05-2022'); Pour tester au cas ou pas de données du jours en cours
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
@@ -230,7 +231,9 @@ class StatistiqueController extends Controller
                     $mv += $ligne[3];
                     $mr += $ligne[4];
                     $anaser += $ligne[5];
-                } 
+                    
+                }
+                $resultat[$username][4] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser];
             }
         }
         $fin->sub (new \DateInterval('P1D'));
