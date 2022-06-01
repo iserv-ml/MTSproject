@@ -23,73 +23,10 @@
     </label>#}
 {% endblock %}
 {% block body -%}
-    {% for affectation in resultats %}
-        <div class="table-responsive" id="{{ affectation[0] }}">
-            <label class="btn btn-outline-secondary pointer-event"><a  href="#" id="doPrint{{ affectation[0] }}" onclick="imprimer('{{ affectation[0] }}')">IMPRIMER</a></label>
-            <table border="1" style="width:100%; text-align: center" id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
-                <thead>
-                    <tr>
-                        <th style="text-align:left">
-                            <img src="{{ asset('images/logocertificat.PNG', absolute=true) }}" />
-                        </th>
-                         <th  style="text-align:left;vertical-align: middle">
-                            DATE : {{ debut }}
-                        </th>
-                        <th  style="text-align:left;vertical-align: middle">
-                            CAISSE N° : {{ caisse.numero }}
-                        </th>
-                        <th colspan="4" style="text-align:left;vertical-align: middle">
-                            CAISSIER : {{ affectation[0] }}<br/>
-                            AFFECTE LE : {{ affectation[3]|date('d-m-Y H:i:s') }}<br/>
-                           {% if affectation[2] == "En cours"  %}EN COURS{%  else %}TERMINE LE :  {{ affectation[2]|date('d-m-Y H:i:s') }}{% endif %}
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>Catégories</th>
-                        <th>Nbr visites</th>
-                        <th>Nbr revisites</th>
-                        <th>CA visites</th>
-                        <th>CA revisites</th>
-                        <th>ANASER</th>
-                        <th>CA Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                        <tr>
-                            {% for ligne in affectation[1] %}
-                            <td>
-                                {% if loop.index == 1 %}
-                                    {{ ligne }}
-                                {% else %}
-                                    {{ ligne|number_format(0, ',', ' ') }}
-                                {% endif %}
-                            </td>
-                            {% endfor %}
-                            
-                        </tr>
-                        <tr>
-                            <td>{{ affectation[4][0] }}</td>
-                            <td>{{ affectation[4][1]|number_format(0, ',', ' ') }}</td>
-                            <td>{{ affectation[4][2]|number_format(0, ',', ' ') }}</td>
-                            <td>{{ affectation[4][3]|number_format(0, ',', ' ') }}</td>
-                            <td>{{ affectation[4][4]|number_format(0, ',', ' ') }}</td>
-                            <td>{{ affectation[4][5]|number_format(0, ',', ' ') }}</td>
-                            <td>{{ affectation[4][6]|number_format(0, ',', ' ') }}</td>
-                        </tr>
-
-                </tbody>
-                <tfoot>
-                    <tr><th colspan="7" style="text-align:right;border-bottom: none">Signature et cachet du caissier</th></tr>
-                </tfoot>
-            </table>
-        </div>
-    {% endfor %}
-    
-    {%  if resultats is not empty %}
+    {% if resultats is not empty %}
         {% for affectation in resultats %}
-            <div class="hidden" id="printDiv">
-                <div class="table-responsive"  style="width:200mm">
+            <div class="table-responsive" id="{{ affectation[0] }}">
+                <label class="btn btn-outline-secondary pointer-event"><a  href="#" id="doPrint{{ affectation[0] }}" onclick="imprimer('{{ affectation[0] }}')">IMPRIMER</a></label>
                 <table border="1" style="width:100%; text-align: center" id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
                     <thead>
                         <tr>
@@ -103,7 +40,9 @@
                                 CAISSE N° : {{ caisse.numero }}
                             </th>
                             <th colspan="4" style="text-align:left;vertical-align: middle">
-                                CAISSIER : {{ affectation[0] }}
+                                CAISSIER : {{ affectation[0] }}<br/>
+                                AFFECTE LE : {{ affectation[3]|date('d-m-Y H:i:s') }}<br/>
+                               {% if affectation[2] == "En cours"  %}EN COURS{%  else %}TERMINE LE :  {{ affectation[2]|date('d-m-Y H:i:s') }}{% endif %}
                             </th>
                         </tr>
                         <tr>
@@ -117,19 +56,19 @@
                         </tr>
                     </thead>
                     <tbody>
-
-                            <tr>
-                                {% for ligne in affectation[1] %}
+                        {% for ligne in affectation[1] %}
+                        <tr>
+                            {% for element in ligne %}
                                 <td>
                                     {% if loop.index == 1 %}
-                                        {{ ligne }}
+                                        {{ element }}
                                     {% else %}
-                                        {{ ligne|number_format(0, ',', ' ') }}
+                                        {{ element|number_format(0, ',', ' ') }}
                                     {% endif %}
                                 </td>
                                 {% endfor %}
-
-                            </tr>
+                            {% endfor %}
+                        </tr>
                             <tr>
                                 <td>{{ affectation[4][0] }}</td>
                                 <td>{{ affectation[4][1]|number_format(0, ',', ' ') }}</td>
@@ -145,7 +84,6 @@
                         <tr><th colspan="7" style="text-align:right;border-bottom: none">Signature et cachet du caissier</th></tr>
                     </tfoot>
                 </table>
-            </div>
             </div>
         {% endfor %}
     {% else %}

@@ -184,7 +184,7 @@ class StatistiqueController extends Controller
             return $this->redirectToRoute('homepage');
         }
         $date = new \DateTime("now");
-        //$date =\DateTime::createFromFormat( 'd-m-Y', '26-05-2022'); Pour tester au cas ou pas de données du jours en cours
+        //$date =\DateTime::createFromFormat( 'd-m-Y', '26-05-2022'); //Pour tester au cas ou pas de données du jours en cours
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
@@ -225,7 +225,7 @@ class StatistiqueController extends Controller
                         $ligne[5] = 0;
                         $ligne[6] = 0;
                     }
-                    $resultat[$username][1] = $ligne;
+                    $resultat[$username][1][] = $ligne;
                     $nv += $ligne[1];
                     $nr += $ligne[2];
                     $mv += $ligne[3];
@@ -236,6 +236,7 @@ class StatistiqueController extends Controller
                 $resultat[$username][4] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser];
             }
         }
+        //print_r($resultat);exit;
         $fin->sub (new \DateInterval('P1D'));
         $total = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser]; 
         return $this->render('statistique/caisse/caissier.html.twig', array(
