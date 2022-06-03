@@ -194,6 +194,7 @@ class StatistiqueController extends Controller
         $resultat = array();
         foreach($affectations as $atraite){
             $username = $atraite->getAgent()->getUsername();
+            $nom = $atraite->getAgent()->getNomComplet();
             $types = $em->getRepository('AppBundle:EtatJournalier')->recupererEtatJournalier($debut, $fin, $atraite->getCaisse()->getNumero(), $username);
             $i = 0;
             $nv = 0;
@@ -206,6 +207,7 @@ class StatistiqueController extends Controller
                 $resultat[$username][0] = $username;
                 $resultat[$username][2] = $atraite->getActif() ? "En cours" : $atraite->getDateModification();
                 $resultat[$username][3] = $atraite->getDateModification();
+                $resultat[$username][5] = $nom;
                 foreach($types as $usage){
                     $ligne = array();
                     $ligne[0] = $usage['typeVehicule'];

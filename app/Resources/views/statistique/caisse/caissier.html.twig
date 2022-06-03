@@ -40,7 +40,7 @@
                                 CAISSE N° : {{ caisse.numero }}
                             </th>
                             <th colspan="4" style="text-align:left;vertical-align: middle">
-                                CAISSIER : {{ affectation[0] }}<br/>
+                                CAISSIER : {{ affectation[5] }}<br/>
                                 AFFECTE LE : {{ affectation[3]|date('d-m-Y H:i:s') }}<br/>
                                {% if affectation[2] == "En cours"  %}EN COURS{%  else %}TERMINE LE :  {{ affectation[2]|date('d-m-Y H:i:s') }}{% endif %}
                             </th>
