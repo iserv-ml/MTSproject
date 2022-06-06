@@ -60,7 +60,7 @@
                         <td>{{ quittance.numero }}</td>
                         <td>{% if quittance.visite.revisite %}REVISITE{% else %} VISITE {% endif %}</td>
                         <td>{{ quittance.ttc|number_format(0, ',', ' ') }}</td>
-                        <td>{{ quittance.caissier }}</td>
+                        <td>{% if quittance.caissier is not null %}{{ quittance.caissier.nomComplet }} {% else %}   {{ quittance.creePar }} {% endif %}</td>
                         <td>{% if quittance.dateEncaissement %}{{ quittance.dateEncaissement|date('Y-m-d h:m:s') }}{% endif %}</td>
                     </tr>
                 {% endfor %}
