@@ -15,9 +15,22 @@
         <a class="nav-link {% block menu_sorties_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_sorties_index') }}">
             <i class="nav-icon fa fa-calculator"></i> Opérations de coffre</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link {% block menu_quittance_actif %}{% endblock %}" href="{{ path('caisse_quittance_index') }}">
-            <i class="nav-icon fa fa-money"></i> Quittances</a>
+    
+    <li class="nav-item nav-dropdown {% block menu_quittances_open %}{% endblock %}">
+        <a class="nav-link nav-dropdown-toggle" href="#">
+            <i class="nav-icon fa fa-bar-chart"></i> Quittances</a>
+        <ul class="nav-dropdown-items">
+            <li class="nav-item ">
+                <a class="nav-link {% block menu_quittance_actif %}{% endblock %}" href="{{ path('caisse_quittance_index') }}">
+                    <i class="nav-icon icon-list"></i> LISTE</a>
+            </li>
+            {% if is_granted('ROLE_SUPER_ADMIN') %}
+            <li class="nav-item ">
+                <a class="nav-link {% block menu_quittance_historique_actif %}{% endblock %}" href="{{ path('admin_gestion_quittance_historique') }}">
+                    <i class="nav-icon icon-list"></i> HISTORIQUE</a>
+            </li>
+            {% endif %}
+        </ul>
     </li>
     <li class="nav-item">
         <a class="nav-link {% block menu_affectationcaisse_actif %}{% endblock %}" href="{{ path('admin_gestion_affectation_index') }}">
@@ -60,7 +73,7 @@
         </ul>
     </li>
 {% endif %}
-{% if is_granted('ROLE_SUPER_ADMIN') %}
+{% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
     <li class="nav-item nav-dropdown {% block menu_historiques_open %}{% endblock %}">
         <a class="nav-link nav-dropdown-toggle" href="#">
             <i class="nav-icon fa fa-bar-chart"></i> Historiques</a>

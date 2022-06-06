@@ -16,7 +16,7 @@ class QuittanceRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.numero, r.montantVisite, r.tva, r.timbre, r.anaser, v.immatriculation_v, vh.immatriculation, v.statut, p.nom, p.prenom, ca.numero as caisse FROM AppBundle:Quittance r LEFT JOIN r.visite v LEFT JOIN v.vehicule vh LEFT JOIN vh.proprietaire p LEFT JOIN v.chaine c LEFT JOIN c.caisse ca'
+                'SELECT r.id, r.numero, r.montantVisite, r.tva, r.timbre, r.anaser, r.paye, r.rembourse, v.immatriculation_v, vh.immatriculation, v.statut, p.nom, p.prenom, ca.numero as caisse FROM AppBundle:Quittance r LEFT JOIN r.visite v LEFT JOIN v.vehicule vh LEFT JOIN vh.proprietaire p LEFT JOIN v.chaine c LEFT JOIN c.caisse ca'
                     . ' WHERE r.numero like :search or vh.immatriculation like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
@@ -77,4 +77,24 @@ class QuittanceRepository extends EntityRepository
         }
         return $result; 
     } 
+    
+    public function historiqueTableEtatJournalier($debut, $fin, $immatriculation = "", $quittance = "") {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.id, r.quittance, r.montantVisite, r.montantRevisite, r.immatriculation, r.caisse, r.creePar, r.dateCreation FROM AppBundle:EtatJournalier r'
+                    . ' WHERE r.immatriculation LIKE :immatriculation AND r.quittance LIKE :quittance AND r.dateCreation >= :debut AND r.dateCreation <= :fin '
+                    )
+           ->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('immatriculation', "%".$immatriculation."%")->setParameter('quittance', "%".$quittance."%");
+        return $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);; 
+    }
+    
+    public function historiqueStandard($debut, $fin, $immatriculation = "", $quittance = "") {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.id, r.numero, r.montantVisite, r.tva, r.timbre, r.anaser, r.paye, r.rembourse, v.immatriculation_v, vh.immatriculation, v.statut, p.nom, p.prenom, ca.numero as caisse FROM AppBundle:Quittance r LEFT JOIN r.visite v LEFT JOIN v.vehicule vh LEFT JOIN vh.proprietaire p LEFT JOIN v.chaine c LEFT JOIN c.caisse ca'
+                    . ' WHERE (v.immatriculation_v LIKE :immatriculation OR vh.immatriculation LIKE :immatriculation) AND r.numero LIKE :quittance AND r.dateEncaissement >= :debut AND r.dateEncaissement <= :fin '
+                    )
+           ->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('immatriculation', "%".$immatriculation."%")->setParameter('quittance', "%".$quittance."%");
+        return $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);; 
+    }
 }

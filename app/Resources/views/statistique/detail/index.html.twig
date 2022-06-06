@@ -52,7 +52,7 @@
                 {% set total = 0 %}
                 {% set nbr = 0 %}
                 {% for quittance in quittances %}
-                    {% set total = total + (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil') %}
+                    {% set total = total + (quittance.ttc)|round(0, 'ceil') %}
                     {% set nbr = nbr+1 %}
                     <tr>
                         <td>{{ quittance.visite.vehicule.typeVehicule.libelle }}</td>
@@ -60,7 +60,7 @@
                         <td>{{ quittance.numero }}</td>
                         <td>{% if quittance.visite.revisite %}REVISITE{% else %} VISITE {% endif %}</td>
                         <td>{{ quittance.ttc|number_format(0, ',', ' ') }}</td>
-                        <td>{{ quittance.creePar }}</td>
+                        <td>{{ quittance.caissier }}</td>
                         <td>{% if quittance.dateEncaissement %}{{ quittance.dateEncaissement|date('Y-m-d h:m:s') }}{% endif %}</td>
                     </tr>
                 {% endfor %}

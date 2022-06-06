@@ -1,0 +1,104 @@
+{% extends '::base.html.twig' %}
+{% block menu -%}
+{% embed  '::centre/menu.html.twig' %}
+{% block menu_quittances_open %}active{% endblock %}
+{% block menu_quittance_historique_actif %}active{% endblock %}
+{% endembed %}
+{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+        <li class="breadcrumb-item">Quittances</li>
+    </ol>
+{% endblock %}
+{% block menu_gestion_actif %}active{% endblock %}
+{% block pagetitle -%}HISTORIQUE DES ENCAISSEMENTS{% endblock %}
+{% block actions %}
+    <label class="btn btn-outline-secondary pointer-event"><a onclick ="exporter()"  href="#">EXPORTER</a></label>
+    <label class="btn btn-warning pointer-event"> 
+        <form method='POST' action='{{ path('admin_gestion_quittance_historique') }}'>
+            Du <input type="text" id="debut" name="debut" value="{{ debut }}" /> 
+            Au <input type="text" id="fin" name="fin" value="{{ fin }}" />
+            Immatriculation <input type="text" id="immatriculation" name="immatriculation" value="{{ immatriculation }}" />
+            <br/>Quittance <input type="text" id="quittance" name="quittance" value="{{ quittance }}" />
+            <input type="submit" value="Actualiser" name="afficher"/>
+             
+        </form>
+    </label>
+{% endblock %}
+{% block body -%}
+    <div class="table-responsive">
+        <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+            <thead>
+            <tr>
+                <th>Véhicule</th>
+                <th>Caisse</th>
+                <th>Montant</th>
+                <th>N° Quittance</th>
+                <th>STATUT</th>
+                <th>DATE</th>
+            </tr>
+        </thead>
+        <tbody> 
+            {% set somme = 0.0 %}
+            {% for item in quittances %}
+                {% set montant = item.montantVisite + item.montantRevisite %}
+                {% set somme = somme + montant %}
+                <tr>
+                    <td>{{ item.immatriculation }}</td>
+                    <td>{{ item.caisse }}</td>
+                    <td>{{ montant|number_format(0, ',', ' ') }}</td>
+                    <td>{{ item.quittance }}</td>
+                    <td>
+                        {% if item.montantVisite < 0 %}
+                            REMBOURSE
+                        {% else %}
+                            ENCAISSE
+                        {% endif %}
+                        par {{ item.creePar }}
+                    </td>
+                    <td>{{ item.dateCreation }}</td>
+                </tr>
+            {% endfor %}
+            <tr><td colspan="3">Total</td><td colspan="3">{{ somme|number_format(0, ',', ' ') }}</td></tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Véhicule</th>
+                <th>Caisse</th>
+                <th>Montant</th>
+                <th>N° Quittance</th>
+                <th>STATUT</th>
+                <th>DATE</th>
+            </tr>
+        </tfoot>
+    </table>
+        
+{% endblock %}
+
+{% block javascripts -%}
+    <script type="text/javascript">
+        $( function() {
+            $( "#debut" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "+0Y", dateFormat: 'dd-mm-yy' });
+            $( "#fin" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "+0Y", dateFormat: 'dd-mm-yy' });
+           
+        });
+        function imprimer(){
+            var printContents = document.getElementById('printDiv').innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.style.backgroundColor = "white"
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.style.backgroundColor = "rgb(228, 229, 230)"
+            document.body.innerHTML = originalContents;
+        } 
+        function exporter(){
+            debut= $("#debut").val();
+            fin= $("#fin").val();
+            immatriculation= $("#immatriculation").val();
+            quittance= $("#quittance").val();
+            window.open('{{ path('admin_gestion_quittance_historique_exporter')}}?debut='+debut+'&fin='+fin+'&immatriculation='+immatriculation+'&quittance='+quittance);
+            return false;
+        }
+    </script>
+{% endblock %}
