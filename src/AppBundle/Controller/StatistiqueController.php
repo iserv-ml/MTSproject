@@ -184,13 +184,14 @@ class StatistiqueController extends Controller
             return $this->redirectToRoute('homepage');
         }
         $date = new \DateTime("now");
+        $date->setTime(0, 0);
         //$date =\DateTime::createFromFormat( 'd-m-Y', '26-05-2022'); //Pour tester au cas ou pas de données du jours en cours
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
         $fin->add(new \DateInterval('P1D'));
         $fin->setTime(0, 0);
-        $affectations = $em->getRepository('AppBundle:Affectation')->trouverParNumeroCaisse($affectation->getCaisse()->getNumero());
+        $affectations = $em->getRepository('AppBundle:Affectation')->trouverParNumeroCaisseDate($affectation->getCaisse()->getNumero(), $date);
         $resultat = array();
         foreach($affectations as $atraite){
             $username = $atraite->getAgent()->getUsername();
@@ -206,7 +207,7 @@ class StatistiqueController extends Controller
                 $resultat[$username]=array();
                 $resultat[$username][0] = $username;
                 $resultat[$username][2] = $atraite->getActif() ? "En cours" : $atraite->getDateModification();
-                $resultat[$username][3] = $atraite->getDateModification();
+                $resultat[$username][3] = $atraite->getDate();
                 $resultat[$username][5] = $nom;
                 foreach($types as $usage){
                     $ligne = array();
@@ -240,7 +241,8 @@ class StatistiqueController extends Controller
         }
         //print_r($resultat);exit;
         $fin->sub (new \DateInterval('P1D'));
-        $total = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser]; 
+        $total = array();
+        //$total = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser]; 
         return $this->render('statistique/caisse/caissier.html.twig', array(
             'resultats' => $resultat,'caisse' => $affectation->getCaisse(), 'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),'total'=>$total,
         ));

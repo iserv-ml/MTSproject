@@ -116,5 +116,19 @@ class AffectationRepository extends EntityRepository
             $result = null;
         } 
         return $result; 
-    } 
+    }
+    
+    public function trouverParNumeroCaisseDate($numero, $date) {
+        try{ 
+            $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Affectation r LEFT JOIN r.caisse c WHERE c.numero = :numero AND (r.actif = :true OR r.dateModification >= :date)'
+            )->setParameter("numero",$numero)->setParameter("date",$date)->setParameter("true",true)
+            ->getResult();
+        }
+        catch (\Execption $ex){
+            $result = null;
+        } 
+        return $result; 
+    }
 }
