@@ -185,7 +185,7 @@ class StatistiqueController extends Controller
         }
         $date = new \DateTime("now");
         $date->setTime(0, 0);
-        $date =\DateTime::createFromFormat( 'd-m-Y', '08-06-2022'); //Pour tester au cas ou pas de données du jours en cours
+        //$date =\DateTime::createFromFormat( 'd-m-Y', '08-06-2022'); //Pour tester au cas ou pas de données du jours en cours
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
