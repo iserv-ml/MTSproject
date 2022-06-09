@@ -25,7 +25,7 @@
 {% block body -%}
     {% if resultats is not empty %}
         {% for affectation in resultats %}
-            <div class="table-responsive" id="{{ affectation[0] }}">
+            <div class="table-responsive" id="{{ affectation[0] }}" style="width:200mm">
                 <label class="btn btn-outline-secondary pointer-event"><a  href="#" id="doPrint{{ affectation[0] }}" onclick="imprimer('{{ affectation[0] }}')">IMPRIMER</a></label>
                 <table border="1" style="width:100%; text-align: center" id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
                     <thead>

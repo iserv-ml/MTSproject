@@ -24,7 +24,7 @@
     </label>
 {% endblock %}
 {% block body -%}
-    <div class="table-responsive" style="width:200mm">
+    <div class="table-responsive">
         <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
             <thead>
                 <tr>
@@ -37,7 +37,7 @@
                     <th  style="text-align:left;vertical-align: middle">
                         CAISSE N° : {{ caisse.numero }}
                     </th>
-                    <th colspan="3" style="text-align:left;vertical-align: middle">
+                    <th colspan="4" style="text-align:left;vertical-align: middle">
                         CAISSIER : {{ caisse.getAffectationActive.agent.nomComplet }}
                     </th>
                 </tr>
