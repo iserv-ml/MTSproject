@@ -28,6 +28,29 @@ class QuittanceController extends Controller
     {
         return $this->render('quittance/index.html.twig');
     }
+    
+    /**
+     * Rechercher encaissements et remboursements
+     *
+     * @Route("/historique", name="admin_gestion_quittance_historique")
+     * @Method({"GET", "POST"})
+     */
+    public function historiqueAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $immatriculation = \trim($request->get('immatriculation', ''));
+        $quittance = \trim($request->get('quittance', ''));
+        $date = new \DateTime("now");
+        $debut = ($request->get('debut') != null && $request->get('debut') != "") ? \DateTime::createFromFormat( 'd-m-Y', $request->get('debut')) : $date;
+        $debut->setTime(0, 0);
+        $fin = ($request->get('fin') != null && $request->get('fin') != "") ? \DateTime::createFromFormat( 'd-m-Y', $request->get('fin')) : $date;
+        
+        $fin->setTime(0, 0);
+        $quittances = $em->getRepository('AppBundle:Quittance')->historiqueTableEtatJournalier($debut, $fin, $immatriculation, $quittance);
+        return $this->render('quittance/historique.html.twig', array(
+            'quittances'=>$quittances, 'immatriculation'=>$immatriculation, 'quittance'=>$quittance, 'debut'=>$debut->format('d-m-Y'), 'fin'=>$fin->format('d-m-Y')
+        ));
+    }
 
     /**
      * Creates a new quittance entity.
@@ -167,7 +190,7 @@ class QuittanceController extends Controller
                 $nbRevisite = 0;
             }
             $message = $visite->getContreVisiteVisuelle() ? "Quittance encaissée." : $visite->genererFichierMaha();
-            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $quittance->getAnaser());
+            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $quittance->getAnaser(), $centre->getCode());
             $this->get('session')->getFlashBag()->add('notice', $message);
             $em->persist($etat);
             $em->flush();
@@ -221,7 +244,7 @@ class QuittanceController extends Controller
                 $nbRevisite = 0;
             }
             $anaser = -$quittance->getAnaser();
-            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $anaser);
+            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $anaser, $centre->getCode());
             $em->persist($etat);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'La quittance a été remboursée.');
@@ -454,7 +477,8 @@ class QuittanceController extends Controller
 	{
             $action = $this->genererAction($aRow['id'], $aRow['statut']);
             $montant = $aRow['montantVisite'] > 0 ? \ceil($aRow['montantVisite']+$aRow['tva']+$aRow['timbre']+$aRow['anaser']) : 0;
-            $output['aaData'][] = array($aRow['immatriculation'], $aRow['nom']." ".$aRow['prenom'], $aRow['caisse'], \number_format($montant, 0, ',', ' '), $aRow['numero'], $action);
+            $immatriculation = $aRow['immatriculation_v'] != null ? $aRow['immatriculation_v'] : $aRow['immatriculation'];
+            $output['aaData'][] = array($immatriculation, $aRow['nom']." ".$aRow['prenom'], $aRow['caisse'], \number_format($montant, 0, ',', ' '), $aRow['numero'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
@@ -555,5 +579,63 @@ class QuittanceController extends Controller
             $em->flush();
         }
         return $this->redirectToRoute('visite_quittance');
+    }
+    
+    /**
+     * Exporter encaissements et remboursements
+     *
+     * @Route("/historique/exporter", name="admin_gestion_quittance_historique_exporter")
+     * @Method({"GET", "POST"})
+     */
+    public function historiqueexporterAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $immatriculation = \trim($request->get('immatriculation', ''));
+        $quittance = \trim($request->get('quittance', ''));
+        $date = new \DateTime("now");
+        $debut = ($request->get('debut') != null && $request->get('debut') != "") ? \DateTime::createFromFormat( 'd-m-Y', $request->get('debut')) : $date->format('d-m-Y');
+        $debut->setTime(0, 0);
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->add(new \DateInterval('P1D'));
+        $fin->setTime(0, 0);
+        $quittances = $em->getRepository('AppBundle:Quittance')->historiqueTableEtatJournalier($debut, $fin, $immatriculation, $quittance);
+        $phpExcelObject = $this->get('phpexcel')->createPHPExcelObject();
+        $phpExcelObject->getProperties()->setCreator("2SInnovation")
+            ->setTitle("Historique des quittances".$debut->format('d-m-Y')."_".$fin->format('d-m-Y'));
+        $this->writeExport($phpExcelObject, $quittances);
+        $writer = $this->get('phpexcel')->createWriter($phpExcelObject, 'Excel5');
+        $response = $this->get('phpexcel')->createStreamedResponse($writer);
+        $filename = "Historique des quittances".$debut->format('d-m-Y')."_".$fin->format('d-m-Y').".xls";
+        $response->headers->set('Content-Type', 'text/vnd.ms-excel; charset=utf-8');
+        $response->headers->set('Content-Disposition', 'attachment;filename='.$filename);
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Cache-Control', 'maxage=1');
+        return $response; 
+    }
+    
+    private function writeExport($phpExcelObject, $entities) {
+        $phpExcelObject->setActiveSheetIndex(0);
+        $col = 0;
+        $objWorksheet = $phpExcelObject->getActiveSheet();
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Immatriculation");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Caisse");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Montant");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Quittance");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Statut");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Date");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Agent");
+        $ligne =2;
+        foreach($entities as $entity){
+            $col=0;
+            $statut = $entity['montantVisite'] >= 0 ? "Encaissement" : "Remboursement";
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity['immatriculation']);$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity['caisse']);$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity['montantVisite']);$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity['quittance']);$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($statut);$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity['dateCreation']);$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity['creePar']);$col++;
+            $ligne++;
+        }
     }
 }
