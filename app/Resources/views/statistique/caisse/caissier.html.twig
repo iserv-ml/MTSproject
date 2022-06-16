@@ -112,7 +112,7 @@
             var printContents = document.getElementById(id).innerHTML;
             var originalContents = document.body.innerHTML;
             document.body.style.backgroundColor = "white";
-            document.body.innerHTML = '<html><body style="size: A4;margin:0;width:100%;">'+printContents;+'</body></html>'
+            document.body.innerHTML = '<div style="size: A4;margin:0;width:200mm;margin-top:200mm;-webkit-transform: rotate(-90deg);-moz-transform:rotate(-90deg);filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=3);">'+printContents;+'</div>'
             window.print();
             document.body.style.backgroundColor = "rgb(228, 229, 230)"
             document.body.innerHTML = originalContents;
