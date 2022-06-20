@@ -90,7 +90,7 @@ class EtatJournalierRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.typeVehicule, SUM(r.nbvisite), SUM(r.nbrevisite), SUM(r.montantVisite), SUM(r.montantRevisite), SUM(r.anaser) FROM AppBundle:EtatJournalier r '
-                    . ' WHERE r.typeVehicule = :usage AND r.dateCreation >= :debut AND r.dateCreation <= :fin AND r.caisse = :caisse AND r.caissier =:agent GROUP BY r.typeVehicule ')
+                    . ' WHERE r.typeVehicule = :usage AND r.dateCreation >= :debut AND r.dateCreation <= :fin AND r.caisse = :caisse AND r.encaissePar =:agent GROUP BY r.typeVehicule ')
             ->setParameter('usage', $usage)->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('caisse', $caisse)->setParameter('agent', $agent);
         $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
         return $arrayAss;
