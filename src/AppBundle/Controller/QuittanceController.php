@@ -161,6 +161,7 @@ class QuittanceController extends Controller
     public function encaisserAction(Quittance $quittance)
     {
         $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
         if(!$quittance->getVisite()->getChaine()->getCaisse()->getOuvert()){
             $this->get('session')->getFlashBag()->add('error', 'La caisse est fermée!');
             return $this->redirectToRoute('visite_quittance');
@@ -173,9 +174,8 @@ class QuittanceController extends Controller
         if ($quittance->getPaye()) {
             $this->get('session')->getFlashBag()->add('notice', 'Cette quittance a déjà été encaissé.');
         }else{
-            $visite = $quittance->getVisite();
-            
-            $quittance->encaisser();
+            $visite = $quittance->getVisite();  
+            $quittance->encaisser($user->getUsername());
             $caisse = $visite->getChaine()->getCaisse();
             $caisse->encaisserQuittance($quittance);
             if($visite->getRevisite()){
@@ -189,8 +189,9 @@ class QuittanceController extends Controller
                 $montantRevisite = 0;
                 $nbRevisite = 0;
             }
+            
             $message = $visite->getContreVisiteVisuelle() ? "Quittance encaissée." : $visite->genererFichierMaha();
-            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $quittance->getAnaser(), $centre->getCode());
+            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $quittance->getAnaser(), $centre->getCode(), $user->getUsername(), 'Encaissement');
             $this->get('session')->getFlashBag()->add('notice', $message);
             $em->persist($etat);
             $em->flush();
@@ -215,6 +216,7 @@ class QuittanceController extends Controller
             return $this->redirectToRoute('visite_quittance');
         }
         $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         if(!$centre->getEtat()){
             $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
@@ -231,7 +233,7 @@ class QuittanceController extends Controller
         else if($quittance->getPaye() && $quittance->getDateEncaissement()->format('Y-m-d') < $today->format('Y-m-d')){
             $this->get('session')->getFlashBag()->add('error', "Le client doit passer à la caisse principale pour se faire rembourser!");
         }else{
-            $quittance->rembourser();
+            $quittance->rembourser($user->getUsername());
             if($quittance->getVisite()->getRevisite()){
                 $montantVisite = 0;
                 $nbVisite = 0;
@@ -244,7 +246,7 @@ class QuittanceController extends Controller
                 $nbRevisite = 0;
             }
             $anaser = -$quittance->getAnaser();
-            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $anaser, $centre->getCode());
+            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $anaser, $centre->getCode(), $quittance->getEncaissePar(), 'Remboursement', $user->getUsername());
             $em->persist($etat);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'La quittance a été remboursée.');

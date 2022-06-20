@@ -112,6 +112,30 @@ class Quittance
     private $dateEncaissement;
     
     /**
+     * @var string $encaissePar
+     *
+     * @ORM\Column(name="encaisse_par", type="string", length=255, nullable=true)
+     * 
+     */
+    private $encaissePar;
+    
+    
+    /**
+     * @var \DateTime $dateRemboursement
+     *
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dateRemboursement;
+    
+    /**
+     * @var string $remboursePar
+     *
+     * @ORM\Column(name="rembourse_par", type="string", length=255, nullable=true)
+     * 
+     */
+    private $remboursePar;
+    
+    /**
     * @ORM\OneToOne(targetEntity="Visite", mappedBy="quittance", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="visite_id", referencedColumnName="id")
     * 
@@ -397,15 +421,18 @@ class Quittance
         $this->anaser = ($anaser != null) ? $anaser : 0;
     }
     
-    public function encaisser(){
+    public function encaisser($encaissePar=null){
         $this->setPaye(1);
         $this->getVisite()->setStatut(1);
         $this->setDateEncaissement(new \DateTime());
+        $this->setEncaissePar($encaissePar);
     }
     
-    public function rembourser(){
+    public function rembourser($remboursePar=null){
         $this->setRembourse(true);
         $this->getVisite()->setStatut(5);
+        $this->setRemboursePar($remboursePar);
+        $this->setDateRemboursement(new \DateTime());
         $this->getVisite()->getChaine()->getCaisse()->rembourser($this->getTtc(),$this->getVisite()->getRevisite(), $this->getAnaser());        
     }
     
@@ -475,6 +502,30 @@ class Quittance
 
     function setCaissier($caissier) {
         $this->caissier = $caissier;
+    }
+    
+    public function getEncaissePar() {
+        return $this->encaissePar;
+    }
+
+    public function setEncaissePar($encaissePar) {
+        $this->encaissePar = $encaissePar;
+    }
+    
+    public function getDateRemboursement() {
+        return $this->dateRemboursement;
+    }
+
+    public function getRemboursePar() {
+        return $this->remboursePar;
+    }
+
+    public function setDateRemboursement(\DateTime $dateRemboursement) {
+        $this->dateRemboursement = $dateRemboursement;
+    }
+
+    public function setRemboursePar($remboursePar) {
+        $this->remboursePar = $remboursePar;
     }
 
 

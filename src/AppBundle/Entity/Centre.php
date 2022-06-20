@@ -398,9 +398,10 @@ class Centre
         $this->carteVierge -= 1; 
     }
     
-    public function rembourser(Quittance $quittance){
+    public function rembourser(Quittance $quittance, $login=null){
         $quittance->setRembourse(true);
         $quittance->getVisite()->setStatut(5);
+        $quittance->setRemboursePar($login);
         $sortie = new SortieCaisse($this);
         $this->solde = $sortie->rembourser($quittance->getMontantVisite(), $this->getSolde(), "SORTIE", "Remboursement de la quittance N° ".$quittance->getNumero());
         return $sortie;
