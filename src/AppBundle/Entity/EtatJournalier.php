@@ -85,6 +85,30 @@ class EtatJournalier
     private $caisse;
     
     /**
+     * @var string $encaissePar
+     *
+     * @ORM\Column(name="encaisse_par", type="string", nullable=true)
+     * 
+     */
+    private $encaissePar;
+    
+    /**
+     * @var string $remboursePar
+     *
+     * @ORM\Column(name="rembourse_par", type="string", nullable=true)
+     * 
+     */
+    private $remboursePar;
+    
+    /**
+     * @var string $action
+     *
+     * @ORM\Column(name="action", type="string", nullable=true)
+     * 
+     */
+    private $action;
+    
+    /**
      * @var string $typeVehicule
      *
      * @ORM\Column(name="type_vehicule", type="string", nullable=false)
@@ -132,6 +156,30 @@ class EtatJournalier
      * 
      */
     private $quittance;
+    
+    /**
+     * @var string $centre
+     *
+     * @ORM\Column(name="centre", type="string", length=255, nullable=true)
+     * 
+     */
+    private $centre;
+    
+    /**
+     * @var boolean $synchro
+     *
+     * @ORM\Column(name="synchro", type="boolean", nullable=true)
+     * 
+     */
+    private $synchro;
+    
+    /**
+     * @var datetime $dateSynchro
+     *
+     * @ORM\Column(name="date_synchro", type="datetime", length=255, nullable=true)
+     * 
+     */
+    private $dateSynchro;
    
 
     /**
@@ -241,7 +289,7 @@ class EtatJournalier
         return $this->date;
     }
     
-    public function __construct($date, $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $typeVehicule, $usage, $genre, $carrosserie, $caisse, $immatriculation = "", $quittance = "", $anaser = 0)
+    public function __construct($date, $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $typeVehicule, $usage, $genre, $carrosserie, $caisse, $immatriculation = "", $quittance = "", $anaser = 0, $centre="NC", $encaissePar="", $action="", $remboursePar="")
     {
         $this->date = $date;
         $this->montantRevisite = $montantRevisite;
@@ -256,6 +304,12 @@ class EtatJournalier
         $this->immatriculation = $immatriculation;
         $this->quittance = $quittance;
         $this->anaser = $anaser;
+        $this->centre = $centre;
+        $this->synchro = null;
+        $this->dateSynchro = null;
+        $this->encaissePar = $encaissePar;
+        $this->action = $action;
+        $this->remboursePar = $remboursePar;
     }
      
     function getDate() {
@@ -345,5 +399,78 @@ class EtatJournalier
     function setImmatriculation($immatriculation) {
         $this->immatriculation = $immatriculation;
     }
+    
+    public function getAnaser() {
+        return $this->anaser;
+    }
+
+    public function getCentre() {
+        return $this->centre != NULL ? $this->centre : "NC";
+    }
+
+    public function setAnaser($anaser) {
+        $this->anaser = $anaser;
+    }
+
+    public function setCentre($centre) {
+        $this->centre = $centre;
+    }
+
+    function getSynchro() {
+        return $this->synchro;
+    }
+
+    function setSynchro($synchro) {
+        $this->synchro = $synchro;
+    }
+    
+    function getDateSynchro() {
+        return $this->dateSynchro;
+    }
+
+    function setDateSynchro($dateSynchro) {
+        $this->dateSynchro = $dateSynchro;
+    }
+    
+    public function getQuittance() {
+        return $this->quittance;
+    }
+
+    public function setQuittance($quittance) {
+        $this->quittance = $quittance;
+    }
+    public function getCaissier() {
+        return $this->caissier;
+    }
+
+    public function setCaissier($caissier) {
+        $this->caissier = $caissier;
+    }
+    
+    public function getEncaissePar() {
+        return $this->encaissePar;
+    }
+
+    public function getRemboursePar() {
+        return $this->remboursePar;
+    }
+
+    public function getAction() {
+        return $this->action;
+    }
+
+    public function setEncaissePar($encaissePar) {
+        $this->encaissePar = $encaissePar;
+    }
+
+    public function setRemboursePar($remboursePar) {
+        $this->remboursePar = $remboursePar;
+    }
+
+    public function setAction($action) {
+        $this->action = $action;
+    }
+
+
 
 }
