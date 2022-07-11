@@ -95,4 +95,21 @@ class EtatJournalierRepository extends EntityRepository
         $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
         return $arrayAss;
     }
+    
+    public function recupererTypeEncaisse($numero){
+        try{ 
+            $result = $this->getEntityManager()
+                ->createQuery(
+                    'SELECT r FROM AppBundle:EtatJournalier r WHERE r.quittance = :numero'
+                )->setParameter("numero",$numero)
+                ->getSingleResult();
+        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
+        return $result;
+    }
 }

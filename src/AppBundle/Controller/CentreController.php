@@ -107,8 +107,8 @@ class CentreController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $centre = $em->getRepository('AppBundle:Centre')->recuperer();
-            if(!$centre){
+            $centreExistant = $em->getRepository('AppBundle:Centre')->recuperer();
+            if($centreExistant){
                 throw $this->createNotFoundException("Cette opération est interdite!");
             }
             $em->persist($centre);
@@ -352,6 +352,7 @@ class CentreController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        $user = $this->container->get('security.context')->getToken()->getUser();
         if(!$centre || !$centre->getEtat()){
             $this->get('session')->getFlashBag()->add('error', 'Le centre est fermé!');
             return $this->redirectToRoute('caisse_quittance_index');
@@ -362,7 +363,7 @@ class CentreController extends Controller
             case 0: $this->get('session')->getFlashBag()->add('error', "Cette quittance n'a pas été encaissée!");break;
             case 1: $this->get('session')->getFlashBag()->add('error', "Le client doit passer à la caisse N°".$quittance->getVisite()->getChaine()->getCaisse()->getNumero()." pour se faire rembourser!");break;
             case 2: if($quittance->controleSolde($centre->getSolde())){
-                        $sortie = $centre->rembourser($quittance);
+                        $sortie = $centre->rembourser($quittance, $user->getUsername());
                         if($quittance->getVisite()->getRevisite()){
                             $montantVisite = 0;
                             $nbVisite = 0;
@@ -374,7 +375,8 @@ class CentreController extends Controller
                             $montantRevisite = 0;
                             $nbRevisite = 0;
                         }
-                        $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(),  $quittance->getNumero());
+                        $encaisse = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeEncaisse($quittance->getNumero());
+                        $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $encaisse->getTypeVehicule(), $encaisse->getUsage(), $encaisse->getGenre(), $encaisse->getCarrosserie(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(),  $quittance->getNumero(), $centre->getCode(), $quittance->getEncaissePar(), "Remboursement", $user->getUsername());
                         $em->persist($etat);
                         $em->persist($sortie);
                         $em->flush();

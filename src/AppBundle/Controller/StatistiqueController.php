@@ -185,7 +185,7 @@ class StatistiqueController extends Controller
         }
         $date = new \DateTime("now");
         $date->setTime(0, 0);
-        //$date =\DateTime::createFromFormat( 'd-m-Y', '08-06-2022'); //Pour tester au cas ou pas de données du jours en cours
+        //$date =\DateTime::createFromFormat( 'd-m-Y', '01-06-2022'); //Pour tester au cas ou pas de données du jours en cours
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
@@ -370,87 +370,6 @@ class StatistiqueController extends Controller
         $fin->sub (new \DateInterval('P1D'));
         return $this->render('statistique/detail/controleur.html.twig', array(
             'liste' => $liste,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
-        ));
-    }
-    
-    
-    /**
-     * Finds and displays a proprietaire entity.
-     *
-     * @Route("/caisse/etat/journalier", name="centre_gestion_statistiques_caissier_etat_journalier")
-     * @Method({"GET", "POST"})
-     */
-    public function etatjournalierAction(Request $request)
-    {
-        $user = $this->container->get('security.context')->getToken()->getUser();
-        $em = $this->getDoctrine()->getManager();
-        $affectation = $em->getRepository('AppBundle:Affectation')->derniereAffectation($user->getId());
-        if (!$affectation) {
-            $this->get('session')->getFlashBag()->add('error', "Vous n'êtes affecté à aucune caisse. Contacter l'administrateur.");
-            return $this->redirectToRoute('homepage');
-        }
-        $date = new \DateTime("now");
-        $date->setTime(0, 0);
-        //$date =\DateTime::createFromFormat( 'd-m-Y', '08-06-2022'); //Pour tester au cas ou pas de données du jours en cours
-        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
-        $debut->setTime(0, 0);
-        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
-        $fin->add(new \DateInterval('P1D'));
-        $fin->setTime(0, 0);
-        $affectations = $em->getRepository('AppBundle:Affectation')->trouverParNumeroCaisseDate($affectation->getCaisse()->getNumero(), $date);
-        $resultat = array();
-        foreach($affectations as $atraite){
-            $username = $atraite->getAgent()->getUsername();
-            $nom = $atraite->getAgent()->getNomComplet();
-            $types = $em->getRepository('AppBundle:EtatJournalier')->recupererEtatJournalier($debut, $fin, $atraite->getCaisse()->getNumero(), $username);
-            $i = 0;
-            $nv = 0;
-            $nr = 0;
-            $mv = 0;
-            $mr = 0;
-            $anaser = 0;
-            if(count($types)>0){
-                $resultat[$username]=array();
-                $resultat[$username][0] = $username;
-                $resultat[$username][2] = $atraite->getActif() ? "En cours" : $atraite->getDateModification();
-                $resultat[$username][3] = $atraite->getDate();
-                $resultat[$username][5] = $nom;
-                foreach($types as $usage){
-                    $ligne = array();
-                    $ligne[0] = $usage['typeVehicule'];
-                    $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalierAgent($usage['typeVehicule'], $debut, $fin, $affectation->getCaisse()->getNumero(), $username);
-                    if($etat && count($etat)>0){
-                        $ligne[1] = \intval($etat[0][1]);
-                        $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
-                        $ligne[3] = \intval($etat[0][3])-\intval($etat[0][5]);//$visites['mVisite'];
-                        $ligne[4] = \intval($etat[0][4]);//$visites['mVisite'];
-                        $ligne[5] = \intval($etat[0][5]);//$visites['anaser'];
-                        $ligne[6] = \intval($etat[0][3])+\intval($etat[0][4]);//$visites['mVisite']+$visites['mRevisite']+$visites['anaser'];
-                    }else{
-                        $ligne[1] = 0;
-                        $ligne[2] = 0;
-                        $ligne[3] = 0;
-                        $ligne[4] = 0;
-                        $ligne[5] = 0;
-                        $ligne[6] = 0;
-                    }
-                    $resultat[$username][1][] = $ligne;
-                    $nv += $ligne[1];
-                    $nr += $ligne[2];
-                    $mv += $ligne[3];
-                    $mr += $ligne[4];
-                    $anaser += $ligne[5];
-                    
-                }
-                $resultat[$username][4] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser];
-            }
-        }
-        //print_r($resultat);exit;
-        $fin->sub (new \DateInterval('P1D'));
-        $total = array();
-        //$total = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser]; 
-        return $this->render('statistique/caisse/caissier.html.twig', array(
-            'resultats' => $resultat,'caisse' => $affectation->getCaisse(), 'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),'total'=>$total,
         ));
     }
 }

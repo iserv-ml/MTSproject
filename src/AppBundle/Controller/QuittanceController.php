@@ -246,7 +246,8 @@ class QuittanceController extends Controller
                 $nbRevisite = 0;
             }
             $anaser = -$quittance->getAnaser();
-            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $anaser, $centre->getCode(), $quittance->getEncaissePar(), 'Remboursement', $user->getUsername());
+            $encaisse = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeEncaisse($quittance->getNumero());
+            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $encaisse->getTypeVehicule(), $encaisse->getUsage(), $encaisse->getGenre(), $encaisse->getCarrosserie(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $anaser, $centre->getCode(), $quittance->getEncaissePar(), 'Remboursement', $user->getUsername());
             $em->persist($etat);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'La quittance a été remboursée.');
