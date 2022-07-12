@@ -131,7 +131,7 @@
         <div style="margin-top:0mm;margin-left:1cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.chassis }}</div><span>{{ visite.vehicule.modele.marque.libelle }} {{ visite.vehicule.modele.libelle }}</span></div>
     </div>
     <div style="width:11.5cm; height: 7cm;overflow: hidden;">
-        <div style="margin-top:1.2cm;margin-left:5cm;font-size:8px">{{ visite.numeroCertificat }}</div>
+        <div style="margin-top:1.2cm;margin-left:5cm;font-size:8px;font-weight: bold">{{ visite.numeroCertificat }}</div>
         <div style="margin-top:1.5cm;text-align: center;font-size: 20px">{% if visite.immatriculation_v is not null %}{{ visite.immatriculation_v }}{%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</div>
         <div style="margin-top:0cm;text-align: center;font-weight: bold;font-size:30px">{{ visite.dateValidite|date('d-m-Y') }}</div>
     </div>
