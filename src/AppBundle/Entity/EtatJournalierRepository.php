@@ -96,12 +96,12 @@ class EtatJournalierRepository extends EntityRepository
         return $arrayAss;
     }
     
-    public function recupererTypeEncaisse($numero){
+    public function recupererTypeEncaisse($numero, $immatriculation){
         try{ 
             $result = $this->getEntityManager()
                 ->createQuery(
-                    'SELECT r FROM AppBundle:EtatJournalier r WHERE r.quittance = :numero'
-                )->setParameter("numero",$numero)
+                    'SELECT r FROM AppBundle:EtatJournalier r WHERE r.quittance = :numero AND r.immatriculation=:immatriculation'
+                )->setParameter("numero",$numero)->setParameter("immatriculation",$immatriculation)
                 ->getSingleResult();
         }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
             $result = null;

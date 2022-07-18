@@ -375,7 +375,7 @@ class CentreController extends Controller
                             $montantRevisite = 0;
                             $nbRevisite = 0;
                         }
-                        $encaisse = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeEncaisse($quittance->getNumero());
+                        $encaisse = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeEncaisse($quittance->getNumero(), $quittance->getVisite()->getImmatriculation_v());
                         $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $encaisse->getTypeVehicule(), $encaisse->getUsage(), $encaisse->getGenre(), $encaisse->getCarrosserie(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(),  $quittance->getNumero(), $centre->getCode(), $quittance->getEncaissePar(), "Remboursement", $user->getUsername());
                         $em->persist($etat);
                         $em->persist($sortie);
