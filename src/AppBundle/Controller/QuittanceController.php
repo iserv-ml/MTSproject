@@ -369,7 +369,7 @@ class QuittanceController extends Controller
             $montant = $quittance->calculerMontant($derniereVisite);
             $retard = $quittance->calculerRetard($derniereVisite);
             $penalite = $em->getRepository('AppBundle:Penalite')->trouverParNbJours($retard);
-            $quittance->generer($montant, $penalite, $retard, $centre->getAnaser(), $centre->getCode());
+            $quittance->generer($montant, $penalite, $retard, $centre->getAnaser(), $centre->getCode(), $visite->getChaine()->getCaisse()->getNumero());
         }
         return $this->render('quittance/confirmer.html.twig', array(
             'quittance' => $quittance,
