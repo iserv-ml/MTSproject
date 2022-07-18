@@ -332,7 +332,7 @@ class QuittanceController extends Controller
             $retard = $quittance->calculerRetard($derniereVisite);
             $penalite = $em->getRepository('AppBundle:Penalite')->trouverParNbJours($retard);
         }
-        $quittance->generer($montant, $penalite, $retard, $centre->getAnaser(), $centre->getCode());
+        $quittance->generer($montant, $penalite, $retard, $centre->getAnaser(), $centre->getCode(), $visite->getChaine()->getCaisse()->getNumero());
         $em->persist($quittance);
         $visite->setQuittance($quittance);
         $em->flush();

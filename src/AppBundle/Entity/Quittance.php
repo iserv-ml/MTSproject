@@ -370,7 +370,7 @@ class Quittance
         return ($ecart && $ecart->days > 0) ? $ecart->days : 0;
     }
     
-    public function generer($montant, $penalite, $retard, $anaser, $codeCentre){
+    public function generer($montant, $penalite, $retard, $anaser, $codeCentre, $caisse=0){
         $this->setMontantVisite($montant);
         $this->setTva($montant*18/100);
         $this->setAnaser(0);
@@ -394,7 +394,7 @@ class Quittance
         
         $this->retard = $retard;
         $this->rembourse = false;
-        $this->setNumero($codeCentre.\time());
+        $this->setNumero($codeCentre.$caisse.\time());
     }
     
     function getTva() {
