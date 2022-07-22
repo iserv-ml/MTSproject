@@ -59,7 +59,7 @@ class QuittanceRepository extends EntityRepository
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r FROM AppBundle:Quittance r '
-                    . ' WHERE r.paye =:paye AND r.rembourse =:rembourse AND r.dateEncaissement >= :debut AND r.dateEncaissement <= :fin '
+                    . ' WHERE r.montantVisite > 0 AND r.paye =:paye AND r.rembourse =:rembourse AND r.dateEncaissement >= :debut AND r.dateEncaissement <= :fin '
                     )
            ->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('paye', true)->setParameter('rembourse', false);
         return $qb->getResult();

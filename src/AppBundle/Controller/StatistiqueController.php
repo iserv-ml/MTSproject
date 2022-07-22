@@ -360,7 +360,6 @@ class StatistiqueController extends Controller
                         if($visite->getStatut() == 2){
                             $nbrevisiteOk++;
                         }
-                        break;
                 }
             }
             if(($nbvisite + $nbrevisite)>0)
