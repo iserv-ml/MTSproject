@@ -133,36 +133,40 @@ class StatistiqueController extends Controller
         $mv = 0;
         $mr = 0;
         $anaser = 0;
-        if(count($types)>0){
-        foreach($types as $usage){
-            $ligne = array();
-            $ligne[0] = $usage['typeVehicule'];
-            $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($usage['typeVehicule'], $debut, $fin, $caisse->getNumero());
-            if($etat && count($etat)>0){
-                $ligne[1] = \intval($etat[0][1]);
-                $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
-                $ligne[3] = \intval($etat[0][3])-\intval($etat[0][5]);//$visites['mVisite'];
-                $ligne[4] = \intval($etat[0][4]);//$visites['mVisite'];
-                $ligne[5] = \intval($etat[0][5]);//$visites['anaser'];
-                $ligne[6] = \intval($etat[0][3])+\intval($etat[0][4]);//$visites['mVisite']+$visites['mRevisite']+$visites['anaser'];
-            }else{
-                $ligne[1] = 0;
-                $ligne[2] = 0;
-                $ligne[3] = 0;
-                $ligne[4] = 0;
-                $ligne[5] = 0;
-                $ligne[6] = 0;
-            }
-            $resultat[] = $ligne;
-        $nv += $ligne[1];
-            $nr += $ligne[2];
-            $mv += $ligne[3];
-            $mr += $ligne[4];
-            $anaser += $ligne[5];
-        } 
-        } 
+        $genres = $em->getRepository('AppBundle:Genre')->findAll();
         $fin->sub (new \DateInterval('P1D'));
-        $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser];
+        
+        
+        if(count($genres)>0){
+            foreach($genres as $genre){
+                $ligne = array();
+                $ligne[0] = $genre->getCode();
+                $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($genre->getCode(), $debut, $fin, $caisse->getNumero());
+                if($etat && count($etat)>0){
+                    $ligne[1] = \intval($etat[0][1]);
+                    $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
+                    $ligne[3] = \intval($etat[0][3])-\intval($etat[0][5]);//$visites['mVisite'];
+                    $ligne[4] = \intval($etat[0][4]);//$visites['mVisite'];
+                    $ligne[5] = \intval($etat[0][5]);//$visites['anaser'];
+                    $ligne[6] = \intval($etat[0][3])+\intval($etat[0][4]);//$visites['mVisite']+$visites['mRevisite']+$visites['anaser'];
+                }else{
+                    $ligne[1] = 0;
+                    $ligne[2] = 0;
+                    $ligne[3] = 0;
+                    $ligne[4] = 0;
+                    $ligne[5] = 0;
+                    $ligne[6] = 0;
+                }
+                $resultat[] = $ligne;
+            $nv += $ligne[1];
+                $nr += $ligne[2];
+                $mv += $ligne[3];
+                $mr += $ligne[4];
+                $anaser += $ligne[5];
+            } 
+        } 
+        
+       $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser];
        return $this->render('statistique/caisse/etat.html.twig', array(
             'resultats' => $resultat,'caisse' => $caisse,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
         ));
@@ -355,9 +359,12 @@ class StatistiqueController extends Controller
             $visites = $em->getRepository('AppBundle:Visite')->recupererParPeriodeControlleur($debut, $fin, $controleur["controlleur"]);
             foreach($visites as $visite){
                 switch($visite->getTypeVisite()){
-                    case "Visite" : $nbvisite++;break;
+                    case "Visite" : 
+                        if($visite->certificatDelivre())
+                            $nbvisite++;
+                    break;
                     case "Revisite" : $nbrevisite++;
-                        if($visite->getStatut() == 2){
+                        if($visite->estSucces()){
                             $nbrevisiteOk++;
                         }
                 }

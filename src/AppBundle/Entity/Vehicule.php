@@ -249,6 +249,14 @@ class Vehicule
     private $potCatalytique;
     
     /**
+     * @var boolean $verrou
+     *
+     * @ORM\Column(name="verrou", type="boolean", nullable=true)
+     * 
+     */
+    private $verrou;
+    
+    /**
      * @var boolean $synchro
      *
      * @ORM\Column(name="synchro", type="boolean", nullable=true)
@@ -978,4 +986,13 @@ class Vehicule
     function setFormatImmatriculation($formatImmatriculation) {
         $this->formatImmatriculation = $formatImmatriculation;
     }
+    
+    public function getVerrou() {
+        return $this->verrou;
+    }
+
+    public function setVerrou($verrou) {
+        $this->verrou = $verrou;
+    }
+    
 }

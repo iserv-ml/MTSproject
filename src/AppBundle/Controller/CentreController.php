@@ -375,10 +375,10 @@ class CentreController extends Controller
                             $montantRevisite = 0;
                             $nbRevisite = 0;
                         }
-                        $encaisse = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeEncaisse($quittance->getNumero());
-                        $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $encaisse->getTypeVehicule(), $encaisse->getUsage(), $encaisse->getGenre(), $encaisse->getCarrosserie(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(),  $quittance->getNumero(), $centre->getCode(), $quittance->getEncaissePar(), "Remboursement", $user->getUsername());
+                        $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getTypeVehicule(), $quittance->getUsage(), $quittance->getGenre(), $quittance->getCarrosserie(), $quittance->getCaisse(), $quittance->getImmatriculation(),  $quittance->getNumero(), $centre->getCode(), $quittance->getEncaissePar(), "Remboursement", $user->getUsername());
                         $em->persist($etat);
                         $em->persist($sortie);
+                        $quittance->getVisite()->getVehicule()->setVerrou(false);
                         $em->flush();
                         $this->get('session')->getFlashBag()->add('notice', 'La quittance a été remboursée.');
                     }else{

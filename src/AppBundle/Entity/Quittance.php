@@ -136,6 +136,55 @@ class Quittance
     private $remboursePar;
     
     /**
+     * @var string $typeVehicule
+     *
+     * @ORM\Column(name="type_vehicule", type="string", nullable=true)
+     * 
+     */
+    private $typeVehicule;
+    
+    /**
+     * @var string $genre
+     *
+     * @ORM\Column(name="genre", type="string", nullable=true)
+     * 
+     */
+    private $genre;
+    
+    /**
+     * @var string $usage
+     *
+     * @ORM\Column(name="usagetype", type="string", nullable=true)
+     * 
+     */
+    private $usage;
+    
+    /**
+     * @var string $carrosserie
+     *
+     * @ORM\Column(name="carrosserie", type="string", nullable=true)
+     * 
+     */
+    private $carrosserie;
+    
+    /**
+     * @var string $caisse
+     *
+     * @ORM\Column(name="caisse", type="string", nullable=true)
+     * 
+     */
+    private $caisse;
+    
+    /**
+     * @var string $immatriculation
+     *
+     * @ORM\Column(name="immatriculation", type="string", length=255, nullable=true)
+     * 
+     * 
+     */
+    private $immatriculation;
+    
+    /**
     * @ORM\OneToOne(targetEntity="Visite", mappedBy="quittance", cascade={"persist","refresh"})
     * @ORM\JoinColumn(name="visite_id", referencedColumnName="id")
     * 
@@ -496,6 +545,17 @@ class Quittance
         $this->setAnaser(0);
     }
     
+    public function initialiserVisite(Visite $visite){
+        $this->visite = $visite;
+        $this->immatriculation = $visite->getVehicule()->getImmatriculation();
+        $this->typeVehicule = $visite->getVehicule()->getTypeVehicule()->getLibelle();
+        $this->genre = $visite->getVehicule()->getTypeVehicule()->getGenre()->getCode();
+        $this->usage = $visite->getVehicule()->getTypeVehicule()->getUsage()->getLibelle();
+        $this->carrosserie = $visite->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle();
+        $this->caisse = $visite->getChaine()->getCaisse()->getNumero();
+        $visite->getVehicule()->setVerrou(true);
+    }
+    
     function getCaissier() {
         return $this->caissier;
     }
@@ -527,6 +587,56 @@ class Quittance
     public function setRemboursePar($remboursePar) {
         $this->remboursePar = $remboursePar;
     }
+    
+    public function getTypeVehicule() {
+        return $this->typeVehicule;
+    }
 
+    public function getGenre() {
+        return $this->genre;
+    }
+
+    public function getUsage() {
+        return $this->usage;
+    }
+
+    public function getCarrosserie() {
+        return $this->carrosserie;
+    }
+
+    public function getImmatriculation() {
+        return $this->immatriculation;
+    }
+
+    public function setTypeVehicule($typeVehicule) {
+        $this->typeVehicule = $typeVehicule;
+    }
+
+    public function setGenre($genre) {
+        $this->genre = $genre;
+    }
+
+    public function setUsage($usage) {
+        $this->usage = $usage;
+    }
+
+    public function setCarrosserie($carrosserie) {
+        $this->carrosserie = $carrosserie;
+    }
+
+    public function setImmatriculation($immatriculation) {
+        $this->immatriculation = $immatriculation;
+    }
+    public function getCaisse() {
+        return $this->caisse;
+    }
+
+    public function setCaisse($caisse) {
+        $this->caisse = $caisse;
+    }
+    
+    public function getGenreTraite(){
+        return $this->genre != null ? $this->genre : $this->visite->getVehicule()->getTypeVehicule()->getGenre()->getCode();
+    }
 
 }

@@ -60,22 +60,7 @@ class QuittanceController extends Controller
      */
     public function newAction(Request $request)
     {
-        $quittance = new Quittance();
-        $form = $this->createForm('AppBundle\Form\QuittanceType', $quittance);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($quittance);
-            $em->flush();
-
-            return $this->redirectToRoute('caisse_quittance_show', array('id' => $quittance->getId()));
-        }
-
-        return $this->render('quittance/new.html.twig', array(
-            'quittance' => $quittance,
-            'form' => $form->createView(),
-        ));
+        
     }
 
     /**
@@ -191,7 +176,7 @@ class QuittanceController extends Controller
             }
             
             $message = $visite->getContreVisiteVisuelle() ? "Quittance encaissée." : $visite->genererFichierMaha();
-            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getVisite()->getVehicule()->getTypeVehicule()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getUsage()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getGenre()->getLibelle(), $quittance->getVisite()->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $quittance->getAnaser(), $centre->getCode(), $user->getUsername(), 'Encaissement');
+            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getTypeVehicule(), $quittance->getUsage(), $quittance->getGenre(), $quittance->getCarrosserie(), $quittance->getCaisse(), $quittance->getImmatriculation(), $quittance->getNumero(), $quittance->getAnaser(), $centre->getCode(), $user->getUsername(), 'Encaissement');
             $this->get('session')->getFlashBag()->add('notice', $message);
             $em->persist($etat);
             $em->flush();
@@ -246,9 +231,9 @@ class QuittanceController extends Controller
                 $nbRevisite = 0;
             }
             $anaser = -$quittance->getAnaser();
-            $encaisse = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeEncaisse($quittance->getNumero());
-            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $encaisse->getTypeVehicule(), $encaisse->getUsage(), $encaisse->getGenre(), $encaisse->getCarrosserie(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getVisite()->getVehicule()->getImmatriculation(), $quittance->getNumero(), $anaser, $centre->getCode(), $quittance->getEncaissePar(), 'Remboursement', $user->getUsername());
+            $etat = new \AppBundle\Entity\EtatJournalier(\date('d-m-Y'), $montantVisite, $montantRevisite, $nbVisite, $nbRevisite, $quittance->getTypeVehicule(), $quittance->getUsage(), $quittance->getGenre(), $quittance->getCarrosserie(), $quittance->getVisite()->getChaine()->getCaisse()->getNumero(), $quittance->getImmatriculation(), $quittance->getNumero(), $anaser, $centre->getCode(), $quittance->getEncaissePar(), 'Remboursement', $user->getUsername());
             $em->persist($etat);
+            $quittance->getVisite()->getVehicule()->setVerrou(false);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'La quittance a été remboursée.');
         }
@@ -319,7 +304,7 @@ class QuittanceController extends Controller
             ));
         }
         $quittance = new Quittance();
-        $quittance->setVisite($visite);
+        $quittance->initialiserVisite($visite);
         $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($visite->getVehicule()->getId(), $visite->getId());
         $montant = $quittance->calculerMontant($derniereVisite);
         if($montant == -9999999999999999){
@@ -364,7 +349,7 @@ class QuittanceController extends Controller
         $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($request->get('id'));
         if(!$quittance){
             $quittance = new Quittance();
-            $quittance->setVisite($visite);
+            $quittance->initialiserVisite($visite);
             $derniereVisite = $em->getRepository('AppBundle:Visite')->derniereVisite($visite->getVehicule()->getId(), $visite->getId());
             $montant = $quittance->calculerMontant($derniereVisite);
             $retard = $quittance->calculerRetard($derniereVisite);
@@ -626,7 +611,8 @@ class QuittanceController extends Controller
         $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Quittance");$col++;
         $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Statut");$col++;
         $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Date");$col++;
-        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Agent");
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Agent");$col++;
+        $objWorksheet->getCellByColumnAndRow($col, 1)->setValue("Type vehicule");
         $ligne =2;
         foreach($entities as $entity){
             $col=0;
@@ -638,6 +624,7 @@ class QuittanceController extends Controller
             $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($statut);$col++;
             $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity['dateCreation']);$col++;
             $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity['creePar']);$col++;
+            $objWorksheet->getCellByColumnAndRow($col, $ligne)->setValue($entity['typeVehicule']);$col++;
             $ligne++;
         }
     }

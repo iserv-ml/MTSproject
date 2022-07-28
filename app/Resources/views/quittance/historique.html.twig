@@ -32,6 +32,7 @@
             <thead>
             <tr>
                 <th>Véhicule</th>
+                <th>Genre</th>
                 <th>Caisse</th>
                 <th>Montant</th>
                 <th>N° Quittance</th>
@@ -46,6 +47,7 @@
                 {% set somme = somme + montant %}
                 <tr>
                     <td>{{ item.immatriculation }}</td>
+                    <td>{{ item.genre }}</td>
                     <td>{{ item.caisse }}</td>
                     <td>{{ montant|number_format(0, ',', ' ') }}</td>
                     <td>{{ item.quittance }}</td>
@@ -60,11 +62,12 @@
                     <td>{{ item.dateCreation }}</td>
                 </tr>
             {% endfor %}
-            <tr><td colspan="3">Total</td><td colspan="3">{{ somme|number_format(0, ',', ' ') }}</td></tr>
+            <tr><td colspan="3">Total</td><td colspan="4">{{ somme|number_format(0, ',', ' ') }}</td></tr>
         </tbody>
         <tfoot>
             <tr>
                 <th>Véhicule</th>
+                <th>Genre</th>
                 <th>Caisse</th>
                 <th>Montant</th>
                 <th>N° Quittance</th>

@@ -657,5 +657,13 @@ class Visite
             return "Visite";
         }
     }
+    
+    public function estSucces(){
+        return $this->statut == 2 || $this->statut == 4;
+    } 
+    
+    public function certificatDelivre(){
+        return $this->statut == 4;
+    }
 
 }

@@ -113,6 +113,10 @@ class VehiculeController extends Controller
         if (!$vehicule) {
             throw $this->createNotFoundException("Le véhicule demandé n'est pas disponible.");
         }
+        if ($vehicule->getVerrou()) {
+            $this->get('session')->getFlashBag()->add('error', 'Impossible de modifier le vehicule avant la fin de la visite en cours');
+            return $this->redirectToRoute('vehicule_index');
+        }
         $deleteForm = $this->createDeleteForm($vehicule);
         $editForm = $this->createForm('AppBundle\Form\VehiculeType', $vehicule);
         $editForm->handleRequest($request);

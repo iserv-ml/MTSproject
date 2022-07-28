@@ -693,6 +693,7 @@ class VisiteController extends Controller
             $user = $this->container->get('security.context')->getToken()->getUser();
             $visite->setControlleur($user->getNomComplet());
             $visite->setDateControle(new \DateTime());
+            $visite->getVehicule()->setVerrou(false);
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Controle terminé. Merci de consulter le résultat');
             if($visite->getStatut()==3){

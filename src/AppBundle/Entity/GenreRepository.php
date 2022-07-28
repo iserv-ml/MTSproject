@@ -53,5 +53,12 @@ class GenreRepository extends EntityRepository
         }
         
         return $result; 
-    }    
+    }  
+    
+    public function recupererGenre() {
+        $qb = $this->getEntityManager()
+            ->createQuery('SELECT DISTINCT r.libelle FROM AppBundle:Genre r');
+        $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+        return $arrayAss;
+    }
 }

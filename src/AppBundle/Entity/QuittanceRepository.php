@@ -81,7 +81,7 @@ class QuittanceRepository extends EntityRepository
     public function historiqueTableEtatJournalier($debut, $fin, $immatriculation = "", $quittance = "") {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.quittance, r.montantVisite, r.montantRevisite, r.immatriculation, r.caisse, r.creePar, r.dateCreation FROM AppBundle:EtatJournalier r'
+                'SELECT r.id, r.quittance, r.montantVisite, r.montantRevisite, r.immatriculation, r.caisse, r.creePar, r.dateCreation, r.typeVehicule, r.genre FROM AppBundle:EtatJournalier r'
                     . ' WHERE r.immatriculation LIKE :immatriculation AND r.quittance LIKE :quittance AND r.dateCreation >= :debut AND r.dateCreation <= :fin '
                     )
            ->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('immatriculation', "%".$immatriculation."%")->setParameter('quittance', "%".$quittance."%");
@@ -96,5 +96,12 @@ class QuittanceRepository extends EntityRepository
                     )
            ->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('immatriculation', "%".$immatriculation."%")->setParameter('quittance', "%".$quittance."%");
         return $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);; 
+    }
+    
+    public function etatPeriodiqueCaisse($debut, $fin, $caisse) {
+        $qb = $this->getEntityManager()
+            ->createQuery('SELECT count(r) as nbr, SUM(r.montantVisite) as montant FROM AppBundle:Quittance r  WHERE r.montantVisite > 0 AND r.paye =:paye AND r.rembourse =:rembourse AND r.dateEncaissement >= :debut AND r.dateEncaissement <= :fin AND r.caisse = :caisse GROUP BY r.genre')->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('caisse', $caisse)->setParameter('paye', true)->setParameter('rembourse', false);
+        $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+        return $arrayAss;
     }
 }
