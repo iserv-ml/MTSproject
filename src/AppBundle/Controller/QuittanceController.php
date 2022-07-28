@@ -44,9 +44,10 @@ class QuittanceController extends Controller
         $debut = ($request->get('debut') != null && $request->get('debut') != "") ? \DateTime::createFromFormat( 'd-m-Y', $request->get('debut')) : $date;
         $debut->setTime(0, 0);
         $fin = ($request->get('fin') != null && $request->get('fin') != "") ? \DateTime::createFromFormat( 'd-m-Y', $request->get('fin')) : $date;
-        
         $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
         $quittances = $em->getRepository('AppBundle:Quittance')->historiqueTableEtatJournalier($debut, $fin, $immatriculation, $quittance);
+        $fin->sub (new \DateInterval('P1D'));
         return $this->render('quittance/historique.html.twig', array(
             'quittances'=>$quittances, 'immatriculation'=>$immatriculation, 'quittance'=>$quittance, 'debut'=>$debut->format('d-m-Y'), 'fin'=>$fin->format('d-m-Y')
         ));

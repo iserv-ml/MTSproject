@@ -86,12 +86,12 @@ class EtatJournalierRepository extends EntityRepository
         return $arrayAss;
     }
     
-    public function etatJournalierAgent($usage, $debut, $fin, $caisse, $agent) {
+    public function etatJournalierAgent($genre, $debut, $fin, $caisse, $agent) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.typeVehicule, SUM(r.nbvisite), SUM(r.nbrevisite), SUM(r.montantVisite), SUM(r.montantRevisite), SUM(r.anaser) FROM AppBundle:EtatJournalier r '
-                    . ' WHERE r.typeVehicule = :usage AND r.dateCreation >= :debut AND r.dateCreation <= :fin AND r.caisse = :caisse AND r.encaissePar =:agent GROUP BY r.typeVehicule ')
-            ->setParameter('usage', $usage)->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('caisse', $caisse)->setParameter('agent', $agent);
+                'SELECT r.genre, SUM(r.nbvisite), SUM(r.nbrevisite), SUM(r.montantVisite), SUM(r.montantRevisite), SUM(r.anaser) FROM AppBundle:EtatJournalier r '
+                    . ' WHERE r.genre = :genre AND r.dateCreation >= :debut AND r.dateCreation <= :fin AND r.caisse = :caisse AND r.encaissePar =:agent GROUP BY r.genre ')
+            ->setParameter('genre', $genre)->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('caisse', $caisse)->setParameter('agent', $agent);
         $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
         return $arrayAss;
     }

@@ -55,8 +55,8 @@ class StatistiqueController extends Controller
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
-        $fin->add(new \DateInterval('P1D'));
         $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
         $quittances = $em->getRepository('AppBundle:Quittance')->recupererEncaisserParPeriode($debut, $fin); 
         $fin->sub (new \DateInterval('P1D'));
 
@@ -123,9 +123,8 @@ class StatistiqueController extends Controller
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
-        $fin->add(new \DateInterval('P1D'));
         $fin->setTime(0, 0);
-        $types = $em->getRepository('AppBundle:EtatJournalier')->recupererTypeVehiculeDistinct($debut, $fin, $caisse->getNumero());
+        $fin->add(new \DateInterval('P1D'));
         $resultat = array();
         $i = 0;
         $nv = 0;
@@ -133,9 +132,7 @@ class StatistiqueController extends Controller
         $mv = 0;
         $mr = 0;
         $anaser = 0;
-        $genres = $em->getRepository('AppBundle:Genre')->findAll();
-        $fin->sub (new \DateInterval('P1D'));
-        
+        $genres = $em->getRepository('AppBundle:Genre')->findAll();       
         
         if(count($genres)>0){
             foreach($genres as $genre){
@@ -165,7 +162,7 @@ class StatistiqueController extends Controller
                 $anaser += $ligne[5];
             } 
         } 
-        
+       $fin->sub (new \DateInterval('P1D'));
        $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser];
        return $this->render('statistique/caisse/etat.html.twig', array(
             'resultats' => $resultat,'caisse' => $caisse,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
@@ -189,34 +186,34 @@ class StatistiqueController extends Controller
         }
         $date = new \DateTime("now");
         $date->setTime(0, 0);
-        //$date =\DateTime::createFromFormat( 'd-m-Y', '01-06-2022'); //Pour tester au cas ou pas de données du jours en cours
+        $date =\DateTime::createFromFormat( 'd-m-Y', '01-06-2022'); //Pour tester au cas ou pas de données du jours en cours
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
-        $fin->add(new \DateInterval('P1D'));
         $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
         $affectations = $em->getRepository('AppBundle:Affectation')->trouverParNumeroCaisseDate($affectation->getCaisse()->getNumero(), $date);
         $resultat = array();
         foreach($affectations as $atraite){
             $username = $atraite->getAgent()->getUsername();
             $nom = $atraite->getAgent()->getNomComplet();
-            $types = $em->getRepository('AppBundle:EtatJournalier')->recupererEtatJournalier($debut, $fin, $atraite->getCaisse()->getNumero(), $username);
+            $genres = $em->getRepository('AppBundle:Genre')->findAll();
             $i = 0;
             $nv = 0;
             $nr = 0;
             $mv = 0;
             $mr = 0;
             $anaser = 0;
-            if(count($types)>0){
+            if(count($genres)>0){
                 $resultat[$username]=array();
                 $resultat[$username][0] = $username;
                 $resultat[$username][2] = $atraite->getActif() ? "En cours" : $atraite->getDateModification();
                 $resultat[$username][3] = $atraite->getDate();
                 $resultat[$username][5] = $nom;
-                foreach($types as $usage){
+                foreach($genres as $genre){
                     $ligne = array();
-                    $ligne[0] = $usage['typeVehicule'];
-                    $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalierAgent($usage['typeVehicule'], $debut, $fin, $affectation->getCaisse()->getNumero(), $username);
+                    $ligne[0] = $genre->getCode();
+                    $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalierAgent($genre->getCode(), $debut, $fin, $affectation->getCaisse()->getNumero(), $username);
                     if($etat && count($etat)>0){
                         $ligne[1] = \intval($etat[0][1]);
                         $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
@@ -269,8 +266,8 @@ class StatistiqueController extends Controller
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
-        $fin->add(new \DateInterval('P1D'));
         $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
         $visites = $em->getRepository('AppBundle:Visite')->recupererEchecParPeriode($debut, $fin); 
         $fin->sub (new \DateInterval('P1D'));
         return $this->render('statistique/detail/echec.html.twig', array(
@@ -295,8 +292,8 @@ class StatistiqueController extends Controller
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
-        $fin->add(new \DateInterval('P1D'));
         $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
         $visites = $em->getRepository('AppBundle:Visite')->recupererReussiteParPeriode($debut, $fin); 
         $fin->sub (new \DateInterval('P1D'));
         return $this->render('statistique/detail/reussite.html.twig', array(
@@ -322,8 +319,8 @@ class StatistiqueController extends Controller
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
-        $fin->add(new \DateInterval('P1D'));
         $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
         $visites = $em->getRepository('AppBundle:Visite')->recupererEchecParPeriode($debut, $fin); 
         $fin->sub (new \DateInterval('P1D'));
         return $this->render('statistique/detail/centre.html.twig', array(
@@ -348,8 +345,8 @@ class StatistiqueController extends Controller
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
-        $fin->add(new \DateInterval('P1D'));
         $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
         $liste = array();
         $controleurs = $em->getRepository('AppBundle:Visite')->recupererControleurPeriode($debut, $fin);
         foreach($controleurs as $controleur){
