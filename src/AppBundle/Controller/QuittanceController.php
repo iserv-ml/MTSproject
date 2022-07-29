@@ -41,9 +41,10 @@ class QuittanceController extends Controller
         $immatriculation = \trim($request->get('immatriculation', ''));
         $quittance = \trim($request->get('quittance', ''));
         $date = new \DateTime("now");
-        $debut = ($request->get('debut') != null && $request->get('debut') != "") ? \DateTime::createFromFormat( 'd-m-Y', $request->get('debut')) : $date;
+        echo $date->format('Y-m-d H:i:s')."<br/>";
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
-        $fin = ($request->get('fin') != null && $request->get('fin') != "") ? \DateTime::createFromFormat( 'd-m-Y', $request->get('fin')) : $date;
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
         $fin->setTime(0, 0);
         $fin->add(new \DateInterval('P1D'));
         $quittances = $em->getRepository('AppBundle:Quittance')->historiqueTableEtatJournalier($debut, $fin, $immatriculation, $quittance);

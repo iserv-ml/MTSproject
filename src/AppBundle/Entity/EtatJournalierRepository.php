@@ -29,8 +29,8 @@ class EtatJournalierRepository extends EntityRepository
     public function etatJournalier($genre, $debut, $fin, $caisse) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.typeVehicule, SUM(r.nbvisite), SUM(r.nbrevisite), SUM(r.montantVisite), SUM(r.montantRevisite), SUM(r.anaser) FROM AppBundle:EtatJournalier r '
-                    . ' WHERE r.genre = :genre AND r.dateCreation >= :debut AND r.dateCreation <= :fin AND r.caisse = :caisse GROUP BY r.typeVehicule ')
+                'SELECT r.genre, SUM(r.nbvisite), SUM(r.nbrevisite), SUM(r.montantVisite), SUM(r.montantRevisite), SUM(r.anaser) FROM AppBundle:EtatJournalier r '
+                    . ' WHERE r.genre = :genre AND r.dateCreation >= :debut AND r.dateCreation <= :fin AND r.caisse = :caisse GROUP BY r.genre ')
             ->setParameter('genre', $genre)->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('caisse', $caisse);
         $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
         return $arrayAss;
