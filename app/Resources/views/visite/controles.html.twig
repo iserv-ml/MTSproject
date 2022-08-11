@@ -51,8 +51,8 @@
                     {% for visite in visites %}
                         <tr>
                             <td>{{ visite.immatriculation }} </td>
-                            <td>{{ visite.vehicule.chassis }} </td>
-                            <td>{{ visite.vehicule.typeChassis }} </td>
+                            <td>{{ visite.chassis }} </td>
+                            <td>{{ visite.type_chassis }} </td>
                             <td>{{ visite.nom }} {{ visite.prenom }}</td>
                             <td>
                                 {% if visite.contre_visite == 1 %}

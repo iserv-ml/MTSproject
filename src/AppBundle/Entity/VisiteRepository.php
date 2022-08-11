@@ -301,7 +301,7 @@ class VisiteRepository extends EntityRepository
         try{
             $controle = ($piste == 0) ? 'pi.numero > :piste ' : 'pi.numero = :piste ';
             $conn = $this->getEntityManager()->getConnection();
-            $sql = 'SELECT r.id, r.contre_visite, r.contre_visite_visuelle,r.immatriculation_v, v.immatriculation, v.type_chassis, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste, v.id as vehicule FROM visite r LEFT JOIN vehicule v ON r.vehicule_id = v.id LEFT JOIN proprietaire p ON v.proprietaire_id = p.id LEFT JOIN chaine c on r.chaine_id = c.id LEFT JOIN piste pi on c.piste_id = pi.id '
+            $sql = 'SELECT r.id, r.contre_visite, r.contre_visite_visuelle,r.immatriculation_v, v.immatriculation, v.type_chassis, v.chassis, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste, v.id as vehicule FROM visite r LEFT JOIN vehicule v ON r.vehicule_id = v.id LEFT JOIN proprietaire p ON v.proprietaire_id = p.id LEFT JOIN chaine c on r.chaine_id = c.id LEFT JOIN piste pi on c.piste_id = pi.id '
                         . ' WHERE r.statut IN (1,2, 3) AND v.immatriculation like :immatriculation AND '.$controle;
             
             $stmt = $conn->prepare($sql);
@@ -326,5 +326,15 @@ class VisiteRepository extends EntityRepository
             $result = null;
         }
         return $result; 
+    }
+    
+    public function recupererToutParPeriode($debut, $fin, $immatriculation="", $controleur="") {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Visite r'
+                    . ' WHERE r.dateControle >= :debut AND r.dateControle <= :fin AND r.immatriculation_v LIKE :immatriculation AND r.controlleur = :controleur'
+                    )
+           ->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('controleur', $controleur)->setParameter('immatriculation', "%".$immatriculation."%");
+        return $qb->getResult();
     }
 }
