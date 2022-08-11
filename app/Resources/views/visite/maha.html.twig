@@ -28,8 +28,12 @@
                     <td>{% if visite.immatriculation_v is not null %} {{ visite.immatriculation_v }} {%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</td>
                 </tr>
                 <tr>
-                    <th>Chassis</th>
+                    <th>Type Chassis</th>
                     <td>{{ visite.vehicule.chassis }}</td>
+                </tr>
+                <tr>
+                    <th>Chassis</th>
+                    <td>{{ visite.vehicule.typeChassis }}</td>
                 </tr>
                 <tr>
                     <th>Propriétaire</th>
