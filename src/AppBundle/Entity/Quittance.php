@@ -554,6 +554,7 @@ class Quittance
         $this->carrosserie = $visite->getVehicule()->getTypeVehicule()->getCarrosserie()->getLibelle();
         $this->caisse = $visite->getChaine()->getCaisse()->getNumero();
         $visite->getVehicule()->setVerrou(true);
+        $visite->setImmatriculation_v($visite->getVehicule()->getImmatriculation());
     }
     
     function getCaissier() {
@@ -637,6 +638,10 @@ class Quittance
     
     public function getGenreTraite(){
         return $this->genre != null ? $this->genre : $this->visite->getVehicule()->getTypeVehicule()->getGenre()->getCode();
+    }
+    
+    public function getTypeTraite(){
+        return $this->typeVehicule != null ? $this->typeVehicule : $this->visite->getVehicule()->getTypeVehicule()->getLibelle();
     }
 
 }

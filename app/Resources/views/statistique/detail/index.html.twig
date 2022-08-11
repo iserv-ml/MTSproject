@@ -55,7 +55,7 @@
                     {% set total = total + (quittance.ttc)|round(0, 'ceil') %}
                     {% set nbr = nbr+1 %}
                     <tr>
-                        <td>{{ quittance.getGenreTraite }}</td>
+                        <td>{{ quittance.getTypeTraite }}</td>
                         <td>{% if quittance.visite.immatriculation_v is not null %} {{ quittance.visite.immatriculation_v }} {%  else %}{{ quittance.visite.vehicule.immatriculation }}{%  endif %}</td>
                         <td>{{ quittance.numero }}</td>
                         <td>{% if quittance.visite.revisite %}REVISITE{% else %} VISITE {% endif %}</td>
