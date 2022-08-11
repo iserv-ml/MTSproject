@@ -38,7 +38,6 @@
                 <thead>
                     <tr>
                         <th>Immatriculation</th>
-                        <th>Type Chassis</th>
                         <th>Chassis</th>
                         <th>Type Chassis</th>
                         <th>Proprietaire</th>
@@ -52,8 +51,8 @@
                     {% for visite in visites %}
                         <tr>
                             <td>{{ visite.immatriculation }} </td>
-                            <td>{{ visite.chassis }} </td>
-                            <td>{{ visite.typeChassis }} </td>
+                            <td>{{ visite.vehicule.chassis }} </td>
+                            <td>{{ visite.vehicule.typeChassis }} </td>
                             <td>{{ visite.nom }} {{ visite.prenom }}</td>
                             <td>
                                 {% if visite.contre_visite == 1 %}
