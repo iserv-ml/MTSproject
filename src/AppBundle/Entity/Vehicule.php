@@ -662,6 +662,25 @@ class Vehicule
      * @ORM\Column(type="string")
      */
     private $creePar;
+    
+    //BEHAVIOR
+    /**
+     * @var string $agentCreation
+     *
+     * @Gedmo\Blameable(on="create")
+     * @ORM\ManyToOne(targetEntity="Utilisateur", inversedBy="vehicules", cascade={"persist","refresh"})
+     * @ORM\JoinColumn(name="utilisateur_id", referencedColumnName="id")
+     */
+    private $agentCreation;
+    
+    /**
+     * @var string $agentModification
+     *
+     * @Gedmo\Blameable(on="update")
+     * @ORM\ManyToOne(targetEntity="Utilisateur", inversedBy="vehicules", cascade={"persist","refresh"})
+     * @ORM\JoinColumn(name="utilisateur_id", referencedColumnName="id")
+     */
+    private $agentModification;
 
     /**
      * @var string $modifierPar
@@ -995,4 +1014,27 @@ class Vehicule
         $this->verrou = $verrou;
     }
     
+    public function getAgentCreation() {
+        return $this->agentCreation;
+    }
+
+    public function getAgentModification() {
+        return $this->agentModification;
+    }
+
+    public function setAgentCreation($agentCreation) {
+        $this->agentCreation = $agentCreation;
+    }
+
+    public function setAgentModification($agentModification) {
+        $this->agentModification = $agentModification;
+    }
+
+    public function getCreateur(){
+        return $this->agentCreation != null ? $this->agentCreation : $this->creePar;
+    }
+    
+    public function getDernierModificateur(){
+        return $this->agentModification != null ? $this->agentModification : $this->modifierPar;
+    }
 }

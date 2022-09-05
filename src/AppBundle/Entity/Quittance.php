@@ -119,6 +119,14 @@ class Quittance
      */
     private $encaissePar;
     
+    /**
+     * @var string $nomCaissier
+     *
+     * @ORM\Column(name="nom_caissier", type="string", length=255, nullable=true)
+     * 
+     */
+    private $nomCaissier;
+    
     
     /**
      * @var \DateTime $dateRemboursement
@@ -470,11 +478,20 @@ class Quittance
         $this->anaser = ($anaser != null) ? $anaser : 0;
     }
     
-    public function encaisser($encaissePar=null){
+    public function getNomCaissier() {
+        return $this->nomCaissier;
+    }
+
+    public function setNomCaissier($nomCaissier) {
+        $this->nomCaissier = $nomCaissier;
+    }
+    
+    public function encaisser($encaissePar=null, $nomCaissier=null){
         $this->setPaye(1);
         $this->getVisite()->setStatut(1);
         $this->setDateEncaissement(new \DateTime());
         $this->setEncaissePar($encaissePar);
+        $this->setNomCaissier($nomCaissier);
     }
     
     public function rembourser($remboursePar=null){
@@ -642,6 +659,10 @@ class Quittance
     
     public function getTypeTraite(){
         return $this->typeVehicule != null ? $this->typeVehicule : $this->visite->getVehicule()->getTypeVehicule()->getLibelle();
+    }
+    
+    public function getCaisserEncaissement(){
+        return $this->nomCaissier != null? $this->nomCaissier : $this->encaissePar;
     }
 
 }

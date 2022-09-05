@@ -162,7 +162,7 @@ class QuittanceController extends Controller
             $this->get('session')->getFlashBag()->add('notice', 'Cette quittance a déjà été encaissé.');
         }else{
             $visite = $quittance->getVisite();  
-            $quittance->encaisser($user->getUsername());
+            $quittance->encaisser($user->getUsername(), $user->getNomComplet());
             $caisse = $visite->getChaine()->getCaisse();
             $caisse->encaisserQuittance($quittance);
             if($visite->getRevisite()){

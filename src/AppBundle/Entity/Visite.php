@@ -665,5 +665,47 @@ class Visite
     public function certificatDelivre(){
         return $this->statut == 4;
     }
+    
+    /**
+     * @var string $aiguilleur
+     *
+     * @Gedmo\Blameable(on="create")
+     * @ORM\ManyToOne(targetEntity="Utilisateur", inversedBy="vehicules", cascade={"persist","refresh"})
+     * @ORM\JoinColumn(name="utilisateur_id", referencedColumnName="id")
+     */
+    private $aiguilleur;
+    
+    /**
+     * @var string $agentModification
+     *
+     * @Gedmo\Blameable(on="update")
+     * @ORM\ManyToOne(targetEntity="Utilisateur", inversedBy="vehicules", cascade={"persist","refresh"})
+     * @ORM\JoinColumn(name="utilisateur_id", referencedColumnName="id")
+     */
+    private $agentModification;
+    
+    public function getAiguilleur() {
+        return $this->aiguilleur;
+    }
+
+    public function getAgentModification() {
+        return $this->agentModification;
+    }
+
+    public function setAiguilleur($aiguilleur) {
+        $this->aiguilleur = $aiguilleur;
+    }
+
+    public function setAgentModification($agentModification) {
+        $this->agentModification = $agentModification;
+    }
+
+    public function getDernierModificateur(){
+        return $this->agentModification != null ? $this->agentModification : $this->modifierPar;
+    }
+    
+    public function getAgentAiguilleur(){
+        return $this->aiguilleur != null ? $this->aiguilleur : $this->creePar;
+    }
 
 }
