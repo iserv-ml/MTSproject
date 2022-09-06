@@ -22,11 +22,16 @@ class QuittanceController extends Controller
      * Lists all quittance entities.
      *
      * @Route("/", name="caisse_quittance_index")
-     * @Method("GET")
+     * @Method({"GET", "POST"})
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        return $this->render('quittance/index.html.twig');
+        $em = $this->getDoctrine()->getManager();
+        $immatriculation = \trim($request->get('immatriculation', ''));
+        $quittances = (\strlen($immatriculation) > 3) ? $em->getRepository('AppBundle:Quittance')->trouverParImmatriculation($immatriculation) : null;
+        return $this->render('quittance/index.html.twig', array(
+           'quittances'=>$quittances, 'immatriculation'=>$immatriculation
+        ));
     }
     
     /**

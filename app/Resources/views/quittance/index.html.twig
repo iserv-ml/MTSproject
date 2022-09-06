@@ -15,76 +15,72 @@
 {% block pagetitle -%}QUITTANCES{% endblock %}
 {% block body -%}
     <div class="table-responsive">
-        <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
-            <thead>
-            <tr>
-                <th>Véhicule</th>
-                <th>Propriétaire</th>
-                <th>Caisse</th>
-                <th>Montant</th>
-                <th>N° Quittance</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>        
-        </tbody>
-        <tfoot>
-            <tr>
-                <th>Véhicule</th>
-                <th>Propriétaire</th>
-                <th>Caisse</th>
-                <th>Montant</th>
-                <th>N° Quittance</th>
-                <th>Actions</th>
-            </tr>
-        </tfoot>
-    </table>
+        <label class="btn btn-warning pointer-event"> 
+            <form method='POST' action='{{ path('caisse_quittance_index') }}'>
+                Immatriculation <input type="text" id="immatriculation" name="immatriculation" value="{{ immatriculation }}" /> 
+                <input type="submit" value="Rechercher"/>
+            </form>
+        </label>
+    {% if quittances is not null%}
+        {% if quittances is empty %}
+            Aucune quittance trouvée pour ce véhicule!
+        {% else %}
+            <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+                <thead>
+                    <tr>
+                        <th>Véhicule</th>
+                        <th>Propriétaire</th>
+                        <th>Caisse</th>
+                        <th>Montant</th>
+                        <th>N° Quittance</th>
+                        <th>Actions</th>
+                        {% for quittance in quittances %}
+                        <tr>
+                            <td>{{ quittance.immatriculation }}</td>
+                            <td>{{ quittance.immatriculation }}</td>
+                            <td>{{ quittance.caisse }}</td>
+                            <td>{{ quittance.ttc }}</td>
+                            <td>{{ quittance.numero }}</td>
+                            <td>
+                                {% if quittance.visite.statut < 2 %}
+                                    <a title='Rembourser' onclick='rembourser({{ quittance.id }})' class='btn btn-info' href='#'><i class='fa fa-edit' ></i></a>
+                                {% elseif quittance.visite.statut < 5 %}
+                                    Déjà contrôlé
+                                {% else %}
+                                    Déjà annulée"
+                                {% endif %}
+                                <a title='Quittance' class='btn btn-success' href="{{ path('caisse_quittance_show_principal', { 'id': quittance.id })}}"><i class='fa fa-credit-card' ></i> Voir</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>        
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Véhicule</th>
+                        <th>Propriétaire</th>
+                        <th>Caisse</th>
+                        <th>Montant</th>
+                        <th>N° Quittance</th>
+                        <th>Actions</th>
+                    </tr>
+                </tfoot>
+            </table>
+        {% endif %}
+    {% else %}
+        Saisir au mois 4 charactères pour lancer la recherche!
+    {% endif %}
+    </div>
         <div id="remboursement-modal" title="REMBOURSEMENT"></div>
 {% endblock %}
 
 {% block javascripts -%}
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#liste_clients').DataTable({
-                "columnDefs": [
-                { "orderable": false, "targets": 5 }
-                ],
-                "processing": true,
-                "serverSide": true,
-                "ajax": {
-                    "url": "{{ path('quittanceprincipaleajax') }}",
-                },
-                "paging" : true,
-                "info" : true, 
-                "searching": true,
-                "responsive": true,
-                "pageLength": 50,
-                "order": [[0, 'asc']],
-                language: {
-                    processing:     "Traitement en cours...",
-                    search:         "Rechercher&nbsp;:",
-                    lengthMenu:    "Afficher _MENU_ &eacute;l&eacute;ments",
-                    info:           "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
-                    infoEmpty:      "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
-                    infoFiltered:   "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
-                    infoPostFix:    "",
-                    loadingRecords: "Chargement en cours...",
-                    zeroRecords:    "Aucun &eacute;l&eacute;ment &agrave; afficher",
-                    emptyTable:     "Aucune donnée disponible dans le tableau",
-                    paginate: {
-                        first:      "Premier",
-                        previous:   "Pr&eacute;c&eacute;dent",
-                        next:       "Suivant",
-                        last:       "Dernier"
-                    },
-                    aria: {
-                        sortAscending:  ": activer pour trier la colonne par ordre croissant",
-                        sortDescending: ": activer pour trier la colonne par ordre décroissant"
-                    }
-                }
-            });
-        } ); 
-        
+            $("#immatriculation").focus();
+        } );
         function rembourser(id){
             var options = {
                 modal: true,
@@ -92,7 +88,7 @@
                 width:700,
                 buttons: {
                     "Rembourser": function() {
-                        $(location).attr('href', '{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/admin/gestion/centre/'+id+'/rembourser/principal')
+                        $(location).attr('href', '{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/admin/gestion/centre/'+id+'/rembourser/principal');
                     },
                     Annuler: function() {
                         $( this ).dialog( "close" );
@@ -102,6 +98,7 @@
             $('#remboursement-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
             $('#remboursement-modal').load('{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/admin/gestion/centre/'+id+'/rembourser/principal/confirmer').dialog(options).dialog('open');
         }
+        
     </script>
 {% endblock %}
 

@@ -317,7 +317,7 @@ class VisiteRepository extends EntityRepository
     public function findDelivranceAjaxAlleger($immatriculation) {
         try{
             $conn = $this->getEntityManager()->getConnection();
-            $sql = 'SELECT r.id, r.contre_visite, r.contre_visite_visuelle, v.immatriculation, v.type_chassis, v.chassis, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste, ca.numero as caisse FROM visite r LEFT JOIN vehicule v ON r.vehicule_id = v.id LEFT JOIN proprietaire p ON v.proprietaire_id = p.id LEFT JOIN chaine c ON r.chaine_id = c.id LEFT JOIN piste pi ON c.piste_id = pi.id LEFT JOIN caisse ca ON c.caisse_id = ca.id'
+            $sql = 'SELECT r.id, r.contre_visite, r.contre_visite_visuelle, r.date, v.immatriculation, v.type_chassis, v.chassis, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste, ca.numero as caisse FROM visite r LEFT JOIN vehicule v ON r.vehicule_id = v.id LEFT JOIN proprietaire p ON v.proprietaire_id = p.id LEFT JOIN chaine c ON r.chaine_id = c.id LEFT JOIN piste pi ON c.piste_id = pi.id LEFT JOIN caisse ca ON c.caisse_id = ca.id'
                         . ' WHERE r.statut IN (2,3,4) AND v.immatriculation like :immatriculation ';
             $stmt = $conn->prepare($sql);
             $stmt->execute(array('immatriculation' => "%".$immatriculation."%"));

@@ -42,6 +42,7 @@
                         <th>Proprietaire</th>
                         <th>TYPE</th>
                         <th>ETAT</th>
+                        <th>DATE DU CONTROLE</th>
                         <th>CAISSE/PISTE</th>
                         <th>Actions</th>
                     </tr>
@@ -80,6 +81,7 @@
                                     ANNULE
                                 {%  endif %}
                             </td>
+                            <td>{% if visite.date %}{{ visite.date|date('Y-m-d h:m:s') }}{% endif %}</td>
                             <td>{{ visite.caisse }}/{{ visite.piste }} </td>
                             <td>
                                 {% if visite.statut > 1 %}
@@ -106,5 +108,13 @@
         Saisir au mois 4 charactères pour lancer la recherche!
     {% endif %}
 </div>
+{% endblock %}
+{% block javascripts -%}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#immatriculation").focus();
+        } );
+        
+    </script>
 {% endblock %}
 
