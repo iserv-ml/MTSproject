@@ -351,6 +351,7 @@ class StatistiqueController extends Controller
         $controleurs = $em->getRepository('AppBundle:Visite')->recupererControleurPeriode($debut, $fin);
         foreach($controleurs as $controleur){
             $nbvisite = 0;
+            $nbechecvisite = 0;
             $nbrevisite = 0;
             $nbrevisiteOk = 0;
             $visites = $em->getRepository('AppBundle:Visite')->recupererParPeriodeControlleur($debut, $fin, $controleur["controlleur"]);
@@ -359,6 +360,8 @@ class StatistiqueController extends Controller
                     case "Visite" : 
                         if($visite->certificatDelivre())
                             $nbvisite++;
+                        else if($visite->echec())
+                            $nbechecvisite++;
                     break;
                     case "Revisite" : $nbrevisite++;
                         if($visite->estSucces()){
@@ -367,12 +370,101 @@ class StatistiqueController extends Controller
                 }
             }
             if(($nbvisite + $nbrevisite)>0)
-                $liste[] = array('controleur'=>$controleur["controlleur"],'visite'=>$nbvisite, 'revisite'=>$nbrevisite, 'revisiteok'=>$nbrevisiteOk);
+                $liste[] = array('controleur'=>$controleur["controlleur"],'visite'=>$nbvisite, 'revisite'=>$nbrevisite, 'revisiteok'=>$nbrevisiteOk, 'echec'=>$nbechecvisite);
         }
         //print_r($liste);exit;
         $fin->sub (new \DateInterval('P1D'));
         return $this->render('statistique/detail/controleur.html.twig', array(
             'liste' => $liste,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
+        ));
+    }
+    
+    
+    /**
+     * Visites historique.
+     *
+     * @Route("/visite/rapport", name="admin_gestion_centre_statistique_visite_index")
+     * @Method({"GET", "POST"})
+     */
+    public function visiteindexAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if (!$centre) {
+            throw $this->createNotFoundException("Opération interdite!");
+        }
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
+        $visites = $em->getRepository('AppBundle:Visite')->recupererToutParPeriode($debut, $fin); 
+        $fin->sub (new \DateInterval('P1D'));
+        return $this->render('statistique/detail/visite.html.twig', array(
+            'visites' => $visites,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
+        ));
+    }
+    
+    /**
+     * Visites detail.
+     *
+     * @Route("/visite/detail", name="admin_gestion_centre_statistique_visite_detail")
+     * @Method({"GET", "POST"})
+     */
+    public function visitedetailAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if (!$centre) {
+            throw $this->createNotFoundException("Opération interdite!");
+        }
+        $controleur = $request->get('controleur', '');
+        $immatriculation = $request->get('immatriculation', '');
+        $type = $request->get('type', 0);
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
+        $visites = $em->getRepository('AppBundle:Visite')->recupererToutParPeriodeFiltre($debut, $fin, $immatriculation, $controleur,$type); 
+        $fin->sub (new \DateInterval('P1D'));
+        
+        return $this->render('statistique/detail/visites.html.twig', array(
+            'visites' => $visites,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
+            'controleur' => $controleur, 'immatriculation'=>$immatriculation, 'type'=>$type
+        ));
+    }
+    
+    /**
+     * Visites detail.
+     *
+     * @Route("/visite/gratuite", name="admin_gestion_centre_statistique_visite_gratuite")
+     * @Method({"GET", "POST"})
+     */
+    public function visitegratuiteAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if (!$centre) {
+            throw $this->createNotFoundException("Opération interdite!");
+        }
+        $controleur = $request->get('controleur', '');
+        $immatriculation = $request->get('immatriculation', '');
+        $type = $request->get('type', 0);
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
+        $visites = $em->getRepository('AppBundle:Visite')->recupererGratuiteParPeriodeFiltre($debut, $fin, $immatriculation, $controleur,$type); 
+        $fin->sub (new \DateInterval('P1D'));
+        
+        return $this->render('statistique/detail/gratuite.html.twig', array(
+            'visites' => $visites,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
+            'controleur' => $controleur, 'immatriculation'=>$immatriculation, 'type'=>$type
         ));
     }
 }
