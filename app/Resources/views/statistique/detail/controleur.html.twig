@@ -41,9 +41,10 @@
                 <tr>
                     <th>N°</th>
                     <th>NOM ET PRENOMS</th>
-                    <th>VISITES EFFECTUEES</th>
-                    <th>REVISITES</th>
-                    <th>OK REVISITES</th>
+                    <th>VISITES OK</th>
+                    <th>REVISITES OK</th>
+                    <th>ECHECS</th>
+                    <th>VISITES TOTALES</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,8 +55,9 @@
                         <td>{{ nbr }}</td>
                         <td>{{ visite.controleur }}</td>
                         <td>{{ visite.visite}}</td>
-                        <td>{{ visite.revisite}}</td>
                         <td>{{ visite.revisiteok}}</td>
+                        <td>{{ visite.echec}}</td>
+                        <td>{{ visite.visite + visite.revisiteok }}</td>
                     </tr>
                 {% endfor %}
             </tbody>

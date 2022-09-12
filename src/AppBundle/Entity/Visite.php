@@ -666,6 +666,10 @@ class Visite
         return $this->statut == 4;
     }
     
+    public function echec(){
+        return $this->statut == 3;
+    }
+    
     /**
      * @var string $aiguilleur
      *
