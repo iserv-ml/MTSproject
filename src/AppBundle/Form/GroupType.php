@@ -25,6 +25,7 @@ class GroupType extends AbstractType
         'ROLE_CAISSIER_PRINCIPAL' => 'ROLE_CAISSIER_PRINCIPAL',
         'ROLE_DELIVRANCE' => 'ROLE_DELIVRANCE',
         'ROLE_CONTROLLEUR' => 'ROLE_CONTROLLEUR',
+        'ROLE_CHEF_CENTRE' => 'ROLE_CHEF_CENTRE',
     ),
     // *this line is important*
     'choices_as_values' => true,

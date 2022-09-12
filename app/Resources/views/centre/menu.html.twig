@@ -47,7 +47,7 @@
                 <a class="nav-link {% block menu_quittance_actif %}{% endblock %}" href="{{ path('caisse_quittance_index') }}">
                     <i class="nav-icon icon-list"></i> LISTE</a>
             </li>
-            {% if is_granted('ROLE_SUPER_ADMIN') %}
+            {% if is_granted('ROLE_SUPERVISEUR') %}
             <li class="nav-item ">
                 <a class="nav-link {% block menu_quittance_historique_actif %}{% endblock %}" href="{{ path('admin_gestion_quittance_historique') }}">
                     <i class="nav-icon icon-list"></i> HISTORIQUE</a>
