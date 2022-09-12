@@ -1,0 +1,126 @@
+{% extends '::base.html.twig' %}
+{% block menu -%}
+{% embed  '::centre/menu.html.twig' %}
+{% block menu_echec_actif %}active{% endblock %}
+{% block menu_statistiques_open %}active{% endblock %}
+{% endembed %}
+{% endblock %}
+{% block ariane -%}
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
+        <li class="breadcrumb-item">Statistiques echecs</li>
+    </ol>
+{% endblock %}
+{% block menu_gestion_actif %}active{% endblock %}
+{% block pagetitle -%}STATISQUES ECHEC{% endblock %}
+{% block actions %}
+    <label class="btn btn-outline-secondary pointer-event"><a  href="#" id="doPrint" onclick="imprimer()">IMPRIMER</a></label>
+    <label class="btn btn-warning pointer-event"> 
+        <form method='POST' action='{{ path('admin_gestion_centre_statistique_echec_index') }}'>
+            Du <input type="text" id="debut" name="debut" value="{{ debut }}" /> 
+            Au <input type="text" id="fin" name="fin" value="{{ fin }}" />
+            <input type="submit" value="Actualiser"/>
+        </form>
+    </label>
+{% endblock %}
+{% block body -%}
+    <div class="table-responsive">
+        <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+            <thead>
+                <tr>
+                    <th style="text-align:left">
+                        <img src="{{ asset('images/logocertificat.PNG', absolute=true) }}" />
+                    </th>
+                     <th  style="text-align:left;vertical-align: middle">
+                        DU : {{ debut }} AU : {{ fin }}
+                    </th>
+                    <th colspan="5"  style="text-align:left;vertical-align: middle">
+                        CENTRE : {{ libelle }}
+                    </th>
+                </tr>
+                <tr>
+                    <th>Catégories</th>
+                    <th>Immatriculation</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set nbr = 0 %}
+                {% for visite in visites %}
+                    {% set nbr = nbr+1 %}
+                    <tr>
+                        <td>{{ visite.vehicule.typeVehicule.libelle }}</td>
+                        <td>{% if visite.immatriculation_v is not null %} {{ visite.immatriculation_v }} {%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</td>
+                        <td>{% if visite.date %}{{ visite.date|date('Y-m-d h:m:s') }}{% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="2">NB VISITES EN ECHEC SUR LA PERIODE</td><td >{{ nbr|number_format(0, ',', ' ') }}</td>
+                </tr>
+            </tfoot>
+            
+        </table>
+    </div>
+    <div class="hidden" id="printDiv">
+        <div >
+        <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+            <thead>
+                <tr>
+                    <th style="text-align:left">
+                        <img src="{{ asset('images/logocertificat.PNG', absolute=true) }}" />
+                    </th>
+                     <th  style="text-align:left;vertical-align: middle">
+                        DU : {{ debut }} AU : {{ fin }}
+                    </th>
+                    <th colspan="5"  style="text-align:left;vertical-align: middle">
+                        CENTRE : {{ libelle }}
+                    </th>
+                </tr>
+                <tr>
+                    <th>Catégories</th>
+                    <th>Immatriculation</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set total = 0 %}
+                {% set nbr = 0 %}
+                {% for visite in visites %}
+                    {% set nbr = nbr+1 %}
+                    <tr>
+                        <td>{{ visite.vehicule.typeVehicule.libelle }}</td>
+                        <td>{% if visite.immatriculation_v is not null %} {{ visite.immatriculation_v }} {%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</td>
+                        <td>{% if visite.date %}{{ visite.date|date('Y-m-d h:m:s') }}{% endif %}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                 <tr>
+                    <td colspan="2">NB VISITES EN ECHEC SUR LA PERIODE</td><td >{{ nbr|number_format(0, ',', ' ') }}</td>
+                </tr>
+            </tfoot>
+            
+        </table>
+    </div>
+    </div>
+{% endblock %}
+{% block javascripts -%}
+    <script type="text/javascript">
+        $( function() {
+            $( "#debut" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "+0Y", dateFormat: 'dd-mm-yy' });
+            $( "#fin" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "+0Y", dateFormat: 'dd-mm-yy' });
+           
+        });
+        function imprimer(){
+            var printContents = document.getElementById('printDiv').innerHTML;
+            var originalContents = document.body.innerHTML;
+            document.body.style.backgroundColor = "white"
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.style.backgroundColor = "rgb(228, 229, 230)"
+            document.body.innerHTML = originalContents;
+        }    
+    </script>
+{% endblock %}
