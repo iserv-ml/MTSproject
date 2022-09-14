@@ -108,7 +108,7 @@ class StatistiqueController extends Controller
     }
     
     /**
-     * Finds and displays a proprietaire entity.
+     * Affiche l'état d'une caisse pour une journée.
      *
      * @Route("/{id}", name="centre_gestion_statistiques_caisse_etat")
      * @Method({"GET", "POST"})
@@ -170,7 +170,7 @@ class StatistiqueController extends Controller
     }
     
     /**
-     * Finds and displays a proprietaire entity.
+     * Affiche l'état journalier des caissiers affectés à une caisse.
      *
      * @Route("/caisse/etat", name="centre_gestion_statistiques_caissier_etat")
      * @Method({"GET", "POST"})
@@ -465,6 +465,34 @@ class StatistiqueController extends Controller
         return $this->render('statistique/detail/gratuite.html.twig', array(
             'visites' => $visites,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
             'controleur' => $controleur, 'immatriculation'=>$immatriculation, 'type'=>$type
+        ));
+    }
+    
+    /**
+     * Visites detail.
+     *
+     * @Route("/visite/comptable", name="admin_gestion_centre_statistique_visite_comptable")
+     * @Method({"GET", "POST"})
+     */
+    public function visitecomptableAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if (!$centre) {
+            throw $this->createNotFoundException("Opération interdite!");
+        }
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
+        $visites = $em->getRepository('AppBundle:Visite')->recupererComptableParPeriodeFiltre($debut, $fin); 
+        $fin->sub (new \DateInterval('P1D'));
+        
+        return $this->render('statistique/detail/comptable.html.twig', array(
+            'visites' => $visites,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
+            
         ));
     }
 }

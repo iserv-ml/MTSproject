@@ -81,7 +81,7 @@
                                     ANNULE
                                 {%  endif %}
                             </td>
-                            <td>{% if visite.date %}{{ visite.date|date('Y-m-d h:m:s') }}{% endif %}</td>
+                            <td>{% if visite.dateControle %}{{ visite.dateControle|date('Y-m-d h:m:s') }}{% endif %}</td>
                             <td>{{ visite.caisse }}/{{ visite.piste }} </td>
                             <td>
                                 {% if visite.statut > 1 %}
