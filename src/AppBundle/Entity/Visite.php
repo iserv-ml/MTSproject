@@ -684,7 +684,7 @@ class Visite
      *
      * @Gedmo\Blameable(on="update")
      * @ORM\ManyToOne(targetEntity="Utilisateur", inversedBy="vehicules", cascade={"persist","refresh"})
-     * @ORM\JoinColumn(name="utilisateur_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="utilisateur_modif_id", referencedColumnName="id")
      */
     private $agentModification;
     

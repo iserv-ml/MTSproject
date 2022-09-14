@@ -30,7 +30,11 @@ class VisiteController extends Controller
         $affectation = $em->getRepository('AppBundle:Affectation')->derniereAffectation($user->getId());
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
+        $chefCentre = $this->get('security.authorization_checker')->isGranted('ROLE_CHEF_CENTRE');
         if(!$centre || (!$admin && (!$affectation || $affectation === -1))){
+            if($chefCentre){
+                return $this->redirectToRoute('visite_delivrance');
+            }
             $this->get('session')->getFlashBag()->add('error', "Vous n'êtes affecté à aucune caisse. Contacter l'administrateur.");
             return $this->redirectToRoute('homepage');
         }
@@ -77,12 +81,13 @@ class VisiteController extends Controller
         $user = $this->container->get('security.context')->getToken()->getUser();
         $affectation = $em->getRepository('AppBundle:AffectationPiste')->derniereAffectation($user->getId());
         $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
-        if(!$affectation && !$admin){
+        $chefCentre = $this->get('security.authorization_checker')->isGranted('ROLE_CHEF_CENTRE');
+        if(!$affectation && !$admin && !$chefCentre){
             $this->get('session')->getFlashBag()->add('error', "Vous n'êtes affecté à aucune piste. Contacter l'administrateur.");
             return $this->redirectToRoute('homepage');
         }
-        $piste = $admin ? "ADMIN" : "PISTE N° ".$affectation->getPiste()->getNumero();
-        $piste_id = $admin ? 0 :$affectation->getPiste()->getNumero();
+        $piste = $admin || $chefCentre ? "ADMIN" : "PISTE N° ".$affectation->getPiste()->getNumero();
+        $piste_id = $admin || $chefCentre ? 0 :$affectation->getPiste()->getNumero();
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         $immatriculation = \trim($request->get('immatriculation', ''));
         $visites = (\strlen($immatriculation) > 3) ? $em->getRepository('AppBundle:Visite')->findControlesAjaxAlleger($immatriculation, $piste_id) : null;
