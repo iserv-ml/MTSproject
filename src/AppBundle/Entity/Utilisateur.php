@@ -285,4 +285,42 @@ class Utilisateur extends BaseUser
     }
     //Fin relation utilisateur a plusieurs historiques
     
+    
+    //Debut relation Utilisateur a plusieurs vehicules odifiés
+    /**
+    * @ORM\OneToMany(targetEntity="Vehicule", mappedBy="agentModification", cascade={"persist"})
+    */
+    protected $vehicules;
+    
+    /**
+    * Add vehicule
+    *
+    * @param AppBundle\Entity\Vehicule $vehicule
+    */
+    public function addVehicule(\AppBundle\Entity\Vehicule $vehicule)
+    {
+        $this->vehicules[] = $vehicule;
+    }
+
+    /**
+     * Get vehicules
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getVehicules()
+    {
+        return $this->vehicules;
+    }
+
+    /**
+     * Set vehicules
+     *
+     * @param \Doctrine\Common\Collections\Collection $vehicules
+     */
+    public function setVehicules(\Doctrine\Common\Collections\Collection $vehicules)
+    {
+        $this->vehicules = $vehicules;
+    }
+    //Fin relation utiliseur peut modifier plusieurs vehicules a plusieurs affectations
+    
 }

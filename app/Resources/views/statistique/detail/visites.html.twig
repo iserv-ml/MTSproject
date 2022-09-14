@@ -27,7 +27,7 @@
                 <option value='0' {% if type == 0 %}selected{% endif %}>Tout</option>
                 <option value='1' {% if type == 1 %}selected{% endif %}>Réussite</option>
                 <option value='2' {% if type == 2 %}selected{% endif %}>Echec</option>
-                <option value='2' {% if type == 3 %}selected{% endif %}>A faire</option>
+                <option value='3' {% if type == 3 %}selected{% endif %}>A faire</option>
             </select>
             <br/>Immatriculation <input type="text" id="immatriculation" name="immatriculation" value="{{ immatriculation }}"/>
             <input type="submit" value="Actualiser"/>
@@ -73,7 +73,7 @@
                             {%  else %}
                                 {{ visite.vehicule.immatriculation }}
                             {%  endif %}
-                            <br/>({{ visite.vehicule.getDernierModificateur }})
+                            <br/>{% if visite.vehicule.getDernierModificateur != "" %} ({{ visite.vehicule.getDernierModificateur }}){% endif %}
                         </td>
                         <td>{{ visite.getAgentAiguilleur }}</td>
                         <td>

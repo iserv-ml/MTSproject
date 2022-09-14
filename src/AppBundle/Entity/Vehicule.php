@@ -249,6 +249,15 @@ class Vehicule
     private $potCatalytique;
     
     /**
+     * @var string $agentModification
+     *
+     * 
+     * @ORM\ManyToOne(targetEntity="Utilisateur", inversedBy="vehicules", cascade={"persist","refresh"})
+     * @ORM\JoinColumn(name="utilisateur_modif_id", referencedColumnName="id")
+     */
+    private $agentModification;
+    
+    /**
      * @var boolean $verrou
      *
      * @ORM\Column(name="verrou", type="boolean", nullable=true)
@@ -672,15 +681,6 @@ class Vehicule
      * @ORM\JoinColumn(name="utilisateur_id", referencedColumnName="id")
      */
     private $agentCreation;
-    
-    /**
-     * @var string $agentModification
-     *
-     * @Gedmo\Blameable(on="update")
-     * @ORM\ManyToOne(targetEntity="Utilisateur", inversedBy="vehicules", cascade={"persist","refresh"})
-     * @ORM\JoinColumn(name="utilisateur_modif_id", referencedColumnName="id")
-     */
-    private $agentModification;
 
     /**
      * @var string $modifierPar
@@ -1035,6 +1035,6 @@ class Vehicule
     }
     
     public function getDernierModificateur(){
-        return $this->agentModification != null ? $this->agentModification : $this->modifierPar;
+        return $this->agentModification != null ? $this->agentModification : "";
     }
 }

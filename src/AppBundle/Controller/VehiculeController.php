@@ -140,6 +140,7 @@ class VehiculeController extends Controller
             if($modele){
                 $vehicule->setModele($modele);
             }
+            $vehicule->setAgentModification($this->container->get('security.context')->getToken()->getUser());
             $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
             return $this->redirectToRoute('vehicule_edit', array('id' => $vehicule->getId()));
