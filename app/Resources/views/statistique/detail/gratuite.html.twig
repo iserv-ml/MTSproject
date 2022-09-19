@@ -83,7 +83,7 @@
                             {% endif %}
                         </td>
                         <td>{{ visite.controlleur }}</td>
-                        <td>{% if visite.date %}{{ visite.date|date('Y-m-d h:m:s') }}{% endif %}</td>
+                        <td>{% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</td>
                         <td>
                             {% if visite.statut == 0 or visite.statut == 1 %}
                                 A FAIRE
@@ -131,7 +131,7 @@
                         <td>{{ visite.vehicule.typeVehicule.libelle }}</td>
                         <td>{% if visite.immatriculation_v is not null %} {{ visite.immatriculation_v }} {%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</td>
                         <td>{{ visite.controlleur }}</td>
-                        <td>{% if visite.date %}{{ visite.date|date('Y-m-d h:m:s') }}{% endif %}</td>
+                        <td>{% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</td>
                         <td>{% if visite.statut == 2 or visite.statut == 4 %}SUCCESS{% else %}ECHEC{% endif %}</td>
                     </tr>
                 {% endfor %}
