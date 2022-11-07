@@ -220,6 +220,11 @@ class VisiteController extends Controller
     public function showdelivranceAction(Visite $visite)
     {
         $deleteForm = $this->createDeleteForm($visite);
+        $em = $this->getDoctrine()->getManager();
+        $parametreCertificat = $em->getRepository('AppBundle:ParametreCertificat')->recuperer();
+        if(!$parametreCertificat){
+            throw $this->createNotFoundException("Il faut paramétrer les certificats!");
+        }
         if($visite->getStatut()==3){
             $date1 = $visite->getDate()->format('Y-m-d');
             $date = new \DateTime($date1);
@@ -228,12 +233,12 @@ class VisiteController extends Controller
         }else{
             $date2 = null;
         }
-        $em = $this->getDoctrine()->getManager();
         $quittance = $em->getRepository('AppBundle:Quittance')->trouverQuittanceParVisite($visite->getId());
         return $this->render('visite/show.delivrance.html.twig', array(
             'visite' => $visite,
             'delete_form' => $deleteForm->createView(),
             'dateRevisite' => $date2, 'quittance' => $quittance,
+            'parametreCertificat' => $parametreCertificat,
         ));
     }
 
