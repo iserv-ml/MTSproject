@@ -84,7 +84,7 @@
                             {% endif %}
                         </td>
                         <td>{{ visite.controlleur }}</td>
-                        <td>{% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</td>
+                        <td>{% if visite.date %}{{ visite.date|date('Y-m-d h:m:s') }}{% endif %}</td>
                         <td>
                             {% if visite.statut == 0 or visite.statut == 1 %}
                                 A FAIRE

@@ -84,7 +84,7 @@
                     <tr>
                         <td>{{ visite.vehicule.typeVehicule.libelle }}</td>
                         <td>{% if visite.immatriculation_v is not null %} {{ visite.immatriculation_v }} {%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</td>
-                        <td>{% if visite.date %}{{ visite.date|date('Y-m-d H:i:s') }}{% endif %}</td>
+                        <td>{% if visite.date %}{{ visite.date|date('Y-m-d h:m:s') }}{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
