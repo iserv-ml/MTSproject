@@ -11,7 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * Marque
  *
- * @ORM\Table(name="formatimmatriculation")
+ * @ORM\Table(name="formatImmatriculation")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\FormatImmatriculationRepository")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @UniqueEntity("presentation")

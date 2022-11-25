@@ -34,10 +34,6 @@
             <a class="nav-link {% block menu_typecartegrise_actif %}{% endblock %}" href="{{ path('admin_parametres_typecartegrise_index') }}">
                 <i class="nav-icon icon-list"></i> Type carte grise</a>
         </li>
-        <li class="nav-item {% block menu_certificats_open %}{% endblock %}">
-            <a class="nav-link {% block menu_certificats_actif %}{% endblock %}" href="{{ path('admin_parametre_vehicule_certificat_index') }}">
-                <i class="nav-icon icon-list"></i> Certificat</a>
-        </li>
     </ul>
 </li>
 {% if is_granted('ROLE_SUPERVISEUR') %}
