@@ -94,21 +94,21 @@
 <div id="certificat" style="size: A4; margin: 0;background-image:url('{{ asset('images/certificat.jpg') }}');background-size:210mm 297mm;width:210mm;font-size:11px;overflow:hidden">
     
     <div style="width:11.5cm; height: 7cm;overflow: hidden;">
-        <div style="margin-top:2mm;margin-left: 8.6cm">{{ visite.numeroCertificat }}</div>
-        <div style="margin-top:1.8cm;margin-left:1.4cm"><div style="display: inline-block;width: 7.6cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('d-m-y') }}</span></div>
-        <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.9cm">{{ visite.vehicule.proprietaire.adresse }}</div><span>{{ visite.dateValidite|date('d-m-y') }}</span></div>
-        <div style="margin-top:6mm;margin-left:2.5cm"><div style="display: inline-block;width: 7.1cm">{% if visite.immatriculation_v is not null %}{{ visite.immatriculation_v }}{%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</div><span>{{ visite.vehicule.dateMiseCirculation|date('d-m-y') }}</span></div>
-        <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.chassis }}</div><span>{{ visite.vehicule.modele.marque.libelle }} {{ visite.vehicule.modele.libelle }}</span></div>
+        <div style="margin-top:2mm;margin-left: 9cm">{{ visite.numeroCertificat }}</div>
+        <div style="margin-top:1.8cm;margin-left:1.8cm"><div style="display: inline-block;width: 7.6cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('d-m-y') }}</span></div>
+        <div style="margin-top:0mm;margin-left:2.2cm"><div style="display: inline-block;width: 6.9cm">{{ visite.vehicule.proprietaire.adresse }}</div><span>{{ visite.dateValidite|date('d-m-y') }}</span></div>
+        <div style="margin-top:6mm;margin-left:2.9cm"><div style="display: inline-block;width: 7.1cm">{% if visite.immatriculation_v is not null %}{{ visite.immatriculation_v }}{%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</div><span>{{ visite.vehicule.dateMiseCirculation|date('d-m-y') }}</span></div>
+        <div style="margin-top:0mm;margin-left:2.2cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.chassis }}</div><span>{{ visite.vehicule.modele.marque.libelle }} {{ visite.vehicule.modele.libelle }}</span></div>
     </div>
    <div style="width:11.5cm; height: 7cm;overflow: hidden;">
-        <div style="margin-top:2mm;margin-left: 8.6cm">{{ visite.numeroCertificat }}</div>
-        <div style="margin-top:1.8cm;margin-left:1.4cm"><div style="display: inline-block;width: 7.6cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('d-m-y') }}</span></div>
-        <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.9cm">{{ visite.vehicule.proprietaire.adresse }}</div><span>{{ visite.dateValidite|date('d-m-y') }}</span></div>
-        <div style="margin-top:6mm;margin-left:2.5cm"><div style="display: inline-block;width: 7.1cm">{% if visite.immatriculation_v is not null %}{{ visite.immatriculation_v }}{%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</div><span>{{ visite.vehicule.dateMiseCirculation|date('d-m-y') }}</span></div>
-        <div style="margin-top:0mm;margin-left:1.8cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.chassis }}</div><span>{{ visite.vehicule.modele.marque.libelle }} {{ visite.vehicule.modele.libelle }}</span></div>
+        <div style="margin-top:2mm;margin-left: 9cm">{{ visite.numeroCertificat }}</div>
+        <div style="margin-top:1.8cm;margin-left:1.8cm"><div style="display: inline-block;width: 7.6cm">{{ visite.vehicule.proprietaire.prenom }} {{ visite.vehicule.proprietaire.nom }}</div><span>{{ visite.date|date('d-m-y') }}</span></div>
+        <div style="margin-top:0mm;margin-left:2.2cm"><div style="display: inline-block;width: 6.9cm">{{ visite.vehicule.proprietaire.adresse }}</div><span>{{ visite.dateValidite|date('d-m-y') }}</span></div>
+        <div style="margin-top:6mm;margin-left:2.9cm"><div style="display: inline-block;width: 7.1cm">{% if visite.immatriculation_v is not null %}{{ visite.immatriculation_v }}{%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</div><span>{{ visite.vehicule.dateMiseCirculation|date('d-m-y') }}</span></div>
+        <div style="margin-top:0mm;margin-left:2.2cm"><div style="display: inline-block;width: 6.8cm">{{ visite.vehicule.chassis }}</div><span>{{ visite.vehicule.modele.marque.libelle }} {{ visite.vehicule.modele.libelle }}</span></div>
     </div>
     <div style="width:11.5cm; height: 7cm;overflow: hidden;">
-        <div style="margin-top:1.2cm;margin-left:5.6cm">{{ visite.numeroCertificat }}</div>
+        <div style="margin-top:1.2cm;margin-left:6cm">{{ visite.numeroCertificat }}</div>
         <div style="margin-top:1.5cm;text-align: center;font-size: 20px">{% if visite.immatriculation_v is not null %}{{ visite.immatriculation_v }}{%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</div>
         <div style="margin-top:0cm;text-align: center;font-weight: bold;font-size:30px">{{ visite.dateValidite|date('d-m-Y') }}</div>
     </div>
