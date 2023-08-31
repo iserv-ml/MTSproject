@@ -12,25 +12,40 @@
     </ol>
 {% endblock %}
 {% block menu_gestion_actif %}active{% endblock %}
-{% block pagetitle -%}RECHERCHE AVANCE DES VISITES{% endblock %}
+{% block pagetitle -%}RECHERCHE AVANCEE DES VISITES{% endblock %}
 {% block actions %}
     <label class="btn btn-outline-secondary pointer-event">
         <a  href="#" id="doPrint" onclick="imprimer()">IMPRIMER</a><br/>
     </label>
     <label class="btn btn-warning pointer-event"> 
         <form method='POST' action='{{ path('admin_gestion_centre_statistique_visite_detail') }}'>
-            Du <input type="text" id="debut" name="debut" value="{{ debut }}" /> 
-            Au <input type="text" id="fin" name="fin" value="{{ fin }}" />
-            Controleur <input type="text" id="controleur" name="controleur" value="{{ controleur }}"/>
-            <br/>Résultat 
-            <select id="type" name="type" >
-                <option value='0' {% if type == 0 %}selected{% endif %}>Tout</option>
-                <option value='1' {% if type == 1 %}selected{% endif %}>Réussite</option>
-                <option value='2' {% if type == 2 %}selected{% endif %}>Echec</option>
-                <option value='3' {% if type == 3 %}selected{% endif %}>A faire</option>
-            </select>
-            <br/>Immatriculation <input type="text" id="immatriculation" name="immatriculation" value="{{ immatriculation }}"/>
-            <input type="submit" value="Actualiser"/>
+            <table align="left">
+                <tr align="left">
+                    <td>Du <input type="text" id="debut" name="debut" value="{{ debut }}" /></td>
+                </tr>
+                <tr align="left">
+                    <td>Au <input type="text" id="fin" name="fin" value="{{ fin }}" /></td>
+                </tr>
+                <tr align="left">
+                    <td>Controleur <input type="text" id="controleur" name="controleur" value="{{ controleur }}"/></td>
+                </tr>
+                <tr align="left">
+                    <td> Résultat 
+                        <select id="type" name="type" >
+                            <option value='0' {% if type == 0 %}selected{% endif %}>Tout</option>
+                            <option value='1' {% if type == 1 %}selected{% endif %}>Réussite</option>
+                            <option value='2' {% if type == 2 %}selected{% endif %}>Echec</option>
+                            <option value='3' {% if type == 3 %}selected{% endif %}>A faire</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr align="left">
+                    <td>Immatriculation <input type="text" id="immatriculation" name="immatriculation" value="{{ immatriculation }}"/></td>
+                </tr>
+                <tr align="left">
+                    <td><input type="submit" value="Actualiser"/></td>
+                </tr>
+            </table>
         </form>
     </label>
 {% endblock %}

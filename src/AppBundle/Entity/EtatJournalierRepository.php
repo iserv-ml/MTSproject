@@ -27,11 +27,18 @@ class EtatJournalierRepository extends EntityRepository
     }
     
     public function etatJournalier($genre, $debut, $fin, $caisse) {
+        if($caisse != null){
+            $filtre = $caisse->getNumero();
+            $filtreCaisse = "AND r.caisse = :caisse";
+        }else{
+            $filtre = 0;
+            $filtreCaisse = "AND r.caisse >= :caisse";
+        }
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.genre, SUM(r.nbvisite), SUM(r.nbrevisite), SUM(r.montantVisite), SUM(r.montantRevisite), SUM(r.anaser) FROM AppBundle:EtatJournalier r '
-                    . ' WHERE r.genre = :genre AND r.dateCreation >= :debut AND r.dateCreation <= :fin AND r.caisse = :caisse GROUP BY r.genre ')
-            ->setParameter('genre', $genre)->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('caisse', $caisse);
+                    . ' WHERE r.genre = :genre AND r.dateCreation >= :debut AND r.dateCreation <= :fin '.$filtreCaisse.' GROUP BY r.genre ')
+            ->setParameter('genre', $genre)->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('caisse', $filtre);
         $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
         return $arrayAss;
     }

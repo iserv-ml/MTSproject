@@ -96,6 +96,8 @@ class StatistiqueController extends Controller
             $caissier = ($affectation) ? $affectation->getAgent()->getNom()." ".$affectation->getAgent()->getPrenom() : "";
             $output['aaData'][] = array($aRow->getNumero(), $caissier, $aRow->getSoldeInitial(), $ouvert, $aRow->getSolde(),$action);
 	}
+            $action = $this->genererCaisseAction("*", 1);
+            $output['aaData'][] = array("*", "TOUTES LES CAISSES", "", "", "",$action);
 	return new Response(json_encode( $output ));    
     }
     
@@ -113,12 +115,14 @@ class StatistiqueController extends Controller
      * @Route("/{id}", name="centre_gestion_statistiques_caisse_etat")
      * @Method({"GET", "POST"})
      */
-    public function etatAction(Caisse $caisse, Request $request)
+    public function etatAction(Request $request)
     {
-        if (!$caisse) {
-            throw $this->createNotFoundException("La caisse demandée n'est pas disponible.");
-        }
         $em = $this->getDoctrine()->getManager();
+        $id = $request->get("id");
+        $caisse = $id != "*" ? $em->getRepository('AppBundle:Caisse')->find($id) : null;
+        if(!$caisse && $id != "*") throw $this->createNotFoundException("La caisse demandée n'est pas disponible.");
+
+        
         $date = new \DateTime("now");
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
@@ -132,13 +136,13 @@ class StatistiqueController extends Controller
         $mv = 0;
         $mr = 0;
         $anaser = 0;
-        $genres = $em->getRepository('AppBundle:Genre')->findAll();       
+        $genres = $em->getRepository('AppBundle:Genre')->findAll();  
         
         if(count($genres)>0){
             foreach($genres as $genre){
                 $ligne = array();
                 $ligne[0] = $genre->getCode();
-                $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($genre->getCode(), $debut, $fin, $caisse->getNumero());
+                $etat = $em->getRepository('AppBundle:EtatJournalier')->etatJournalier($genre->getCode(), $debut, $fin, $caisse);
                 if($etat && count($etat)>0){
                     $ligne[1] = \intval($etat[0][1]);
                     $ligne[2] = \intval($etat[0][2]);//$visites['nbRevisite'];
@@ -164,9 +168,14 @@ class StatistiqueController extends Controller
         } 
        $fin->sub (new \DateInterval('P1D'));
        $resultat[] = ['TOTAL', $nv, $nr, $mv, $mr, $anaser, $mv+$mr+$anaser];
-       return $this->render('statistique/caisse/etat.html.twig', array(
-            'resultats' => $resultat,'caisse' => $caisse,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
-        ));
+        if($caisse)
+            return $this->render('statistique/caisse/etat.html.twig', array(
+                 'resultats' => $resultat,'caisse' => $caisse,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
+             ));
+        else
+            return $this->render('statistique/caisse/etatToutesCaisses.html.twig', array(
+             'resultats' => $resultat,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'),
+         ));
     }
     
     /**
