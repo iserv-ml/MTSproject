@@ -48,7 +48,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% set nbr = 0 %}
+                {% set nbr, total_visite, total_revisiteok, total_echec = 0, 0,0,0 %}
                 {% for visite in liste %}
                     {% set nbr = nbr+1 %}
                     <tr>
@@ -60,6 +60,13 @@
                         <td>{{ visite.visite + visite.revisiteok }}</td>
                     </tr>
                 {% endfor %}
+                <tr>
+                    <td colspan="2">TOTAL</td>
+                    <td>{{ total_visite }}</td>
+                    <td>{{ total_revisiteok}}</td>
+                    <td>{{ total_echec}}</td>
+                    <td>{{ total_visite + total_revisiteok }}</td>
+                </tr>
             </tbody>
             <tfoot>
             </tfoot>

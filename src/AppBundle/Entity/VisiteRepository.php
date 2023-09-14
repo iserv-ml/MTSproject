@@ -356,6 +356,24 @@ class VisiteRepository extends EntityRepository
         return $qb->getResult();
     }
     
+    public function recupererToutFiltre($debut, $fin, $immatriculation="", $controleur="", $caissier="", $type=0) {
+        switch ($type){
+            case 1: $statut = ' AND r.statut IN (2,4)';break;
+            case 2: $statut = ' AND r.statut = 3';break;
+            case 3: $statut = ' AND r.statut IN (0,1)';break;
+            case 4: $statut = ' AND r.statut =5';break;
+            default: $statut= "";
+        }
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Visite r LEFT JOIN r.quittance q'
+                    . ' WHERE r.dateControle >= :debut AND r.dateControle <= :fin AND r.immatriculation_v LIKE :immatriculation AND r.controlleur LIKE :controleur AND q.nomCaissier LIKE :caissier AND (r.contrevisiteCree IS NULL OR r.contrevisiteCree = false)'
+                    .$statut
+                    )
+           ->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('controleur', "%".$controleur."%")->setParameter('caissier', "%".$caissier."%")->setParameter('immatriculation', "%".$immatriculation."%");
+        return $qb->getResult();
+    }
+    
     public function recupererGratuiteParPeriodeFiltre($debut, $fin, $immatriculation="", $controleur="", $type=0) {
         switch ($type){
             case 1: $statut = ' AND r.statut IN (2,4)';break;

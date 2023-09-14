@@ -429,6 +429,7 @@ class StatistiqueController extends Controller
             throw $this->createNotFoundException("Opération interdite!");
         }
         $controleur = $request->get('controleur', '');
+        $caissier = $request->get('caissier', '');
         $immatriculation = $request->get('immatriculation', '');
         $type = $request->get('type', 0);
         $date = new \DateTime("now");
@@ -437,12 +438,12 @@ class StatistiqueController extends Controller
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
         $fin->setTime(0, 0);
         $fin->add(new \DateInterval('P1D'));
-        $visites = $em->getRepository('AppBundle:Visite')->recupererToutParPeriodeFiltre($debut, $fin, $immatriculation, $controleur,$type); 
+        $visites = $em->getRepository('AppBundle:Visite')->recupererToutFiltre($debut, $fin, $immatriculation, $controleur, $caissier, $type); 
         $fin->sub (new \DateInterval('P1D'));
         
         return $this->render('statistique/detail/visites.html.twig', array(
             'visites' => $visites,'debut' => $debut->format('d-m-Y'), 'fin' => $fin->format('d-m-Y'), 'libelle' =>$centre->getLibelle(),
-            'controleur' => $controleur, 'immatriculation'=>$immatriculation, 'type'=>$type
+            'controleur' => $controleur, 'caissier' => $caissier, 'immatriculation'=>$immatriculation, 'type'=>$type
         ));
     }
     
