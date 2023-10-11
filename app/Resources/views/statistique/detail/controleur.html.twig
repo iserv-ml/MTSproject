@@ -51,21 +51,24 @@
                 {% set nbr, total_visite, total_revisiteok, total_echec = 0, 0,0,0 %}
                 {% for visite in liste %}
                     {% set nbr = nbr+1 %}
+                    {% set total_visite = total_visite + visite.visite %}
+                    {% set total_revisiteok = total_revisiteok + visite.revisiteok %}
+                    {% set total_echec = total_echec + visite.echec %}
                     <tr>
                         <td>{{ nbr }}</td>
-                        <td>{{ visite.controleur }}</td>
-                        <td>{{ visite.visite}}</td>
-                        <td>{{ visite.revisiteok}}</td>
-                        <td>{{ visite.echec}}</td>
-                        <td>{{ visite.visite + visite.revisiteok }}</td>
+                        <td>{{ visite.controleur|number_format(0, ',', ' ') }}</td>
+                        <td>{{ visite.visite|number_format(0, ',', ' ') }}</td>
+                        <td>{{ visite.revisiteok|number_format(0, ',', ' ') }}</td>
+                        <td>{{ visite.echec|number_format(0, ',', ' ') }}</td>
+                        <td>{{ (visite.visite + visite.revisiteok)|number_format(0, ',', ' ') }}</td>
                     </tr>
                 {% endfor %}
                 <tr>
                     <td colspan="2">TOTAL</td>
-                    <td>{{ total_visite }}</td>
-                    <td>{{ total_revisiteok}}</td>
-                    <td>{{ total_echec}}</td>
-                    <td>{{ total_visite + total_revisiteok }}</td>
+                    <td>{{ total_visite|number_format(0, ',', ' ') }}</td>
+                    <td>{{ total_revisiteok|number_format(0, ',', ' ') }}</td>
+                    <td>{{ total_echec|number_format(0, ',', ' ') }}</td>
+                    <td>{{ (total_visite + total_revisiteok)|number_format(0, ',', ' ') }}</td>
                 </tr>
             </tbody>
             <tfoot>

@@ -64,7 +64,7 @@
                 <a class="nav-link {% block menu_delivrance_actif %}{% endblock %}" href="{{ path('visite_delivrance') }}">VISITES</a>
             </li>
         {% endif %}
-        {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
+        {% if is_granted('ROLE_CAISSIER_PRINCIPAL') or is_granted('ROLE_CHEF_CENTRE') %}
         <li class="nav-item px-3">
           <a class="nav-link {% block menu_gestion_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_index') }}">GESTION</a>
         </li>

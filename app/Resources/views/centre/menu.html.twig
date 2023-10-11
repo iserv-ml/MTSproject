@@ -41,7 +41,7 @@
 {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
     <li class="nav-item nav-dropdown {% block menu_quittances_open %}{% endblock %}">
         <a class="nav-link nav-dropdown-toggle" href="#">
-            <i class="nav-icon fa fa-bar-chart"></i> Quittances</a>
+            <i class="nav-icon fa fa-bar-chart"></i> Visites</a>
         <ul class="nav-dropdown-items">
             <li class="nav-item ">
                 <a class="nav-link {% block menu_quittance_actif %}{% endblock %}" href="{{ path('caisse_quittance_index') }}">
