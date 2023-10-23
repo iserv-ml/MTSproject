@@ -56,7 +56,7 @@
                     {% set total_echec = total_echec + visite.echec %}
                     <tr>
                         <td>{{ nbr }}</td>
-                        <td>{{ visite.controleur|number_format(0, ',', ' ') }}</td>
+                        <td>{{ visite.controleur }}</td>
                         <td>{{ visite.visite|number_format(0, ',', ' ') }}</td>
                         <td>{{ visite.revisiteok|number_format(0, ',', ' ') }}</td>
                         <td>{{ visite.echec|number_format(0, ',', ' ') }}</td>

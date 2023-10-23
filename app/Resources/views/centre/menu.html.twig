@@ -5,7 +5,7 @@
     </a>
 </li>
 {% endif %}
-{% if is_granted('ROLE_CHEF_CENTRE') %} 
+{% if is_granted('ROLE_CHEF_CENTRE') or is_granted('ROLE_CAISSIER_PRINCIPAL') %} 
     <li class="nav-item">
         <a class="nav-link {% block menu_ouvertures_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_ouverture') }}">
             <i class="nav-icon fa fa-key"></i> Ouverture du centre
@@ -37,8 +37,7 @@
                 </li> #}
             </ul>
     </li>
-{% endif %}
-{% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
+    {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
     <li class="nav-item nav-dropdown {% block menu_quittances_open %}{% endblock %}">
         <a class="nav-link nav-dropdown-toggle" href="#">
             <i class="nav-icon fa fa-bar-chart"></i> Visites</a>
@@ -55,29 +54,32 @@
             {% endif %}
         </ul>
     </li>
+    {% endif %}
     <li class="nav-item nav-dropdown {% block menu_statistiques_open %}{% endblock %}">
         <a class="nav-link nav-dropdown-toggle" href="#">
             <i class="nav-icon fa fa-bar-chart"></i> Statistiques</a>
         <ul class="nav-dropdown-items">
+            {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %}
             <li class="nav-item ">
                 <a class="nav-link {% block menu_parcaisse_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_statistique_caisse_index') }}">
                     <i class="nav-icon icon-list"></i> Etat par caisse</a>
-            </li>
-            <li class="nav-item ">
-                <a class="nav-link {% block menu_recherche_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_statistique_visite_detail') }}">
-                    <i class="nav-icon icon-list"></i> Recherche avancée</a>
             </li>
             <li class="nav-item ">
                 <a class="nav-link {% block menu_detail_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_statistique_detail_index') }}">
                     <i class="nav-icon icon-list"></i> Statistiques avancées</a>
             </li>
             <li class="nav-item ">
-                <a class="nav-link {% block menu_rapportcontroleur_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_statistique_controleur_index') }}">
-                    <i class="nav-icon icon-list"></i> Rapport contrôleurs</a>
-            </li>
-            <li class="nav-item ">
                 <a class="nav-link {% block menu_gratuite_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_statistique_visite_gratuite') }}">
                     <i class="nav-icon icon-list"></i> Visites gratuites</a>
+            </li>
+            {% endif %}
+            <li class="nav-item ">
+                <a class="nav-link {% block menu_recherche_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_statistique_visite_detail') }}">
+                    <i class="nav-icon icon-list"></i> Recherche avancée</a>
+            </li>
+            <li class="nav-item ">
+                <a class="nav-link {% block menu_rapportcontroleur_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_statistique_controleur_index') }}">
+                    <i class="nav-icon icon-list"></i> Rapport contrôleurs</a>
             </li>
         </ul>
     </li>
