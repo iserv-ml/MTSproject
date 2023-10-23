@@ -362,7 +362,7 @@ class VisiteRepository extends EntityRepository
             case 2: $statut = ' AND r.statut = 3';break;
             case 3: $statut = ' AND r.statut IN (0,1)';break;
             case 4: $statut = ' AND r.statut =5';break;
-            default: $statut= "";
+            default: $statut= "AND r.statut <>5";
         }
         $qb = $this->getEntityManager()
             ->createQuery(

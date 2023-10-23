@@ -69,19 +69,23 @@
                     <th colspan="3"  style="text-align:left;vertical-align: middle">
                         CENTRE : {{ libelle }}
                     </th>
-                    <th colspan="2">TOTAL : {{ visites|length }}</th>
+                    
                 </tr>
                 <tr>
-                    <th>Type</th>
+                    <th>Catégorie</th>
                     <th>Immatriculation</th>
                     <th>Aiguilleur</th>
                     <th>Caissier</th>
                     <th>Controleur</th>
                     <th>Date controle</th>
                     <th>Statut</th>
+                    <th>Montant</th>
+                    <th>Type visite</th>
+                    <th>Quittance</th>
                 </tr>
             </thead>
             <tbody>
+                {% set total = 0 %}
                 {% for visite in visites %}
                     <tr {% if visite.contreVisite  == true %}style="backgroun:yellow"{% endif %}>
                         <td>
@@ -108,7 +112,7 @@
                             {% endif %}
                         </td>
                         <td>{{ visite.controlleur }}</td>
-                        <td>{% if visite.date %}{{ visite.date|date('Y-m-d h:m:s') }}{% endif %}</td>
+                        <td>{% if visite.dateControle %}{{ visite.dateControle|date('Y-m-d H:m:s') }}{% endif %}</td>
                         <td>
                             {% if visite.statut == 0 or visite.statut == 1 %}
                                 A FAIRE
@@ -122,8 +126,24 @@
                                 ERREUR
                             {% endif %}
                         </td>
-                    </tr>
+                        {% if visite.contreVisite == true %}
+                            {% set montant = (visite.visiteParent.quittance.montantVisite+visite.visiteParent.quittance.tva+visite.visiteParent.quittance.timbre)|round(0, 'ceil') %}
+                            {% set quittance = visite.visiteParent.quittance.numero %}
+                        {% else %}
+                            {% set montant = (visite.quittance.montantVisite+visite.quittance.tva+visite.quittance.timbre)|round(0, 'ceil') %}
+                            {% set quittance = visite.quittance.numero %}
+                        {% endif %}
+                        {% set total = total + montant %}
+                        <td>{{ montant }}</td>
+                        <td>{% if visite.contreVisite == true %}CONTREVISITE{% elseif visite.revisite %}REVISITE{% else %} VISITE {% endif %}</td>
+                        <td>{{ quittance }}</td>
+                        </tr>
+                        
                 {% endfor %}
+                <tr>
+                            <th colspan="2">NB VISITES TOTAL : {{ visites|length|number_format(0, ',', ' ') }}</th>
+                            <th colspan="2">MONTANT TOTAL : {{ total|number_format(0, ',', ' ') }}</th>
+                        </tr>
             </tbody>            
         </table>
     </div>

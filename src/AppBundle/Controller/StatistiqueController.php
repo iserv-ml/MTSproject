@@ -438,6 +438,7 @@ class StatistiqueController extends Controller
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
         $fin->setTime(0, 0);
         $fin->add(new \DateInterval('P1D'));
+
         $visites = $em->getRepository('AppBundle:Visite')->recupererToutFiltre($debut, $fin, $immatriculation, $controleur, $caissier, $type); 
         $fin->sub (new \DateInterval('P1D'));
         

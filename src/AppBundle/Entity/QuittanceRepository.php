@@ -81,7 +81,7 @@ class QuittanceRepository extends EntityRepository
     public function historiqueTableEtatJournalier($debut, $fin, $immatriculation = "", $quittance = "") {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.quittance, r.montantVisite, r.montantRevisite, r.immatriculation, r.caisse, r.creePar, r.dateCreation, r.typeVehicule, r.genre FROM AppBundle:EtatJournalier r'
+                'SELECT r.id, r.quittance, r.montantVisite, r.montantRevisite, r.immatriculation, r.caisse, r.creePar, r.dateCreation, r.typeVehicule, r.genre, r.encaissePar, r.remboursePar FROM AppBundle:EtatJournalier r'
                     . ' WHERE r.immatriculation LIKE :immatriculation AND r.quittance LIKE :quittance AND r.dateCreation >= :debut AND r.dateCreation <= :fin '
                     )
            ->setParameter('debut', $debut)->setParameter('fin', $fin)->setParameter('immatriculation', "%".$immatriculation."%")->setParameter('quittance', "%".$quittance."%");

@@ -53,11 +53,11 @@
                     <td>{{ item.quittance }}</td>
                     <td>
                         {% if item.montantVisite < 0 %}
-                            REMBOURSE
+                            REMBOURSE par {{ item.remboursePar }}
                         {% else %}
-                            ENCAISSE
+                            ENCAISSE par {{ item.encaissePar }}
                         {% endif %}
-                        par {{ item.creePar }}
+                        
                     </td>
                     <td>{{ item.dateCreation }}</td>
                 </tr>

@@ -39,7 +39,7 @@
                         <td>{% if quittance.visite.revisite %}REVISITE{% else %} VISITE {% endif %}</td>
                         <td>{{ quittance.ttc|number_format(0, ',', ' ') }}</td>
                         <td>{% if quittance.caissier is not null %}{{ quittance.caissier.nomComplet }} {% else %}   {{ quittance.creePar }} {% endif %}</td>
-                        <td>{% if quittance.dateEncaissement %}{{ quittance.dateEncaissement|date('Y-m-d h:m:s') }}{% endif %}</td>
+                        <td>{% if quittance.dateEncaissement %}{{ quittance.dateEncaissement|date('Y-m-d H:m:s') }}{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
@@ -109,7 +109,7 @@
                         <td>{% if quittance.visite.revisite %}REVISITE{% else %} VISITE {% endif %}</td>
                         <td>{{ (quittance.montantVisite+quittance.tva+quittance.timbre)|round(0, 'ceil')|number_format(0, ',', ' ') }}</td>
                         <td>{{ quittance.creePar }}</td>
-                        <td>{% if quittance.dateEncaissement %}{{ quittance.dateEncaissement|date('Y-m-d h:m:s') }}{% endif %}</td>
+                        <td>{% if quittance.dateEncaissement %}{{ quittance.dateEncaissement|date('Y-m-d H:m:s') }}{% endif %}</td>
                     </tr>
                 {% endfor %}
             </tbody>
