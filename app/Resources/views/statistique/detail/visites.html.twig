@@ -21,20 +21,25 @@
         <form method='POST' action='{{ path('admin_gestion_centre_statistique_visite_detail') }}'>
             <table align="left">
                 <tr align="left">
-                    <td>Du <input type="text" id="debut" name="debut" value="{{ debut }}" /></td>
+                    <td>Du </td>
+                    <td><input type="text" id="debut" name="debut" value="{{ debut }}" /></td>
                 </tr>
                 <tr align="left">
-                    <td>Au <input type="text" id="fin" name="fin" value="{{ fin }}" /></td>
+                    <td>Au </td>
+                     <td><input type="text" id="fin" name="fin" value="{{ fin }}" /></td>
                 </tr>
                 <tr align="left">
-                    <td>Controleur <input type="text" id="controleur" name="controleur" value="{{ controleur }}"/></td>
+                    <td>Controleur </td>
+                    <td><input type="text" id="controleur" name="controleur" value="{{ controleur }}"/></td>
                 </tr>
                 <tr align="left">
-                    <td>Caissier <input type="text" id="caissier" name="caissier" value="{{ caissier }}"/></td>
+                    <td>Caissier </td>
+                    <td><input type="text" id="caissier" name="caissier" value="{{ caissier }}"/></td>
                 </tr>
                 <tr align="left">
-                    <td> Résultat 
-                        <select id="type" name="type" >
+                    <td>Résultat</td>
+                    <td>
+                        <select id="type" name="type" style="margin-left : 0">
                             <option value='0' {% if type == 0 %}selected{% endif %}>Tout</option>
                             <option value='1' {% if type == 1 %}selected{% endif %}>Réussite</option>
                             <option value='2' {% if type == 2 %}selected{% endif %}>Echec</option>
@@ -43,10 +48,11 @@
                     </td>
                 </tr>
                 <tr align="left">
-                    <td>Immatriculation <input type="text" id="immatriculation" name="immatriculation" value="{{ immatriculation }}"/></td>
+                    <td>Immatriculation </td>
+                    <td><input type="text" id="immatriculation" name="immatriculation" value="{{ immatriculation }}"/></td>
                 </tr>
                 <tr align="left">
-                    <td><input type="submit" value="Actualiser"/></td>
+                    <td><input  type="submit" value="Actualiser"/></td>
                 </tr>
             </table>
         </form>
