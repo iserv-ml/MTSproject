@@ -61,32 +61,18 @@
 {% block body -%}
     <div class="table-responsive" id="printDiv">
         <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
-            <thead>
-                <tr>
-                     <th colspan="2" style="text-align:left;vertical-align: middle">
-                        DU : {{ debut }} AU : {{ fin }}
-                    </th>
-                    <th colspan="3"  style="text-align:left;vertical-align: middle">
-                        CENTRE : {{ libelle }}
-                    </th>
-                    
-                </tr>
-                <tr>
-                    <th>Catégorie</th>
-                    <th>Immatriculation</th>
-                    <th>Aiguilleur</th>
-                    <th>Caissier</th>
-                    <th>Controleur</th>
-                    <th>Date controle</th>
-                    <th>Statut</th>
-                    <th>Montant</th>
-                    <th>Type visite</th>
-                    <th>Quittance</th>
-                </tr>
-            </thead>
+            
             <tbody>
                 {% set total = 0 %}
                 {% for visite in visites %}
+                    {% if visite.contreVisite == true %}
+                        {% set montant = (visite.visiteParent.quittance.montantVisite+visite.visiteParent.quittance.tva+visite.visiteParent.quittance.timbre)|round(0, 'ceil') %}
+                        {% set quittance = visite.visiteParent.quittance.numero %}
+                    {% else %}
+                        {% set montant = (visite.quittance.montantVisite+visite.quittance.tva+visite.quittance.timbre)|round(0, 'ceil') %}
+                        {% set quittance = visite.quittance.numero %}
+                    {% endif %}
+                    {% set total = total + montant %}
                     <tr {% if visite.contreVisite  == true %}style="backgroun:yellow"{% endif %}>
                         <td>
                             {% if visite.contreVisite  == true %}
@@ -126,25 +112,43 @@
                                 ERREUR
                             {% endif %}
                         </td>
-                        {% if visite.contreVisite == true %}
-                            {% set montant = (visite.visiteParent.quittance.montantVisite+visite.visiteParent.quittance.tva+visite.visiteParent.quittance.timbre)|round(0, 'ceil') %}
-                            {% set quittance = visite.visiteParent.quittance.numero %}
-                        {% else %}
-                            {% set montant = (visite.quittance.montantVisite+visite.quittance.tva+visite.quittance.timbre)|round(0, 'ceil') %}
-                            {% set quittance = visite.quittance.numero %}
-                        {% endif %}
-                        {% set total = total + montant %}
                         <td>{{ montant }}</td>
                         <td>{% if visite.contreVisite == true %}CONTREVISITE{% elseif visite.revisite %}REVISITE{% else %} VISITE {% endif %}</td>
                         <td>{{ quittance }}</td>
                         </tr>
                         
                 {% endfor %}
+               
+            </tbody> 
+            <thead>
                 <tr>
-                            <th colspan="2">NB VISITES TOTAL : {{ visites|length|number_format(0, ',', ' ') }}</th>
-                            <th colspan="2">MONTANT TOTAL : {{ total|number_format(0, ',', ' ') }}</th>
-                        </tr>
-            </tbody>            
+                     <th colspan="2" style="text-align:left;vertical-align: middle">
+                        DU : {{ debut }} AU : {{ fin }}
+                    </th>
+                    <th colspan="3"  style="text-align:left;vertical-align: middle">
+                        CENTRE : {{ libelle }}
+                    </th>
+                    <th colspan="2"  style="text-align:left;vertical-align: middle">
+                        NB VISITES TOTAL : {{ visites|length|number_format(0, ',', ' ') }}
+                    </th>
+                    <th colspan="3"  style="text-align:left;vertical-align: middle">
+                        MONTANT TOTAL : {{ total|number_format(0, ',', ' ') }}
+                    </th>
+                    
+                </tr>
+                <tr>
+                    <th>Catégorie</th>
+                    <th>Immatriculation</th>
+                    <th>Aiguilleur</th>
+                    <th>Caissier</th>
+                    <th>Controleur</th>
+                    <th>Date controle</th>
+                    <th>Statut</th>
+                    <th>Montant</th>
+                    <th>Type visite</th>
+                    <th>Quittance</th>
+                </tr>
+            </thead>
         </table>
     </div>
     
