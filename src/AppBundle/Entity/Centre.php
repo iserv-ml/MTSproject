@@ -110,6 +110,34 @@ class Centre
      * 
      */
     private $anaser;
+    
+    /**
+     * @var string $repertoire
+     *
+     * @ORM\Column(name="repertoire", type="string", length=255, nullable=true)
+     */
+    private $repertoire;
+    
+    /**
+     * @var string $ftpServer
+     *
+     * @ORM\Column(name="ftp_server", type="string", length=255, nullable=true)
+     */
+    private $ftpServer;
+    
+    /**
+     * @var string $ftpUsername
+     *
+     * @ORM\Column(name="ftp_username", type="string", length=255, nullable=true)
+     */
+    private $ftpUsername;
+    
+    /**
+     * @var string $ftpUserpass
+     *
+     * @ORM\Column(name="ftp_userpass", type="string", length=255, nullable=true)
+     */
+    private $ftpUserpass;
    
    //Debut relation Centre a plusieurs visites
     /**
@@ -417,6 +445,39 @@ class Centre
 
     function setAnaser($anaser) {
         $this->anaser = $anaser;
+    }
+    
+    public function getFtpServer() {
+        return $this->ftpServer;
+    }
+
+    public function getFtpUsername() {
+        return $this->ftpUsername;
+    }
+
+    public function getFtpUserpass() {
+        return $this->ftpUserpass;
+    }
+
+
+    public function setFtpServer($ftpServer) {
+        $this->ftpServer = $ftpServer;
+    }
+
+    public function setFtpUsername($ftpUsername) {
+        $this->ftpUsername = $ftpUsername;
+    }
+
+    public function setFtpUserpass($ftpUserpass) {
+        $this->ftpUserpass = $ftpUserpass;
+    }
+    
+    public function getRepertoire() {
+        return $this->repertoire;
+    }
+
+    public function setRepertoire($repertoire) {
+        $this->repertoire = $repertoire;
     }
 
 }

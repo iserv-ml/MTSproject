@@ -20,7 +20,11 @@ class CentreType extends AbstractType
                 ->add('adresse')
                 ->add('telephone')
                 ->add('anaser')
-                ->add('carteVierge');
+                ->add('carteVierge')
+                ->add('repertoire')
+                ->add('ftpServer')
+                ->add('ftpUsername')
+                ->add('ftpUserpass');
     }
     
     /**
