@@ -34,7 +34,7 @@
     <script>
         $( function() {
             //$("#appbundle_vehicule_genre" ).val("{{- vehicule.typeVehicule.genre.code -}}");
-            $(".appbundle_vehicule_proprietaireAjax").html('<i class="nav-icon fa fa-arrow-up"></i><input type="button" value="Changer" onclick="changer(\'{{- vehicule.proprietaire.id -}}\', \'{{- vehicule.id -}}\')"/>');
+            $(".appbundle_vehicule_proprietaireAjax").html('<i class="nav-icon fa fa-arrow-up"></i><input type="button" value="Corriger" onclick="changer(\'{{- vehicule.proprietaire.id -}}\', \'{{- vehicule.id -}}\')"/>');
             $(".appbundle_vehicule_modeleAjax").html('<i class="nav-icon fa fa-arrow-up"></i>');
             $("#appbundle_vehicule_proprietaireId" ).val("{{- vehicule.proprietaire.id -}}");
             $("#appbundle_vehicule_proprietaireAjax" ).val("{{- vehicule.proprietaire.nom -}}"+" "+ "{{- vehicule.proprietaire.prenom -}}"+" "+"{{- vehicule.proprietaire.adresse -}}");
@@ -200,7 +200,7 @@
                 height:500,
                 width:700,
                 buttons: {
-                   
+                                   
                     Annuler: function() {
                         $( this ).dialog( "close" );
                     }
