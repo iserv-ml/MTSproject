@@ -99,6 +99,36 @@ class ProprietaireController extends Controller
             'delete_form' => $deleteForm->createView(),
         ));
     }
+    
+    /**
+     * Displays a simple form to edit an existing proprietaire entity.
+     *
+     * @Route("/{id}/modal/edit", name="proprietaire_modal_edit")
+     * @Method({"GET", "POST"})
+     */
+    public function modalEditAction(Request $request, Proprietaire $proprietaire)
+    {
+        if (!$proprietaire) {
+            throw $this->createNotFoundException("Le propriétaire demandé n'est pas disponible.");
+        }
+        $vehicule_id = $request->get("vehicule_id", 0);
+        $deleteForm = $this->createDeleteForm($proprietaire);
+        $editForm = $this->createForm('AppBundle\Form\ProprietaireType', $proprietaire);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
+            return $this->redirectToRoute('vehicule_edit', array('id' => $vehicule_id));
+        }
+
+        return $this->render('proprietaire/edit_modal.html.twig', array(
+            'proprietaire' => $proprietaire,
+            'edit_form' => $editForm->createView(),
+            'delete_form' => $deleteForm->createView(),
+            'vehicule_id' => $vehicule_id
+        ));
+    }
 
     /**
      * Deletes a proprietaire entity.

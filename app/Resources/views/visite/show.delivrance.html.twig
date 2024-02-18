@@ -168,12 +168,14 @@
                     </tr>
                     {% if visite.resultats %}
                         {% for resultat in visite.resultats %}
-                            <tr>
-                                <td>{{ resultat.controle.libelle }}</td>
-                                <td>{{ resultat.controle.detail }}</td>
-                                <td>{{ resultat.commentaire }} ({{ resultat.controle.unite }}) </td>
-                                <td>{% if resultat.succes %}SUCCES{% else %}ECHEC{% endif %}</td>
-                            </tr>
+                            {% if not resultat.succes %}
+                                <tr>
+                                    <td>{{ resultat.controle.libelle }}</td>
+                                    <td>{{ resultat.controle.detail }}</td>
+                                    <td>{{ resultat.commentaire }} ({{ resultat.controle.unite }}) </td>
+                                    <td>ECHEC</td>
+                                </tr>
+                            {% endif %}
                         {% endfor %}
                     {% endif %}
                  </tbody>

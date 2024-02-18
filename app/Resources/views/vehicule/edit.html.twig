@@ -27,12 +27,15 @@
         {{ form_widget(edit_form) }}
         <input type="submit" value="Modifier" />
     {{ form_end(edit_form) }}
+    <div id="changement-modal" title="MODIFIER"></div>
 {% endblock %}
 
 {% block javascripts -%}
     <script>
         $( function() {
             //$("#appbundle_vehicule_genre" ).val("{{- vehicule.typeVehicule.genre.code -}}");
+            $(".appbundle_vehicule_proprietaireAjax").html('<i class="nav-icon fa fa-arrow-up"></i><input type="button" value="Changer" onclick="changer(\'{{- vehicule.proprietaire.id -}}\', \'{{- vehicule.id -}}\')"/>');
+            $(".appbundle_vehicule_modeleAjax").html('<i class="nav-icon fa fa-arrow-up"></i>');
             $("#appbundle_vehicule_proprietaireId" ).val("{{- vehicule.proprietaire.id -}}");
             $("#appbundle_vehicule_proprietaireAjax" ).val("{{- vehicule.proprietaire.nom -}}"+" "+ "{{- vehicule.proprietaire.prenom -}}"+" "+"{{- vehicule.proprietaire.adresse -}}");
             $("#appbundle_vehicule_proprietaireAjax" ).width($("#appbundle_vehicule_proprietaireAjax" ).val().length+"ch");
@@ -56,10 +59,7 @@
                 $( "#appbundle_vehicule_genre" ).val('PL');
             }
           });*/
-    function log( message ) {
-      $( "<div>" ).text( message ).prependTo( "#log" );
-      $( "#log" ).scrollTop( 0 );
-    }
+
     $( "#appbundle_vehicule_modeleAjax" ).autocomplete({
         source: function( request, response ) {
             $.ajax( {
@@ -193,5 +193,21 @@
     };*/
     
   } );
+  
+  function changer(proprieteaire_id, vehicule_id){
+            var options = {
+                modal: true,
+                height:500,
+                width:700,
+                buttons: {
+                   
+                    Annuler: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            };
+            $('#changement-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+            $('#changement-modal').load('{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/proprietaire/'+proprieteaire_id+'/modal/edit?vehicule_id='+vehicule_id).dialog(options).dialog('open');
+        }
   </script>
 {% endblock %}

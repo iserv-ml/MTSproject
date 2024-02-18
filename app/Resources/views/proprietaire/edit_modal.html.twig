@@ -1,0 +1,8 @@
+
+
+<form name="appbundle_proprietaire" method="POST" action="{{ path('proprietaire_modal_edit', { 'id': proprietaire.id }) }}">
+        {{ form_widget(edit_form) }}
+        <input type="hidden" name="vehicule_id" value="{{ vehicule_id }}"/>
+        <input type="submit" value="Modifier" />
+</form>
+
