@@ -418,5 +418,66 @@ class CentreController extends Controller
         ));
     }
     
+    /**
+     * Recap de la centralisation des etats.
+     *
+     * @Route("/envoyer/etat", name="centre_envoyer_etat")
+     * @Method("GET")
+     */
+    public function envoyeretatAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre){
+            return new \Symfony\Component\HttpFoundation\Response("Opération interdite."); 
+        }
+        
+        $etats = $em->getRepository('AppBundle:EtatJournalier')->recupererEtat();
+        $today = date("Y-m-dHis"); 
+        $fichier = 'etat_'.$today.'.csv';
+        $ids = array();
+        $response ="";
+        
+        try{
+            $fp = fopen($centre->getRepertoire().$fichier, 'w');
+            $nbr = count($etats);
+            if($nbr > 0){
+                foreach($etats as $etat){
+                    fputcsv($fp, $etat);
+                    $ids[] = $etat['id'];
+                }
+                fclose($fp);
+                $update_list =  '\'' . implode( '\', \'', $ids ) . '\'';
+                $sql = 'UPDATE etat_journalier SET synchro = 1, date_synchro = now() WHERE id IN ('.$update_list.')';
+                $update = $em->getRepository('AppBundle:EtatJournalier')->marquerExport($sql);
+                
+                //transfert ftp
+                // connect to FTP server
+
+                $ftp_conn = ftp_connect($centre->getFtpServer()) or die("Could not connect to $ftp_server");
+                //login to FTP server
+                $login = ftp_login($ftp_conn, $centre->getFtpUsername(), $centre->getFtpUserpass());
+                ftp_pasv($ftp_conn, true);
+
+                // upload file
+                if (ftp_put($ftp_conn, $fichier, $centre->getRepertoire().$fichier, FTP_BINARY)){
+                    $response = "ENVOI TERMINE DE : ".$nbr." LIGNES dans le fichier ". $centre->getRepertoire().$fichier."<br/> ";
+
+                }else{
+                    $response = "Error uploading". $centre->getRepertoire().$fichier;
+                }
+                // close connection
+                ftp_close($ftp_conn);
+                //on supprime le fichier ou pas?  On va plutot le déplacer dans un dossier
+
+            }else{
+                $response = "Pas d'enregistrement à envoyer";
+            }
+        }catch(Exception $e){
+            //print_r($e);
+            $response = "Une erreur s'est produite";
+        }
+                return new \Symfony\Component\HttpFoundation\Response($response); 
+        }
     
 }

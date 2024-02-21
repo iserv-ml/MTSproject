@@ -19,6 +19,7 @@
         {% else %}
             <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_centre_modifier') }}">MODIFIER</a></label>
         {% endif %}
+        <label class="btn btn-outline-secondary"><a onclick="envoyerEtat();" href="#">CENTRALISER LES ETATS</a></label>
     {% endif %}
 {% endblock %}
 {% block body -%}
@@ -48,6 +49,7 @@
         </tbody>
     </table>
     </div>
+        <div id="changement-modal" title="RECAP"></div>
 {% endblock %}
 
 {% block javascripts -%}
@@ -87,7 +89,23 @@
      
 		
 		        
-                   } );    
+                   } );  
+                   
+    function envoyerEtat(){
+            var options = {
+                modal: true,
+                height:500,
+                width:700,
+                buttons: {
+                                   
+                    Annuler: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            };
+            $('#changement-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+            $('#changement-modal').load('{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/admin/gestion/centre/envoyer/etat').dialog(options).dialog('open');
+        }
         </script>
     {% endblock %}
 

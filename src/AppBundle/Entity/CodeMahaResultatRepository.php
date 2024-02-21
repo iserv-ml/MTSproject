@@ -16,7 +16,7 @@ class CodeMahaResultatRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.type, c.code as controle, r.libelle, r.valeur, r.detail, r.actif, r.reussite, r.minimum, r.maximum FROM AppBundle:CodeMahaResultat r LEFT JOIN r.controle c '
+                'SELECT r.id, r.type, c.code as controle, c.libelle as clibelle, r.libelle, r.valeur, r.detail, r.actif, r.reussite, r.minimum, r.maximum FROM AppBundle:CodeMahaResultat r LEFT JOIN r.controle c '
                     . ' WHERE r.libelle like :search or c.code like :search '
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')

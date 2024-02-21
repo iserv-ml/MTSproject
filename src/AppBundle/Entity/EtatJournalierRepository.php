@@ -119,4 +119,24 @@ class EtatJournalierRepository extends EntityRepository
         
         return $result;
     }
+    
+    public function recupererEtat() {
+        
+        $em = $this->getEntityManager();
+        $sql = 'SELECT * FROM etat_journalier WHERE deletedAt IS NULL AND (synchro IS NULL OR synchro = 0) limit 10';
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();        
+    }
+    
+    public function marquerExport($sql) {
+        try{
+            $em = $this->getEntityManager();
+            $stmt = $em->getConnection()->prepare($sql);
+            $stmt->execute();
+            return true;   
+        }catch(Exception $ex){
+            return false;
+        }
+    }
 }
