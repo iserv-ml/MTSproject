@@ -192,7 +192,7 @@ class CodeMahaResultatController extends Controller
             $action = $this->genererAction($aRow['id']);
             $actif = $aRow['reussite'] ? 'SUCCES' : 'ECHEC';
             $interpretation = ($aRow['type'] == "INTERVALLE") ? "MIN : ".$aRow['minimum']." MAX : ".$aRow['maximum'] : $aRow['valeur'];
-            $output['aaData'][] = array($aRow['controle'] ($aRow['clibelle']),$aRow['libelle'],$interpretation, $actif, $action);
+            $output['aaData'][] = array($aRow['controle'], ($aRow['clibelle']),$aRow['libelle'],$interpretation, $actif, $action);
 	}
 	return new Response(json_encode( $output ));    
     }
