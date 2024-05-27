@@ -74,6 +74,11 @@
           <a class="nav-link {% block menu_parametres_actif %}{% endblock %}" href="{{ path('parametre_index') }}">PARAMETRES</a>
         </li>
         {% endif %}
+        {% if is_granted('ROLE_SECRETAIRE') %}
+        <li class="nav-item px-3">
+          <a class="nav-link {% block menu_certificats_actif %}{% endblock %}" href="{{ path('secretaire_certificat_index') }}">CERTIFICATS</a>
+        </li>
+        {% endif %}
       </ul>
       <ul class="nav navbar-nav ml-auto">
 

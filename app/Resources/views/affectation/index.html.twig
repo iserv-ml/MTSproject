@@ -53,7 +53,7 @@
                             <td></td>
                             <td>
                                 <a class='btn btn-success' title="Détail" href="{{ path('admin_gestion_affectation_show', {'id':caisse.derniereAffectation.id}) }}"><i class='fa fa-search-plus'></i></a>
-                                <a class='btn btn-edit' title="Vider" href="{{ path('admin_gestion_affectation_vider', {'id':caisse.derniereAffectation.id}) }}" onclick='return confirm(\"Confirmer le retrait du caissier?\")'><i class='fa fa-search-plus'></i></a>
+                                <a class='btn btn-edit' title="Vider" href="{{ path('admin_gestion_affectation_vider', {'id':caisse.derniereAffectation.id}) }}" onclick='return confirm(\"Confirmer le retrait du caissier?\")'><i class='fa fa-ban'></i></a>
                             </td>
                             {%endif %}
                         {% endif%}

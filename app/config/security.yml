@@ -4,7 +4,7 @@ security:
 
     role_hierarchy:
         ROLE_CHEF_CENTRE: [ROLE_USER, ROLE_CAISSIER, ROLE_ENREGISTREMENT, ROLE_DELIVRANCE, ROLE_CONTROLLEUR, ROLE_AIGUILLEUR] 
-        ROLE_SUPERVISEUR: ROLE_CAISSIER_PRINCIPAL, ROLE_CHEF_CENTRE
+        ROLE_SUPERVISEUR: ROLE_CAISSIER_PRINCIPAL, ROLE_CHEF_CENTRE, ROLE_SECRETAIRE
         ROLE_SUPER_ADMIN: ROLE_SUPERVISEUR
 
     providers:
@@ -27,5 +27,5 @@ security:
         - { path: ^/register, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/utilisateur, role: ROLE_SUPER_ADMIN }
-        - { path: ^/bateau, role: ROLE_SUPER_ADMIN }
+        - { path: ^/secretaire, role: ROLE_SECRETAIRE }
         - { path: ^/, role: ROLE_USER }

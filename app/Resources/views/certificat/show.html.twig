@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Certificat</h1>
+
+    <table>
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ certificat.id }}</td>
+            </tr>
+            <tr>
+                <th>Version</th>
+                <td>{{ certificat.version }}</td>
+            </tr>
+            <tr>
+                <th>Serie</th>
+                <td>{{ certificat.serie }}</td>
+            </tr>
+            <tr>
+                <th>Utilise</th>
+                <td>{% if certificat.utilise %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Annule</th>
+                <td>{% if certificat.annule %}Yes{% else %}No{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Creepar</th>
+                <td>{{ certificat.creePar }}</td>
+            </tr>
+            <tr>
+                <th>Modifierpar</th>
+                <td>{{ certificat.modifierPar }}</td>
+            </tr>
+            <tr>
+                <th>Deletedat</th>
+                <td>{% if certificat.deletedAt %}{{ certificat.deletedAt|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Datecreation</th>
+                <td>{% if certificat.dateCreation %}{{ certificat.dateCreation|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Datemodification</th>
+                <td>{% if certificat.dateModification %}{{ certificat.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('secretaire_certificat_index') }}">Back to the list</a>
+        </li>
+        <li>
+            <a href="{{ path('secretaire_certificat_edit', { 'id': certificat.id }) }}">Edit</a>
+        </li>
+        <li>
+            {{ form_start(delete_form) }}
+                <input type="submit" value="Delete">
+            {{ form_end(delete_form) }}
+        </li>
+    </ul>
+{% endblock %}

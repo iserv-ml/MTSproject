@@ -19,6 +19,10 @@ class DefaultController extends Controller
     public function indexAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
+        $secretaire = $this->get('security.authorization_checker')->isGranted('ROLE_SECRETAIRE');
+        if($secretaire){
+            return $this->render('default/secretaire.html.twig');
+        }
         $nbVehicule = $em->getRepository('AppBundle:Vehicule')->countRows();
         $enCours = 0;
         $succes = 0;
