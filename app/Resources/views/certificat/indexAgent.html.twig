@@ -11,7 +11,7 @@
 {% block pagetitle -%}GESTION DES CERTIFICATS{% endblock %}
 {% block actions %}
     {% if is_granted('ROLE_SECRETAIRE') %} 
-        <label class="btn btn-outline-secondary"><a href="{{ path('secretaire_certificat_new') }}">CREER UN LOT</a></label>
+        <label class="btn btn-outline-secondary"><a href="{{ path('centre_certificat_affecter', { 'id': lot }) }}">AFFECTER</a></label>
     {% endif %}
 {% endblock %}
 {% block body -%}
@@ -20,21 +20,35 @@
             <thead>
             <tr>
                 <th>Serie</th>
+                <th>Controleur</th>
                 <th>Dernière modification</th>
                 <th>Date de dernière modification</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
-        {% for lot in lots %}
-            <tr>
-                <td>{{ lot.serie }}</td>
-                <td>{{ lot.modifierPar }}</td>
-                <td>{% if lot.dateModification %}{{ lot.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+        {% for certificat in certificats %}
+            {% if certificat.utilise %}
+                {%  set color = "green" %}
+                {%  set title = "Utilisé" %}
+                {%  set cancel = false %}
+            {% elseif certificat.annule %}
+                {%  set color = "red" %}
+                {%  set title = "Annulé" %}
+                {%  set cancel = false %}
+            {% else %}
+                {%  set color = "" %}
+                {%  set cancel = true %}
+                {%  set title = "" %}
+            {% endif %}
+            <tr style="color: {{ color }}" title="{{ title }}">
+                <td>{{ certificat.serie }}</td>
+                <td>{{ certificat.controlleur }}</td>
+                <td>{{ certificat.modifierPar }}</td>
+                <td>{% if certificat.dateModification %}{{ certificat.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>
-                    {% if lot.estSupprimable %}
-                        <a class='btn btn-info' title="Détail" href="{{ path('secretaire_certificat_lot_index', { 'id': lot.id }) }}" ><i class='fa fa-plus'></i></a>
-                        <a class='btn btn-edit' title="Suprimer" href="{{ path('secretaire_lot_supprimer', { 'id': lot.id }) }}" onclick='return confirm("Confirmer la suppression du lot {{ lot.serie }}")'><i class='fa fa-ban'></i></a>
+                    {% if cancel %}
+                        <a class='btn btn-edit' title="Annuler" href="{{ path('secretaire_certificat_annuler', { 'id': certificat.id }) }}" onclick='return confirm("Vous allez annuler le certificat {{ certificat.serie }}. Merci de confirmer")'><i class='fa fa-ban'></i></a>
                     {% endif %}
                 </td>
             </tr>

@@ -9,15 +9,15 @@ use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Certificat
+ * Lot
  *
- * @ORM\Table(name="certificat")
- * @ORM\Entity(repositoryClass="AppBundle\Entity\CertificatRepository")
+ * @ORM\Table(name="lot")
+ * @ORM\Entity(repositoryClass="AppBundle\Entity\LotRepository")
  * @UniqueEntity("serie")
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\Loggable
  */
-class Certificat
+class Lot
 {
     /**
      * @var integer
@@ -39,55 +39,48 @@ class Certificat
      * @Gedmo\Versioned
      * @ORM\Column(name="serie", type="string", length=255, nullable=false)
      */
-    private $serie;
+    private $serie;   
+    
+    //Debut relation Utilisateur a plusieurs certificats
+    /**
+    * @ORM\OneToMany(targetEntity="Certificat", mappedBy="lot", cascade={"persist"})
+    */
+    protected $certificats;
     
     /**
-     * @var boolean $utilise
-     *
-     * @ORM\Column(name="utilise", type="boolean", nullable=true)
-     * 
-     */
-    private $utilise;
-    
+    * Add certificat
+    *
+    * @param AppBundle\Entity\Certificat $certificat
+    */
+    public function addCertificat(\AppBundle\Entity\Certificat $certificat)
+    {
+        $this->certificats[] = $certificat;
+    }
+
     /**
-     * @var boolean $annule
+     * Get certificats
      *
-     * @ORM\Column(name="annule", type="boolean", nullable=true)
-     * 
+     * @return \Doctrine\Common\Collections\Collection 
      */
-    private $annule;
-    
+    public function getCertificats()
+    {
+        return $this->certificats;
+    }
+
     /**
+     * Set certificats
      *
-     * @ORM\ManyToOne(targetEntity="Utilisateur", inversedBy="certificats", cascade={"persist","refresh"})
-     * @ORM\JoinColumn(name="controleur_id", referencedColumnName="id")
-     * @Gedmo\Versioned
+     * @param \Doctrine\Common\Collections\Collection $certificats
      */
-    private $controlleur;
+    public function setCertificats(\Doctrine\Common\Collections\Collection $certificats)
+    {
+        $this->certificats = $certificats;
+    }
+    //Fin relation caisse a plusieurs certificats
     
-    /**
-     * @ORM\ManyToOne(targetEntity="Lot", inversedBy="certificats", cascade={"persist","refresh"})
-     * @ORM\JoinColumn(name="lot_id", referencedColumnName="id")
-     * @Gedmo\Versioned
-     *
-     */
-    private $lot;
-    
-    
-    /**
-     * @var integer $debut
-     *
-     * @Assert\NotBlank
-     */
     private $debut;
-    
-    /**
-     * @var integer $quantite
-     *
-     * @Assert\NotBlank
-     */
     private $quantite;
-   
+    private $controlleur;
 
     /**
      * Get id
@@ -111,40 +104,32 @@ class Certificat
         return $this->serie;
     }
 
-    function getUtilise() {
-        return $this->utilise;
-    }
-
-    function getAnnule() {
-        return $this->annule;
-    }
-
     function setSerie($serie) {
         $this->serie = $serie;
     }
-
-    function setUtilise($utilise) {
-        $this->utilise = $utilise;
+    
+    function getDebut() {
+        return $this->debut;
     }
 
-    function setAnnule($annule) {
-        $this->annule = $annule;
+    function getQuantite() {
+        return $this->quantite;
     }
 
     function getControlleur() {
         return $this->controlleur;
     }
 
-    function setControlleur($controlleur) {
-        $this->controlleur = $controlleur;
-    }
-    
-    function getLot() {
-        return $this->lot;
+    function setDebut($debut) {
+        $this->debut = $debut;
     }
 
-    function setLot($lot) {
-        $this->lot = $lot;
+    function setQuantite($quantite) {
+        $this->quantite = $quantite;
+    }
+
+    function setControlleur($controlleur) {
+        $this->controlleur = $controlleur;
     }
                 
     //BEHAVIOR
@@ -227,7 +212,14 @@ class Certificat
     }
 
     public function estSupprimable(){
-        return false ;
+        if($this->certificats != null){
+            foreach($this->certificats as $certificat){
+                if($certificat->getUtilise()){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
     public function __toString(){
@@ -236,24 +228,6 @@ class Certificat
     
     public function __construct()
     {
-        $this->utilise = false;
-        $this->annule = false;
-    }
-    
-    function getDebut() {
-        return $this->debut;
-    }
-
-    function getQuantite() {
-        return $this->quantite;
-    }
-
-    function setDebut($debut) {
-        $this->debut = $debut;
-    }
-
-    function setQuantite($quantite) {
-        $this->quantite = $quantite;
     }
     
 }

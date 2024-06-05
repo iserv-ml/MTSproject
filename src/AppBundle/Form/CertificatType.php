@@ -15,8 +15,7 @@ class CertificatType extends AbstractType
     {
         $builder
                 ->add('debut')
-                ->add('quantite')
-                ->add('controlleur');
+                ->add('quantite');
     }
     
     /**

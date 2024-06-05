@@ -323,4 +323,42 @@ class Utilisateur extends BaseUser
     }
     //Fin relation utiliseur peut modifier plusieurs vehicules a plusieurs affectations
     
+    
+    //Debut relation Utilisateur a plusieurs certificats
+    /**
+    * @ORM\OneToMany(targetEntity="Certificat", mappedBy="controlleur", cascade={"persist"})
+    */
+    protected $certificats;
+    
+    /**
+    * Add certificat
+    *
+    * @param AppBundle\Entity\Certificat $certificat
+    */
+    public function addCertificat(\AppBundle\Entity\Certificat $certificat)
+    {
+        $this->certificats[] = $certificat;
+    }
+
+    /**
+     * Get certificats
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getCertificats()
+    {
+        return $this->certificats;
+    }
+
+    /**
+     * Set certificats
+     *
+     * @param \Doctrine\Common\Collections\Collection $certificats
+     */
+    public function setCertificats(\Doctrine\Common\Collections\Collection $certificats)
+    {
+        $this->certificats = $certificats;
+    }
+    //Fin relation caisse a plusieurs certificats
+    
 }

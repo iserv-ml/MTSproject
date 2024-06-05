@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Certificat;
+use AppBundle\Entity\Lot;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -25,10 +26,26 @@ class CertificatController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $certificats = $em->getRepository('AppBundle:Certificat')->findAll();
+        $lots = $em->getRepository('AppBundle:Lot')->findAll();
 
         return $this->render('certificat/index.html.twig', array(
-            'certificats' => $certificats,
+            'lots' => $lots,
+        ));
+    }
+    
+    /**
+     * Lists all certificat from lot entities.
+     *
+     * @Route("/detail/{id}", name="secretaire_certificat_lot_index")
+     * @Method("GET")
+     */
+    public function indexLotAction(Lot $lot)
+    {
+
+        $certificats = $lot->getCertificats();
+
+        return $this->render('certificat/indexAgent.html.twig', array(
+            'certificats' => $certificats, 'lot'=>$lot->getId()
         ));
     }
 
@@ -41,19 +58,25 @@ class CertificatController extends Controller
     public function newAction(Request $request)
     {
         $certificat = new Certificat();
+       
         $form = $this->createForm('AppBundle\Form\CertificatType', $certificat);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-            $quantite = $certificat->getQuantite();
-            $debut = $certificat->getDebut();
+            $quantite = intval($certificat->getQuantite());
+            $debut = intval($certificat->getDebut());
             if($debut > 0 && $quantite > 0){
+                $fin = $debut+$quantite-1;
+                $serie = $debut."-".$fin;
                 $em = $this->getDoctrine()->getManager();
-                
+                $lot = new Lot();
+                $lot->setSerie($serie);
+                $em->persist($lot);
                 while($quantite > 0){
                     $tmp = new Certificat();
                     $tmp->setSerie($debut);
-                    $tmp->setControlleur($certificat->getControlleur());
+                    $tmp->setLot($lot);
+                    //$tmp->setControlleur($certificat->getControlleur());
                     $em->persist($tmp);
                     $debut++;
                     $quantite--;
@@ -73,6 +96,7 @@ class CertificatController extends Controller
             'form' => $form->createView(),
         ));
     }
+    
 
     /**
      * Finds and displays a certificat entity.
@@ -140,6 +164,33 @@ class CertificatController extends Controller
         $this->get('session')->getFlashBag()->add('notice', 'Annulation effectuée.');
         return $this->redirectToRoute('secretaire_certificat_index');
     }
+    
+    /**
+     * Delete an existing lot entity.
+     *
+     * @Route("/{id}/supprimer", name="secretaire_lot_supprimer")
+     * @Method({"GET", "POST"})
+     */
+    public function supprimerAction(Request $request, Lot $lot)
+    {
+
+        if (!$lot) {
+            throw $this->createNotFoundException("Le lot demandé n'est pas disponible.");
+        }else
+        if(!$lot->estSupprimable()){
+            $this->get('session')->getFlashBag()->add('error', "Impossible d'annuler. Ce lot contient un certificat déjà utilisé");
+            return $this->redirectToRoute('secretaire_certificat_index');
+        }
+        
+        $em = $this->getDoctrine()->getManager();
+        foreach($lot->getCertificats() as $certificat){
+            $em->remove($certificat);
+        }
+        $em->remove($lot);
+        $em->flush();
+        $this->get('session')->getFlashBag()->add('notice', 'Suppression effectuée.');
+        return $this->redirectToRoute('secretaire_certificat_index');
+    }
 
     /**
      * Deletes a certificat entity.
@@ -175,5 +226,45 @@ class CertificatController extends Controller
             ->setMethod('DELETE')
             ->getForm()
         ;
+    }
+    
+     /**
+     * Creates a new certificat entity.
+     *
+     * @Route("/centreaffecter/{id}", name="centre_certificat_affecter")
+     * @Method({"GET", "POST"})
+     */
+    public function affecterAction(Request $request, Lot $lot)
+    {       
+        $form = $this->createForm('AppBundle\Form\LotAffecterType', $lot);
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $quantite = intval($lot->getQuantite());
+            $debut = intval($lot->getDebut());
+            $controle = split(".", $lot->getSerie());
+            if($debut >= intval($controle[0]) && $quantite > 0){
+                $em = $this->getDoctrine()->getManager();
+                foreach($lot->getCertificats() as $certificat){
+                    if($certificat->getUtilise() || $certificat->getAnnule()) continue;
+                    $certificat->setControlleur($lot->getControlleur());
+                    $em->flush();
+                    $quantite--;
+                    if($quantite == 0) break;
+                }
+
+                $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
+                return $this->redirectToRoute('secretaire_certificat_index');
+            }else{
+                $this->get('session')->getFlashBag()->add('error', 'Merci de renseigner les champs "début" et "quantité".');
+            }
+        }
+
+       
+
+        return $this->render('certificat/affecter.html.twig', array(
+            'lot' => $lot,
+            'form' => $form->createView(),
+        ));
     }
 }
