@@ -21,7 +21,11 @@ class DefaultController extends Controller
         $em = $this->getDoctrine()->getManager();
         $secretaire = $this->get('security.authorization_checker')->isGranted('ROLE_SECRETAIRE');
         if($secretaire){
-            return $this->render('default/secretaire.html.twig');
+            $em = $this->getDoctrine()->getManager();
+            $lots = $em->getRepository('AppBundle:Lot')->findAll();
+            return $this->render('certificat/index.html.twig', array(
+                'lots' => $lots,
+            ));
         }
         $nbVehicule = $em->getRepository('AppBundle:Vehicule')->countRows();
         $enCours = 0;

@@ -4,13 +4,13 @@
 {% block ariane -%}
     <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="{{ path('homepage') }}">Accueil</a></li>
-          <li class="breadcrumb-item"><a href="{{ path('secretaire_certificat_index') }}">Certificats</a></li>
+          <li class="breadcrumb-item"><a href="{{ path('secretaire_certificat_lot_index',{ 'id': lot.id } ) }}">Certificats</a></li>
           <li class="breadcrumb-item">AFFECTER</li>
         </ol>
 {% endblock %}
 {% block pagetitle -%}AFFECTER DES CERTIFICATS{% endblock %}
 {% block actions %} 
-    <label class="btn btn-outline-secondary"><a href="{{ path('secretaire_certificat_index') }}">RETOUR A LA LISTE</a></label>
+    <label class="btn btn-outline-secondary"><a href="{{ path('secretaire_certificat_lot_index', { 'id': lot.id }) }}">RETOUR A LA LISTE</a></label>
 {% endblock %}
 {% block body %}
 

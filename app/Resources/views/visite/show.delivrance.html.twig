@@ -19,7 +19,7 @@
         <label class="btn btn-outline-secondary"><a href="{{ path('visite_delivrance') }}">LISTE DELIVRANCE</a></label>
         <label class="btn btn-outline-secondary"><a onclick="imprimerRapport()"  href="#" title="Imprimer le rapport">RAPPORT</a></label>
         {% if visite.statut == 2 or visite.statut == 4 %}
-            <label class="btn btn-outline-secondary"><a onclick="imprimerCertificat()" href="#" title="Imprimer le certificat">CERTIFICAT</a></label>
+            <label class="btn btn-outline-secondary"><a onclick="certificat()" href="#" title="Imprimer le certificat">CERTIFICAT</a></label>
         {% endif %}
     {% endif %}
 {% endblock %}
@@ -53,7 +53,7 @@
     <span style="float:right">Jours de retard : {{ quittance.retard }}</span>
 </div>
 <div>
-    <span style="font-weight: bolder">N&deg; Immatriculation : {% if visite.immatriculation_v is not null %}{{ visite.immatriculation_v }}{%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}}</span>
+    <span style="font-weight: bolder">N&deg; Immatriculation : {% if visite.immatriculation_v is not null %}{{ visite.immatriculation_v }}{%  else %}{{ visite.vehicule.immatriculation }}{%  endif %}</span>
     <span style="float:right;background: #000;color:#fff;padding:10px">Montant p&eacute;nalit&eacute; : {{ ((quittance.penalite)|round(0, 'ceil'))|number_format(0, ',', ' ') }}</span>
 </div>
 <div style='margin-bottom:15px'>
@@ -191,6 +191,8 @@
             </div>
         </div>
     </div>
+                
+    <div id="certificat-modal" title="IMPRIMER"></div>
 {% endblock %}
 
 {% block javascripts -%}
@@ -237,9 +239,28 @@
         document.body.innerHTML = originalContents;
     }
     
-    function imprimerCertificat(){
+    function imprimerCertificat(numero){
         $.ajax({
             url : '{{ path('visite_certificat') }}',
+            type : 'POST', 
+            data : 'id=' + {{ visite.id }},
+            data : 'certificat=' + numero,
+            success : function(code_html, statut){ // code_html contient le HTML renvoyé
+                
+            }
+        });
+        var printContents = document.getElementById('printDivCertificat').innerHTML;
+        var originalContents = document.body.innerHTML;
+        document.body.style.backgroundColor = "white"
+        document.body.innerHTML = printContents;
+        window.print();
+        document.body.style.backgroundColor = "rgb(228, 229, 230)";
+        document.body.innerHTML = originalContents;
+    }
+    
+    function imprimerCertificat(){
+        $.ajax({
+            url : '#',
             type : 'POST', 
             data : 'id=' + {{ visite.id }},
             success : function(code_html, statut){ // code_html contient le HTML renvoyé
@@ -253,6 +274,41 @@
         window.print();
         document.body.style.backgroundColor = "rgb(228, 229, 230)";
         document.body.innerHTML = originalContents;
+    }
+    
+    function certificat(){
+	var options = {
+            modal: true,
+            height:200,
+            width:700,
+            buttons: {
+                "Annuler": function() {
+                    $( this ).dialog( "close" );
+                }
+            }
+        };
+        $('#certificat-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+        $('#certificat-modal').load('{{ path('visite_modal_certificat', { 'id': visite.id }) }}').dialog(options).dialog('open');
+    }
+    
+    function verifierCertificat(){
+        var numero = $('#numero').val();
+        $.ajax({
+            
+            url : '{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/visite/serie/verifier/'+numero+'/'+{{visite.id}},
+            type : 'GET', 
+            success : function(code_html, statut){ // code_html contient le HTML renvoyé
+                $('#certificat-modal').dialog( "close" );
+                alert("Impression en cours!");
+                
+                imprimerCertificat(numero);
+            },
+            error : function(code_html, statut){
+                alert("Ce numéro n'est pas valide!");
+            }
+                
+        });
+        
     }
    
 

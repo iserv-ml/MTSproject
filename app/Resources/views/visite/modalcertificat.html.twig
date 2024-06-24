@@ -1,0 +1,24 @@
+    <table class="table table-hover">
+        <tbody>
+            <tr>
+                <th>Statut</th>
+                <td>
+                    {%if visite.statut == 0 %}EN ATTENTE DU PAIEMENT
+                    {%elseif visite.statut == 1%}EN ATTENTE DU CONTROLE
+                    {%elseif visite.statut == 2%}SUCCES - EN ATTENTE DU CERTIFICAT
+                    {%elseif visite.statut == 3%}ECHEC - REVISITE AVANT LE {% if dateRevisite %}{{ dateRevisite|date('Y-m-d') }}{% endif %}
+                    {%elseif visite.statut == 4%}CERTIFICAT DELIVRE
+                    {%elseif visite.statut == 5%}ANNULEE
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <th>Certificat</th>
+                <td>
+                    <input type="text" hint="numero" name="numero" id="numero"  />
+                    <input id="controle" onclick="verifierCertificat();" type="button" name="enregistrer" value="Imprimer" />
+                </td>
+            </tr>            
+        </tbody>
+    </table>
+

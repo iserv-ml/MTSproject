@@ -35,9 +35,9 @@ class Certificat
     private $version;
     
     /**
-     * @var string $serie
+     * @var integer $serie
      * @Gedmo\Versioned
-     * @ORM\Column(name="serie", type="string", length=255, nullable=false)
+     * @ORM\Column(name="serie", type="integer", length=255, nullable=false)
      */
     private $serie;
     
@@ -48,6 +48,13 @@ class Certificat
      * 
      */
     private $utilise;
+    
+    /**
+     * @var String $immatriculation
+     * @Gedmo\Versioned
+     * @ORM\Column(name="immatriculation", type="string", length=255, nullable=false)
+     */
+    private $immatriculation;
     
     /**
      * @var boolean $annule
@@ -146,7 +153,16 @@ class Certificat
     function setLot($lot) {
         $this->lot = $lot;
     }
-                
+    
+    function getImmatriculation(){
+        return $this->immatriculation;
+    }
+
+    function setImmatriculation($immatriculation) {
+        $this->immatriculation = $immatriculation;
+    }
+
+                    
     //BEHAVIOR
     /**
      * @var string $creePar

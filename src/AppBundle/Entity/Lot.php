@@ -39,7 +39,69 @@ class Lot
      * @Gedmo\Versioned
      * @ORM\Column(name="serie", type="string", length=255, nullable=false)
      */
-    private $serie;   
+    private $serie; 
+    
+    /**
+     * @var string $quantite
+     * @Gedmo\Versioned
+     * @ORM\Column(name="quantite", type="integer", length=255, nullable=true)
+     */
+    private $quantite;
+    
+    
+    /**
+     * @ORM\ManyToOne(targetEntity="Utilisateur", inversedBy="lots", cascade={"persist","refresh"})
+     * @ORM\JoinColumn(name="chef_id", referencedColumnName="id")
+     * @Gedmo\Versioned
+     *
+     */
+    private $chefCentre;
+    
+    /**
+     * @var string $controlleur
+     *
+     * @ORM\Column(name="controlleur", type="string", length=255, nullable=true)
+     * 
+     */
+    private $controlleur;
+    
+    /**
+     * @var string $attributeur
+     *
+     * @ORM\Column(name="attributeur", type="string", length=255, nullable=true)
+     * 
+     */
+    private $attributeur;
+    
+    /**
+     * @var string $attributeurControleur
+     *
+     * @ORM\Column(name="attributeur_controleur", type="string", length=255, nullable=true)
+     * 
+     */
+    private $attributeurControleur;
+    
+    
+    /**
+     * @var \DateTime $dateAffectationCentre
+     *
+     * @ORM\Column(name="date_affectation_centre", type="datetime", nullable=true)
+     */
+    private $dateAffectationCentre;
+    
+    /**
+     * @var \DateTime $dateAffectationControlleur
+     *
+     * @ORM\Column(name="date_affectation_controlleur", type="datetime", nullable=true)
+     */
+    private $dateAffectationControlleur;
+    
+    /**
+     * @var string $nbrAnnule
+     * @Gedmo\Versioned
+     * @ORM\Column(name="nbr_annule", type="integer", length=255, nullable=true)
+     */
+    private $nbrAnnule;
     
     //Debut relation Utilisateur a plusieurs certificats
     /**
@@ -79,8 +141,6 @@ class Lot
     //Fin relation caisse a plusieurs certificats
     
     private $debut;
-    private $quantite;
-    private $controlleur;
 
     /**
      * Get id
@@ -131,7 +191,55 @@ class Lot
     function setControlleur($controlleur) {
         $this->controlleur = $controlleur;
     }
-                
+    
+    function getChefCentre() {
+        return $this->chefCentre;
+    }
+
+    function getDateAffectationControlleur() {
+        return $this->dateAffectationControlleur;
+    }
+
+    function setChefCentre($chefCentre) {
+        $this->chefCentre = $chefCentre;
+    }
+
+    function setDateAffectationControlleur($dateAffectationControlleur) {
+        $this->dateAffectationControlleur = $dateAffectationControlleur;
+    }
+    
+    function getAttributeur() {
+        return $this->attributeur;
+    }
+
+    function setAttributeur($attributeur) {
+        $this->attributeur = $attributeur;
+    }
+    
+    function getAttributeurControleur() {
+        return $this->attributeurControleur;
+    }
+
+    function getDateAffectationCentre(){
+        return $this->dateAffectationCentre;
+    }
+
+    function getNbrAnnule() {
+        return $this->nbrAnnule;
+    }
+
+    function setAttributeurControleur($attributeurControleur) {
+        $this->attributeurControleur = $attributeurControleur;
+    }
+
+    function setDateAffectationCentre($dateAffectationCentre) {
+        $this->dateAffectationCentre = $dateAffectationCentre;
+    }
+
+    function setNbrAnnule($nbrAnnule) {
+        $this->nbrAnnule = $nbrAnnule;
+    }
+                    
     //BEHAVIOR
     /**
      * @var string $creePar
@@ -229,5 +337,6 @@ class Lot
     public function __construct()
     {
     }
+    
     
 }

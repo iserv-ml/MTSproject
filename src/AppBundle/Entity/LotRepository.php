@@ -26,6 +26,20 @@ class LotRepository extends EntityRepository
         return $arrayAss;
     }
     
+    public function findAllCentreAjax($start, $end, $sCol, $sdir, $search, $idAgent) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.id, r.serie, r.quantite, m.nom, m.prenom, r.controlleur, r.dateAffectationControlleur FROM AppBundle:Lot r LEFT JOIN r.chefCentre m'
+                    . ' WHERE m.id = :idAgent AND r.serie like :search'
+                    . ' ORDER BY '.$sCol.' '.$sdir)
+            ->setParameter('idAgent', $idAgent)
+            ->setParameter('search', '%'.$search.'%')
+            ->setFirstResult($start)
+            ->setMaxResults($end);
+        $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+        return $arrayAss;
+    }
+    
     public function countRows() {
         $qb = $this->createQueryBuilder('c');
         $qb->select('count(c.id)');

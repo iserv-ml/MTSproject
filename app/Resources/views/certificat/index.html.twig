@@ -20,8 +20,10 @@
             <thead>
             <tr>
                 <th>Serie</th>
-                <th>Dernière modification</th>
-                <th>Date de dernière modification</th>
+                <th>Quantité</th>
+                <th>Attributeur</th>
+                <th>Chef de centre</th>
+                <th>Date attribution</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -29,12 +31,13 @@
         {% for lot in lots %}
             <tr>
                 <td>{{ lot.serie }}</td>
-                <td>{{ lot.modifierPar }}</td>
-                <td>{% if lot.dateModification %}{{ lot.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{{ lot.quantite }}</td>
+                <td>{{ lot.attributeur }}</td>
+                <td>{{ lot.chefCentre }}</td>
+                <td>{% if lot.dateAffectationCentre %}{{ lot.dateAffectationCentre|date('Y-m-d H:i:s') }}{% endif %}</td>
                 <td>
                     {% if lot.estSupprimable %}
-                        <a class='btn btn-info' title="Détail" href="{{ path('secretaire_certificat_lot_index', { 'id': lot.id }) }}" ><i class='fa fa-plus'></i></a>
-                        <a class='btn btn-edit' title="Suprimer" href="{{ path('secretaire_lot_supprimer', { 'id': lot.id }) }}" onclick='return confirm("Confirmer la suppression du lot {{ lot.serie }}")'><i class='fa fa-ban'></i></a>
+                        <a class='btn btn-edit' title="Suprimer" href="{{ path('secretaire_lot_supprimer', {'id': lot.id }) }}" onclick='return confirm("Confirmer la suppression du lot {{ lot.serie }}")'><i class='fa fa-ban'></i></a>
                     {% endif %}
                 </td>
             </tr>

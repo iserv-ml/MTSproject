@@ -83,7 +83,7 @@
                             <td>{{ visite.piste }} </td>
                             <td>
                                 {% if visite.statut == 1 %}
-                                    {% if visite.contre_visite_visuelle == 1 %}
+                                    {% if visite.contre_visite_visuelle == 1 or maha == false %}
                                         <a title='Controller' class='btn btn-success' href='{{ path('visite_controleur', { 'id': visite.id }) }}'><i class='fa fa-config' ></i> Controler</a>
                                     {% else %}
                                         <a title='Controller' class='btn btn-success' href='{{ path('visite_maha', { 'id': visite.id }) }}'><i class='fa fa-config' ></i> Controler</a>

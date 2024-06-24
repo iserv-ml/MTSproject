@@ -5,8 +5,9 @@ namespace AppBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use AppBundle\Entity\UtilisateurRepository;
 
-class CentreType extends AbstractType
+class LotType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -14,18 +15,9 @@ class CentreType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('code')
-                ->add('libelle')
-                ->add('description')
-                ->add('adresse')
-                ->add('telephone')
-                ->add('maha')
-                ->add('anaser')
-                ->add('carteVierge')
-                ->add('repertoire')
-                ->add('ftpServer')
-                ->add('ftpUsername')
-                ->add('ftpUserpass');
+                ->add('debut')
+                ->add('quantite')
+                ->add('chefCentre');
     }
     
     /**
@@ -34,7 +26,7 @@ class CentreType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Centre'
+            'data_class' => 'AppBundle\Entity\Lot'
         ));
     }
 
@@ -43,7 +35,7 @@ class CentreType extends AbstractType
      */
     public function getBlockPrefix()
     {
-        return 'appbundle_centre';
+        return 'appbundle_certificat_lot';
     }
 
 

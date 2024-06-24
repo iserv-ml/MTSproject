@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 /**
  * Certificat controller.
  *
- * @Route("secretaire/certificat")
+ * @Route("certificat")
  */
 class CertificatController extends Controller
 {
@@ -23,6 +23,17 @@ class CertificatController extends Controller
      * @Method("GET")
      */
     public function indexAction()
+    {
+        throw $this->createNotFoundException("Opération interdite");
+    }
+    
+    /**
+     * Lists all certificat entities.
+     *
+     * @Route("/secretaire", name="secretaire_certificat_index")
+     * @Method("GET")
+     */
+    public function secretaireAction()
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -36,7 +47,7 @@ class CertificatController extends Controller
     /**
      * Lists all certificat from lot entities.
      *
-     * @Route("/detail/{id}", name="secretaire_certificat_lot_index")
+     * @Route("/chefcentre/detail/{id}", name="secretaire_certificat_lot_index")
      * @Method("GET")
      */
     public function indexLotAction(Lot $lot)
@@ -57,20 +68,22 @@ class CertificatController extends Controller
      */
     public function newAction(Request $request)
     {
-        $certificat = new Certificat();
+        $lot = new Lot();
        
-        $form = $this->createForm('AppBundle\Form\CertificatType', $certificat);
+        $form = $this->createForm('AppBundle\Form\LotType', $lot);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-            $quantite = intval($certificat->getQuantite());
-            $debut = intval($certificat->getDebut());
+            $quantite = intval($lot->getQuantite());
+            $debut = intval($lot->getDebut());
             if($debut > 0 && $quantite > 0){
+                $user = $this->container->get('security.context')->getToken()->getUser();
                 $fin = $debut+$quantite-1;
                 $serie = $debut."-".$fin;
                 $em = $this->getDoctrine()->getManager();
-                $lot = new Lot();
                 $lot->setSerie($serie);
+                $lot->setDateAffectationCentre(new \DateTime("now"));
+                $lot->setAttributeur($user->getNomComplet());
                 $em->persist($lot);
                 while($quantite > 0){
                     $tmp = new Certificat();
@@ -92,7 +105,7 @@ class CertificatController extends Controller
        
 
         return $this->render('certificat/new.html.twig', array(
-            'certificat' => $certificat,
+            'lot' => $lot,
             'form' => $form->createView(),
         ));
     }
@@ -254,7 +267,7 @@ class CertificatController extends Controller
                 }
 
                 $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
-                return $this->redirectToRoute('secretaire_certificat_index');
+                return $this->redirectToRoute('centre_certificat');
             }else{
                 $this->get('session')->getFlashBag()->add('error', 'Merci de renseigner les champs "début" et "quantité".');
             }

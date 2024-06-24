@@ -11,39 +11,29 @@ use Doctrine\ORM\EntityRepository;
  * repository methods below.
  */
 class CertificatRepository extends EntityRepository
-{
-    
-    public function findAllAjax($start, $end, $sCol, $sdir, $search) {
-        $qb = $this->getEntityManager()
-            ->createQuery(
-                'SELECT r.id, r.numero, r.actif, r.ouvert FROM AppBundle:Caisse r '
-                    . ' WHERE r.numero like :search'
-                    . ' ORDER BY '.$sCol.' '.$sdir)
-            ->setParameter('search', '%'.$search.'%')
-            ->setFirstResult($start)
-            ->setMaxResults($end);
-        $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
-        return $arrayAss;
-    }
-    
-    public function countRows() {
-        $qb = $this->createQueryBuilder('c');
-        $qb->select('count(c.id)');
-        return  $qb->getQuery()->getSingleScalarResult();
-    }
-    
+{    
     public function countRowsFiltre($search) {
         $qb = $this->createQueryBuilder('r');
         $qb->select('count(r.id)')->where('r.numero like :search')->setParameter('search', '%'.$search.'%');
         return  $qb->getQuery()->getSingleScalarResult();
     }
     
-     public function trouverParLibelle($libelle) {
-       try{ 
-         $result = $this->getEntityManager()
+
+    public function findAnnuler($idLot) {
+        $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r FROM AppBundle:Caisse r WHERE r.numero = :libelle'
-            )->setParameter("libelle",$libelle)
+                'SELECT count(r.id) as nb FROM AppBundle:Certificat r LEFT JOIN r.lot m'
+                    . ' WHERE m.id = :idLot AND r.annule = true')
+            ->setParameter('idLot', $idLot);
+        return $qb->getSingleScalarResult();
+    }
+    
+    public function trouverParNumero($numero) {
+        try{ 
+            $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Certificat r WHERE r.serie = :numero AND r.annule = false AND r.utilise = false'
+            )->setParameter("numero",$numero)
             ->getSingleResult();
        }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
             $result = null;
@@ -54,17 +44,4 @@ class CertificatRepository extends EntityRepository
         
         return $result; 
     } 
-    
-    public function trouverPourEtat($start, $end, $sCol, $sdir, $search) {
-        $qb = $this->getEntityManager()
-            ->createQuery(
-                'SELECT r FROM AppBundle:Caisse r '
-                    . ' WHERE r.numero like :search'
-                    . ' ORDER BY '.$sCol.' '.$sdir)
-            ->setParameter('search', '%'.$search.'%')
-            ->setFirstResult($start)
-            ->setMaxResults($end);
-        $arrayAss = $qb->getResult();
-        return $arrayAss;
-    }
 }

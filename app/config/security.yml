@@ -28,4 +28,5 @@ security:
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/utilisateur, role: ROLE_SUPER_ADMIN }
         - { path: ^/secretaire, role: ROLE_SECRETAIRE }
+        - { path: ^/chefcentre, role: ROLE_SECRETAIRE }
         - { path: ^/, role: ROLE_USER }

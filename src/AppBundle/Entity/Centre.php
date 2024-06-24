@@ -82,6 +82,15 @@ class Centre
     private $etat;
     
     /**
+     * @var boolean $maha
+     *
+     * @ORM\Column(name="maha", type="boolean", nullable=false)
+     * 
+     * 
+     */
+    private $maha;
+    
+    /**
      * @var float $solde
      *
      * @ORM\Column(name="solde", type="float", nullable=true)
@@ -300,6 +309,14 @@ class Centre
 
     function setCarteViergeOuverture($carteViergeOuverture) {
         $this->carteViergeOuverture = $carteViergeOuverture;
+    }
+    
+    function getMaha() {
+        return $this->maha;
+    }
+
+    function setMaha($maha) {
+        $this->maha = $maha;
     }
 
     //BEHAVIOR

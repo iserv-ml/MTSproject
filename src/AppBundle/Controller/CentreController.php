@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Entity\SortieCaisse;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Centre controller.
@@ -479,5 +479,57 @@ class CentreController extends Controller
         }
                 return new \Symfony\Component\HttpFoundation\Response($response); 
         }
+        
+        /**
+     * Lists all certificat entities pour le chef de centre.
+     *
+     * @Route("/chefcentre/certificat", name="centre_certificat")
+     * @Method("GET")
+     */
+    public function certificatAction()
+    {
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        return $this->render('certificat/centre.html.twig', array(
+            'nom' => $user->getNomComplet(), 'id' => $user->getId()
+        ));
+    }
+    
+    /**
+     * Lists all Modele entities.
+     *
+     * @Route("/chefcentre/certificatAjax/liste", name="centrecertificatajax")
+     * 
+     * 
+     */
+    public function certificatCentreAjaxAction(Request $request)
+    {
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $search = $request->get('search')['value'];
+        $col = $request->get('order')[0]['column'];
+        $dir = $request->get('order')[0]['dir'];
+        $em = $this->getDoctrine()->getManager();
+	$aColumns = array( 'r.serie', 'r.attributeur', 'r.cntrolleur');
+        $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
+        $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
+        $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
+        $sdir = ($dir =='asc') ? 'asc' : 'desc';
+        $searchTerm = ($search != '') ? $search : NULL;
+        $rResult = $em->getRepository('AppBundle:Lot')->findAllCentreAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, $user->getId());
+	$iTotal = $em->getRepository('AppBundle:Modele')->countRows();
+        $iTotalFiltre = $em->getRepository('AppBundle:Modele')->countRowsFiltre($searchTerm);
+	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
+	foreach ( $rResult as  $aRow )
+	{
+            $action = $this->genererAction($aRow['id']);
+            $nb = $em->getRepository('AppBundle:Certificat')->findAnnuler($aRow['id']);
+            $output['aaData'][] = array($aRow['serie'],$aRow['quantite'], $aRow['nom']." ".$aRow['prenom'], $aRow['controlleur'], $aRow['dateAffectationControlleur'], "OUI", $nb, $action);
+	}
+	return new Response(json_encode( $output ));    
+    }
+    
+    private function genererAction($id){
+        $action = "<a title='Détail' class='btn btn-info' href='".$this->generateUrl('secretaire_certificat_lot_index', array('id'=> $id ))."'><i class='fa fa-plus'></i></a>";
+        return $action;
+    }
     
 }

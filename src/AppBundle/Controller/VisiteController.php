@@ -92,7 +92,7 @@ class VisiteController extends Controller
         $immatriculation = \trim($request->get('immatriculation', ''));
         $visites = (\strlen($immatriculation) > 3) ? $em->getRepository('AppBundle:Visite')->findControlesAjaxAlleger($immatriculation, $piste_id) : null;
         
-        return $this->render('visite/controles.html.twig', array('piste'=>$piste, 'centre'=>$centre->getEtat(), 'visites'=>$visites, 'immatriculation'=>$immatriculation));
+        return $this->render('visite/controles.html.twig', array('piste'=>$piste, 'centre'=>$centre->getEtat(), 'visites'=>$visites, 'immatriculation'=>$immatriculation, 'maha'=>$centre->getMaha()));
     }
     
     /**
@@ -215,7 +215,7 @@ class VisiteController extends Controller
      * Finds and displays a visite entity.
      *
      * @Route("/{id}/delivrance", name="visite_show_delivrance")
-     * @Method("GET")
+     * 
      */
     public function showdelivranceAction(Visite $visite)
     {
@@ -450,7 +450,7 @@ class VisiteController extends Controller
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
-            $action = ($centre->getEtat())?$this->genererPisteAction($aRow['id'], $aRow['statut'], $aRow['contreVisiteVisuelle'], $aRow['vehicule']) : "Centre fermé";
+            $action = ($centre->getEtat())?$this->genererPisteAction($aRow['id'], $aRow['statut'], $aRow['contreVisiteVisuelle'],  $centre->getMaha()) : "Centre fermé";
             if($aRow['contreVisite']){
                 $revisite = $aRow['contreVisiteVisuelle'] == 1 ? "Contre visite visuelle" : "Contre visite";
             }else{
@@ -470,11 +470,11 @@ class VisiteController extends Controller
 	return new Response(json_encode( $output ));    
     }
     
-    private function genererPisteAction($id, $statut, $visuelle, $vehicule){
+    private function genererPisteAction($id, $statut, $visuelle, $maha){
         $action = "";
         if ($this->get('security.authorization_checker')->isGranted('ROLE_CONTROLLEUR')){
             if($statut == 1){
-                if($visuelle == 1){
+                if($visuelle == 1 || !$maha){
                     $action .= " <a title='Controller' class='btn btn-success' href='".$this->generateUrl('visite_controleur', array('id'=> $id ))."'><i class='fa fa-config' ></i> Controler</a>";
                 }else{
                     $action .= " <a title='Controller' class='btn btn-success' href='".$this->generateUrl('visite_maha', array('id'=> $id ))."'><i class='fa fa-config' ></i> Controler</a>";
@@ -965,7 +965,10 @@ class VisiteController extends Controller
         $em = $this->getDoctrine()->getManager();
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         $visite = $em->getRepository('AppBundle:Visite')->find($request->get('id'));
+        $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumero($request->get('certificat'));
         $visite->setStatut(4);
+        $certificat->setImmatriculation($visite->getImmatriculation_v());
+        $certificat->setUtilise(true);
         $centre->decrementerCarteVierge();
         $em->flush(); 
          return new Response(
@@ -1021,5 +1024,43 @@ class VisiteController extends Controller
         }else{
             throw $this->createNotFoundException("Aucune chaine active. Merci de contacter l'administrateur.");
         }
+    }
+    
+    /**
+     * Choix numéro certificat.
+     *
+     * @Route("/numero/{id}", name="visite_modal_certificat")
+     * @Method("GET")
+     */
+    public function modalcertificatAction(Visite $visite)
+    {        
+        return $this->render('visite/modalcertificat.html.twig', array(
+            'visite' => $visite,
+        ));
+    }
+    
+    /**
+     * Vérifier numéro certificat.
+     *
+     * @Route("/serie/verifier/{certificat}/{id}", name="visite_certificat_verifier")
+     * @Method("GET")
+     */
+    public function verifiercertificatAction(Request $request)
+    {
+        $numero = intval($request->get("certificat", 0));
+        $id = intval($request->get("id", 0));
+        $em = $this->getDoctrine()->getManager();
+        $visite = $em->getRepository('AppBundle:Visite')->find($id);
+        $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumero($numero);
+        if($certificat && $visite){
+            $visite->setStatut(4);
+            $em->flush();
+            $certificat->setImmatriculation($visite->getImmatriculation_v());
+            $certificat->setUtilise(1);
+            $em->flush();
+            return new Response("Valide");
+        }
+        return new Response($numero."_".$request->get('id', 0), 500); 
+        
     }
 }
