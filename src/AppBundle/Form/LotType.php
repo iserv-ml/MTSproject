@@ -17,7 +17,11 @@ class LotType extends AbstractType
         $builder
                 ->add('debut')
                 ->add('quantite')
-                ->add('chefCentre');
+                ->add('chefCentre', 'entity', array('class' => 'AppBundle:Utilisateur',
+                    'query_builder' => function (UtilisateurRepository $er) {
+                        return $er->createQueryBuilder('u')->leftJoin('u.groupe', 'g')->where('g.name like :groupe')->orderBy('u.username', 'ASC')->setParameter('groupe', 'CHEF_DE_CENTRE');
+                    },
+                    'choice_label' => 'nomComplet',));
     }
     
     /**

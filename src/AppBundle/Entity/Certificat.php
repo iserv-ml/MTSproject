@@ -52,7 +52,7 @@ class Certificat
     /**
      * @var String $immatriculation
      * @Gedmo\Versioned
-     * @ORM\Column(name="immatriculation", type="string", length=255, nullable=false)
+     * @ORM\Column(name="immatriculation", type="string", length=255, nullable=true)
      */
     private $immatriculation;
     

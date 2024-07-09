@@ -16,7 +16,11 @@ class CertificatType extends AbstractType
         $builder
                 ->add('debut')
                 ->add('quantite')
-                 ->add('controlleur');
+                ->add('controlleur', 'entity', array('class' => 'AppBundle:Utilisateur',
+                    'query_builder' => function (UtilisateurRepository $er) {
+                        return $er->createQueryBuilder('u')->leftJoin('u.groupe', 'g')->where('g.name like :groupe')->orderBy('u.username', 'ASC')->setParameter('groupe', 'CONTROLLEUR');
+                    },
+                    'choice_label' => 'nomComplet',));
     }
     
     /**
