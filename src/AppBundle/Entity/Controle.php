@@ -67,6 +67,14 @@ class Controle
     private $actif;
     
     /**
+     * @var boolean $mahaOffline
+     *
+     * @ORM\Column(name="maha_offline", type="boolean", nullable=false)
+     * 
+     */
+    private $mahaOffline;
+    
+    /**
      * @var string $type
      *
      * @ORM\Column(name="type", type="string", length=255, nullable=false)
@@ -251,6 +259,14 @@ class Controle
         $this->genre = $genre;
     }
     
+    function getMahaOffline() {
+        return $this->mahaOffline;
+    }
+
+    function setMahaOffline($mahaOffline) {
+        $this->mahaOffline = $mahaOffline;
+    }
+    
     //BEHAVIOR
     /**
      * @var string $creePar
@@ -347,6 +363,7 @@ class Controle
         $this->users = new ArrayCollection();
         $this->minimum = 0;
         $this->maximum = 0;
+        $this->mahaOffline = false;
     }
     
     public function tousLesResultatsOrdonnesParSucces(){

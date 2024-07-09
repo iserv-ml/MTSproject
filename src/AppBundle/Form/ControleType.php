@@ -21,7 +21,8 @@ class ControleType extends AbstractType
                 ->add('type', 'choice',['choices' => ['' => 'Choisir un type', 'MESURE - INTERVALLE' => 'MESURE - INTERVALLE', 'MESURE - VALEUR' => 'MESURE - VALEUR', 'VISUEL' => 'VISUEL', 'DATE' => 'DATE' ]])
                 ->add('unite')
                 ->add('detail')
-                ->add('actif');
+                ->add('actif')
+                ->add('mahaOffline');
     }
     
     /**

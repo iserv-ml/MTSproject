@@ -16,7 +16,7 @@ class ControleRepository extends EntityRepository
     public function findAllAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.libelle, r.code, r.detail, r.actif, r.type, c.libelle as categorie FROM AppBundle:Controle r LEFT JOIN r.categorie c'
+                'SELECT r.id, r.libelle, r.code, r.detail, r.actif, r.mahaOffline, r.type, c.libelle as categorie FROM AppBundle:Controle r LEFT JOIN r.categorie c'
                     . ' WHERE r.libelle like :search or r.code like :search or c.libelle like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
@@ -84,6 +84,13 @@ class ControleRepository extends EntityRepository
             ->createQuery(
                 'SELECT r FROM AppBundle:Controle r LEFT JOIN r.genre g WHERE r.actif = 1 and r.type = :type and g.code = :genre')
                  ->setParameter("type", "VISUEL")->setParameter("genre", $genre);
+        return $qb->getResult();
+    }
+    
+    public function recupererOffline() {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Controle r WHERE r.mahaOffline = 1');
         return $qb->getResult();
     }
 }

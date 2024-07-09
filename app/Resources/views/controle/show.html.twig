@@ -49,6 +49,10 @@
                 <td>{% if controle.actif %}Oui{% else %}Non{% endif %}</td>
             </tr>
             <tr>
+                <th>Offline</th>
+                <td>{% if controle.mahaOffline %}Oui{% else %}Non{% endif %}</td>
+            </tr>
+            <tr>
                 <th>Créé par</th>
                 <td>{{ controle.creePar }}</td>
             </tr>

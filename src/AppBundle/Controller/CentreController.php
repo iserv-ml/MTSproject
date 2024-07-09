@@ -158,7 +158,12 @@ class CentreController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $mahaOffline = $centre->getMaha() ? false : true;
+            $controlesOffline = $em->getRepository('AppBundle:Controle')->recupererOffline();
+            foreach($controlesOffline as $controle){
+                $controle->setActif($mahaOffline);
+            }
+            $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
             return $this->redirectToRoute('admin_gestion_centre_modifier');
         }

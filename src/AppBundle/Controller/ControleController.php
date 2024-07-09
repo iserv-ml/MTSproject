@@ -87,7 +87,14 @@ class ControleController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $em =  $this->getDoctrine()->getManager();
+            $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+            if($centre->getMaha()){
+                if($controle->getMahaOffline()){
+                    $controle->setActif(false);
+                }
+            }
+            $em->flush();
             $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
             return $this->redirectToRoute('admin_parametres_controle_edit', array('id' => $controle->getId()));
         }
@@ -189,8 +196,9 @@ class ControleController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $actif = $aRow['actif'] == 1 ? "Actif" : "Inactif";
+            $mahaOffline = $aRow['mahaOffline'] == 1 ? "Oui" : "Non";
             $action = $this->genererAction($aRow['id']);
-            $output['aaData'][] = array($aRow['categorie'],$aRow['libelle'],$aRow['code'],$aRow['type'],$actif, $action);
+            $output['aaData'][] = array($aRow['categorie'],$aRow['libelle'],$aRow['code'],$aRow['type'],$actif,$mahaOffline, $action);
 	}
 	return new Response(json_encode( $output ));    
     }
