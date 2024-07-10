@@ -255,7 +255,7 @@ class CertificatController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             $quantite = intval($lot->getQuantite());
             $debut = intval($lot->getDebut());
-            $controle = split(".", $lot->getSerie());
+            $controle = split("-", $lot->getSerie());
             if($debut >= intval($controle[0]) && $quantite > 0){
                 $em = $this->getDoctrine()->getManager();
                 foreach($lot->getCertificats() as $certificat){
