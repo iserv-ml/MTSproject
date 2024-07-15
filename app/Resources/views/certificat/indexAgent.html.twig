@@ -20,9 +20,10 @@
             <thead>
             <tr>
                 <th>Serie</th>
+                <th>Attributeur</th>
                 <th>Controleur</th>
-                <th>Dernière modification</th>
-                <th>Date de dernière modification</th>
+                <th>Date attribution</th>
+                <th>Statut</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -43,9 +44,10 @@
             {% endif %}
             <tr style="color: {{ color }}" title="{{ title }}">
                 <td>{{ certificat.serie }}</td>
+                <td>{{ certificat.attribuePar }}</td>
                 <td>{{ certificat.controlleur }}</td>
-                <td>{{ certificat.modifierPar }}</td>
                 <td>{% if certificat.dateModification %}{{ certificat.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
+                <td>{% if certificat.annule %}Annulé{% else %}Actif{% endif %}</td>
                 <td>
                     {% if cancel %}
                         <a class='btn btn-edit' title="Annuler" href="{{ path('secretaire_certificat_annuler', { 'id': certificat.id }) }}" onclick='return confirm("Vous allez annuler le certificat {{ certificat.serie }}. Merci de confirmer")'><i class='fa fa-ban'></i></a>

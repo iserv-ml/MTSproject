@@ -190,6 +190,14 @@ class Visite
     * @Assert\NotBlank
     */
     protected $centre;
+    
+    /**
+     * @var integer $step
+     *
+     * @ORM\Column(name="step", type="integer", nullable=false)
+     * 
+     */
+    private $step;
    
    //Debut relation Visite Parent a plusieurs revisite
     /**
@@ -531,6 +539,7 @@ class Visite
         $this->contreVisite = false;
         $this->contreVisiteVisuelle = false;
         $this->contrevisiteCree = false;
+        $this->step = 0;
     }
     
     public function aiguiller($vehicule, $statut, $chaine, $visiteParent, $centre)
@@ -710,6 +719,14 @@ class Visite
     
     public function getAgentAiguilleur(){
         return $this->aiguilleur != null ? $this->aiguilleur : $this->creePar;
+    }
+    
+    function getStep() {
+        return $this->step;
+    }
+
+    function setStep($step) {
+        $this->step = $step;
     }
 
 }

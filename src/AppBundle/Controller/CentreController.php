@@ -526,8 +526,10 @@ class CentreController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
-            $nb = $em->getRepository('AppBundle:Certificat')->findAnnuler($aRow['id']);
-            $output['aaData'][] = array($aRow['serie'],$aRow['quantite'], $aRow['nom']." ".$aRow['prenom'], $aRow['controlleur'], $aRow['dateAffectationControlleur'], "OUI", $nb, $action);
+            $annule = $em->getRepository('AppBundle:Certificat')->findAnnuler($aRow['id']);
+            $attribue = $em->getRepository('AppBundle:Certificat')->findAttribue($aRow['id']);
+            $disponible = $aRow['quantite'] - $annule - $attribue;
+            $output['aaData'][] = array($aRow['serie'],$aRow['quantite'], $disponible, $attribue,$annule, $aRow['dateAffectationCentre'], $aRow['attributeur'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }

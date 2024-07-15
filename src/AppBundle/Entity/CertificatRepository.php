@@ -28,6 +28,15 @@ class CertificatRepository extends EntityRepository
         return $qb->getSingleScalarResult();
     }
     
+    public function findAttribue($idLot) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT count(r.id) as nb FROM AppBundle:Certificat r LEFT JOIN r.lot m '
+                    . ' WHERE m.id = :idLot AND r.annule = false AND r.controlleur IS NOT null')
+            ->setParameter('idLot', $idLot);
+        return $qb->getSingleScalarResult();
+    }
+    
     public function trouverParNumero($numero) {
         try{ 
             $result = $this->getEntityManager()

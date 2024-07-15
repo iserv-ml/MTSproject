@@ -15,8 +15,7 @@ class LotAffecterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('debut')
-                ->add('quantite')
+                ->add('quantiteF', 'integer', array('label'=>'Quantité à affecter', 'required'=>true))
                 ->add('controlleur', 'entity', array('class' => 'AppBundle:Utilisateur',
                     'query_builder' => function (UtilisateurRepository $er) {
                         return $er->createQueryBuilder('u')->leftJoin('u.groupe', 'g')->where('g.name like :groupe')->orderBy('u.username', 'ASC')->setParameter('groupe', 'CONTROLLEUR');

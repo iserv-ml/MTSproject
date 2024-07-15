@@ -80,6 +80,13 @@ class Certificat
      */
     private $lot;
     
+    /**
+     * @var String $attribuePar
+     * @Gedmo\Versioned
+     * @ORM\Column(name="attribue_par", type="string", length=255, nullable=true)
+     */
+    private $attribuePar;
+    
     
     /**
      * @var integer $debut
@@ -162,6 +169,13 @@ class Certificat
         $this->immatriculation = $immatriculation;
     }
 
+    function getAttribuePar(){
+        return $this->attribuePar;
+    }
+
+    function setAttribuePar($attribuePar) {
+        $this->attribuePar = $attribuePar;
+    }
                     
     //BEHAVIOR
     /**

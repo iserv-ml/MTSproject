@@ -29,7 +29,7 @@ class LotRepository extends EntityRepository
     public function findAllCentreAjax($start, $end, $sCol, $sdir, $search, $idAgent) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.serie, r.quantite, m.nom, m.prenom, r.controlleur, r.dateAffectationControlleur FROM AppBundle:Lot r LEFT JOIN r.chefCentre m'
+                'SELECT r.id, r.serie, r.quantite, m.nom, m.prenom, r.controlleur, r.dateAffectationCentre, r.attributeur FROM AppBundle:Lot r LEFT JOIN r.chefCentre m'
                     . ' WHERE m.id = :idAgent AND r.serie like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('idAgent', $idAgent)

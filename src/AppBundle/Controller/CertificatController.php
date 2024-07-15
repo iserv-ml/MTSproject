@@ -253,14 +253,14 @@ class CertificatController extends Controller
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
-            $quantite = intval($lot->getQuantite());
-            $debut = intval($lot->getDebut());
-            $controle = split("-", $lot->getSerie());
-            if($debut >= intval($controle[0]) && $quantite > 0){
+            $quantite = intval($lot->getQuantiteF());
+            if($quantite > 0){
+                $user = $this->container->get('security.context')->getToken()->getUser();
                 $em = $this->getDoctrine()->getManager();
                 foreach($lot->getCertificats() as $certificat){
-                    if($certificat->getUtilise() || $certificat->getAnnule()) continue;
+                    if($certificat->getUtilise() || $certificat->getAnnule() || $certificat->getControlleur()!=null) continue;
                     $certificat->setControlleur($lot->getControlleur());
+                    $certificat->setAttribuePar($user->getNomComplet());
                     $em->flush();
                     $quantite--;
                     if($quantite == 0) break;

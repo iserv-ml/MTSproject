@@ -48,6 +48,11 @@ class Lot
      */
     private $quantite;
     
+    /**
+     * @var string $quantiteF
+     */
+    private $quantiteF;
+    
     
     /**
      * @ORM\ManyToOne(targetEntity="Utilisateur", inversedBy="lots", cascade={"persist","refresh"})
@@ -238,6 +243,14 @@ class Lot
 
     function setNbrAnnule($nbrAnnule) {
         $this->nbrAnnule = $nbrAnnule;
+    }
+    
+    function getQuantiteF() {
+        return $this->quantiteF;
+    }
+
+    function setQuantiteF($quantiteF) {
+        $this->quantiteF = $quantiteF;
     }
                     
     //BEHAVIOR

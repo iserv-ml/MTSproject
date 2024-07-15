@@ -8,6 +8,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use AppBundle\Entity\Historique;
 
 /**
  * Visite controller.
@@ -598,6 +599,7 @@ class VisiteController extends Controller
                         continue;
                     }
                 }
+                $visite->setStep(1);
                 $em->flush();
                 $visite->fermerFichierResultatMaha($contenu);
                 return $this->redirectToRoute('visite_controleur', array('id' => $visite->getId()));
@@ -644,6 +646,12 @@ class VisiteController extends Controller
         $admin = $this->get('security.authorization_checker')->isGranted('ROLE_SUPERVISEUR');
         if(!$visite || $visite->getStatut() == 0 || (!$admin && $visite->getChaine()->getPiste()->getId()!= $affectation->getPiste()->getId())){
             throw $this->createAccessDeniedException("Cette opération n'est pas autorisée");
+        }
+        if($visite->getStep() == 0 && $centre->getMaha()){
+            $historique = new Historique("Fraude MAHA", "Visite", "step=0", "maha=1", $user);
+            $em->persist($historique);
+            $em->flush();
+            throw $this->createAccessDeniedException("Cette opération n'est pas autorisée");            
         }
         $controles = $em->getRepository('AppBundle:Controle')->trouverVisuelActif($visite->getVehicule()->getTypeVehicule()->getGenre()->getCode());
         if($request->get('controleur')){
