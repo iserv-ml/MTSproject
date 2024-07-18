@@ -15,8 +15,17 @@
             <tr>
                 <th>Certificat</th>
                 <td>
-                    <input type="text" hint="numero" name="numero" id="numero"  />
-                    <input id="controle" onclick="verifierCertificat();" type="button" name="enregistrer" value="Imprimer" />
+                    {% if certificats is not empty %}
+                        <select name='numero' id='numero'>
+                            {% for certificat in certificats %}
+                                <option value="{{ certificat["serie"] }}">{{ certificat["serie"] }}</option>
+                            {% endfor %}
+                        </select>
+                        <input id="controle" onclick="verifierCertificat();" type="button" name="enregistrer" value="Imprimer" />
+                    {% else %}
+                        Vous n'avez pas de certificats disponibles!
+                    {% endif %}
+                    
                 </td>
             </tr>            
         </tbody>

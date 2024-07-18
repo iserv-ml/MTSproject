@@ -175,7 +175,7 @@ class CertificatController extends Controller
         $certificat->setAnnule(true);
         $this->getDoctrine()->getManager()->flush();
         $this->get('session')->getFlashBag()->add('notice', 'Annulation effectuée.');
-        return $this->redirectToRoute('secretaire_certificat_index');
+        return $this->redirectToRoute('centre_certificat');
     }
     
     /**
@@ -278,6 +278,30 @@ class CertificatController extends Controller
         return $this->render('certificat/affecter.html.twig', array(
             'lot' => $lot,
             'form' => $form->createView(),
+        ));
+    }
+    
+    /**
+     * Vérifier si le certificat peut être supprimer avant confi an existing certificat entity.
+     *
+     * @Route("/{id}/confirmer/annuler", name="centre_certificat_annuler_confirmer")
+     * @Method({"GET", "POST"})
+     */
+    public function confirmerannulerAction(Request $request, Certificat $certificat)
+    {
+        $message = "Vous ête sur le point d'annuler le certificat ".$certificat->getSerie();
+        if (!$certificat) {
+            throw $this->createNotFoundException("Le certificat demandé n'est pas disponible.");
+        }else
+        if($certificat->getUtilise()){
+            $message = "Le certificat ".$certificat->getSerie()." ne peut pas être annulé. Il a déjà été utilisé pour une visite";
+        }
+        if($certificat->getAnnule()){
+            $message = "Le certificat ".$certificat->getSerie()." a déjà été annuler";
+        }
+       
+        return $this->render('certificat/annuler.html.twig', array(
+            'message' => $message,
         ));
     }
 }

@@ -15,7 +15,7 @@ class CertificatRepository extends EntityRepository
     public function findAllLotAjax($start, $end, $sCol, $sdir, $search, $lotid) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.serie, r.attribuePar, c.nom, c.prenom, r.dateModification, r.annule, r.immatriculation FROM AppBundle:Certificat r LEFT JOIN r.controlleur c LEFT JOIN r.lot l '
+                'SELECT r.id, r.serie, r.attribuePar, c.nom, c.prenom, r.dateModification, r.annule, r.utilise, r.immatriculation FROM AppBundle:Certificat r LEFT JOIN r.controlleur c LEFT JOIN r.lot l '
                     . ' WHERE l.id = :lotid and (r.serie like :search OR c.nom like :search OR c.prenom like :search OR CONCAT(c.nom, :vide, c.prenom) like :search)'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('lotid', $lotid)
@@ -74,4 +74,13 @@ class CertificatRepository extends EntityRepository
         
         return $result; 
     } 
+     public function recuperer($controleurId) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.serie FROM AppBundle:Certificat r LEFT JOIN r.controlleur c '
+                    . ' WHERE c.id = :controleurId AND r.annule = false AND r.utilise = false')
+            ->setParameter('controleurId', $controleurId);
+        return $qb->getResult();
+    }
+    
 }

@@ -1041,9 +1041,12 @@ class VisiteController extends Controller
      * @Method("GET")
      */
     public function modalcertificatAction(Visite $visite)
-    {        
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $certificat = $em->getRepository('AppBundle:Certificat')->recuperer($user->getId());
         return $this->render('visite/modalcertificat.html.twig', array(
-            'visite' => $visite,
+            'visite' => $visite, 'certificats'=> $certificat
         ));
     }
     

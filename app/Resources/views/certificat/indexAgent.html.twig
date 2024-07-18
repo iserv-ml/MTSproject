@@ -33,7 +33,7 @@
         </tbody>
     </table>
     </div>
-
+<div id="annuler-modal" title="Confirmation"></div>
 {% endblock %}
 
 {% block javascripts -%}
@@ -52,7 +52,7 @@
         "searching": true,
         "responsive": true,
         "pageLength": 50,
-        "order": [[1, 'asc']],
+        "order": [[0, 'asc']],
        language: {
         processing:     "Traitement en cours...",
         search:         "Rechercher&nbsp;:",
@@ -80,7 +80,25 @@
      
 		
 		        
-                   } );    
-        </script>
+                   } );  
+                                    
+        function annulerCertificat(id){
+            var options = {
+                modal: true,
+                height:200,
+                width:700,
+                buttons: {
+                    "Confirmer": function() {
+                        $(location).attr('href', '{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/certificat/'+id+'/annuler');
+                    },
+                    "Fermer": function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            };
+            $('#annuler-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+            $('#annuler-modal').load('{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/certificat/'+id+'/confirmer/annuler').dialog(options).dialog('open');
+        }
+    </script>
 {% endblock %}
 

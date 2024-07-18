@@ -567,15 +567,21 @@ class CentreController extends Controller
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererCertificatAction($aRow['id']);
-            $statut = $aRow['annule'] ? "Annulé" : "Actif";
+            $statut = $this->genererStatut($aRow['annule'], $aRow['utilise']);
             $output['aaData'][] = array($aRow['serie'],$aRow['attribuePar'], $aRow['nom']." ".$aRow['prenom'], $aRow['dateModification'],$statut, $aRow['immatriculation'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }
     
     private function genererCertificatAction($id){
-        $action = "<a title='Annuler' class='btn btn-edit' href='".$this->generateUrl('secretaire_certificat_annuler', array('id'=> $id ))."' onclick='return confirm(\'Vous allez annuler le certificat ".$id." Merci de confirmer\')'><i class='fa fa-ban'></i></a>";
+        $action = "<a title='Annuler' class='btn btn-edit' href='#' onclick='annulerCertificat(".$id.")'><i class='fa fa-ban'></i></a>";
         return $action;
+    }
+    
+    private function genererStatut($annule, $utilise){
+        if($utilise) return "Utilisé";
+        if($annule) return "Annulé";
+        return "Actif";
     }
     
 }
