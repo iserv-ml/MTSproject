@@ -29,34 +29,7 @@
             </tr>
         </thead>
         <tbody>
-        {% for certificat in certificats %}
-            {% if certificat.utilise %}
-                {%  set color = "green" %}
-                {%  set title = "Utilisé" %}
-                {%  set cancel = false %}
-            {% elseif certificat.annule %}
-                {%  set color = "red" %}
-                {%  set title = "Annulé" %}
-                {%  set cancel = false %}
-            {% else %}
-                {%  set color = "" %}
-                {%  set cancel = true %}
-                {%  set title = "" %}
-            {% endif %}
-            <tr style="color: {{ color }}" title="{{ title }}">
-                <td>{{ certificat.serie }}</td>
-                <td>{{ certificat.attribuePar }}</td>
-                <td>{{ certificat.controlleur }}</td>
-                <td>{% if certificat.dateModification %}{{ certificat.dateModification|date('Y-m-d H:i:s') }}{% endif %}</td>
-                <td>{% if certificat.annule %}Annulé{% else %}Actif{% endif %}</td>
-                <td>{{ certificat.immatriculation }}</td>
-                <td>
-                    {% if cancel %}
-                        <a class='btn btn-edit' title="Annuler" href="{{ path('secretaire_certificat_annuler', { 'id': certificat.id }) }}" onclick='return confirm("Vous allez annuler le certificat {{ certificat.serie }}. Merci de confirmer")'><i class='fa fa-ban'></i></a>
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
+        
         </tbody>
     </table>
     </div>
@@ -69,6 +42,11 @@
 
         $('#liste_clients').DataTable({
         
+        "processing": true,
+            "serverSide": true,
+            "ajax": {
+                "url": "{{ path('centrecertificatagentajax', { 'lotid': lot }) }}",
+            },
         "paging" : true,
         "info" : true, 
         "searching": true,

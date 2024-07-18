@@ -40,15 +40,15 @@ class LotRepository extends EntityRepository
         return $arrayAss;
     }
     
-    public function countRows() {
+    public function countRows($idAgent) {
         $qb = $this->createQueryBuilder('c');
-        $qb->select('count(c.id)');
+        $qb->select('count(c.id)')->leftJoin('c.chefCentre', 'v')->where('v.id = :idAgent')->setParameter('idAgent', $idAgent);
         return  $qb->getQuery()->getSingleScalarResult();
     }
     
-    public function countRowsFiltre($search) {
+    public function countRowsFiltre($search, $idAgent) {
         $qb = $this->createQueryBuilder('r');
-        $qb->select('count(r.id)')->where('r.numero like :search')->setParameter('search', '%'.$search.'%');
+        $qb->select('count(r.id)')->leftJoin('r.chefCentre', 'v')->where('r.serie like :search')->andWhere('v.id = :idAgent')->setParameter('search', '%'.$search.'%')->setParameter('idAgent', $idAgent);
         return  $qb->getQuery()->getSingleScalarResult();
     }
     

@@ -16,7 +16,7 @@
 
 {% block actions %}
     
-    {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %} 
+    {% if is_granted('ROLE_CHEF_CENTRE') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('admin_gestion_affectation_new') }}">AFFECTER</a></label>
         <label class="btn btn-outline-secondary"><a href="{{ path('affectation_export') }}">EXPORTER L'HISTORIQUE</a></label>
     {% endif %}

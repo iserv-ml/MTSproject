@@ -520,8 +520,8 @@ class CentreController extends Controller
         $sdir = ($dir =='asc') ? 'asc' : 'desc';
         $searchTerm = ($search != '') ? $search : NULL;
         $rResult = $em->getRepository('AppBundle:Lot')->findAllCentreAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, $user->getId());
-	$iTotal = $em->getRepository('AppBundle:Modele')->countRows();
-        $iTotalFiltre = $em->getRepository('AppBundle:Modele')->countRowsFiltre($searchTerm);
+	$iTotal = $em->getRepository('AppBundle:Lot')->countRows($user->getId());
+        $iTotalFiltre = $em->getRepository('AppBundle:Lot')->countRowsFiltre($searchTerm, $user->getId());
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
 	foreach ( $rResult as  $aRow )
 	{
@@ -536,6 +536,45 @@ class CentreController extends Controller
     
     private function genererAction($id){
         $action = "<a title='Détail' class='btn btn-info' href='".$this->generateUrl('secretaire_certificat_lot_index', array('id'=> $id ))."'><i class='fa fa-plus'></i></a>";
+        return $action;
+    }
+    
+    /**
+     * Lists all Modele entities.
+     *
+     * @Route("/chefcentre/certificatagentAjax/liste", name="centrecertificatagentajax")
+     * 
+     * 
+     */
+    public function certificatAgentCentreAjaxAction(Request $request)
+    {
+        $lotid = intval($request->get("lotid", 0));
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $search = $request->get('search')['value'];
+        $col = $request->get('order')[0]['column'];
+        $dir = $request->get('order')[0]['dir'];
+        $em = $this->getDoctrine()->getManager();
+	$aColumns = array( 'r.serie', 'r.attribuePar', 'c.nom');
+        $start = ($request->get('start') != NULL && intval($request->get('start')) > 0) ? intval($request->get('start')) : 0;
+        $end = ($request->get('length') != NULL && intval($request->get('length')) > 50) ? intval($request->get('length')) : 50;
+        $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
+        $sdir = ($dir =='asc') ? 'asc' : 'desc';
+        $searchTerm = ($search != '') ? $search : NULL;
+        $rResult = $em->getRepository('AppBundle:Certificat')->findAllLotAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, $lotid);
+	$iTotal = $em->getRepository('AppBundle:Certificat')->countRows($lotid);
+        $iTotalFiltre = $em->getRepository('AppBundle:Certificat')->countRowsFiltre($searchTerm, $lotid);
+	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
+	foreach ( $rResult as  $aRow )
+	{
+            $action = $this->genererCertificatAction($aRow['id']);
+            $statut = $aRow['annule'] ? "Annulé" : "Actif";
+            $output['aaData'][] = array($aRow['serie'],$aRow['attribuePar'], $aRow['nom']." ".$aRow['prenom'], $aRow['dateModification'],$statut, $aRow['immatriculation'], $action);
+	}
+	return new Response(json_encode( $output ));    
+    }
+    
+    private function genererCertificatAction($id){
+        $action = "<a title='Annuler' class='btn btn-edit' href='".$this->generateUrl('secretaire_certificat_annuler', array('id'=> $id ))."' onclick='return confirm(\'Vous allez annuler le certificat ".$id." Merci de confirmer\')'><i class='fa fa-ban'></i></a>";
         return $action;
     }
     

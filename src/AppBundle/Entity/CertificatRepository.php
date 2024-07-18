@@ -12,9 +12,30 @@ use Doctrine\ORM\EntityRepository;
  */
 class CertificatRepository extends EntityRepository
 {    
-    public function countRowsFiltre($search) {
+    public function findAllLotAjax($start, $end, $sCol, $sdir, $search, $lotid) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.id, r.serie, r.attribuePar, c.nom, c.prenom, r.dateModification, r.annule, r.immatriculation FROM AppBundle:Certificat r LEFT JOIN r.controlleur c LEFT JOIN r.lot l '
+                    . ' WHERE l.id = :lotid and (r.serie like :search OR c.nom like :search OR c.prenom like :search OR CONCAT(c.nom, :vide, c.prenom) like :search)'
+                    . ' ORDER BY '.$sCol.' '.$sdir)
+            ->setParameter('lotid', $lotid)
+            ->setParameter('search', '%'.$search.'%')
+            ->setParameter('vide', ' ')
+            ->setFirstResult($start)
+            ->setMaxResults($end);
+        $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+        return $arrayAss;
+    }
+    
+    public function countRows($lotid) {
+        $qb = $this->createQueryBuilder('c');
+        $qb->select('count(c.id)')->leftJoin('c.lot', 'l')->where('c.id = :lotid')->setParameter('lotid', $lotid);
+        return  $qb->getQuery()->getSingleScalarResult();
+    }
+    
+    public function countRowsFiltre($search, $lotid) {
         $qb = $this->createQueryBuilder('r');
-        $qb->select('count(r.id)')->where('r.numero like :search')->setParameter('search', '%'.$search.'%');
+        $qb->select('count(r.id)')->leftJoin('r.lot', 'l')->leftJoin('r.controlleur', 'c')->where('l.id = :lotid AND (r.serie like :search OR c.nom like :search )')->setParameter('lotid', $lotid)->setParameter('search', '%'.$search.'%');
         return  $qb->getQuery()->getSingleScalarResult();
     }
     
