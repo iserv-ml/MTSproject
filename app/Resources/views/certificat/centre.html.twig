@@ -13,6 +13,15 @@
 {% endblock %}
 {% block menu_gestion_actif %}active{% endblock %}
 {% block pagetitle -%}GESTION DES CERTIFICATS{% endblock %}
+{% block actions %}
+    <label class="btn btn-warning pointer-event"> 
+        <form method='POST' action='{{ path('centre_certificat') }}'>
+            Du <input type="text" id="debut" name="debut" value="{{ debut }}" /> 
+            Au <input type="text" id="fin" name="fin" value="{{ fin }}" />
+            <input type="submit" value="Actualiser"/>
+        </form>
+    </label>
+{% endblock %}
 {% block body -%}
     <div class="table-responsive">
         <table id="liste_clients" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
@@ -29,7 +38,18 @@
             </tr>
         </thead>
         <tbody>
-        
+        {% for resultat in resultats %}
+            <tr>
+                <td>{{ resultat.serie }}</td>
+                <td>{{ resultat.quantite }}</td>
+                <td>{{ resultat.disponible }}</td>
+                <td>{{ resultat.attribue }}</td>
+                <td>{{ resultat.annule }}</td>
+                <td>{{ resultat.dateAffectationCentre }}</td>
+                <td>{{ resultat.attributeur }}</td>
+                <td><a title='Détail' class='btn btn-info' href="{{ path('secretaire_certificat_lot_index', { 'id': resultat.id }) }}"><i class='fa fa-plus'></i></a></td>
+            </tr>
+        {% endfor %}
         </tbody>
     </table>
     </div>
@@ -39,13 +59,16 @@
 {% block javascripts -%}
 <script type="text/javascript">
     $(document).ready(function() {
+        
+        $( "#debut" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "+0Y", dateFormat: 'dd-mm-yy' });
+        $( "#fin" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "+0Y", dateFormat: 'dd-mm-yy' });
 
         $('#liste_clients').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "ajax": {
-                "url": "{{ path('centrecertificatajax') }}",
-            },
+            //"processing": true,
+            //"serverSide": true,
+            //"ajax": {
+            //    "url": "{{ path('centrecertificatajax') }}",
+            //},
         
         "paging" : true,
         "info" : true, 

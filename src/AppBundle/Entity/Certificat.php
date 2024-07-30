@@ -19,6 +19,9 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Certificat
 {
+    
+    const digit = 7;
+
     /**
      * @var integer
      *
@@ -89,6 +92,20 @@ class Certificat
     
     
     /**
+     * @var datetime $dateAttribution
+     * @Gedmo\Versioned
+     * @ORM\Column(name="date_attribution", type="datetime", nullable=true)
+     */
+    private $dateAttribution;
+    
+    /**
+     * @var String $motif
+     * @Gedmo\Versioned
+     * @ORM\Column(name="motif", type="string", length=255, nullable=true)
+     */
+    private $motif;    
+    
+    /**
      * @var integer $debut
      *
      * @Assert\NotBlank
@@ -100,8 +117,7 @@ class Certificat
      *
      * @Assert\NotBlank
      */
-    private $quantite;
-   
+    private $quantite;   
 
     /**
      * Get id
@@ -122,59 +138,90 @@ class Certificat
     }
     
     function getSerie() {
-        return $this->serie;
+        $serie = $this->serie;
+        while(strlen($serie) < self::digit){
+            $serie = "0".$serie;
+        }
+        return $serie;
     }
 
-    function getUtilise() {
+    public function getUtilise() {
         return $this->utilise;
     }
 
-    function getAnnule() {
+    public function getAnnule() {
         return $this->annule;
     }
 
-    function setSerie($serie) {
+    public function setSerie($serie) {
         $this->serie = $serie;
     }
 
-    function setUtilise($utilise) {
+    public function setUtilise($utilise) {
         $this->utilise = $utilise;
     }
 
-    function setAnnule($annule) {
+    public function setAnnule($annule) {
         $this->annule = $annule;
     }
 
-    function getControlleur() {
+    public function getControlleur() {
         return $this->controlleur;
     }
 
-    function setControlleur($controlleur) {
+    public function setControlleur($controlleur) {
         $this->controlleur = $controlleur;
     }
     
-    function getLot() {
+    public function getLot() {
         return $this->lot;
     }
 
-    function setLot($lot) {
+    public function setLot($lot) {
         $this->lot = $lot;
     }
     
-    function getImmatriculation(){
+    public function getImmatriculation(){
         return $this->immatriculation;
     }
 
-    function setImmatriculation($immatriculation) {
+    public function setImmatriculation($immatriculation) {
         $this->immatriculation = $immatriculation;
     }
 
-    function getAttribuePar(){
+    public function getAttribuePar(){
         return $this->attribuePar;
     }
 
-    function setAttribuePar($attribuePar) {
+    public function setAttribuePar($attribuePar) {
         $this->attribuePar = $attribuePar;
+    }
+    
+    public function getDateAttribution(){
+        return $this->dateAttribution;
+    }
+
+    public function setDateAttribution($dateAttribution) {
+        $this->dateAttribution = $dateAttribution;
+    }
+    
+    function getMotif(){
+        return $this->motif;
+    }
+
+    function setMotif($motif) {
+        $this->motif = $motif;
+    }
+    
+    public function getStatus(){
+        $stauts = "Actif";
+        if($this->annule){
+            $stauts = "Annulé";
+        }
+        if($this->utilise){
+            $stauts = "Utilise";
+        }
+        return $stauts;
     }
                     
     //BEHAVIOR

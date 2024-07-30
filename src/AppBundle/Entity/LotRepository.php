@@ -26,13 +26,12 @@ class LotRepository extends EntityRepository
         return $arrayAss;
     }
     
-    public function findAllCentreAjax($start, $end, $sCol, $sdir, $search, $idAgent) {
+    public function findAllCentreAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
                 'SELECT r.id, r.serie, r.quantite, m.nom, m.prenom, r.controlleur, r.dateAffectationCentre, r.attributeur FROM AppBundle:Lot r LEFT JOIN r.chefCentre m'
-                    . ' WHERE m.id = :idAgent AND r.serie like :search'
+                    . ' WHERE r.serie like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
-            ->setParameter('idAgent', $idAgent)
             ->setParameter('search', '%'.$search.'%')
             ->setFirstResult($start)
             ->setMaxResults($end);
@@ -80,5 +79,14 @@ class LotRepository extends EntityRepository
             ->setMaxResults($end);
         $arrayAss = $qb->getResult();
         return $arrayAss;
+    }
+    
+    public function rechercher($debut,$fin) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.id, r.serie, r.quantite, r.dateAffectationCentre, r.attributeur FROM AppBundle:Lot r '
+                    . ' WHERE r.dateAffectationCentre >= :debut AND r.dateAffectationCentre <= :fin ')
+            ->setParameter('debut', $debut)->setParameter('fin', $fin);
+        return $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
     }
 }

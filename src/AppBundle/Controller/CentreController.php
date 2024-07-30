@@ -489,13 +489,30 @@ class CentreController extends Controller
      * Lists all certificat entities pour le chef de centre.
      *
      * @Route("/chefcentre/certificat", name="centre_certificat")
-     * @Method("GET")
+     * @Method({"GET", "POST"})
      */
-    public function certificatAction()
+    public function certificatAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
+        $lots = $em->getRepository('AppBundle:Lot')->rechercher($debut, $fin);
+        $resultats = array();
+        foreach($lots as $lot){
+            $annule = $em->getRepository('AppBundle:Certificat')->findAnnuler($lot['id']);
+            $attribue = $em->getRepository('AppBundle:Certificat')->findAttribue($lot['id']);
+            $disponible = $lot['quantite'] - $annule - $attribue;
+            $action = $this->genererActionTwig($lot['id']);
+            $resultats[] = array("id"=>$lot['id'], "serie"=>$lot['serie'], "quantite"=>$lot['quantite'], "dateAffectationCentre"=>$lot['dateAffectationCentre'], "attributeur"=>$lot["attributeur"], "annule"=>$annule, "attribue"=>$attribue, "disponible"=>$disponible, "action"=>$action);
+        }
+        
         $user = $this->container->get('security.context')->getToken()->getUser();
         return $this->render('certificat/centre.html.twig', array(
-            'nom' => $user->getNomComplet(), 'id' => $user->getId()
+            'nom' => $user->getNomComplet(), 'id' => $user->getId(), "resultats"=>$resultats,"debut"=>$debut->format('d-m-Y'), "fin"=>$fin->format('d-m-Y')
         ));
     }
     
@@ -519,7 +536,7 @@ class CentreController extends Controller
         $sCol = (intval($col) > 0 && intval($col) < 3) ? intval($col)-1 : 0;
         $sdir = ($dir =='asc') ? 'asc' : 'desc';
         $searchTerm = ($search != '') ? $search : NULL;
-        $rResult = $em->getRepository('AppBundle:Lot')->findAllCentreAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm, $user->getId());
+        $rResult = $em->getRepository('AppBundle:Lot')->findAllCentreAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
 	$iTotal = $em->getRepository('AppBundle:Lot')->countRows($user->getId());
         $iTotalFiltre = $em->getRepository('AppBundle:Lot')->countRowsFiltre($searchTerm, $user->getId());
 	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
@@ -538,6 +555,12 @@ class CentreController extends Controller
         $action = "<a title='Détail' class='btn btn-info' href='".$this->generateUrl('secretaire_certificat_lot_index', array('id'=> $id ))."'><i class='fa fa-plus'></i></a>";
         return $action;
     }
+    
+    private function genererActionTwig($id){
+        $action = "<a title='Détail' class='btn btn-info' href='".$this->generateUrl('secretaire_certificat_lot_index', array('id'=> $id ))."'><i class='fa fa-plus'></i></a>";
+        return $action;
+    }
+    
     
     /**
      * Lists all Modele entities.
@@ -568,7 +591,7 @@ class CentreController extends Controller
 	{
             $action = $this->genererCertificatAction($aRow['id']);
             $statut = $this->genererStatut($aRow['annule'], $aRow['utilise']);
-            $output['aaData'][] = array($aRow['serie'],$aRow['attribuePar'], $aRow['nom']." ".$aRow['prenom'], $aRow['dateModification'],$statut, $aRow['immatriculation'], $action);
+            $output['aaData'][] = array(\AppBundle\Utilities\Utilities::formaterSerie($aRow['serie']),$aRow['attribuePar'], $aRow['nom']." ".$aRow['prenom'], $aRow['dateAttribution'],$statut, $aRow['immatriculation'], $action);
 	}
 	return new Response(json_encode( $output ));    
     }

@@ -1,1 +1,7 @@
 {{ message }}
+{% if input == true %}
+    <form method='POST' action='{{ path('secretaire_certificat_annuler',{ 'id': id }) }}'>
+    <br/>Motif : <input type="text" name="motif" required />
+    <br/> <br/><input type="submit" value="Confirmer" />
+    </form
+{% endif %}

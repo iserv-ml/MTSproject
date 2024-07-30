@@ -14,16 +14,17 @@ use AppBundle\Entity\Visite;
  */
 class Utilities
 {
-   public static function evaluerDemandeVisite($derniereVisite){
-       if($derniereVisite){
-           switch($derniereVisite->getStatut()){
-               case 0 : case 1 : return 1;
-               case 2 : case 4 : return 2;
-               case 3 : return 3;
-           }
-       }else{
-           return 0;
-       }
+    const digit = 7;
+    public static function evaluerDemandeVisite($derniereVisite){
+        if($derniereVisite){
+            switch($derniereVisite->getStatut()){
+                case 0 : case 1 : return 1;
+                case 2 : case 4 : return 2;
+                case 3 : return 3;
+            }
+        }else{
+            return 0;
+        }
    }
    
     public static function trouverChaineOptimale($chaines, $em){
@@ -43,6 +44,13 @@ class Utilities
             }
         }
         return $chaineOptimale;
+   }
+   
+   public static function formaterSerie($serie){
+        while(strlen($serie) < self::digit){
+            $serie = "0".$serie;
+        }
+        return $serie;
    }
 
 }

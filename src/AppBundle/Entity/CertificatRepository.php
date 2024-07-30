@@ -15,7 +15,7 @@ class CertificatRepository extends EntityRepository
     public function findAllLotAjax($start, $end, $sCol, $sdir, $search, $lotid) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.serie, r.attribuePar, c.nom, c.prenom, r.dateModification, r.annule, r.utilise, r.immatriculation FROM AppBundle:Certificat r LEFT JOIN r.controlleur c LEFT JOIN r.lot l '
+                'SELECT r.id, r.serie, r.attribuePar, c.nom, c.prenom, r.dateAttribution, r.annule, r.utilise, r.immatriculation FROM AppBundle:Certificat r LEFT JOIN r.controlleur c LEFT JOIN r.lot l '
                     . ' WHERE l.id = :lotid and (r.serie like :search OR c.nom like :search OR c.prenom like :search OR CONCAT(c.nom, :vide, c.prenom) like :search)'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('lotid', $lotid)
@@ -80,6 +80,15 @@ class CertificatRepository extends EntityRepository
                 'SELECT r.serie FROM AppBundle:Certificat r LEFT JOIN r.controlleur c '
                     . ' WHERE c.id = :controleurId AND r.annule = false AND r.utilise = false')
             ->setParameter('controleurId', $controleurId);
+        return $qb->getResult();
+    }
+    
+    public function rechercher($lotid, $debut,$fin) {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Certificat r LEFT JOIN r.lot c '
+                    . ' WHERE c.id = :lotid AND r.dateAttribution >= :debut AND r.dateAttribution <= :fin ')
+            ->setParameter('lotid', $lotid)->setParameter('debut', $debut)->setParameter('fin', $fin);
         return $qb->getResult();
     }
     

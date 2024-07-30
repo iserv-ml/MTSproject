@@ -22,7 +22,7 @@
             <label class="btn btn-outline-secondary"><a  href="{{ path('contrevisitevisuelle', { 'id': visite.vehicule.id }) }}" title="CONTRE-VISITE VISUELLE">Contre-visite visuelle</a></label>
         {% endif %}
     {% endif %}
-    {% if is_granted('ROLE_CAISSIER_PRINCIPAL') %} 
+    {% if is_granted('ROLE_CHEF_CENTRE') %} 
         <label class="btn btn-outline-secondary">
             <form method='POST' action='{{ path('contrevisite') }}'>
                 <input type="hidden" name ="id" value ="{{ visite.vehicule.id }}" />

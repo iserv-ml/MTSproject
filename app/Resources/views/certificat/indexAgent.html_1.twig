@@ -13,7 +13,13 @@
     {% if is_granted('ROLE_CHEF_CENTRE') %} 
         <label class="btn btn-outline-secondary"><a href="{{ path('centre_certificat_affecter', { 'id': lot }) }}">AFFECTER</a></label>
     {% endif %}
-
+    <label class="btn btn-warning pointer-event"> 
+        <form method='POST' action='{{ path('secretaire_certificat_lot_index', { 'id': lot }) }}'>
+            Du <input type="text" id="debut" name="debut" value="{{ debut }}" /> 
+            Au <input type="text" id="fin" name="fin" value="{{ fin }}" />
+            <input type="submit" value="Actualiser"/>
+        </form>
+    </label>
 {% endblock %}
 {% block body -%}
     <div class="table-responsive">
@@ -30,7 +36,17 @@
             </tr>
         </thead>
         <tbody>
-
+            {% for certificat in certificats %}
+                <tr>
+                    <td>{{ certificat.serie }}</td>
+                    <td>{{ certificat.attribuePar }}</td>
+                    <td>{{ certificat.controlleur }}</td>
+                    <td>{% if certificat.dateAttribution %}{{ certificat.dateAttribution|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    <td>{{ certificat.getStatus }}</td>
+                    <td>{{ certificat.immatriculation }}</td>
+                    <td></td>
+                </tr>
+            {% endfor %}
         </tbody>
     </table>
     </div>
@@ -40,14 +56,18 @@
 {% block javascripts -%}
 <script type="text/javascript">
     $(document).ready(function() {
+        
+        $( "#debut" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "+0Y", dateFormat: 'dd-mm-yy' });
+            $( "#fin" ).datepicker({changeMonth: true, changeYear: true, defaultDate: "+0Y", dateFormat: 'dd-mm-yy' });
+           
 
         $('#liste_clients').DataTable({
         
-        "processing": true,
-            "serverSide": true,
-           "ajax": {
-              "url": "{{ path('centrecertificatagentajax', { 'lotid': lot }) }}",
-         },
+        //"processing": true,
+        //    "serverSide": true,
+        //    "ajax": {
+        //      "url": "{{ path('centrecertificatagentajax', { 'lotid': lot }) }}",
+        //  },
         "paging" : true,
         "info" : true, 
         "searching": true,
@@ -86,7 +106,7 @@
         function annulerCertificat(id){
             var options = {
                 modal: true,
-                height:300,
+                height:200,
                 width:700,
                 buttons: {
                     "Confirmer": function() {

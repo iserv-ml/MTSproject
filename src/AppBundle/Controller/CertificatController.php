@@ -48,16 +48,26 @@ class CertificatController extends Controller
      * Lists all certificat from lot entities.
      *
      * @Route("/chefcentre/detail/{id}", name="secretaire_certificat_lot_index")
-     * @Method("GET")
+     * @Method({"GET", "POST"})
      */
-    public function indexLotAction(Lot $lot)
+    public function indexLotAction(Request $request)
     {
+        /*
+        $em = $this->getDoctrine()->getManager();
+        $date = new \DateTime("now");
+        $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
+        $debut->setTime(0, 0);
+        $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
+        $fin->setTime(0, 0);
+        $fin->add(new \DateInterval('P1D'));
+        $certificats = $em->getRepository('AppBundle:Certificat')->rechercher($request->get('id', 0), $debut, $fin);
 
-        $certificats = $lot->getCertificats();
 
         return $this->render('certificat/indexAgent.html.twig', array(
-            'certificats' => $certificats, 'lot'=>$lot->getId()
+            'certificats' => $certificats, 'lot'=>$request->get('id', 0), "debut"=>$debut->format('d-m-Y'), "fin"=>$fin->format('d-m-Y')
         ));
+         * */
+         return $this->render('certificat/indexAgent.html.twig',array('lot'=>$request->get('id', 0)));
     }
 
     /**
@@ -172,7 +182,13 @@ class CertificatController extends Controller
             $this->get('session')->getFlashBag()->add('error', "Ce certificati a déjà été annulé");
             return $this->redirectToRoute('secretaire_certificat_index');
         }
+        $motif = $request->get('motif');
+        if($motif == null || $motif== ""){
+            $this->get('session')->getFlashBag()->add('error', "Le motif d'annulation est obligatoire");
+            return $this->redirectToRoute('secretaire_certificat_index');
+        }
         $certificat->setAnnule(true);
+        $certificat->setMotif($motif);
         $this->getDoctrine()->getManager()->flush();
         $this->get('session')->getFlashBag()->add('notice', 'Annulation effectuée.');
         return $this->redirectToRoute('centre_certificat');
@@ -241,12 +257,12 @@ class CertificatController extends Controller
         ;
     }
     
-     /**
+    /**
      * Creates a new certificat entity.
      *
      * @Route("/centreaffecter/{id}", name="centre_certificat_affecter")
      * @Method({"GET", "POST"})
-     */
+    */
     public function affecterAction(Request $request, Lot $lot)
     {       
         $form = $this->createForm('AppBundle\Form\LotAffecterType', $lot);
@@ -257,10 +273,12 @@ class CertificatController extends Controller
             if($quantite > 0){
                 $user = $this->container->get('security.context')->getToken()->getUser();
                 $em = $this->getDoctrine()->getManager();
+                $date = new \DateTime("now");
                 foreach($lot->getCertificats() as $certificat){
                     if($certificat->getUtilise() || $certificat->getAnnule() || $certificat->getControlleur()!=null) continue;
                     $certificat->setControlleur($lot->getControlleur());
                     $certificat->setAttribuePar($user->getNomComplet());
+                    $certificat->setDateAttribution($date);
                     $em->flush();
                     $quantite--;
                     if($quantite == 0) break;
@@ -290,18 +308,21 @@ class CertificatController extends Controller
     public function confirmerannulerAction(Request $request, Certificat $certificat)
     {
         $message = "Vous ête sur le point d'annuler le certificat ".$certificat->getSerie();
+        $input = true;
         if (!$certificat) {
             throw $this->createNotFoundException("Le certificat demandé n'est pas disponible.");
         }else
         if($certificat->getUtilise()){
             $message = "Le certificat ".$certificat->getSerie()." ne peut pas être annulé. Il a déjà été utilisé pour une visite";
+            $input = false;
         }
         if($certificat->getAnnule()){
             $message = "Le certificat ".$certificat->getSerie()." a déjà été annuler";
+            $input = false;
         }
        
         return $this->render('certificat/annuler.html.twig', array(
-            'message' => $message,
+            'message' => $message, 'input'=>$input, 'id'=> $certificat->getId()
         ));
     }
 }
