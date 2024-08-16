@@ -92,4 +92,14 @@ class CertificatRepository extends EntityRepository
         return $qb->getResult();
     }
     
+    public function findAjax($search, $maxRows,$userId) {
+         $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Certificat r LEFT JOIN r.controlleur c WHERE r.annule = false AND r.utilise = false AND r.serie LIKE :numero AND c.id = :userId ORDER BY r.serie'
+            )->setParameter("numero","%".$search."%")->setParameter("userId",$userId)
+                 ->setMaxResults($maxRows)
+            ->getResult();
+        return $result; 
+    }
+    
 }

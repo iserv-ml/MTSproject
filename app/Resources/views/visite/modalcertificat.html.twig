@@ -15,12 +15,9 @@
             <tr>
                 <th>Certificat</th>
                 <td>
+                    
                     {% if certificats is not empty %}
-                        <select name='numero' id='numero'>
-                            {% for certificat in certificats %}
-                                <option value="{{ certificat["serie"] }}">{{ certificat["serie"] }}</option>
-                            {% endfor %}
-                        </select>
+                        <input id="numero" type="text" name="numero"  />
                         <input id="controle" onclick="verifierCertificat();" type="button" name="enregistrer" value="Imprimer" />
                     {% else %}
                         Vous n'avez pas de certificats disponibles!
@@ -30,4 +27,43 @@
             </tr>            
         </tbody>
     </table>
+                    
+<script>
+        $( function() {
+
+       
+    function log( message ) {
+      $( "<div>" ).text( message ).prependTo( "#log" );
+      $( "#log" ).scrollTop( 0 );
+    }
+    $( "#numero" ).autocomplete({
+        source: function( request, response ) {
+            $.ajax( {
+                url: "{{ path("certificat_autocomplete") }}",
+                dataType: "json",
+                data : {
+                    search : request.term,
+                    maxRows : 15
+                },
+                success : function(donnee){                  
+                    response($.map(donnee, function(objet){
+                        return {
+                            serie :objet.serie,
+                        };
+                    }));
+                },
+            } );
+        },
+        select: function (event, ui) {
+            $( "#numero" ).val( ui.item.serie);
+            return false;
+        }
+    }).data('ui-autocomplete')._renderItem = function (ul, item) {
+                            return $("<li />")
+                                .data("item.autocomplete", item)
+                                .append("<a>" + item.serie+ "</a>")
+                                .appendTo(ul);
+               };    
+  } );
+  </script>
 

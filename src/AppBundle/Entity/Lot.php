@@ -86,6 +86,14 @@ class Lot
      */
     private $attributeurControleur;
     
+    /**
+     * @var boolean $epuise
+     *
+     * @ORM\Column(name="epuise", type="boolean", nullable=true)
+     * 
+     */
+    private $epuise;
+    
     
     /**
      * @var \DateTime $dateAffectationCentre
@@ -251,6 +259,14 @@ class Lot
 
     function setQuantiteF($quantiteF) {
         $this->quantiteF = $quantiteF;
+    }
+    
+    function getEpuise() {
+        return $this->epuise;
+    }
+
+    function setEpuise($epuise) {
+        $this->epuise = $epuise;
     }
                     
     //BEHAVIOR

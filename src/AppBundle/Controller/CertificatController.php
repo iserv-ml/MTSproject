@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Certificat controller.
@@ -270,21 +271,28 @@ class CertificatController extends Controller
         
         if ($form->isSubmitted() && $form->isValid()) {
             $quantite = intval($lot->getQuantiteF());
+            $attribue = 0;
             if($quantite > 0){
                 $user = $this->container->get('security.context')->getToken()->getUser();
                 $em = $this->getDoctrine()->getManager();
                 $date = new \DateTime("now");
+                $stockDisponible = false;
                 foreach($lot->getCertificats() as $certificat){
                     if($certificat->getUtilise() || $certificat->getAnnule() || $certificat->getControlleur()!=null) continue;
+                    $quantite--;
+                    if($quantite == -1){
+                        $stockDisponible = true;
+                        break;
+                    }
                     $certificat->setControlleur($lot->getControlleur());
                     $certificat->setAttribuePar($user->getNomComplet());
                     $certificat->setDateAttribution($date);
-                    $em->flush();
-                    $quantite--;
-                    if($quantite == 0) break;
+                    $attribue++;
+                    $em->flush();   
                 }
-
-                $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
+                $lot->setEpuise(!$stockDisponible || $attribue < $lot->getQuantiteF());
+                $em->flush(); 
+                $this->get('session')->getFlashBag()->add('notice', $attribue.' certificats ont été attribués.');
                 return $this->redirectToRoute('centre_certificat');
             }else{
                 $this->get('session')->getFlashBag()->add('error', 'Merci de renseigner les champs "début" et "quantité".');
@@ -324,5 +332,26 @@ class CertificatController extends Controller
         return $this->render('certificat/annuler.html.twig', array(
             'message' => $message, 'input'=>$input, 'id'=> $certificat->getId()
         ));
+    }
+    
+    /**
+     * @Route("controleur/certificat/autocomplete", name="certificat_autocomplete")
+     */
+    public function autocompleteAction(Request $request){   
+        $search = $request->get('search', '');
+        $maxRows = $request->get('maxRows', 15);
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        $certificats = $em->getRepository('AppBundle:Certificat')->findAjax($search, $maxRows,$user->getId());
+        
+        if(count($certificats)==0)
+             $result[] = ["serie"=>"Aucun résultat"];
+        else
+        {
+            foreach($certificats as $certificat){
+                $result[] = ["serie" => $certificat->getSerie()];
+            }
+        }
+        return new Response(json_encode($result));
     }
 }

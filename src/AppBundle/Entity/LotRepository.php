@@ -89,4 +89,13 @@ class LotRepository extends EntityRepository
             ->setParameter('debut', $debut)->setParameter('fin', $fin);
         return $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
     }
+    
+    public function nonEpuise() {
+        $qb = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.id, r.serie, r.quantite, r.dateAffectationCentre, r.attributeur FROM AppBundle:Lot r '
+                    . ' WHERE r.epuise IS NULL OR r.epuise = :epuise ')->setParameter("epuise", false)
+            ;
+        return $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+    }
 }

@@ -15,7 +15,13 @@
 {% block menu_gestion_actif %}active{% endblock %}
 {% block pagetitle -%}GESTION DES CERTIFICATS{% endblock %}
 {% block actions %}
-
+    <label class="btn btn-warning pointer-event"> 
+        <form method='POST' action='{{ path('centre_certificat') }}'>
+            Du <input type="text" id="debut" name="debut" value="{{ debut }}" /> 
+            Au <input type="text" id="fin" name="fin" value="{{ fin }}" />
+            <input type="submit" value="Actualiser"/>
+        </form>
+    </label>
 {% endblock %}
 {% block body -%}
     <div class="table-responsive">

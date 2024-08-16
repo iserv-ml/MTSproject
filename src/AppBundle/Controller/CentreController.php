@@ -494,13 +494,15 @@ class CentreController extends Controller
     public function certificatAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $date = new \DateTime("now");
+        /*$date = new \DateTime("now");
         $debut = \DateTime::createFromFormat( 'd-m-Y', $request->get('debut', $date->format('d-m-Y')));
         $debut->setTime(0, 0);
         $fin = \DateTime::createFromFormat( 'd-m-Y',$request->get('fin', $date->format('d-m-Y')));
         $fin->setTime(0, 0);
         $fin->add(new \DateInterval('P1D'));
         $lots = $em->getRepository('AppBundle:Lot')->rechercher($debut, $fin);
+         * */
+        $lots = $em->getRepository('AppBundle:Lot')->nonEpuise();
         $resultats = array();
         foreach($lots as $lot){
             $annule = $em->getRepository('AppBundle:Certificat')->findAnnuler($lot['id']);
@@ -509,11 +511,14 @@ class CentreController extends Controller
             $action = $this->genererActionTwig($lot['id']);
             $resultats[] = array("id"=>$lot['id'], "serie"=>$lot['serie'], "quantite"=>$lot['quantite'], "dateAffectationCentre"=>$lot['dateAffectationCentre'], "attributeur"=>$lot["attributeur"], "annule"=>$annule, "attribue"=>$attribue, "disponible"=>$disponible, "action"=>$action);
         }
-        
         $user = $this->container->get('security.context')->getToken()->getUser();
         return $this->render('certificat/centre.html.twig', array(
-            'nom' => $user->getNomComplet(), 'id' => $user->getId(), "resultats"=>$resultats,"debut"=>$debut->format('d-m-Y'), "fin"=>$fin->format('d-m-Y')
+            'nom' => $user->getNomComplet(), 'id' => $user->getId(), "resultats"=>$resultats
         ));
+        
+        /*return $this->render('certificat/centre.html.twig', array(
+            'nom' => $user->getNomComplet(), 'id' => $user->getId(), "resultats"=>$resultats,"debut"=>$debut->format('d-m-Y'), "fin"=>$fin->format('d-m-Y')
+        ));*/
     }
     
     /**
@@ -539,15 +544,21 @@ class CentreController extends Controller
         $rResult = $em->getRepository('AppBundle:Lot')->findAllCentreAjax($start, $end, $aColumns[$sCol], $sdir, $searchTerm);
 	$iTotal = $em->getRepository('AppBundle:Lot')->countRows($user->getId());
         $iTotalFiltre = $em->getRepository('AppBundle:Lot')->countRowsFiltre($searchTerm, $user->getId());
-	$output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
+	
 	foreach ( $rResult as  $aRow )
 	{
             $action = $this->genererAction($aRow['id']);
             $annule = $em->getRepository('AppBundle:Certificat')->findAnnuler($aRow['id']);
             $attribue = $em->getRepository('AppBundle:Certificat')->findAttribue($aRow['id']);
             $disponible = $aRow['quantite'] - $annule - $attribue;
-            $output['aaData'][] = array($aRow['serie'],$aRow['quantite'], $disponible, $attribue,$annule, $aRow['dateAffectationCentre'], $aRow['attributeur'], $action);
+            if($disponible > 0){
+                $output['aaData'][] = array($aRow['serie'],$aRow['quantite'], $disponible, $attribue,$annule, $aRow['dateAffectationCentre'], $aRow['attributeur'], $action);
+            }else{
+                $iTotal--;
+                $iTotalFiltre--;
+            }
 	}
+        $output = array("sEcho" => intval($request->get('sEcho')), "iTotalRecords" => $iTotal, "iTotalDisplayRecords" => $iTotalFiltre, "aaData" => array());
 	return new Response(json_encode( $output ));    
     }
     
