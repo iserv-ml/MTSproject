@@ -608,7 +608,7 @@ class CentreController extends Controller
     }
     
     private function genererCertificatAction($id){
-        $action = "<a title='Annuler' class='btn btn-edit' href='#' onclick='annulerCertificat(".$id.")'><i class='fa fa-ban'></i></a>";
+        $action = "<a title='Annuler' class='btn btn-edit' href='#' onclick='annulerCertificat(".$id.");return false;'><i class='fa fa-ban'></i></a>";
         return $action;
     }
     
