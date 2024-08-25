@@ -80,18 +80,19 @@ class CertificatController extends Controller
     public function newAction(Request $request)
     {
         $lot = new Lot();
-       
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        $lot->setAnnee($centre->getPeriodeCertificat());
         $form = $this->createForm('AppBundle\Form\LotType', $lot);
         $form->handleRequest($request);
         
         if ($form->isSubmitted() && $form->isValid()) {
             $quantite = intval($lot->getQuantite());
-            $debut = intval($lot->getDebut());
+            $debut = intval($em->getRepository('AppBundle:Certificat')->trouverDernierAnnee($lot->getAnnee())) + 1;
             if($debut > 0 && $quantite > 0){
                 $user = $this->container->get('security.context')->getToken()->getUser();
                 $fin = $debut+$quantite-1;
                 $serie = $debut."-".$fin;
-                $em = $this->getDoctrine()->getManager();
                 $lot->setSerie($serie);
                 $lot->setDateAffectationCentre(new \DateTime("now"));
                 $lot->setAttributeur($user->getNomComplet());
@@ -99,6 +100,7 @@ class CertificatController extends Controller
                 while($quantite > 0){
                     $tmp = new Certificat();
                     $tmp->setSerie($debut);
+                    $tmp->setAnnee($lot->getAnnee());
                     $tmp->setLot($lot);
                     //$tmp->setControlleur($certificat->getControlleur());
                     $em->persist($tmp);

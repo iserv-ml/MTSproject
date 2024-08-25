@@ -15,7 +15,7 @@ class LotType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-                ->add('debut')
+                ->add('annee')
                 ->add('quantite')
                 /*->add('chefCentre', 'entity', array('class' => 'AppBundle:Utilisateur',
                     'query_builder' => function (UtilisateurRepository $er) {

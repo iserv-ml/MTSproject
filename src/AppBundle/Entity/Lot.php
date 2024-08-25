@@ -13,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @ORM\Table(name="lot")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\LotRepository")
- * @UniqueEntity("serie")
+ * @UniqueEntity({"serie", "annee"})
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\Loggable
  */
@@ -25,6 +25,7 @@ class Lot
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
+     * 
      */
     private $id;
     
@@ -40,6 +41,13 @@ class Lot
      * @ORM\Column(name="serie", type="string", length=255, nullable=false)
      */
     private $serie; 
+    
+    /**
+     * @var integer $anne
+     * @Gedmo\Versioned
+     * @ORM\Column(name="annee", type="integer", nullable=true)
+     */
+    private $annee;
     
     /**
      * @var string $quantite
@@ -267,6 +275,14 @@ class Lot
 
     function setEpuise($epuise) {
         $this->epuise = $epuise;
+    }
+    
+    function getAnnee() {
+        return $this->annee;
+    }
+
+    function setAnnee($annee) {
+        $this->annee = $annee;
     }
                     
     //BEHAVIOR

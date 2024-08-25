@@ -20,6 +20,7 @@ class CentreType extends AbstractType
                 ->add('adresse')
                 ->add('telephone')
                 ->add('maha')
+                ->add('periodeCertificat')
                 ->add('anaser')
                 ->add('carteVierge')
                 ->add('repertoire')

@@ -102,4 +102,21 @@ class CertificatRepository extends EntityRepository
         return $result; 
     }
     
+    public function trouverDernierAnnee($annee) {
+        try{ 
+            $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r.serie FROM AppBundle:Certificat r WHERE r.annee = :annee ORDER BY r.id DESC'
+            )->setParameter("annee",$annee)->setMaxResults(1)
+            ->getSingleScalarResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = 0;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = 0;
+        }
+        
+        return $result; 
+    }
+    
 }

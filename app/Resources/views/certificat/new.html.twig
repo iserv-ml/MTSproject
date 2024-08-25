@@ -19,3 +19,13 @@
         <input type="submit" value="Enregistrer" />
     {{ form_end(form) }}
 {% endblock %}
+
+{% block javascripts -%}
+    <script>
+        $( function() {
+            $( "#appbundle_certificat_lot_annee" ).datepicker({changeMonth: true, changeYear: true,  dateFormat: 'yy' });
+            } );
+        
+        
+    </script>
+{% endblock %}

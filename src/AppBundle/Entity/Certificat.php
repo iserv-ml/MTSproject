@@ -13,7 +13,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @ORM\Table(name="certificat")
  * @ORM\Entity(repositoryClass="AppBundle\Entity\CertificatRepository")
- * @UniqueEntity("serie")
+ * @UniqueEntity({"serie", "annee"})
  * @Gedmo\SoftDeleteable(fieldName="deletedAt", timeAware=false)
  * @Gedmo\Loggable
  */
@@ -40,9 +40,16 @@ class Certificat
     /**
      * @var integer $serie
      * @Gedmo\Versioned
-     * @ORM\Column(name="serie", type="integer", length=255, nullable=false)
+     * @ORM\Column(name="serie", type="integer", nullable=false)
      */
     private $serie;
+    
+    /**
+     * @var integer $anne
+     * @Gedmo\Versioned
+     * @ORM\Column(name="annee", type="integer", nullable=true)
+     */
+    private $annee;
     
     /**
      * @var boolean $utilise
@@ -222,6 +229,14 @@ class Certificat
             $stauts = "Utilise";
         }
         return $stauts;
+    }
+    
+    function getAnnee() {
+        return $this->annee;
+    }
+
+    function setAnnee($annee) {
+        $this->annee = $annee;
     }
                     
     //BEHAVIOR

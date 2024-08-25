@@ -29,7 +29,7 @@ class LotRepository extends EntityRepository
     public function findAllCentreAjax($start, $end, $sCol, $sdir, $search) {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.serie, r.quantite, m.nom, m.prenom, r.controlleur, r.dateAffectationCentre, r.attributeur FROM AppBundle:Lot r LEFT JOIN r.chefCentre m'
+                'SELECT r.id, r.serie, r.annee, r.quantite, m.nom, m.prenom, r.controlleur, r.dateAffectationCentre, r.attributeur FROM AppBundle:Lot r LEFT JOIN r.chefCentre m'
                     . ' WHERE r.serie like :search'
                     . ' ORDER BY '.$sCol.' '.$sdir)
             ->setParameter('search', '%'.$search.'%')
@@ -93,7 +93,7 @@ class LotRepository extends EntityRepository
     public function nonEpuise() {
         $qb = $this->getEntityManager()
             ->createQuery(
-                'SELECT r.id, r.serie, r.quantite, r.dateAffectationCentre, r.attributeur FROM AppBundle:Lot r '
+                'SELECT r.id, r.serie, r.annee, r.quantite, r.dateAffectationCentre, r.attributeur FROM AppBundle:Lot r '
                     . ' WHERE r.epuise IS NULL OR r.epuise = :epuise ')->setParameter("epuise", false)
             ;
         return $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);

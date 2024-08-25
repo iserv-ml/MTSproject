@@ -147,6 +147,14 @@ class Centre
      * @ORM\Column(name="ftp_userpass", type="string", length=255, nullable=true)
      */
     private $ftpUserpass;
+    
+    /**
+     * @var string $periodeCertificat
+     *
+     * @ORM\Column(name="periode_certificat",  type="string", length=255, nullable=true)
+     * 
+     */
+    private $periodeCertificat;
    
    //Debut relation Centre a plusieurs visites
     /**
@@ -318,7 +326,15 @@ class Centre
     function setMaha($maha) {
         $this->maha = $maha;
     }
+    
+    function getPeriodeCertificat() {
+        return $this->periodeCertificat;
+    }
 
+    function setPeriodeCertificat($periodeCertificat) {
+        $this->periodeCertificat = $periodeCertificat;
+    }
+    
     //BEHAVIOR
     /**
      * @var string $creePar

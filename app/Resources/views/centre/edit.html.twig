@@ -22,3 +22,13 @@
         <input type="submit" value="Modifier" />
     {{ form_end(edit_form) }}
 {% endblock %}
+
+{% block javascripts -%}
+    <script>
+        $( function() {
+            $( "#appbundle_centre_periodeCertificat" ).datepicker({changeMonth: true, changeYear: true,  dateFormat: 'yy' });
+            } );
+        
+        
+    </script>
+{% endblock %}
