@@ -88,8 +88,16 @@ class CertificatController extends Controller
         
         if ($form->isSubmitted() && $form->isValid()) {
             $quantite = intval($lot->getQuantite());
-            $debut = intval($em->getRepository('AppBundle:Certificat')->trouverDernierAnnee($lot->getAnnee())) + 1;
+            $debut = intval($lot->getDebut());
+            $debutPossible = intval($em->getRepository('AppBundle:Certificat')->trouverDernierAnnee($lot->getAnnee())) + 1;
             if($debut > 0 && $quantite > 0){
+                if($debut < $debutPossible){
+                    $this->get('session')->getFlashBag()->add('error', 'Les cerificats sont disponibles à partir du numéro '.$debutPossible);
+                    return $this->render('certificat/new.html.twig', array(
+                        'lot' => $lot,
+                        'form' => $form->createView(),
+                    ));
+                }
                 $user = $this->container->get('security.context')->getToken()->getUser();
                 $fin = $debut+$quantite-1;
                 $serie = $debut."-".$fin;
@@ -111,7 +119,11 @@ class CertificatController extends Controller
                 $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
                 return $this->redirectToRoute('secretaire_certificat_index');
             }else{
-                $this->get('session')->getFlashBag()->add('error', 'Merci de renseigner les champs "début" et "quantité".');
+                $this->get('session')->getFlashBag()->add('error', 'Merci de renseigner correctement les champs "début" et "quantité".');
+                return $this->render('certificat/new.html.twig', array(
+                    'lot' => $lot,
+                    'form' => $form->createView(),
+                ));
             }
         }
 

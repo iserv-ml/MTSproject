@@ -16,6 +16,7 @@ class LotType extends AbstractType
     {
         $builder
                 ->add('annee')
+                ->add('debut')
                 ->add('quantite')
                 /*->add('chefCentre', 'entity', array('class' => 'AppBundle:Utilisateur',
                     'query_builder' => function (UtilisateurRepository $er) {
