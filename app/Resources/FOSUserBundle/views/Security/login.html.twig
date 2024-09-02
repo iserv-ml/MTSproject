@@ -1,71 +1,146 @@
-{% extends '::baselogin.html.twig' %}
+{% extends '::baseloginv2.html.twig' %}
 
 {% trans_default_domain 'FOSUserBundle' %}
 
 {% block fos_user_content %}
-    <div class="card-group">
-        <div class="card p-4">
-            {% for type, messages in app.session.flashbag.all() %}
-            {% for message in messages %}
-                <div class="flash-{{ type }}">
-                    {{ message }}
+    <!--begin::Authentication - Sign-in -->
+    <div class="d-flex flex-column flex-lg-row flex-column-fluid">
+        <!--begin::Aside-->
+        <div class="d-flex flex-column flex-lg-row-auto bg-primary w-xl-600px positon-xl-relative">
+            <!--begin::Wrapper-->
+            <div class="d-flex flex-column position-xl-fixed top-0 bottom-0 w-xl-600px scroll-y">
+                <!--begin::Header-->
+                <div class="d-flex flex-row-fluid flex-center flex-column text-center p-5 p-lg-20">          
+                    <!--begin::Logo-->
+                    <a href="#" class="py-9 pt-lg-20">
+                        <img alt="Logo" src="{{ asset('v2/images/mts.jpg') }}" class="h-35px h-lg-40px"/>                    
+                    </a>    
+                    <!--end::Logo-->
+
+                    <!--begin::Title-->
+                    <h1 class="d-none d-lg-block fw-bold text-white fs-2qx pb-5 pb-md-10">
+                        Bienvenue sur AUTOSCAN V.2
+                    </h1>
+                    <!--end::Title-->
+
+                    <!--begin::Description-->
+                    <p class="d-none d-lg-block fw-semibold fs-2 text-white">
+                        En cas de problème de connexion, veuillez contacter l'administrateur.
+                    </p>
+                    <!--end::Description-->
                 </div>
-            {% endfor %}
-        {% endfor %}
-        {% if error %}
-            <div class='error'>{{ error }}</div>
-        {% endif %}
-            <form method="post" class="form-login" action ="{{ path("fos_user_security_check") }}">
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
-                <div class="card-body">
-                    <h1>Login</h1>
-                    <p class="text-muted">Connecter vous à votre compte</p>
-                        <div class="input-group mb-3">
-                          <div class="input-group-prepend">
-                            <span class="input-group-text">
-                              <i class="icon-user"></i>
-                            </span>
-                          </div>
-                          <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" class="form-control" placeholder="LOGIN" autofocus />
+                <!--end::Header-->
+
+                <!--begin::Illustration-->
+                <div class="d-none d-lg-flex flex-row-auto bgi-no-repeat bgi-position-x-center bgi-size-contain bgi-position-y-bottom min-h-200px min-h-lg-350px mb-20"> 
+                   <!--style="background-image: url(images/2.png)">-->
+                </div>
+                <!--end::Illustration-->
+            </div>
+            <!--end::Wrapper-->
+        </div>
+        <!--begin::Aside-->
+
+        <!--begin::Body-->
+        <div class="d-flex flex-column flex-lg-row-fluid py-10">
+            <!--begin::Content-->
+            <div class="d-flex flex-center flex-column flex-column-fluid">
+                <!--begin::Wrapper-->
+                <div class="w-lg-500px p-10 p-lg-15 mx-auto">
+                    {% for type, messages in app.session.flashbag.all() %}
+                        {% for message in messages %}
+                            <div class="flash-{{ type }}">
+                                {{ message|trans }}
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                    {% if error %}
+                        <div class='error'>{{ error }}</div>
+                    {% endif %}
+                    <!--begin::Form-->
+                    <form  method="post" class="form w-100"  id="kt_sign_in_form" data-kt-redirect-url="#" action="{{ path("fos_user_security_check") }}">
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                        <!--begin::Heading-->
+                        <div class="text-center mb-10">
+                            <!--begin::Title-->
+                            <h1 class="text-gray-900 mb-3">
+                                Connectez vous à votre compte       </h1>
+                            <!--end::Title-->
                         </div>
-                <div class="input-group mb-4">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text">
-                      <i class="icon-lock"></i>
-                    </span>
-                  </div>
-                  <input type="password" id="password" name="_password" required="required" class="form-control" placeholder="MOT DE PASSE" />
-                </div>
-                <div class="row">
-                  <div class="col-6">
-                    <input class="btn btn-primary px-4" type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" />
-                  </div>
-                  <div class="col-6 text-right">
-                      <label class="checkbox">
-                        <span class="pull-right">
-                           <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
-                            <label for="remember_me">{{ 'security.login.remember_me'|trans }}</label>
-                        </span>
-                    </label>
-                  </div>
-                </div>
-              </div>
-                        </form>
+                    <!--begin::Heading-->
+
+                    <!--begin::Input group-->
+                    <div class="fv-row mb-10">
+                        <!--begin::Label-->
+                        <label class="form-label fs-6 fw-bold text-gray-900">Login</label>
+                        <!--end::Label-->
+
+                        <!--begin::Input-->
+                        <input required="required" class="form-control form-control-lg form-control-solid" type="text" id="username" name="_username" autofocus value="{{ last_username }}"/>
+                        <!--end::Input-->
+                    </div>
+                    <!--end::Input group-->
+
+                    <!--begin::Input group-->
+                    <div class="fv-row mb-10">
+                        <!--begin::Wrapper-->
+                        <div class="d-flex flex-stack mb-2">
+                            <!--begin::Label-->
+                            <label class="form-label fw-bold text-gray-900 fs-6 mb-0">Mot de passe</label>
+                            <!--end::Label-->
+
+
+                        </div>
+                        <!--end::Wrapper-->
+
+                        <!--begin::Input-->
+                        <input required="required" class="form-control form-control-lg form-control-solid" type="password" name="_password" id="password"/>
+                        <!--end::Input-->        
+                    </div>
+                    <!--end::Input group-->
+                    
+                    <!--begin::Input group-->
+                    <div class="fv-row mb-10">
+                        <!--begin::Wrapper-->
+                        <div class="d-flex flex-stack mb-2">
+                            <!--begin::Label-->
+                            <label class="form-label fw-bold text-gray-900 fs-6 mb-0">{{ 'security.login.remember_me'|trans }}</label>
+                            <!--end::Label-->
+
+
+                        </div>
+                        <!--end::Wrapper-->
+
+                        <!--begin::Input-->
+                        <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
+                        <!--end::Input-->        
+                    </div>
+                    <!--end::Input group-->
+
+    <!--begin::Actions-->
+    <div class="text-center">
+        <!--begin::Submit button-->
+        <button type="submit" id="_submit" name="_submit" class="btn btn-lg btn-primary w-100 mb-5">
+            <span class="indicator-label">
+                Continuer
+            </span>
+            
+            <span class="indicator-progress">
+                Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+            </span>
+        </button>
+        <!--end::Submit button-->
+
+    </div>
+    <!--end::Actions-->
+</form>
+<!--end::Form--> 
             </div>
-            <div class="card text-white bg-primary py-5 d-md-down-none" style="width:44%">
-              <div class="card-body text-center">
-                <div>
-                  <h2>BIENVENUE SUR AUTOSCAN</h2>
-                  <p>En cas de problème de connexion, veuillez contacter l'administrateur.</p>
-                </div>
-              </div>
-            </div>
-                        
-          </div>
-
-
-    
-
-
-
+            <!--end::Wrapper-->
+        </div>
+        <!--end::Content-->       
+    </div>
+    <!--end::Body-->
+</div>
+<!--end::Authentication - Sign-in-->
 {% endblock fos_user_content %}
