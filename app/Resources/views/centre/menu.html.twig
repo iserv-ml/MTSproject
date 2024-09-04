@@ -45,28 +45,18 @@
                     <a class="nav-link {% block menu_historiquevehicule_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_historique_index') }}">
                         <i class="nav-icon icon-list"></i> Véhicules</a>
                 </li>
-                {# <li class="nav-item ">
-                    <a class="nav-link {% block menu_historiquequittance_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_historique_quittance') }}">
-                        <i class="nav-icon icon-list"></i> Quittance</a>
-                </li> #}
+                <li class="nav-item ">
+                    <a class="nav-link {% block menu_quittance_actif %}{% endblock %}" href="{{ path('caisse_quittance_index') }}">
+                        <i class="nav-icon icon-list"></i> Quittances</a>
+                </li>
+                {% if is_granted('ROLE_SUPERVISEUR') %}
+                <li class="nav-item ">
+                    <a class="nav-link {% block menu_quittance_historique_actif %}{% endblock %}" href="{{ path('admin_gestion_quittance_historique') }}">
+                        <i class="nav-icon icon-list"></i> Historique</a>
+                </li>
+                {% endif %}
+                
             </ul>
-    </li>
-    <li class="nav-item nav-dropdown {% block menu_quittances_open %}{% endblock %}">
-        <a class="nav-link nav-dropdown-toggle" href="#">
-            <i class="nav-icon fa fa-bar-chart"></i> Visites</a>
-        <ul class="nav-dropdown-items">
-            <li class="nav-item ">
-                <a class="nav-link {% block menu_quittance_actif %}{% endblock %}" href="{{ path('caisse_quittance_index') }}">
-                    <i class="nav-icon icon-list"></i> Quittances</a>
-            </li>
-            {% if is_granted('ROLE_SUPERVISEUR') %}
-            <li class="nav-item ">
-                <a class="nav-link {% block menu_quittance_historique_actif %}{% endblock %}" href="{{ path('admin_gestion_quittance_historique') }}">
-                    <i class="nav-icon icon-list"></i> Historique</a>
-            </li>
-            {% endif %}
-        </ul>
-    </li>
-    
+    </li>    
     
 {% endif %}
