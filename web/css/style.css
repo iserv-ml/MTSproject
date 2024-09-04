@@ -149,7 +149,7 @@ sup {
 }
 
 a {
-  color: #20a8d8;
+  color: #000;
   text-decoration: none;
   background-color: transparent;
 }
@@ -4596,6 +4596,11 @@ input[type="button"].btn-block {
 
 .card-title {
   margin-bottom: 0.75rem;
+}
+
+h4.card-title {
+  color: #20a8d8;
+  font-weight: bold;
 }
 
 .card-subtitle {
@@ -12184,7 +12189,7 @@ canvas {
   height: 55px;
   padding: 0;
   margin: 0;
-  background-color: #fff;
+  background-color: #20a8d8;
   border-bottom: 1px solid #c8ced3;
 }
 
@@ -12243,6 +12248,7 @@ canvas {
   padding-bottom: 0;
   background: 0;
   border: 0;
+  color: #fff;
 }
 
 .app-header .nav-item .nav-link .badge {
@@ -12285,7 +12291,8 @@ canvas {
 .navbar-nav .nav-link.active,
 .navbar-nav .nav-link.active:hover,
 .navbar-nav .nav-link.active:focus {
-  color: #f86c6b ;
+  color: #fff ;
+  text-decoration: underline;
 }
 
 .navbar-divider {
@@ -12572,7 +12579,7 @@ canvas {
   flex-direction: column;
   padding: 0;
   color: #73818f;
-  background: #ffffff;
+  background: #20a8d8;
 }
 
 .sidebar .sidebar-close {
@@ -12678,9 +12685,10 @@ canvas {
 .sidebar .nav-link {
   display: block;
   padding: 0.75rem 1rem;
-  color: #73818f;
+  color: #fff;
   text-decoration: none;
   background: transparent;
+  border: solid 1px;
 }
 
 .sidebar .nav-link .nav-icon {
