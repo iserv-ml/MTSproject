@@ -12579,7 +12579,7 @@ canvas {
   flex-direction: column;
   padding: 0;
   color: #73818f;
-  background: #20a8d8;
+  background: #d85020;
 }
 
 .sidebar .sidebar-close {
@@ -12688,7 +12688,6 @@ canvas {
   color: #fff;
   text-decoration: none;
   background: transparent;
-  border: solid 1px;
 }
 
 .sidebar .nav-link .nav-icon {
@@ -12696,7 +12695,7 @@ canvas {
   width: 1.09375rem;
   margin: 0 0.5rem 0 0;
   font-size: 0.875rem;
-  color: #73818f;
+  color: #fff;
   text-align: center;
 }
 
