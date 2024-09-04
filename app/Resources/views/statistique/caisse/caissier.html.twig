@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 {% block menu -%}
-{% embed  '::visite/menu.html.twig' %}
+{% embed  '::statistique/menu.html.twig' %}
 {% block menu_caissier_actif %}active{% endblock %}
 {% endembed %}
 {% endblock %}
@@ -11,7 +11,7 @@
         <li class="breadcrumb-item">Etat journalier</li>
     </ol>
 {% endblock %}
-{% block menu_gestion_actif %}active{% endblock %}
+{% block menu_rapports_actif %}active{% endblock %}
 {% block pagetitle -%}ETAT JOURNALIER DE LA CAISSE {{ caisse.numero }}{% endblock %}
 {% block actions %}
     {#<label class="btn btn-warning pointer-event"> 

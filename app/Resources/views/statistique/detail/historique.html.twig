@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 {% block menu -%}
-{% embed  '::centre/menu.html.twig' %}
+{% embed  '::statistique/menu.html.twig' %}
 {% block menu_historique_actif %}active{% endblock %}
 {% block menu_statistiques_open %}active{% endblock %}
 {% endembed %}
@@ -11,7 +11,7 @@
         <li class="breadcrumb-item">Historique des encaissements</li>
     </ol>
 {% endblock %}
-{% block menu_gestion_actif %}active{% endblock %}
+{% block menu_rapports_actif %}active{% endblock %}
 {% block pagetitle -%}HISTORIQUES DES ENCAISSEMENTS{% endblock %}
 {% block actions %}
     <label class="btn btn-outline-secondary pointer-event"><a  href="#" id="doPrint" onclick="imprimer()">EXPORTER</a></label>

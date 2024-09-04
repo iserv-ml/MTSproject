@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 {% block menu -%}
-{% embed  '::centre/menu.html.twig' %}
+{% embed  '::statistique/menu.html.twig' %}
 {% block menu_gratuite_actif %}active{% endblock %}
 {% block menu_statistiques_open %}active{% endblock %}
 {% endembed %}
@@ -11,7 +11,7 @@
         <li class="breadcrumb-item">Visites gratuites</li>
     </ol>
 {% endblock %}
-{% block menu_gestion_actif %}active{% endblock %}
+{% block menu_rapports_actif %}active{% endblock %}
 {% block pagetitle -%}VISITES GRATUITES{% endblock %}
 {% block actions %}
     <label class="btn btn-outline-secondary pointer-event">

@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 {% block menu -%}
-{% embed  '::centre/menu.html.twig' %}
+{% embed  '::satistique/menu.html.twig' %}
 {% block menu_statistiques_open %}active{% endblock %}
 {% block menu_parcaisse_actif %}active{% endblock %}
 {% endembed %}
@@ -11,7 +11,7 @@
         <li class="breadcrumb-item">Etast journaliers des caisses</li>
     </ol>
 {% endblock %}
-{% block menu_gestion_actif %}active{% endblock %}
+{% block menu_rapports_actif %}active{% endblock %}
 {% block pagetitle -%}ETAT DE TOUTES LES CAISSES{% endblock %}
 {% block actions %}
     <label class="btn btn-outline-secondary pointer-event"><a  href="#" id="doPrint" onclick="imprimer()">IMPRIMER</a></label>
