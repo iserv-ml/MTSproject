@@ -1,7 +1,7 @@
 {% if is_granted('ROLE_SUPERVISEUR') %} 
 <li class="nav-item">
     <a class="nav-link {% block menu_centres_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_index') }}">
-        <i class="nav-icon fa fa-home"></i> Centre
+        <i class="nav-icon fa fa-home"></i> Gestion du centre
     </a>
 </li>
 {% endif %}
