@@ -151,6 +151,7 @@ class CentreController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        $mahaInitial = $centre->getMaha();
         if(!$centre){
             throw $this->createNotFoundException("Cette opération est interdite!");
         }
@@ -158,6 +159,13 @@ class CentreController extends Controller
         $editForm->handleRequest($request);
 
         if ($editForm->isSubmitted() && $editForm->isValid()) {
+            if($mahaInitial != $centre->getMaha() && $centre->getEtat()){
+                $this->get('session')->getFlashBag()->add('error', 'Il faut fermer le centre avant de changer de mode MAHA.');
+                return $this->render('centre/edit.html.twig', array(
+                    'centre' => $centre,
+                    'edit_form' => $editForm->createView(),
+                ));
+            }
             $mahaOffline = $centre->getMaha() ? false : true;
             $controlesOffline = $em->getRepository('AppBundle:Controle')->recupererOffline();
             foreach($controlesOffline as $controle){

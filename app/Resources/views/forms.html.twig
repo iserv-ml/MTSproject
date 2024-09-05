@@ -3,7 +3,9 @@
             <div class ="row">
                 <div class="col-sm-12">
                     <div class="form-group">
+                        <div style="width: 300px;display:inline-block;overflow: scroll">
                         {{ form_label(form) }}
+                        </div>
                         {{ form_widget(form) }}
                         {{ form_errors(form) }}
                     </div>
@@ -32,6 +34,16 @@
     
 {% endspaceless %}
 {% endblock form_widget_simple %}
+
+{% block checkbox_widget %}
+{% set attr = attr|merge({'class': (attr.class|default('') ~ ' form-control ')|trim}) %}
+{% spaceless %}
+            <label class="switch">
+            <input type="checkbox" {{ block('widget_attributes') }} {% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}/><span class="slider round"></span>
+            </label>
+    
+{% endspaceless %}
+{% endblock checkbox_widget %}
     
 {% block form_label %}
 {% spaceless %}

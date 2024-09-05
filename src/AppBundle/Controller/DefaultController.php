@@ -9,7 +9,7 @@ use AppBundle\Entity\Visite;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use AppBundle\Entity\Stat;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
@@ -56,6 +56,14 @@ class DefaultController extends Controller
     public function parametresAction(Request $request)
     {
         return $this->render('parametres/index.html.twig');
+    }
+    
+    /**
+     * @Route("/apropos/", name="apropos")
+     */
+    public function aproposAction()
+    {
+        return $this->render('parametres/apropos.html.twig');
     }
     
     /**
@@ -196,5 +204,21 @@ class DefaultController extends Controller
         foreach($vehicules as $vehicule){
             
         }
+    }
+    
+    /**
+     * Lists all Modele entities.
+     *
+     * @Route("/centreinfoajax", name="centreinfoajax")
+     * 
+     * 
+     */
+    public function centreInfoAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        $ouvert = $centre->getEtat() ? "CENTRE OUVERT" : "CENTRE FERME";
+        $maha = $centre->getMaha() ? "MODE : MAHA" : "MODE : LITE";
+        return new Response($ouvert." | ".$maha);   
     }
 }

@@ -84,6 +84,9 @@
           <a class="nav-link {% block menu_parametres_actif %}{% endblock %}" href="{{ path('parametre_index') }}">PARAMETRES</a>
         </li>
         {% endif %}
+        <li class="nav-item px-3">
+          <a class="nav-link {% block menu_apropos_actif %}{% endblock %}" href="{{ path('apropos') }}">A PROPOS</a>
+        </li>
         
       </ul>
       <ul class="nav navbar-nav ml-auto">
@@ -113,6 +116,8 @@
               {% block menu %}{% endblock %}        
           </ul>
         </nav>
+          <div id="centre" style="color:#fff;text-align: center"></div>
+          
         <button class="sidebar-minimizer brand-minimizer" type="button"></button>
       </div>
       <main class="main">
@@ -181,6 +186,18 @@
     <script type="text/javascript" src="{{ asset('js/Chart.min.js') }}" type="text/javascript"></script>
     <script type="text/javascript" src="{{ asset('js/jquery-ui.min.js') }}" type="text/javascript"></script>
     {% block javascripts %}{% endblock %}
+    <script type="text/javascript">
+         $(document).ready(function() {
+            $.ajax( {
+                url: "{{ path("centreinfoajax") }}",
+                success : function(donnee){
+                    $( "#centre" ).html(donnee);
+                    },
+                
+            } );
+        } );
+        
+    </script>
   </body>
 </html>
 
