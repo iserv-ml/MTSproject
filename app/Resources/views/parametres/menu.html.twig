@@ -92,6 +92,16 @@
             <a class="nav-link {% block menu_chaine_actif %}{% endblock %}" href="{{ path('admin_parametres_chaine_index') }}">
             <i class="nav-icon icon-list"></i> Chaine</a>
         </li>
+        <li class="nav-item {% block menu_mode_open %}{% endblock %}">
+            <a class="nav-link {% block menu_mode_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_mode_maha') }}">
+            <i class="nav-icon icon-list"></i> Maha</a>
+        </li>
+        {% if is_granted('ROLE_SUPER_ADMIN') %}
+        <li class="nav-item {% block menu_anaser_open %}{% endblock %}">
+            <a class="nav-link {% block menu_anaser_actif %}{% endblock %}" href="{{ path('admin_gestion_centre_anaser') }}">
+               <i class="nav-icon icon-list"></i> Anaser</a>
+        </li>
+        {% endif %} 
     </ul>
 </li>
 {% if is_granted('ROLE_SUPERVISEUR') %}

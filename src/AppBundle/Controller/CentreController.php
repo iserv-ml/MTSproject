@@ -626,4 +626,68 @@ class CentreController extends Controller
         return "Actif";
     }
     
+    /**
+     * Displays a form to edit an existing centre entity.
+     *
+     * @Route("/admin/gestion/centre/mode/maha", name="admin_gestion_centre_mode_maha")
+     * @Method({"GET", "POST"})
+     */
+    public function modemahaAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        $mahaInitial = $centre->getMaha();
+        if(!$centre){
+            throw $this->createNotFoundException("Cette opération est interdite!");
+        }
+        $editForm = $this->createForm('AppBundle\Form\ModeType', $centre);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            if($mahaInitial != $centre->getMaha() && $centre->getEtat()){
+                $this->get('session')->getFlashBag()->add('error', 'Il faut fermer le centre avant de changer de mode MAHA.');
+                return $this->render('centre/modemaha.html.twig', array(
+                    'centre' => $centre,
+                    'edit_form' => $editForm->createView(),
+                ));
+            }
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
+            return $this->redirectToRoute('admin_gestion_centre_mode_maha');
+        }
+
+        return $this->render('centre/modemaha.html.twig', array(
+            'centre' => $centre,
+            'edit_form' => $editForm->createView(),
+        ));
+    }
+    
+    /**
+     * Displays a form to edit an existing centre entity.
+     *
+     * @Route("/admin/gestion/centre/anaser", name="admin_gestion_centre_anaser")
+     * @Method({"GET", "POST"})
+     */
+    public function anaserAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        if(!$centre){
+            throw $this->createNotFoundException("Cette opération est interdite!");
+        }
+        $editForm = $this->createForm('AppBundle\Form\AnaserType', $centre);
+        $editForm->handleRequest($request);
+
+        if ($editForm->isSubmitted() && $editForm->isValid()) {
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Enregistrement effectué.');
+            return $this->redirectToRoute('admin_gestion_centre_anaser');
+        }
+
+        return $this->render('centre/anaser.html.twig', array(
+            'centre' => $centre,
+            'edit_form' => $editForm->createView(),
+        ));
+    }
+    
 }

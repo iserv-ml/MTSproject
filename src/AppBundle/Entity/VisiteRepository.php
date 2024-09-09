@@ -302,10 +302,10 @@ class VisiteRepository extends EntityRepository
             $controle = ($piste == 0) ? 'pi.numero > :piste ' : 'pi.numero = :piste ';
             $conn = $this->getEntityManager()->getConnection();
             $sql = 'SELECT r.id, r.contre_visite, r.contre_visite_visuelle,r.immatriculation_v, v.immatriculation, v.type_chassis, v.chassis, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste, v.id as vehicule, g.code as genre FROM visite r LEFT JOIN vehicule v ON r.vehicule_id = v.id LEFT JOIN proprietaire p ON v.proprietaire_id = p.id LEFT JOIN chaine c on r.chaine_id = c.id LEFT JOIN piste pi on c.piste_id = pi.id LEFT JOIN typevehicule tp on v.type_vehicule_id = tp.id LEFT JOIN genre g on tp.genre_id = g.id'
-                        . ' WHERE r.statut IN (1,2, 3) AND v.immatriculation like :immatriculation AND '.$controle;
+                        . ' WHERE r.statut IN (1,2, 3) AND v.immatriculation = :immatriculation AND '.$controle.' ORDER BY r.dateControle DESC LIMIT 1';
             
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array('immatriculation' => "%".$immatriculation."%", 'piste' => $piste));
+            $stmt->execute(array('immatriculation' => $immatriculation, 'piste' => $piste));
             $result = $stmt->fetchAll();  
              
         }catch (\Exception $ex) {
@@ -318,9 +318,9 @@ class VisiteRepository extends EntityRepository
         try{
             $conn = $this->getEntityManager()->getConnection();
             $sql = 'SELECT r.id, r.contre_visite, r.contre_visite_visuelle, r.dateControle, v.immatriculation, v.type_chassis, v.chassis, r.revisite, r.statut, p.nom, p.prenom,pi.numero as piste, ca.numero as caisse, g.code as genre FROM visite r LEFT JOIN vehicule v ON r.vehicule_id = v.id LEFT JOIN proprietaire p ON v.proprietaire_id = p.id LEFT JOIN chaine c ON r.chaine_id = c.id LEFT JOIN piste pi ON c.piste_id = pi.id LEFT JOIN caisse ca ON c.caisse_id = ca.id LEFT JOIN typevehicule tp on v.type_vehicule_id = tp.id LEFT JOIN genre g on tp.genre_id = g.id'
-                        . ' WHERE r.statut IN (2,3,4) AND v.immatriculation like :immatriculation ';
+                        . ' WHERE r.statut IN (2,3,4) AND v.immatriculation = :immatriculation ORDER BY r.dateControle DESC LIMIT 1';
             $stmt = $conn->prepare($sql);
-            $stmt->execute(array('immatriculation' => "%".$immatriculation."%"));
+            $stmt->execute(array('immatriculation' => $immatriculation));
             $result = $stmt->fetchAll();  
         }catch (\Exception $ex) {
             $result = null;
