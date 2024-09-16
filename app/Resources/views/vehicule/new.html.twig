@@ -16,14 +16,19 @@
     <label class="btn btn-outline-secondary"><a href="{{ path('proprietaire_new') }}">CREER UN PROPRIETAIRE</a></label>
 {% endblock %}
 {% block body %}
-    {{ form_start(form) }}
-        {{ form_widget(form) }}
-        <input type="submit" value="Enregistrer" />
-    {{ form_end(form) }}
+    <div class="boxform" style="width: 100%;  height: 400px;  position: relative;">
+        <div class="contentform" style=" overflow: auto;  width: 100%;  height: 100%;">
+            {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <input style="position: absolute; top: 0.5rem; right: 20.5rem;" type="submit" value="Enregistrer" />
+            {{ form_end(form) }}
+        </div>
+    </div>
 {% endblock %}
 {% block javascripts -%}
     <script>
         $( function() {
+             $("#appbundle_vehicule_proprietaireAjax").focus();
             $(".appbundle_vehicule_proprietaireAjax").html('<i class="nav-icon fa fa-arrow-up"></i>');
             $(".appbundle_vehicule_modeleAjax").html('<i class="nav-icon fa fa-arrow-up"></i>');
         //$( "#appbundle_vehicule_genre" ).prop("disabled", true);

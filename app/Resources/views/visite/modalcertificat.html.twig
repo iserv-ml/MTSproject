@@ -12,6 +12,7 @@
                     {% endif %}
                 </td>
             </tr>
+            {%if visite.statut == 2%}
             <tr>
                 <th>Certificat</th>
                 <td>
@@ -24,7 +25,8 @@
                     {% endif %}
                     
                 </td>
-            </tr>            
+            </tr>
+            {% endif %}
         </tbody>
     </table>
                     

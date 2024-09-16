@@ -368,4 +368,15 @@ class CertificatController extends Controller
         }
         return new Response(json_encode($result));
     }
+    
+    /**
+     * Lists all certificat from lot entities.
+     *
+     * @Route("/chefcentre/detail/modal/{id}", name="secretaire_certificat_modal_index")
+     * @Method({"GET", "POST"})
+     */
+    public function modalLotAction(Request $request)
+    {
+         return $this->render('certificat/indexAgentModal.html.twig',array('lot'=>$request->get('id', 0)));
+    }
 }

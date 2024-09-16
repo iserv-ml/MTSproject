@@ -18,8 +18,13 @@
     {% if is_granted('ROLE_DELIVRANCE') %}
         <label class="btn btn-outline-secondary"><a href="{{ path('visite_delivrance') }}">LISTE DELIVRANCE</a></label>
         <label class="btn btn-outline-secondary"><a onclick="imprimerRapport()"  href="#" title="Imprimer le rapport">RAPPORT</a></label>
-        {% if visite.statut == 2 or visite.statut == 4 %}
+        {% if visite.statut == 2 %}
             <label class="btn btn-outline-secondary"><a onclick="certificat()" href="#" title="Imprimer le certificat">CERTIFICAT</a></label>
+        {% endif %}
+    {% endif %}
+    {% if is_granted('ROLE_CHEF_CENTRE') %}
+        {% if visite.statut == 4 %}
+            <label class="btn btn-outline-secondary"><a href="{{ path('retour_controleur', { 'id': visite.id }) }}" title="RETOUR CONTROLEUR">RETOUR CONTROLEUR</a></label>
         {% endif %}
     {% endif %}
 {% endblock %}
@@ -298,9 +303,7 @@
             url : '{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/visite/serie/verifier/'+numero+'/'+{{visite.id}},
             type : 'GET', 
             success : function(code_html, statut){ // code_html contient le HTML renvoyé
-                $('#certificat-modal').dialog( "close" );
-                alert("Impression en cours!");
-                
+                $('#certificat-modal').dialog( "close" );                
                 imprimerCertificat(numero);
             },
             error : function(code_html, statut){

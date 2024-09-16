@@ -1063,8 +1063,9 @@ class VisiteController extends Controller
         $em = $this->getDoctrine()->getManager();
         $visite = $em->getRepository('AppBundle:Visite')->find($id);
         $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumero($numero);
-        if($certificat && $visite){
+        if($certificat && $visite->getStatut() == 2){
             $visite->setStatut(4);
+            $visite->setCertificat($numero);
             $em->flush();
             $certificat->setImmatriculation($visite->getImmatriculation_v());
             $certificat->setUtilise(1);
@@ -1074,4 +1075,33 @@ class VisiteController extends Controller
         return new Response($numero."_".$request->get('id', 0), 500); 
         
     }
+    
+    /**
+     * Retour chez le controleur.
+     *
+     * @Route("/retour/controleur/{id}", name="retour_controleur")
+     * @Method("GET")
+     */
+    public function retourcontroleurAction(Visite $visite)
+    {
+        if(!$visite){
+            throw $this->createNotFoundException("Ooops... Une erreur s'est produite.");
+        }
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        if($visite->getStatut() == 4){
+            
+            $historique = new Historique("RETOUR CONTROLEUR", "Visite", $visite->getCertificat(), "", $user);
+            $em->persist($historique);
+            $visite->setStatut(2);
+            $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumero($visite->getCertificat());
+            $visite->setCertificat("");
+            $certificat->retourControleur();
+            $em->flush();
+            $this->get('session')->getFlashBag()->add('notice', 'Retour effectué.');
+        }
+         return $this->redirectToRoute('visite_delivrance');
+        
+    }
+    
 }

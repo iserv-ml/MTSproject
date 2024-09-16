@@ -198,6 +198,14 @@ class Visite
      * 
      */
     private $step;
+    
+    /**
+     * @var string $certificat
+     *
+     * @ORM\Column(name="certificat", type="string", length=255, nullable=true)
+     * 
+     */
+    private $certificat;
    
    //Debut relation Visite Parent a plusieurs revisite
     /**
@@ -440,6 +448,14 @@ class Visite
 
     function setGratuite($gratuite) {
         $this->gratuite = $gratuite;
+    }
+    
+    function getCertificat() {
+        return $this->certificat;
+    }
+
+    function setCertificat($certificat) {
+        $this->certificat = $certificat;
     }
     
     //BEHAVIOR

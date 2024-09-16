@@ -517,7 +517,7 @@ class CentreController extends Controller
             $attribue = $em->getRepository('AppBundle:Certificat')->findAttribue($lot['id']);
             $disponible = $lot['quantite'] - $annule - $attribue;
             $action = $this->genererActionTwig($lot['id']);
-            $resultats[] = array("id"=>$lot['id'], "serie"=>'('.$lot['annee'].')'.$lot['serie'], "quantite"=>$lot['quantite'], "dateAffectationCentre"=>$lot['dateAffectationCentre'], "attributeur"=>$lot["attributeur"], "annule"=>$annule, "attribue"=>$attribue, "disponible"=>$disponible, "action"=>$action);
+            $resultats[] = array("id"=>$lot['id'], "serie"=>$lot['annee'].'_'.$lot['serie'], "quantite"=>$lot['quantite'], "dateAffectationCentre"=>$lot['dateAffectationCentre'], "attributeur"=>$lot["attributeur"], "annule"=>$annule, "attribue"=>$attribue, "disponible"=>$disponible, "action"=>$action);
         }
         $user = $this->container->get('security.context')->getToken()->getUser();
         return $this->render('certificat/centre.html.twig', array(
@@ -560,7 +560,7 @@ class CentreController extends Controller
             $attribue = $em->getRepository('AppBundle:Certificat')->findAttribue($aRow['id']);
             $disponible = $aRow['quantite'] - $annule - $attribue;
             if($disponible > 0){
-                $output['aaData'][] = array('('.$aRow['annee'].')_'.$aRow['serie'],$aRow['quantite'], $disponible, $attribue,$annule, $aRow['dateAffectationCentre'], $aRow['attributeur'], $action);
+                $output['aaData'][] = array($aRow['annee'].'_'.$aRow['serie'],$aRow['quantite'], $disponible, $attribue,$annule, $aRow['dateAffectationCentre'], $aRow['attributeur'], $action);
             }else{
                 $iTotal--;
                 $iTotalFiltre--;

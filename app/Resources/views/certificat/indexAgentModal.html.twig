@@ -1,0 +1,94 @@
+
+
+    {% if is_granted('ROLE_CHEF_CENTRE') %} 
+        <label class="btn btn-outline-secondary"><a href="{{ path('centre_certificat_affecter', { 'id': lot }) }}">AFFECTER</a></label>
+    {% endif %}
+
+
+
+    <div id="annuler-modal" title="Confirmation" style="background: #fff;z-index: 10"> </div>
+    <div class="table-responsive">
+        <table id="liste_clients_modal" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered datatable dataTable no-footer">
+            <thead>
+            <tr>
+                <th>Serie</th>
+                <th>Attributeur</th>
+                <th>Controleur</th>
+                <th>Date attribution</th>
+                <th>Statut</th>
+                <th>Vehicule</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    </div>
+
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        $('#liste_clients_modal').DataTable({
+        
+        "processing": true,
+            "serverSide": true,
+           "ajax": {
+              "url": "{{ path('centrecertificatagentajax', { 'lotid': lot }) }}",
+         },
+        "paging" : true,
+        "info" : true, 
+        "searching": true,
+        "responsive": false,
+        "pageLength": 50,
+        "order": [[0, 'asc']],
+       language: {
+        processing:     "Traitement en cours...",
+        search:         "Rechercher&nbsp;:",
+        lengthMenu:    "Afficher _MENU_ &eacute;l&eacute;ments",
+        info:           "Affichage de l'&eacute;lement _START_ &agrave; _END_ sur _TOTAL_ &eacute;l&eacute;ments",
+        infoEmpty:      "Affichage de l'&eacute;lement 0 &agrave; 0 sur 0 &eacute;l&eacute;ments",
+        infoFiltered:   "(filtr&eacute; de _MAX_ &eacute;l&eacute;ments au total)",
+        infoPostFix:    "",
+        loadingRecords: "Chargement en cours...",
+        zeroRecords:    "Aucun &eacute;l&eacute;ment &agrave; afficher",
+        emptyTable:     "Aucune donnée disponible dans le tableau",
+        paginate: {
+            first:      "Premier",
+            previous:   "Pr&eacute;c&eacute;dent",
+            next:       "Suivant",
+            last:       "Dernier"
+        },
+        aria: {
+            sortAscending:  ": activer pour trier la colonne par ordre croissant",
+            sortDescending: ": activer pour trier la colonne par ordre décroissant"
+        }
+    }
+    });
+    
+     
+		
+		        
+                   } );  
+                                    
+        function annulerCertificat(id){
+            
+            var options = {
+                modal: true,
+                height:300,
+                width:700,
+                buttons: {
+                    "Confirmer": function() {
+                        $(location).attr('href', '{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/certificat/'+id+'/annuler');
+                    },
+                    "Fermer": function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            };
+            $('#annuler-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+            $('#annuler-modal').load('{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/certificat/'+id+'/confirmer/annuler').dialog(options).dialog('open');
+        }
+    </script>
+

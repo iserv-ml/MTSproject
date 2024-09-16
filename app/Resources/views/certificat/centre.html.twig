@@ -42,13 +42,13 @@
                 <td>{{ resultat.annule }}</td>
                 <td>{{ resultat.dateAffectationCentre }}</td>
                 <td>{{ resultat.attributeur }}</td>
-                <td><a title='Détail' class='btn btn-info' href="{{ path('secretaire_certificat_lot_index', { 'id': resultat.id }) }}"><i class='fa fa-plus'></i></a></td>
+                <td><a title='Détail' class='btn btn-info' onclick="certificat({{ resultat.id }}, '{{ resultat.serie|escape('html') }}');" href="#"><i class='fa fa-plus'></i></a></td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     </div>
-
+<div id="certificat-modal" title="CERTIFICAT LOT"></div>
 {% endblock %}
 
 {% block javascripts -%}
@@ -98,7 +98,24 @@
      
 		
 		        
-                   } );    
+                   } );   
+                   
+                   function certificat(id,serie){
+            var options = {
+                modal: true,
+                height:500,
+                width:900,
+                buttons: {
+                   
+                    Annuler: function() {
+                        $( this ).dialog( "close" );
+                    }
+                }
+            };
+            $('#certificat-modal').html("<img src='{{ asset('images/loader.gif') }}' />");
+            $('#certificat-modal').load('{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/certificat/chefcentre/detail/modal/'+id).dialog(options).dialog('open');
+            $('#certificat-modal').dialog('option', 'title', 'CERTIFICAT '+serie+ "");
+        }
         </script>
 {% endblock %}
 

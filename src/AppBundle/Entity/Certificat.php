@@ -348,4 +348,10 @@ class Certificat
         $this->quantite = $quantite;
     }
     
+    function retourControleur(){
+        $this->setAnnule(1);
+        $this->setUtilise(0);
+        $this->setMotif("Retour controleur");
+    }
+    
 }
