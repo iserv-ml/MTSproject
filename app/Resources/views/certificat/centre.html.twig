@@ -42,7 +42,7 @@
                 <td>{{ resultat.annule }}</td>
                 <td>{{ resultat.dateAffectationCentre }}</td>
                 <td>{{ resultat.attributeur }}</td>
-                <td><a title='Détail' class='btn btn-info' onclick="certificat({{ resultat.id }}, '{{ resultat.serie|escape('html') }}');" href="#"><i class='fa fa-plus'></i></a></td>
+                <td><a title='Détail' class='btn btn-info' onclick="certificat({{ resultat.id }}, '{{ resultat.serie|escape('html') }}');return false;" href="#"><i class='fa fa-plus'></i></a></td>
             </tr>
         {% endfor %}
         </tbody>
@@ -104,7 +104,8 @@
             var options = {
                 modal: true,
                 height:500,
-                width:900,
+                width:800,
+                position: { my: "center", at: "center", of: window },
                 buttons: {
                    
                     Annuler: function() {
