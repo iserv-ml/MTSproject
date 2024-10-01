@@ -18,7 +18,9 @@
                 <td>
                     
                     {% if certificats is not empty %}
-                        <input id="numero" type="text" name="numero"  />
+                        <input id="recherche" type="text" name="recherche"  />
+                        <input id="numero" type="hidden" name="numero"  />
+                        <input id="annee" type="hidden" name="annee"  />
                         <input id="controle" onclick="verifierCertificat();" type="button" name="enregistrer" value="Imprimer" />
                     {% else %}
                         Vous n'avez pas de certificats disponibles!
@@ -38,7 +40,7 @@
       $( "<div>" ).text( message ).prependTo( "#log" );
       $( "#log" ).scrollTop( 0 );
     }
-    $( "#numero" ).autocomplete({
+    $( "#recherche" ).autocomplete({
         source: function( request, response ) {
             $.ajax( {
                 url: "{{ path("certificat_autocomplete") }}",
@@ -51,19 +53,22 @@
                     response($.map(donnee, function(objet){
                         return {
                             serie :objet.serie,
+                            annee : objet.annee
                         };
                     }));
                 },
             } );
         },
         select: function (event, ui) {
+            $( "#recherche" ).val( ui.item.annee+"_"+ui.item.serie);
             $( "#numero" ).val( ui.item.serie);
+            $( "#annee" ).val( ui.item.annee);
             return false;
         }
     }).data('ui-autocomplete')._renderItem = function (ul, item) {
                             return $("<li />")
                                 .data("item.autocomplete", item)
-                                .append("<a>" + item.serie+ "</a>")
+                                .append("<a>"+ item.annee+"_" + item.serie+ "</a>")
                                 .appendTo(ul);
                };    
   } );

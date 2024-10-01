@@ -1053,16 +1053,17 @@ class VisiteController extends Controller
     /**
      * Vérifier numéro certificat.
      *
-     * @Route("/serie/verifier/{certificat}/{id}", name="visite_certificat_verifier")
+     * @Route("/serie/verifier/{certificat}/{annee}/{id}", name="visite_certificat_verifier")
      * @Method("GET")
      */
     public function verifiercertificatAction(Request $request)
     {
         $numero = intval($request->get("certificat", 0));
         $id = intval($request->get("id", 0));
+        $annee = intval($request->get("annee", 0));
         $em = $this->getDoctrine()->getManager();
         $visite = $em->getRepository('AppBundle:Visite')->find($id);
-        $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumero($numero);
+        $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumeroAnnee($numero, $annee);
         if($certificat && $visite->getStatut() == 2){
             $visite->setStatut(4);
             $visite->setCertificat($numero);

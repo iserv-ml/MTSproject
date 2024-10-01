@@ -359,11 +359,11 @@ class CertificatController extends Controller
         $certificats = $em->getRepository('AppBundle:Certificat')->findAjax($search, $maxRows,$user->getId());
         
         if(count($certificats)==0)
-             $result[] = ["serie"=>"Aucun résultat"];
+             $result[] = ["serie"=>"Aucun résultat", "annee"=>""];
         else
         {
             foreach($certificats as $certificat){
-                $result[] = ["serie" => $certificat->getSerie()];
+                $result[] = ["serie" => $certificat->getSerie(), "annee" => $certificat->getAnnee()];
             }
         }
         return new Response(json_encode($result));

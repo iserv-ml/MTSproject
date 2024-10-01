@@ -298,9 +298,10 @@
     
     function verifierCertificat(){
         var numero = $('#numero').val();
+        var annee = $('#annee').val();
         $.ajax({
             
-            url : '{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/visite/serie/verifier/'+numero+'/'+{{visite.id}},
+            url : '{{ app.request.getSchemeAndHttpHost()~ app.request.baseUrl }}/visite/serie/verifier/'+numero+'/'+annee+'/'+{{visite.id}},
             type : 'GET', 
             success : function(code_html, statut){ // code_html contient le HTML renvoyé
                 $('#certificat-modal').dialog( "close" );                
