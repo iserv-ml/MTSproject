@@ -1089,13 +1089,13 @@ class VisiteController extends Controller
             throw $this->createNotFoundException("Ooops... Une erreur s'est produite.");
         }
         $em = $this->getDoctrine()->getManager();
-        $user = $this->container->get('security.context')->getToken()->getUser();
+          $user = $this->container->get('security.context')->getToken()->getUser();
         if($visite->getStatut() == 4){
             
             $historique = new Historique("RETOUR CONTROLEUR", "Visite", $visite->getCertificat(), "", $user);
             $em->persist($historique);
             $visite->setStatut(2);
-            $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumero($visite->getCertificat());
+            $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumero     ($visite->getCertificat());
             $visite->setCertificat("");
             $certificat->retourControleur();
             $em->flush();

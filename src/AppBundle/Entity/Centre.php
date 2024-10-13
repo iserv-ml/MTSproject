@@ -162,6 +162,34 @@ class Centre
     */
     protected $visites;
     
+    public function enregistrerLot($obj, $em){
+        try{
+            $input = split("_", $obj["serie"]);
+            $debut = intval($input[0]);
+        } catch (Exception $ex) {
+            return 0;
+        }
+        $quantite = intval($obj['quantite']);
+        $lot = new Lot();
+        $lot->setSerie($obj["serie"]);
+        $lot->setAnnee($obj["annee"]);
+        $lot->setDateAffectationCentre(new \DateTime("now"));
+        $lot->setAttributeur($obj["attributeur"]);
+        $lot->setQuantite($quantite);
+        $em->persist($lot);
+        while($quantite > 0){
+            $tmp = new Certificat();
+            $tmp->setSerie($debut);
+            $tmp->setAnnee($lot->getAnnee());
+            $tmp->setLot($lot);
+            $em->persist($tmp);
+            $debut++;
+            $quantite--;
+        }
+        $em->flush();
+        return 1;
+    }
+    
     /**
     * Add visite
     *

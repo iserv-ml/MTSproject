@@ -493,12 +493,12 @@ class CentreController extends Controller
                 return new \Symfony\Component\HttpFoundation\Response($response); 
         }
         
-        /**
+    /**
      * Lists all certificat entities pour le chef de centre.
      *
      * @Route("/chefcentre/certificat", name="centre_certificat")
      * @Method({"GET", "POST"})
-     */
+    */
     public function certificatAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -688,6 +688,32 @@ class CentreController extends Controller
             'centre' => $centre,
             'edit_form' => $editForm->createView(),
         ));
+    }
+    
+    /**
+     * Récupérer les lots de la base agregat.
+     *
+     * @Route("/chefcentre/certificat/recuperer/", name="centre_certificat_recuperer")
+     * @Method("GET")
+    */
+    public function certificatRecupererAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $centre = $em->getRepository('AppBundle:Centre')->recuperer();
+        
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $centre->getFtpServer()."/web/app_dev.php/recuperer/lot/".$centre->getCode());
+        curl_setopt($curl, CURLOPT_COOKIESESSION, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $return = curl_exec($curl);
+        curl_close($curl);
+        $lots = json_decode($return, true);
+        foreach($lots as $lot) {
+                $centre->enregistrerLot($lot, $em);
+        }
+        $this->get('session')->getFlashBag()->add('notice', 'Traitement effectué.');
+        return $this->redirectToRoute('centre_certificat');
+
     }
     
 }

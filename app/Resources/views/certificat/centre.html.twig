@@ -15,7 +15,9 @@
 {% block menu_gestion_actif %}active{% endblock %}
 {% block pagetitle -%}GESTION DES CERTIFICATS{% endblock %}
 {% block actions %}
-
+    {% if is_granted('ROLE_CHEF_CENTRE') %} 
+        <label class="btn btn-outline-secondary"><a href="{{ path('centre_certificat_recuperer') }}">RECUPERER</a></label>
+    {% endif %}
 {% endblock %}
 {% block body -%}
     <div class="table-responsive">
