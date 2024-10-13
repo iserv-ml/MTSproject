@@ -123,7 +123,7 @@ class EtatJournalierRepository extends EntityRepository
     public function recupererEtat() {
         
         $em = $this->getEntityManager();
-        $sql = 'SELECT * FROM etat_journalier WHERE deletedAt IS NULL AND (synchro IS NULL OR synchro = 0) limit 10';
+        $sql = 'SELECT id, date_visite, montant_visite, montant_revisite, anaser, nbvisite, nbrevisite, caisse, encaisse_par, rembourse_par, action, type_vehicule, genre, usagetype, carrosserie, immatriculation, quittance, centre FROM etat_journalier WHERE deletedAt IS NULL AND (synchro IS NULL OR synchro = 0) limit 10';
         $stmt = $em->getConnection()->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll();        

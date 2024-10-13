@@ -47,5 +47,20 @@ class CentreRepository extends EntityRepository
         }
         
         return $result; 
-    }    
+    }   
+    
+    public function recupererEtat() {
+        $qb = $this->getEntityManager()
+            ->createQuery('SELECT r.* FROM AppBundle:EtatJournalier r WHERE (r.synchro IS NULL OR r.synchro = 0)')
+            ->setMaxResults(10);
+        $arrayAss = $qb->execute(null, \Doctrine\ORM\Query::HYDRATE_SCALAR);
+        return $arrayAss;
+    }
+    
+    public function marquerEtatTraite($sql) {
+        $qb = $this->getEntityManager()
+            ->createQuery($sql);
+        $arrayAss = $qb->execute();
+        return $arrayAss;
+    }
 }

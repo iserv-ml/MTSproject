@@ -462,7 +462,7 @@ class CentreController extends Controller
                 fclose($fp);
                 $update_list =  '\'' . implode( '\', \'', $ids ) . '\'';
                 $sql = 'UPDATE etat_journalier SET synchro = 1, date_synchro = now() WHERE id IN ('.$update_list.')';
-                $update = $em->getRepository('AppBundle:EtatJournalier')->marquerExport($sql);
+                
                 
                 //transfert ftp
                 // connect to FTP server
@@ -475,7 +475,7 @@ class CentreController extends Controller
                 // upload file
                 if (ftp_put($ftp_conn, $fichier, $centre->getRepertoire().$fichier, FTP_BINARY)){
                     $response = "ENVOI TERMINE DE : ".$nbr." LIGNES dans le fichier ". $centre->getRepertoire().$fichier."<br/> ";
-
+                    $update = $em->getRepository('AppBundle:EtatJournalier')->marquerExport($sql);
                 }else{
                     $response = "Error uploading". $centre->getRepertoire().$fichier;
                 }
@@ -702,7 +702,7 @@ class CentreController extends Controller
         $centre = $em->getRepository('AppBundle:Centre')->recuperer();
         
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $centre->getFtpServer()."/web/app_dev.php/recuperer/lot/".$centre->getCode());
+        curl_setopt($curl, CURLOPT_URL, "http://".$centre->getFtpServer()."/web/app_dev.php/recuperer/lot/".$centre->getCode());
         curl_setopt($curl, CURLOPT_COOKIESESSION, true);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         $return = curl_exec($curl);
