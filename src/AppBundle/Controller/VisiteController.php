@@ -1066,7 +1066,7 @@ class VisiteController extends Controller
         $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumeroAnnee($numero, $annee);
         if($certificat && $visite->getStatut() == 2){
             $visite->setStatut(4);
-            $visite->setCertificat($numero);
+            $visite->setCertificat($annee."-".$numero);
             $em->flush();
             $certificat->setImmatriculation($visite->getImmatriculation_v());
             $certificat->setUtilise(1);
@@ -1092,14 +1092,23 @@ class VisiteController extends Controller
           $user = $this->container->get('security.context')->getToken()->getUser();
         if($visite->getStatut() == 4){
             
-            $historique = new Historique("RETOUR CONTROLEUR", "Visite", $visite->getCertificat(), "", $user);
-            $em->persist($historique);
-            $visite->setStatut(2);
-            $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumero     ($visite->getCertificat());
-            $visite->setCertificat("");
-            $certificat->retourControleur();
-            $em->flush();
-            $this->get('session')->getFlashBag()->add('notice', 'Retour effectué.');
+            
+            
+            try{
+                $visite->setStatut(2);
+                $historique = new Historique("RETOUR CONTROLEUR", "Visite", $visite->getCertificat(), "", $user);
+                $em->persist($historique);
+                $split = \split("-", $visite->getCertificat());
+                $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumeroAnnee($split[1], $split['0']);
+                $visite->setCertificat("");
+                $certificat->retourControleur();
+                $em->flush();
+                $this->get('session')->getFlashBag()->add('notice', 'Retour effectué.');
+            } catch (Exception $ex) {
+                $this->get('session')->getFlashBag()->add('error', "Ooops... Une erreur s'est produite.");
+            }
+            
+            
         }
          return $this->redirectToRoute('visite_delivrance');
         
