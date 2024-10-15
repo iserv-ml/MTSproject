@@ -1094,7 +1094,7 @@ class VisiteController extends Controller
             try{
                 $visite->setStatut(2);
                 $em->persist(new Historique("RETOUR CONTROLEUR", "Visite", $visite->getCertificat(), "", $user));
-                $split = \split("-", $visite->getCertificat());
+                $split = \explode("-", $visite->getCertificat());
                 $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumeroAnnee($split[1], $split['0']);
                 $visite->setCertificat("");
                 $certificat->retourControleur();
