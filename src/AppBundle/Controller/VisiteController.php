@@ -1089,15 +1089,11 @@ class VisiteController extends Controller
             throw $this->createNotFoundException("Ooops... Une erreur s'est produite.");
         }
         $em = $this->getDoctrine()->getManager();
-          $user = $this->container->get('security.context')->getToken()->getUser();
-        if($visite->getStatut() == 4){
-            
-            
-            
+        $user = $this->container->get('security.context')->getToken()->getUser();
+        if($visite->getStatut() == 4){             
             try{
                 $visite->setStatut(2);
-                $historique = new Historique("RETOUR CONTROLEUR", "Visite", $visite->getCertificat(), "", $user);
-                $em->persist($historique);
+                $em->persist(new Historique("RETOUR CONTROLEUR", "Visite", $visite->getCertificat(), "", $user));
                 $split = \split("-", $visite->getCertificat());
                 $certificat = $em->getRepository('AppBundle:Certificat')->trouverParNumeroAnnee($split[1], $split['0']);
                 $visite->setCertificat("");
@@ -1106,11 +1102,9 @@ class VisiteController extends Controller
                 $this->get('session')->getFlashBag()->add('notice', 'Retour effectué.');
             } catch (Exception $ex) {
                 $this->get('session')->getFlashBag()->add('error', "Ooops... Une erreur s'est produite.");
-            }
-            
-            
+            }  
         }
-         return $this->redirectToRoute('visite_delivrance');
+        return $this->redirectToRoute('visite_delivrance');
         
     }
     
