@@ -164,7 +164,7 @@ class Centre
     
     public function enregistrerLot($obj, $em){
         try{
-            $input = split("_", $obj["serie"]);
+            $input = \split("-", $obj["serie"]);
             $debut = intval($input[0]);
         } catch (Exception $ex) {
             return 0;

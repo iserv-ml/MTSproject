@@ -708,8 +708,10 @@ class CentreController extends Controller
         $return = curl_exec($curl);
         curl_close($curl);
         $lots = json_decode($return, true);
-        foreach($lots as $lot) {
-                $centre->enregistrerLot($lot, $em);
+        if(count($lots) > 0){
+            foreach($lots as $lot) {
+                    $centre->enregistrerLot($lot, $em);
+            }
         }
         $this->get('session')->getFlashBag()->add('notice', 'Traitement effectué.');
         return $this->redirectToRoute('centre_certificat');
