@@ -460,6 +460,15 @@ class CentreController extends Controller
                     $ids[] = $etat['id'];
                 }
                 fclose($fp);
+                $checksum = sha1_file($centre->getRepertoire().$fichier); 
+                $hash = \bin2hex(random_bytes(16));
+                $synchro = new \AppBundle\Entity\Synchro($fichier, "ETAT JOURNALIER", $hash, $checksum, "ETAT_JOURNALIER", 0);
+                $em->persist($synchro);
+                $em->flush();
+                $em->refresh($synchro);
+                $responseAgregat = $centre->persister($centre->getFtpServer(),$synchro, $centre->getCode());
+                $synchro->setResponse($responseAgregat);
+                $em->flush();
                 $update_list =  '\'' . implode( '\', \'', $ids ) . '\'';
                 $sql = 'UPDATE etat_journalier SET synchro = 1, date_synchro = now() WHERE id IN ('.$update_list.')';
                 
@@ -475,7 +484,7 @@ class CentreController extends Controller
                 // upload file
                 if (ftp_put($ftp_conn, $fichier, $centre->getRepertoire().$fichier, FTP_BINARY)){
                     $response = "ENVOI TERMINE DE : ".$nbr." LIGNES dans le fichier ". $centre->getRepertoire().$fichier."<br/> ";
-                    $update = $em->getRepository('AppBundle:EtatJournalier')->marquerExport($sql);
+                    $em->getRepository('AppBundle:EtatJournalier')->marquerExport($sql);
                 }else{
                     $response = "Error uploading". $centre->getRepertoire().$fichier;
                 }

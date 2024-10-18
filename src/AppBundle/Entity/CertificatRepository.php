@@ -137,4 +137,21 @@ class CertificatRepository extends EntityRepository
         return $result; 
     }
     
+    public function trouverUtiliseParNumeroAnnee($numero, $annee) {
+        try{ 
+            $result = $this->getEntityManager()
+            ->createQuery(
+                'SELECT r FROM AppBundle:Certificat r WHERE r.serie = :numero AND r.annee = :annee AND r.annule = false AND r.utilise = true'
+            )->setParameter("numero",$numero)->setParameter("annee",$annee)
+            ->getSingleResult();
+       }catch (\Doctrine\ORM\NonUniqueResultException $ex) {
+            $result = null;
+        }
+        catch (\Doctrine\ORM\NoResultException $ex){
+            $result = null;
+        }
+        
+        return $result; 
+    }
+    
 }

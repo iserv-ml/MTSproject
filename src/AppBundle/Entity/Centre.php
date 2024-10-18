@@ -540,5 +540,26 @@ class Centre
     public function setRepertoire($repertoire) {
         $this->repertoire = $repertoire;
     }
+    
+    public function persister($server, $synchro, $code){
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $server."/synchro/enregistrer");
+        curl_setopt($curl, CURLOPT_POST, true);
+        $datas = array(
+            "path" => $synchro->getPath(),
+            "libelle" => $synchro->getLibelle(),
+            "hash" => $synchro->getHash(),
+            "checksum" => $synchro->getChecksum(),
+            "type" => $synchro->getType(),
+            "idOrigine" => $synchro->getId(),
+            "code" => $code
+            );
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $datas);
+        curl_setopt($curl, CURLOPT_COOKIESESSION, true);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return $response;
+    }
 
 }
